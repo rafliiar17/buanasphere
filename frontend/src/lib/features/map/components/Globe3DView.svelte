@@ -12,6 +12,7 @@
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
   import { calculateLocalTime, isDaylight, formatUtcOffset } from '$lib/framework/geoglobe/geoMath';
+  import { getFloraFaunaDataForCountry } from '$lib/framework/geoglobe/data/floraFaunaData';
 
   interface Props {
     geoJsonFeatures: any[];
@@ -162,6 +163,31 @@
       return 'rgba(244, 63, 94, 0.80)';
     }
 
+    if (appId === 'flora-fauna') {
+      const bio = getFloraFaunaDataForCountry(iso3);
+      if (geoStore.activeMetricId === 'iucn_risk') {
+        const iucn = bio.animal.iucnStatus;
+        if (iucn === 'Critically Endangered' || iucn === 'Endangered') return 'rgba(239, 68, 68, 0.85)';
+        if (iucn === 'Vulnerable') return 'rgba(245, 158, 11, 0.85)';
+        return 'rgba(16, 185, 129, 0.85)';
+      }
+      if (geoStore.activeMetricId === 'biome') {
+        const biome = bio.primaryBiome;
+        if (biome.includes('Rainforest')) return 'rgba(4, 120, 87, 0.90)';
+        if (biome.includes('Savanna')) return 'rgba(217, 119, 6, 0.85)';
+        if (biome.includes('Desert')) return 'rgba(202, 138, 4, 0.85)';
+        if (biome.includes('Taiga') || biome.includes('Boreal')) return 'rgba(2, 132, 199, 0.85)';
+        return 'rgba(21, 128, 61, 0.85)';
+      }
+      // Default: biodiversity score
+      const score = bio.biodiversityScore;
+      if (score >= 90) return 'rgba(5, 150, 105, 0.95)'; // Deep lush emerald (Megadiverse)
+      if (score >= 80) return 'rgba(16, 185, 129, 0.85)';
+      if (score >= 65) return 'rgba(6, 182, 212, 0.80)';
+      if (score >= 50) return 'rgba(245, 158, 11, 0.75)';
+      return isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.6)';
+    }
+
     // Default: fx-rates
     if (!country) {
       return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
@@ -277,6 +303,35 @@
       `;
     }
 
+    if (appId === 'flora-fauna') {
+      const bio = getFloraFaunaDataForCountry(iso3);
+      const iucnColor = bio.animal.iucnStatus.includes('Endangered') || bio.animal.iucnStatus.includes('Critically')
+        ? '#ef4444'
+        : bio.animal.iucnStatus === 'Vulnerable' ? '#f59e0b' : '#10b981';
+
+      return `
+        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#065f46' : '#a7f3d0'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 20px; height: 14px; border-radius: 2px; object-fit: cover;" onerror="this.style.display='none'" />
+              <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+            </div>
+            ${bio.isMegadiverse ? `<span style="font-size: 10px; font-weight: 700; color: #34d399; font-family: monospace;">Rank #${bio.globalBiodiversityRank}</span>` : ''}
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'}; margin-bottom: 4px;">
+            <span>${bio.animal.emoji}</span>
+            <span>${bio.animal.commonName}</span>
+          </div>
+          <div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#64748b'}; margin-bottom: 4px;">
+            ${bio.plant.emoji} ${bio.plant.commonName} • ${bio.primaryBiome}
+          </div>
+          <div style="font-size: 10px; font-weight: 700; color: ${iucnColor};">
+            IUCN: ${bio.animal.iucnStatus}
+          </div>
+        </div>
+      `;
+    }
+
     // Default: fx-rates
     const code = country?.currencyCode || '';
     const currName = country?.currencyName || '';
@@ -366,7 +421,11 @@
       const isHovered = hovered === iso3;
       const isMajor = MAJOR_LOD_CURRENCIES.has(iso3);
 
-      const displayText = `${rawName} (${curr || iso3})`;
+      let displayText = `${rawName} (${curr || iso3})`;
+      if (geoStore.activeAppId === 'flora-fauna') {
+        const bio = getFloraFaunaDataForCountry(iso3);
+        displayText = `${bio.animal.emoji} ${rawName}`;
+      }
 
       return {
         iso3,

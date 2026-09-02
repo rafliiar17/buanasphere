@@ -19,6 +19,8 @@
         return { main: 'Flow', sub: '.Corridors' };
       case 'passport-power':
         return { main: 'Passport', sub: '.World' };
+      case 'flora-fauna':
+        return { main: 'Nature', sub: '.World' };
       default:
         return { main: 'Kurs', sub: '.World' };
     }

@@ -1,9 +1,14 @@
 import { EXTENDED_COUNTRIES_DATA } from './countrySpatialData';
 import { calculateLocalTime, isDaylight } from './geoMath';
+import { 
+  MEGADIVERSE_ISO3_LIST, 
+  getFloraFaunaDataForCountry 
+} from './data/floraFaunaData';
 
 export type TimeFilterType = 'all' | 'working' | 'daylight' | 'night';
 export type FlightCorridorFilterType = 'all' | 'mideast' | 'asean' | 'eastasia' | 'west';
 export type PassportVisaFilterType = 'all' | 'free' | 'voa' | 'required';
+export type NatureFilterType = 'all' | 'megadiverse' | 'endangered' | 'rainforest' | 'endemic';
 
 export const FLIGHT_CORRIDOR_REGIONS: Record<FlightCorridorFilterType, string[]> = {
   all: ['SAU', 'MYS', 'TWN', 'HKG', 'SGP', 'JPN', 'USA', 'KOR', 'ARE', 'AUS', 'IDN'],
@@ -104,6 +109,34 @@ export function isCountryMatchingPassportFilter(iso3: string, filter: PassportVi
 }
 
 /**
+ * Validates if country matches the Nature World (Flora & Fauna) filter (ADR 0034)
+ */
+export function isCountryMatchingNatureFilter(iso3: string, filter: NatureFilterType): boolean {
+  if (filter === 'all') return true;
+  const data = getFloraFaunaDataForCountry(iso3);
+
+  switch (filter) {
+    case 'megadiverse':
+      return data.isMegadiverse || MEGADIVERSE_ISO3_LIST.includes(iso3);
+    case 'endangered':
+      return (
+        data.animal.iucnStatus === 'Critically Endangered' ||
+        data.animal.iucnStatus === 'Endangered' ||
+        data.plant.conservationStatus.toLowerCase().includes('endangered')
+      );
+    case 'rainforest':
+      return data.primaryBiome === 'Tropical Rainforest';
+    case 'endemic':
+      return (
+        data.endemicSpeciesHighlights.length > 0 &&
+        (data.isMegadiverse || ['MDG', 'AUS', 'NZL', 'IDN', 'ECU', 'PER'].includes(iso3))
+      );
+    default:
+      return true;
+  }
+}
+
+/**
  * Universal matcher across any active app
  */
 export function isCountryMatchingAppFilter(
@@ -113,6 +146,7 @@ export function isCountryMatchingAppFilter(
     timeFilter?: TimeFilterType;
     flightFilter?: FlightCorridorFilterType;
     passportFilter?: PassportVisaFilterType;
+    natureFilter?: NatureFilterType;
     region?: string;
   } = {}
 ): boolean {
@@ -124,6 +158,9 @@ export function isCountryMatchingAppFilter(
   }
   if (appId === 'passport-power') {
     return isCountryMatchingPassportFilter(iso3, filters.passportFilter || 'all');
+  }
+  if (appId === 'flora-fauna') {
+    return isCountryMatchingNatureFilter(iso3, filters.natureFilter || 'all');
   }
   // fx-rates
   if (filters.region && filters.region !== 'all') {

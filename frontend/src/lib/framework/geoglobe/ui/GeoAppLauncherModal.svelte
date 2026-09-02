@@ -1,13 +1,14 @@
 <script lang="ts">
   import { geoStore } from '../geoStore.svelte';
   import { resolveAppIdToPath } from '../router';
-  import { Coins, Clock, Plane, BookOpen, Sparkles, X, Check, ArrowRight } from 'lucide-svelte';
+  import { Coins, Clock, Plane, BookOpen, Trees, Sparkles, X, Check, ArrowRight } from 'lucide-svelte';
 
   const ICONS: Record<string, any> = {
     Coins,
     Clock,
     Plane,
     BookOpen,
+    Trees,
   };
 </script>
 

@@ -1,5 +1,5 @@
 /**
- * Kurs World / GeoGlobe — Path-Based Micro-App Router Constants & Resolution (ADR 0028).
+ * Kurs World / GeoGlobe — Path-Based Micro-App Router Constants & Resolution (ADR 0028 & ADR 0034).
  */
 
 export const APP_PATH_MAP: Record<string, string> = {
@@ -9,6 +9,12 @@ export const APP_PATH_MAP: Record<string, string> = {
   '/flight': 'remittance-flow',
   '/flow': 'remittance-flow',
   '/passport': 'passport-power',
+  '/nature': 'flora-fauna',
+  '/flora-fauna': 'flora-fauna',
+  '/flora': 'flora-fauna',
+  '/fauna': 'flora-fauna',
+  '/wildlife': 'flora-fauna',
+  '/biodiversity': 'flora-fauna',
 };
 
 export const CANONICAL_APP_PATHS: Record<string, string> = {
@@ -16,6 +22,7 @@ export const CANONICAL_APP_PATHS: Record<string, string> = {
   'world-time': '/time',
   'remittance-flow': '/flight',
   'passport-power': '/passport',
+  'flora-fauna': '/nature',
 };
 
 /**
@@ -51,4 +58,3 @@ export function isLandingPath(pathname: string): boolean {
 
   return normalized === '/' || normalized === '' || normalized === '/index.html';
 }
-

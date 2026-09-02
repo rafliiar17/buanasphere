@@ -23,6 +23,7 @@
   import TimeControls from '$lib/apps/time/TimeControls.svelte';
   import FlightControls from '$lib/apps/flight/FlightControls.svelte';
   import PassportControls from '$lib/apps/passport/PassportControls.svelte';
+  import FloraControls from '$lib/apps/flora/FloraControls.svelte';
   import UniversalCountryInspector from '$lib/framework/geoglobe/ui/UniversalCountryInspector.svelte';
 
   interface Props {
@@ -270,6 +271,17 @@
         />
       {:else if geoStore.activeAppId === 'passport-power'}
         <PassportControls
+          onSelectCountry={(iso3) => {
+            const country = mapData.find(d => d.iso3 === iso3);
+            if (country) handleCountryClick(country);
+          }}
+          onResetView={() => {
+            mapState.setRegion('all');
+            mapState.setSearchQuery('');
+          }}
+        />
+      {:else if geoStore.activeAppId === 'flora-fauna'}
+        <FloraControls
           onSelectCountry={(iso3) => {
             const country = mapData.find(d => d.iso3 === iso3);
             if (country) handleCountryClick(country);

@@ -58,6 +58,20 @@
       badgeTextColor: '#c4b5fd',
       glowColor: 'rgba(139,92,246,0.06)',
     },
+    {
+      path: '/nature',
+      emoji: '🌿',
+      name: 'Nature World',
+      tagline: 'Keanekaragaman Hayati & Satwa',
+      description: 'Jelajahi satwa ikonik, flora khas, bioma habitat, dan status konservasi IUCN di 195+ negara serta 17 negara Megadiverse.',
+      gradFrom: '#059669',
+      gradTo: '#0d9488',
+      borderColor: 'rgba(5,150,105,0.25)',
+      badgeText: '195+ Satwa & Flora',
+      badgeColor: 'rgba(5,150,105,0.15)',
+      badgeTextColor: '#6ee7b7',
+      glowColor: 'rgba(5,150,105,0.06)',
+    },
   ];
 </script>
 
@@ -185,6 +199,7 @@
         <a href="/time" class="hover:text-slate-300 transition-colors">Time</a>
         <a href="/flight" class="hover:text-slate-300 transition-colors">Flight</a>
         <a href="/passport" class="hover:text-slate-300 transition-colors">Passport</a>
+        <a href="/nature" class="hover:text-slate-300 transition-colors">Nature</a>
       </div>
     </div>
   </footer>
