@@ -178,12 +178,20 @@ export const enTranslations = {
 
   // Currency Converter
   converter: {
+    badge: 'Multi-Source FX Calculator',
     title: 'World Currency FX Calculator',
     subtitle: 'Instant foreign exchange converter from global currencies to Indonesian Rupiah (IDR) and vice-versa with real-time market rate estimates.',
+    sourceLabel: 'Rate Source:',
     fromCurrency: 'Source Currency',
     toCurrency: 'Target Currency',
     swapCurrencies: 'Swap Currencies',
-    amountLabel: 'Amount',
+    swapButton: 'Swap Currency Positions',
+    amountLabel: 'Amount ({currency})',
+    resultLabel: 'Result ({currency})',
+    quickNominal: 'Quick Amount',
+    comparisonTitle: 'Provider Amount Comparison',
+    best: 'Best Value',
+    referenceRate: 'Reference: 1 {from} = {to}',
     rateType: 'Exchange Rate Type',
     midRateType: 'Mid Market Rate',
     buyRateType: 'Buy Rate (Sell FX to IDR)',

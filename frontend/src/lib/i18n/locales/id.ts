@@ -178,12 +178,20 @@ export const idTranslations = {
 
   // Currency Converter
   converter: {
+    badge: 'Kalkulator Konversi Multi-Source',
     title: 'Kalkulator Konversi Valas Dunia',
     subtitle: 'Konversi instan nilai tukar mata uang global ke Indonesian Rupiah (IDR) dan sebaliknya dengan estimasi kurs pasar real-time.',
+    sourceLabel: 'Sumber Kurs:',
     fromCurrency: 'Mata Uang Asal',
     toCurrency: 'Mata Uang Tujuan',
     swapCurrencies: 'Tukar Posisi Valas',
-    amountLabel: 'Jumlah Nominal',
+    swapButton: 'Tukar Posisi Mata Uang',
+    amountLabel: 'Jumlah ({currency})',
+    resultLabel: 'Hasil ({currency})',
+    quickNominal: 'Nominal Cepat',
+    comparisonTitle: 'Komparasi Penerimaan — Berbagai Provider',
+    best: 'Terbaik',
+    referenceRate: 'Kurs acuan: 1 {from} = {to}',
     rateType: 'Tipe Kurs Konversi',
     midRateType: 'Kurs Tengah (Pasar)',
     buyRateType: 'Kurs Beli (Jual ke IDR)',
