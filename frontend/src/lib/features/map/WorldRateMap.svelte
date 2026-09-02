@@ -11,7 +11,7 @@
     type RegionId, 
     COUNTRY_CURRENCY_MAP 
   } from './map-constants';
-  import { createMapState } from './mapState';
+  import { createMapState } from './mapState.svelte';
 
   // Sub-components decomposition (ADR 0017 & ADR 0030)
   import Globe3DView from './components/Globe3DView.svelte';
@@ -34,8 +34,8 @@
 
   const activeApp = $derived(geoStore.activeApp);
 
-  // Reactive Map State Store with deep reactivity
-  const mapState = $state(createMapState());
+  // Reactive Map State Store — MapState uses Svelte 5 $state runes internally (ADR-0034)
+  const mapState = createMapState();
 
   // 2-Way Reactive Synchronization between geoStore.showLabels and mapState.showLabels
   $effect(() => {

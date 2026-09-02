@@ -17,7 +17,7 @@
   import type { MapCountryData, MetricType, RegionId } from '$lib/features/map/map-constants';
   import { REGION_FILTERS } from '$lib/features/map/map-constants';
   import { t } from '$lib/i18n';
-  import type { createMapState } from '$lib/features/map/mapState';
+  import type { createMapState } from '$lib/features/map/mapState.svelte';
 
   interface Props {
     mapState: ReturnType<typeof createMapState>;
