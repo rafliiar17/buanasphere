@@ -1,38 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { 
-    Building2, 
-    ArrowRightLeft, 
-    LineChart, 
-    Share2, 
-    Bell, 
-    Sparkles, 
-    Check, 
-    X,
-    TrendingUp,
-    ShieldCheck,
-    Zap,
-    Globe,
-    Compass,
-    Layers,
-    Info,
-    ArrowUpRight
-  } from 'lucide-svelte';
+  import { Bell, X, Check, TrendingUp, ArrowUpRight } from 'lucide-svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import Footer from '$lib/components/Footer.svelte';
-  import Tabs from '$lib/components/ui/Tabs.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/Card.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import RateMatrix from '$lib/features/matrix/RateMatrix.svelte';
   import WorldRateMap from '$lib/features/map/WorldRateMap.svelte';
   import GlobalMoversTicker from '$lib/features/map/GlobalMoversTicker.svelte';
   import CurrencyConverter from '$lib/features/converter/CurrencyConverter.svelte';
-  import TrendChart from '$lib/features/chart/TrendChart.svelte';
+  import GoogleRateChart from '$lib/features/chart/GoogleRateChart.svelte';
+  import CurrencyComparisonMatrix from '$lib/features/matrix/CurrencyComparisonMatrix.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
   import { apiClient } from '$lib/api/client';
 
-  // Svelte 5 State: Default to 'map' (Hero World Rate Map)
   let activeTab = $state('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
@@ -44,30 +22,38 @@
   let alertMessage = $state<string | null>(null);
 
   const mainTabs = [
-    { id: 'map', label: 'Peta Kurs Dunia', badge: 'Hero / Utama' },
-    { id: 'matrix', label: 'Komparasi Kurs Bank', badge: 'Side-by-Side' },
-    { id: 'converter', label: 'Kalkulator Konversi', badge: 'Instan' },
-    { id: 'chart', label: 'Grafik Tren Historis' },
-    { id: 'cards', label: 'Shareable Rate Cards' },
+    { id: 'map',       label: '🗺️ Peta Kurs Dunia' },
+    { id: 'chart',     label: '📈 Grafik & Analisis Tren' },
+    { id: 'matrix',    label: '📊 Perbandingan Kurs Valas Dunia' },
+    { id: 'converter', label: '💱 Kalkulator Konversi' },
+    { id: 'cards',     label: '🃏 Rate Cards' },
   ];
 
   function handleMapCurrencySelect(currencyCode: string) {
     converterFromCurrency = currencyCode;
+    activeTab = 'chart';
+  }
+
+  function handleMatrixCurrencySelect(currencyCode: string) {
+    converterFromCurrency = currencyCode;
     activeTab = 'converter';
+  }
+
+  function handleMatrixOpenChart(currencyCode: string) {
+    converterFromCurrency = currencyCode;
+    activeTab = 'chart';
   }
 
   function handleTickerCurrencySelect(currencyCode: string) {
     converterFromCurrency = currencyCode;
-    // If user is on another tab, switch to map or keep on current
-    if (activeTab !== 'map' && activeTab !== 'matrix' && activeTab !== 'converter') {
-      activeTab = 'map';
+    if (activeTab !== 'map' && activeTab !== 'matrix' && activeTab !== 'converter' && activeTab !== 'chart') {
+      activeTab = 'chart';
     }
   }
 
   async function handleCreateAlert(e: Event) {
     e.preventDefault();
     if (!alertEmail || !alertTargetRate) return;
-    
     isAlertSubmitting = true;
     try {
       const res = await apiClient.createRateAlert({
@@ -90,160 +76,222 @@
   }
 </script>
 
-<div class="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
-  <!-- Navbar -->
+<!-- Shell: warm paper ground, ink text -->
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);">
   <Navbar />
 
-  <!-- Main Content Area -->
-  <main class="flex-1 max-w-8xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
-    <!-- Hero Banner Section -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950/70 via-slate-900 to-slate-950 border border-indigo-500/20 p-5 sm:p-8 shadow-2xl">
-      <div class="absolute -top-32 -left-32 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+  <main style="flex:1;max-width:1280px;width:100%;margin:0 auto;padding:0 24px 64px;">
 
-      <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div class="space-y-3 max-w-8xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-            <Zap class="w-3.5 h-3.5" />
-            <span>Pusat Data Agregasi Kurs Valas Real-Time Lintas Bank Indonesia</span>
-          </div>
-          <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-            Eksplorasi Kurs Valas Dunia <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">Secara Transparan</span>
-          </h1>
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
-            Pantau kurs beli, kurs jual, dan spread harga nyata dari Bank Indonesia (JISDOR), BCA, Bank Mandiri, BRI, BNI, CIMB Niaga, serta money changer tanpa markup tersembunyi.
-          </p>
-        </div>
+    <!-- ── Masthead ──────────────────────────────────────────────────────── -->
+    <!--
+      This is the thesis: a data-journalism masthead, not a hero banner.
+      It reads like the front page of Bisnis Indonesia. Large ink serif figure
+      on the left, operational meta on the right. No glow, no gradient.
+    -->
+    <div style="
+      padding: 32px 0 24px;
+      border-bottom: 2px solid var(--ink);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    ">
+      <!-- Left: editorial headline -->
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px;">
+          Agregator Informasi Kurs Valas — Indonesia
+        </p>
+        <h1 style="
+          font-family: var(--font-serif);
+          font-size: clamp(26px, 5vw, 44px);
+          font-weight: 400;
+          font-style: italic;
+          color: var(--ink);
+          line-height: 1.15;
+          letter-spacing: -0.01em;
+          margin: 0;
+        ">
+          Kurs Valas Hari Ini,<br>
+          <span style="font-style:normal;font-weight:700;color:var(--ink);">Dari Semua Bank Indonesia</span>
+        </h1>
+        <p style="margin-top:10px;font-size:13px;color:var(--ink-3);max-width:560px;line-height:1.55;">
+          Data kurs beli, kurs jual, dan spread nyata dari Bank Indonesia (JISDOR), BCA, Mandiri, BRI, BNI, CIMB Niaga — tanpa markup tersembunyi dan tanpa registrasi wajib.
+        </p>
+      </div>
 
-        <!-- Quick Rate Alert Button -->
-        <div class="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Button
-            variant="default"
-            size="lg"
-            onclick={() => (isAlertModalOpen = true)}
-            class="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-lg shadow-emerald-950/60"
-          >
-            <Bell class="w-4 h-4" />
-            <span>Pasang Rate Alert Gratis</span>
-          </Button>
-        </div>
+      <!-- Right: CTA alert signup -->
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;">
+        <button
+          class="btn btn-primary"
+          onclick={() => (isAlertModalOpen = true)}
+          style="display:flex;align-items:center;gap:6px;"
+        >
+          <Bell style="width:13px;height:13px;" />
+          Pasang Rate Alert
+        </button>
+        <span style="font-size:10px;color:var(--ink-4);">Notifikasi email gratis</span>
       </div>
     </div>
 
-    <!-- Global Movers Ticker Ribbon Bar -->
-    <section aria-label="Global Movers Ticker">
+    <!-- ── Global Movers Ticker ──────────────────────────────────────────── -->
+    <div style="border-bottom:1px solid var(--bg-rule);overflow:hidden;">
       <GlobalMoversTicker onSelectCurrency={handleTickerCurrencySelect} />
-    </section>
-
-    <!-- Main Navigation Tabs -->
-    <div class="flex items-center justify-between gap-4 overflow-x-auto pb-1 scrollbar-thin">
-      <Tabs tabs={mainTabs} bind:activeTab />
     </div>
 
-    <!-- Active View Section -->
-    <section class="transition-all duration-200">
+    <!-- ── Section navigation (underline tabs, not pills) ─────────────────── -->
+    <nav
+      aria-label="Navigasi Bagian"
+      style="display:flex;gap:28px;overflow-x:auto;border-bottom:1px solid var(--bg-rule);padding-bottom:0;margin-bottom:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;"
+    >
+      {#each mainTabs as tab}
+        <button
+          class="nav-tab {activeTab === tab.id ? 'active' : ''}"
+          onclick={() => (activeTab = tab.id)}
+        >
+          {tab.label}
+        </button>
+      {/each}
+    </nav>
+
+    <!-- ── Active view ───────────────────────────────────────────────────── -->
+    <section style="padding-top:28px;">
       {#if activeTab === 'map'}
         <WorldRateMap onSelectCurrency={handleMapCurrencySelect} />
+      {:else if activeTab === 'chart'}
+        <GoogleRateChart
+          initialCurrency={converterFromCurrency}
+          showCurrencySelector={true}
+          onSelectCurrency={(c) => { converterFromCurrency = c; }}
+        />
       {:else if activeTab === 'matrix'}
-        <RateMatrix />
+        <CurrencyComparisonMatrix
+          onSelectCurrency={handleMatrixCurrencySelect}
+          onOpenChart={handleMatrixOpenChart}
+        />
       {:else if activeTab === 'converter'}
         <CurrencyConverter initialFromCurrency={converterFromCurrency} />
-      {:else if activeTab === 'chart'}
-        <TrendChart />
       {:else if activeTab === 'cards'}
         <RateCard />
       {/if}
     </section>
 
-    <!-- Value Proposition & Educational Insights Strip -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-      <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
-        <div class="flex items-center gap-2.5 text-emerald-400">
-          <ShieldCheck class="w-5 h-5" />
-          <h4 class="text-sm font-bold text-white">Transparansi Tanpa Bias</h4>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Semua data kurs diambil langsung dari sumber resmi perbankan dan bank sentral secara berkala tanpa intervensi komersial atau markup harga.
+    <!-- ── Editorial footer strip — 3 columns, hairline ruled ─────────────── -->
+    <div style="
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 2px solid var(--ink);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px 48px;
+    ">
+      <!-- Col 1 -->
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
+          Transparansi Sumber
+        </p>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
+          Seluruh data diambil langsung dari publikasi resmi masing-masing bank dan bank sentral. Tidak ada intervensi komersial atau markup harga.
         </p>
       </div>
 
-      <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
-        <div class="flex items-center gap-2.5 text-cyan-400">
-          <Sparkles class="w-5 h-5" />
-          <h4 class="text-sm font-bold text-white">Edge-First Sub-50ms</h4>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Didukung arsitektur Cloudflare Edge Workers dan cache SWR 15 menit untuk waktu muat halaman secepat kilat dari mana pun di seluruh dunia.
+      <!-- Col 2 -->
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
+          Latensi Edge Sub-50ms
+        </p>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
+          Cloudflare Workers & KV cache SWR 15 menit. Eksekusi dari titik edge terdekat ke pengguna di seluruh dunia.
         </p>
       </div>
 
-      <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-2">
-        <div class="flex items-center gap-2.5 text-indigo-400">
-          <Building2 class="w-5 h-5" />
-          <h4 class="text-sm font-bold text-white">Perbandingan Cerdas</h4>
-        </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Temukan bank dengan harga beli tertinggi saat ingin menjual valas, dan bank dengan harga jual termurah saat ingin membeli valuta asing.
+      <!-- Col 3 -->
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
+          Perbandingan Cerdas
+        </p>
+        <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
+          Temukan bank dengan harga beli terbaik saat menjual valas, dan harga jual termurah saat membeli valas.
         </p>
       </div>
-    </section>
+    </div>
+
   </main>
 
-  <!-- Rate Alert Modal Dialog -->
+  <!-- ── Rate Alert Modal ─────────────────────────────────────────────────── -->
   {#if isAlertModalOpen}
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div class="relative w-full max-w-md rounded-3xl bg-slate-900 border border-slate-800 p-6 shadow-2xl space-y-5">
-        <!-- Close Button -->
+    <!-- Backdrop -->
+    <div
+      role="presentation"
+      style="position:fixed;inset:0;z-index:60;background:rgba(26,18,9,0.5);display:flex;align-items:center;justify-content:center;padding:16px;"
+      onclick={() => (isAlertModalOpen = false)}
+      onkeydown={(e) => e.key === 'Escape' && (isAlertModalOpen = false)}
+    >
+      <!-- Dialog panel -->
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="alert-modal-title"
+        tabindex="-1"
+        style="
+          position:relative;
+          width:100%;
+          max-width:400px;
+          background:var(--bg-raised);
+          border:1px solid var(--bg-rule);
+          border-radius:var(--radius-lg);
+          padding:28px;
+          box-shadow: 0 8px 40px rgba(26,18,9,0.14);
+        "
+        onclick={(e) => e.stopPropagation()}
+        onkeydown={(e) => e.key === 'Escape' && (isAlertModalOpen = false)}
+      >
+        <!-- Close -->
         <button
           type="button"
           aria-label="Tutup Dialog"
           onclick={() => (isAlertModalOpen = false)}
-          class="absolute top-4 right-4 text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+          style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--ink-4);padding:4px;border-radius:4px;transition:color 120ms;"
+          onmouseenter={(e) => (e.currentTarget.style.color = 'var(--ink)')}
+          onmouseleave={(e) => (e.currentTarget.style.color = 'var(--ink-4)')}
         >
-          <X class="w-5 h-5" />
+          <X style="width:16px;height:16px;" />
         </button>
 
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <div class="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-              <Bell class="w-4 h-4" />
-            </div>
-            <h3 class="text-lg font-bold text-white">Pasang Rate Alert Gratis</h3>
+        <!-- Header -->
+        <div style="margin-bottom:20px;border-bottom:1px solid var(--bg-rule);padding-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <Bell style="width:14px;height:14px;color:var(--signal);" />
+            <h3 id="alert-modal-title" style="font-size:15px;font-weight:700;color:var(--ink);margin:0;">Pasang Rate Alert</h3>
           </div>
-          <p class="text-xs text-slate-400">
-            Dapatkan notifikasi email gratis saat nilai tukar valas mencapai target yang Anda tentukan.
+          <p style="font-size:12px;color:var(--ink-3);margin:0;">
+            Notifikasi email gratis saat nilai tukar mencapai target Anda.
           </p>
         </div>
 
         {#if alertMessage}
-          <div class="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2.5">
-            <Check class="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
-            <span>{alertMessage}</span>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--pos-bg);border:1px solid var(--pos-rule);border-radius:var(--radius);">
+            <Check style="width:14px;height:14px;color:var(--pos);flex-shrink:0;margin-top:1px;" />
+            <span style="font-size:13px;color:var(--pos);">{alertMessage}</span>
           </div>
         {:else}
-          <form onsubmit={handleCreateAlert} class="space-y-4">
+          <form onsubmit={handleCreateAlert} style="display:flex;flex-direction:column;gap:14px;">
+
             <!-- Email -->
-            <div class="space-y-1.5">
-              <label for="alert-email-input" class="text-xs font-semibold text-slate-300">Alamat Email</label>
-              <input
-                id="alert-email-input"
-                type="email"
-                required
-                placeholder="nama@email.com"
-                bind:value={alertEmail}
-                class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 outline-none"
-              />
+            <div>
+              <label for="alert-email-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
+                Alamat Email
+              </label>
+              <input id="alert-email-input" type="email" required placeholder="nama@email.com" bind:value={alertEmail} class="field" />
             </div>
 
-            <!-- Currency & Condition -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1.5">
-                <label for="alert-currency-select" class="text-xs font-semibold text-slate-300">Mata Uang</label>
-                <select
-                  id="alert-currency-select"
-                  bind:value={alertCurrency}
-                  class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-sm text-slate-100 outline-none cursor-pointer"
-                >
+            <!-- Currency + Condition -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <label for="alert-currency-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
+                  Mata Uang
+                </label>
+                <select id="alert-currency-select" bind:value={alertCurrency} class="field">
                   <option value="USD">🇺🇸 USD</option>
                   <option value="EUR">🇪🇺 EUR</option>
                   <option value="SGD">🇸🇬 SGD</option>
@@ -256,48 +304,33 @@
                 </select>
               </div>
 
-              <div class="space-y-1.5">
-                <label for="alert-condition-select" class="text-xs font-semibold text-slate-300">Kondisi Pemicu</label>
-                <select
-                  id="alert-condition-select"
-                  bind:value={alertCondition}
-                  class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3 py-2.5 text-sm text-slate-100 outline-none cursor-pointer"
-                >
+              <div>
+                <label for="alert-condition-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
+                  Kondisi
+                </label>
+                <select id="alert-condition-select" bind:value={alertCondition} class="field">
                   <option value="below">Kurang dari (≤)</option>
                   <option value="above">Lebih dari (≥)</option>
                 </select>
               </div>
             </div>
 
-            <!-- Target Rate (IDR) -->
-            <div class="space-y-1.5">
-              <label for="alert-target-rate-input" class="text-xs font-semibold text-slate-300">Target Nilai Tukar (IDR)</label>
-              <input
-                id="alert-target-rate-input"
-                type="number"
-                required
-                step="any"
-                placeholder="16200"
-                bind:value={alertTargetRate}
-                class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 outline-none"
-              />
+            <!-- Target rate -->
+            <div>
+              <label for="alert-target-rate-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
+                Target Nilai Tukar (IDR)
+              </label>
+              <input id="alert-target-rate-input" type="number" required step="any" placeholder="16200" bind:value={alertTargetRate} class="field" />
             </div>
 
-            <Button
-              type="submit"
-              variant="default"
-              size="md"
-              class="w-full mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold"
-              disabled={isAlertSubmitting}
-            >
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:4px;" disabled={isAlertSubmitting}>
               {isAlertSubmitting ? 'Mendaftarkan...' : 'Aktifkan Alert Sekarang'}
-            </Button>
+            </button>
           </form>
         {/if}
       </div>
     </div>
   {/if}
 
-  <!-- Footer -->
   <Footer />
 </div>

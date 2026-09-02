@@ -117,23 +117,58 @@ export interface ConversionResult {
   } | null;
 }
 
-export interface HistoricalRatePoint {
-  date: string; // YYYY-MM-DD or ISO 8601
-  buyRate: number;
-  sellRate: number;
-  midRate: number;
-  provider: string;
+export type TimeframeRange = '1D' | '5D' | '1M' | '6M' | '1Y' | '5Y' | 'MAX';
+
+export interface CurrencyComparisonItem {
+  currencyCode: string;
+  currencyName: string;
+  flagEmoji: string;
+  countryName: string;
+  rateToIdr: number;
+  change24h: number;
+  change1w: number;
+  change1m: number;
+  change1y: number;
+  high52w: number;
+  low52w: number;
+  sparkline: number[];
 }
 
-export interface HistoricalSeriesResult {
-  baseCurrency: CurrencyCode;
-  quoteCurrency: CurrencyCode;
+export interface HistoricalPoint {
+  timestamp: string; // ISO 8601
+  date: string; // Formatted date string
+  timeLabel: string; // Dynamic label e.g. "09:00", "02 Sep", "2024"
+  rate: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  // Backward compatibility fields
+  buyRate?: number;
+  sellRate?: number;
+  midRate?: number;
   provider?: string;
-  periodDays: number;
-  points: HistoricalRatePoint[];
+}
+
+export type HistoricalRatePoint = HistoricalPoint;
+
+export interface HistoricalSeriesResult {
+  currency: string;
+  baseCurrency: string;
+  timeframe: TimeframeRange;
+  periodDays?: number;
+  points: HistoricalPoint[];
   changePercentage: number;
-  highestMidRate: number;
-  lowestMidRate: number;
+  changeAmount: number;
+  highestRate: number;
+  lowestRate: number;
+  startRate: number;
+  currentRate: number;
+  // Backward compatibility fields
+  quoteCurrency?: CurrencyCode;
+  provider?: string;
+  highestMidRate?: number;
+  lowestMidRate?: number;
 }
 
 export interface QuarantineRateRecord {

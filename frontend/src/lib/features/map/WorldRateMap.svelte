@@ -28,12 +28,14 @@
     Clock,
     SlidersHorizontal,
     Plus,
-    Minus
+    Minus,
+    LineChart
   } from 'lucide-svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
   import MapSkeleton from '$lib/components/skeletons/MapSkeleton.svelte';
+  import GoogleRateChart from '../chart/GoogleRateChart.svelte';
   import { apiClient, SUPPORTED_CURRENCIES } from '$lib/api/client';
   import type { RateItem, RateMatrixResponse } from '$lib/api/types';
   import { formatRupiah, formatPercent, formatDateTimeIndo, formatCurrency } from '$lib/formatters/currency';
@@ -875,60 +877,21 @@
           </div>
         </div>
 
-        <!-- Tabel Komparasi Bank Lokal Real-Time: BCA, Mandiri, BI, BRI -->
-        <div class="p-4 rounded-2xl bg-slate-950/90 border border-slate-800/90 space-y-3 shadow-xl">
-          <div class="flex items-center justify-between">
+        <!-- Grafik Nilai Tukar Interaktif Google-Style untuk Valas Ini -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-1">
             <span class="text-xs sm:text-sm font-bold text-slate-100 flex items-center gap-2">
-              <Building2 class="w-4 h-4 text-indigo-400" />
-              Komparasi Bank Lokal ({curr.currencyCode})
+              <LineChart class="w-4 h-4 text-indigo-400" />
+              Grafik Tren Valas ({curr.currencyCode}/IDR)
             </span>
-            <span class="text-[10px] text-slate-400">BCA • Mandiri • BI • BRI</span>
+            <span class="text-[10px] text-emerald-400 font-mono">Google-Style Crosshair</span>
           </div>
 
-          {#if isMatrixLoading}
-            <div class="space-y-2 py-1">
-              <div class="h-7 rounded-lg animate-shimmer"></div>
-              <div class="h-7 rounded-lg animate-shimmer"></div>
-              <div class="h-7 rounded-lg animate-shimmer"></div>
-            </div>
-          {:else if bankMatrix && bankMatrix.rows.length > 0}
-            <div class="overflow-hidden rounded-xl border border-slate-800/90">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-900/90 text-slate-400 font-semibold border-b border-slate-800">
-                  <tr>
-                    <th class="py-2 px-3">Bank / Sumber</th>
-                    <th class="py-2 px-2.5 text-right">Beli (Rp)</th>
-                    <th class="py-2 px-2.5 text-right">Jual (Rp)</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-800/70 text-xs">
-                  {#each bankMatrix.rows.slice(0, 5) as row}
-                    <tr class="hover:bg-slate-900/50 transition">
-                      <td class="py-2 px-3 font-medium text-slate-200 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-                        <span>{row.providerName}</span>
-                        {#if row.isBestBuy}
-                          <Badge variant="success" size="sm" class="text-[9px] py-0 px-1">Best Beli</Badge>
-                        {:else if row.isBestSell}
-                          <Badge variant="default" size="sm" class="text-[9px] py-0 px-1 bg-cyan-600/30 text-cyan-300">Best Jual</Badge>
-                        {/if}
-                      </td>
-                      <td class="py-2 px-2.5 text-right font-semibold text-slate-300">
-                        {formatRupiah(row.buyRate, { showFraction: false, withPrefix: false })}
-                      </td>
-                      <td class="py-2 px-2.5 text-right font-semibold text-slate-300">
-                        {formatRupiah(row.sellRate, { showFraction: false, withPrefix: false })}
-                      </td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            </div>
-          {:else}
-            <p class="text-xs text-slate-400 italic text-center py-2">
-              Data komparasi bank sedang dimuat...
-            </p>
-          {/if}
+          <GoogleRateChart
+            initialCurrency={curr.currencyCode}
+            compact={true}
+            showCurrencySelector={false}
+          />
         </div>
       </div>
 

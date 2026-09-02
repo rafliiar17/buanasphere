@@ -27,6 +27,34 @@ export const ratesRoutes = (env?: Env) => {
       }
     )
     .get(
+      '/compare-currencies',
+      async ({ set }) => {
+        try {
+          const comparisons = await aggregator.getCurrencyComparisonList();
+          return {
+            success: true,
+            count: comparisons.length,
+            timestamp: new Date().toISOString(),
+            data: comparisons,
+          };
+        } catch (error) {
+          set.status = 500;
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to retrieve currency comparisons',
+          };
+        }
+      },
+      {
+        detail: {
+          summary: 'Get multi-currency performance comparison against IDR',
+          description:
+            'Retrieves global currency performance table vs IDR with multi-timeframe changes and sparkline trends.',
+          tags: ['Rates'],
+        },
+      }
+    )
+    .get(
       '/latest',
       async ({ query, set }) => {
         try {

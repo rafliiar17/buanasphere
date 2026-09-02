@@ -80,124 +80,136 @@
   }
 </script>
 
-<div class={`relative overflow-hidden rounded-2xl border border-slate-800/90 bg-gradient-to-r from-slate-950 via-slate-900/90 to-slate-950 p-3 sm:p-4 shadow-xl backdrop-blur-md ${className}`}>
-  <!-- Decorative background glow -->
-  <div class="absolute -top-12 -left-12 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
-  <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-
+<!-- Ticker: market data strip, editorial style -->
+<div
+  style="
+    padding: 10px 0;
+    overflow: hidden;
+    font-size: 12px;
+    position: relative;
+  "
+  class={className}
+>
   {#if isLoading}
-    <!-- Ticker Skeleton -->
-    <div class="flex items-center gap-4 overflow-hidden py-1">
-      <div class="h-6 w-32 rounded-lg animate-shimmer shrink-0"></div>
-      <div class="h-8 w-48 rounded-xl animate-shimmer shrink-0"></div>
-      <div class="h-8 w-48 rounded-xl animate-shimmer shrink-0"></div>
-      <div class="h-8 w-48 rounded-xl animate-shimmer shrink-0"></div>
+    <!-- Skeleton row -->
+    <div style="display:flex;gap:16px;align-items:center;padding:4px 0;">
+      {#each Array(8) as _}
+        <div style="height:22px;width:80px;border-radius:3px;" class="animate-shimmer"></div>
+      {/each}
     </div>
   {:else}
-    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
-      <!-- Ticker Title & Status Indicator -->
-      <div class="flex items-center gap-2.5 shrink-0 border-b xl:border-b-0 xl:border-r border-slate-800/80 pb-2.5 xl:pb-0 xl:pr-4">
-        <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-          <Activity class="w-4 h-4" />
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-black uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
-              Global Movers
-            </span>
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-          </div>
-          <p class="text-[10px] text-slate-400">Divergensi 24 Jam vs IDR</p>
-        </div>
+    <!-- Header row: label + live dot -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);">
+        Pergerakan 24 Jam vs IDR
+      </span>
+      <span class="live-dot"></span>
+    </div>
+
+    <!-- Three sections: Gainers · Losers · Popular in one dense row -->
+    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;">
+
+      <!-- Gainers -->
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--pos);white-space:nowrap;">
+          ↑ Menguat
+        </span>
+        {#each topGainers as item}
+          <button
+            type="button"
+            onclick={() => handleCurrencyClick(item.targetCurrency)}
+            style="
+              display:inline-flex;align-items:center;gap:5px;
+              padding:3px 8px;
+              border:1px solid var(--pos-rule);
+              background:var(--pos-bg);
+              border-radius:3px;
+              cursor:pointer;
+              transition:all 120ms;
+              white-space:nowrap;
+            "
+            title={`Fokus ${item.targetCurrency}`}
+            onmouseenter={(e) => (e.currentTarget.style.borderColor = 'var(--pos)')}
+            onmouseleave={(e) => (e.currentTarget.style.borderColor = 'var(--pos-rule)')}
+          >
+            <span style="font-size:11px;">{getCurrencyFlag(item.targetCurrency)}</span>
+            <span style="font-size:12px;font-weight:700;color:var(--ink);">{item.targetCurrency}</span>
+            <span style="font-size:11px;font-weight:600;color:var(--pos);font-variant-numeric:tabular-nums;">{formatPercent(item.change24h ?? 0)}</span>
+          </button>
+        {/each}
       </div>
 
-      <!-- Highlights Content: Gainers, Losers, & Popular Currencies -->
-      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3 flex-1">
-        <!-- TOP GAINERS (Menguat) -->
-        <div class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-slate-950/70 border border-emerald-500/20 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
-              <TrendingUp class="w-3.5 h-3.5" />
-              Top 3 Menguat vs IDR
-            </span>
-            <Badge variant="success" size="sm" class="text-[10px] py-0 px-1.5">Bullish</Badge>
-          </div>
-          <div class="flex items-center gap-2 overflow-x-auto pb-0.5">
-            {#each topGainers as item}
-              {@const flag = getCurrencyFlag(item.targetCurrency)}
-              <button
-                type="button"
-                onclick={() => handleCurrencyClick(item.targetCurrency)}
-                class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/30 hover:border-emerald-400 text-xs font-semibold text-slate-200 transition shrink-0 cursor-pointer group"
-                title={`Klik untuk fokus ${item.targetCurrency} di Peta`}
-              >
-                <span>{flag}</span>
-                <span class="font-bold text-white group-hover:text-emerald-300">{item.targetCurrency}</span>
-                <span class="text-[11px] text-emerald-400 font-bold">{formatPercent(item.change24h ?? 0)}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
+      <!-- Separator -->
+      <div style="width:1px;background:var(--bg-rule);align-self:stretch;flex-shrink:0;"></div>
 
-        <!-- TOP LOSERS (Melemah) -->
-        <div class="flex flex-col gap-1.5 p-2.5 rounded-xl bg-slate-950/70 border border-rose-500/20 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-rose-400 flex items-center gap-1">
-              <TrendingDown class="w-3.5 h-3.5" />
-              Top 3 Melemah vs IDR
-            </span>
-            <Badge variant="destructive" size="sm" class="text-[10px] py-0 px-1.5">Bearish</Badge>
-          </div>
-          <div class="flex items-center gap-2 overflow-x-auto pb-0.5">
-            {#each topLosers as item}
-              {@const flag = getCurrencyFlag(item.targetCurrency)}
-              <button
-                type="button"
-                onclick={() => handleCurrencyClick(item.targetCurrency)}
-                class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 hover:border-rose-400 text-xs font-semibold text-slate-200 transition shrink-0 cursor-pointer group"
-                title={`Klik untuk fokus ${item.targetCurrency} di Peta`}
-              >
-                <span>{flag}</span>
-                <span class="font-bold text-white group-hover:text-rose-300">{item.targetCurrency}</span>
-                <span class="text-[11px] text-rose-400 font-bold">{formatPercent(item.change24h ?? 0)}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
+      <!-- Losers -->
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--signal);white-space:nowrap;">
+          ↓ Melemah
+        </span>
+        {#each topLosers as item}
+          <button
+            type="button"
+            onclick={() => handleCurrencyClick(item.targetCurrency)}
+            style="
+              display:inline-flex;align-items:center;gap:5px;
+              padding:3px 8px;
+              border:1px solid var(--signal-rule);
+              background:var(--signal-bg);
+              border-radius:3px;
+              cursor:pointer;
+              transition:all 120ms;
+              white-space:nowrap;
+            "
+            title={`Fokus ${item.targetCurrency}`}
+            onmouseenter={(e) => (e.currentTarget.style.borderColor = 'var(--signal)')}
+            onmouseleave={(e) => (e.currentTarget.style.borderColor = 'var(--signal-rule)')}
+          >
+            <span style="font-size:11px;">{getCurrencyFlag(item.targetCurrency)}</span>
+            <span style="font-size:12px;font-weight:700;color:var(--ink);">{item.targetCurrency}</span>
+            <span style="font-size:11px;font-weight:600;color:var(--signal);font-variant-numeric:tabular-nums;">{formatPercent(item.change24h ?? 0)}</span>
+          </button>
+        {/each}
+      </div>
 
-        <!-- POPULAR CURRENCIES BAR -->
-        <div class="md:col-span-2 2xl:col-span-1 flex flex-col gap-1.5 p-2.5 rounded-xl bg-slate-950/70 border border-indigo-500/20 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-indigo-300 flex items-center gap-1">
-              <Coins class="w-3.5 h-3.5 text-indigo-400" />
-              Valas Populer Hari Ini
+      <!-- Separator -->
+      <div style="width:1px;background:var(--bg-rule);align-self:stretch;flex-shrink:0;"></div>
+
+      <!-- Popular: scrolling rate ticker chips -->
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);white-space:nowrap;flex-shrink:0;">
+          Populer
+        </span>
+        {#each popularRates as item}
+          {@const changeVal = item.change24h ?? 0}
+          {@const isPos = changeVal >= 0}
+          <button
+            type="button"
+            onclick={() => handleCurrencyClick(item.targetCurrency)}
+            style="
+              display:inline-flex;align-items:center;gap:5px;
+              padding:3px 8px;
+              border:1px solid var(--bg-rule);
+              background:var(--bg-raised);
+              border-radius:3px;
+              cursor:pointer;
+              transition:all 120ms;
+              white-space:nowrap;
+            "
+            title={`Kurs ${item.targetCurrency}/IDR`}
+            onmouseenter={(e) => { e.currentTarget.style.background = 'var(--bg-subtle)'; e.currentTarget.style.borderColor = 'var(--ink-ghost)'; }}
+            onmouseleave={(e) => { e.currentTarget.style.background = 'var(--bg-raised)'; e.currentTarget.style.borderColor = 'var(--bg-rule)'; }}
+          >
+            <span style="font-size:11px;">{getCurrencyFlag(item.targetCurrency)}</span>
+            <span style="font-size:12px;font-weight:700;color:var(--ink);">{item.targetCurrency}</span>
+            <span style="font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;">
+              {formatRupiah(item.middleRate, { showFraction: false, withPrefix: false })}
             </span>
-            <span class="text-[10px] text-slate-400 font-medium">Klik untuk inspeksi</span>
-          </div>
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
-            {#each popularRates.slice(0, 5) as item}
-              {@const flag = getCurrencyFlag(item.targetCurrency)}
-              {@const changeVal = item.change24h ?? 0}
-              {@const isPos = changeVal >= 0}
-              <button
-                type="button"
-                onclick={() => handleCurrencyClick(item.targetCurrency)}
-                class="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-900 hover:bg-indigo-950/50 border border-slate-800 hover:border-indigo-500/40 text-xs text-slate-200 transition shrink-0 cursor-pointer group"
-                title={`Lihat detail ${item.targetCurrency}`}
-              >
-                <span>{flag}</span>
-                <span class="font-bold text-white group-hover:text-indigo-300">{item.targetCurrency}</span>
-                <span class="text-[10px] text-slate-400">{formatRupiah(item.middleRate, { showFraction: false, withPrefix: false })}</span>
-                <span class={`text-[10px] font-semibold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
-                  {formatPercent(changeVal)}
-                </span>
-              </button>
-            {/each}
-          </div>
-        </div>
+            <span style="font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;color:{isPos ? 'var(--pos)' : 'var(--signal)'}">
+              {formatPercent(changeVal)}
+            </span>
+          </button>
+        {/each}
       </div>
     </div>
   {/if}
