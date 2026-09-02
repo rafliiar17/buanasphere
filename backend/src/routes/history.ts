@@ -1,6 +1,6 @@
 import { Elysia, t } from 'elysia';
 import { AggregatorService } from '../service/aggregator.ts';
-import type { TimeframeRange } from '../domain/rate.ts';
+import { parseCurrencyPair, type TimeframeRange } from '../domain/rate.ts';
 import type { Env } from '../db/index.ts';
 
 export const historyRoutes = (env?: Env) => {
@@ -8,14 +8,8 @@ export const historyRoutes = (env?: Env) => {
 
   const handler = async ({ query, set }: any) => {
     try {
-      let base = query.base || query.currency;
-      let quote = query.quote ?? 'IDR';
-
-      if (query.pair && query.pair.includes('/')) {
-        const [pBase, pQuote] = query.pair.split('/');
-        if (pBase) base = pBase;
-        if (pQuote) quote = pQuote;
-      }
+      const rawBase = query.base || query.currency;
+      const { base, quote } = parseCurrencyPair(query.pair, rawBase, query.quote);
 
       if (!base) {
         set.status = 400;

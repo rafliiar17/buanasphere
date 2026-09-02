@@ -5,6 +5,7 @@ import { MandiriProvider, MANDIRI_INFO } from './mandiri.ts';
 import { OpenERApiProvider, OPEN_ER_API_INFO } from './open-er-api.ts';
 
 export * from './open-er-api.ts';
+export * from './synthetic.ts';
 export * from './bi.ts';
 export * from './bca.ts';
 export * from './mandiri.ts';

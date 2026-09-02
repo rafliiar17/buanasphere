@@ -184,9 +184,30 @@ export interface QuarantineRateRecord {
 }
 
 /**
+ * Helper to resolve currency pair from either "pair" string (e.g. USD/IDR) or explicit base/quote arguments.
+ */
+export function parseCurrencyPair(
+  pair?: string,
+  base?: string,
+  quote = 'IDR'
+): { base?: string; quote: string } {
+  let resolvedBase = base;
+  let resolvedQuote = quote;
+
+  if (pair && pair.includes('/')) {
+    const [pBase, pQuote] = pair.split('/');
+    if (pBase) resolvedBase = pBase;
+    if (pQuote) resolvedQuote = pQuote;
+  }
+
+  return { base: resolvedBase, quote: resolvedQuote };
+}
+
+/**
  * Interface that all Rate Providers must implement.
  */
 export interface IRateProvider {
   info: RateProviderInfo;
   fetchLatestRates(baseCurrency?: CurrencyCode): Promise<Rate[]>;
 }
+

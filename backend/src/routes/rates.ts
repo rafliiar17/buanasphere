@@ -2,6 +2,7 @@ import { Elysia, t } from 'elysia';
 import { AggregatorService } from '../service/aggregator.ts';
 import { ComparatorService } from '../service/comparator.ts';
 import { getAllCountryMappings } from '../domain/country-map.ts';
+import { parseCurrencyPair } from '../domain/rate.ts';
 import type { Env } from '../db/index.ts';
 
 export const ratesRoutes = (env?: Env) => {
@@ -96,14 +97,7 @@ export const ratesRoutes = (env?: Env) => {
       '/compare',
       async ({ query, set }) => {
         try {
-          let base = query.base;
-          let quote = query.quote ?? 'IDR';
-
-          if (query.pair && query.pair.includes('/')) {
-            const [pBase, pQuote] = query.pair.split('/');
-            if (pBase) base = pBase;
-            if (pQuote) quote = pQuote;
-          }
+          const { base, quote } = parseCurrencyPair(query.pair, query.base, query.quote);
 
           if (!base) {
             set.status = 400;
