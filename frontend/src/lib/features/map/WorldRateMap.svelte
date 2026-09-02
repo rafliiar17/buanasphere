@@ -40,6 +40,7 @@
   import type { RateItem, RateMatrixResponse } from '$lib/api/types';
   import { formatRupiah, formatPercent, formatDateTimeIndo, formatCurrency } from '$lib/formatters/currency';
   import { t } from '$lib/i18n';
+  import { getTheme, subscribeTheme, type Theme } from '$lib/theme';
   import { 
     type MetricType, 
     type RegionId, 
@@ -75,6 +76,7 @@
   let convertAmount = $state<number>(100);
   let convertDirection = $state<'foreign_to_idr' | 'idr_to_foreign'>('foreign_to_idr');
 
+  let currentTheme = $state<Theme>(getTheme());
   let plotContainer = $state<HTMLDivElement | null>(null);
   let searchInputRef = $state<HTMLInputElement | null>(null);
   let searchContainerRef = $state<HTMLDivElement | null>(null);
@@ -213,6 +215,7 @@
   function renderPlotlyMap() {
     if (!plotContainer || !plotlyModule) return;
 
+    const isDark = currentTheme === 'dark';
     const dataList = mapData;
     const locations = dataList.map(d => d.iso3);
     const zValues = dataList.map(d => (activeMetric === 'rate' ? d.middleRate : d.change24h));
@@ -231,20 +234,20 @@
 
     // Color Scales
     const rateColorScale: Array<[number, string]> = [
-      [0.0, '#042f2e'],   // dark teal
-      [0.15, '#065f46'],  // emerald 800
-      [0.35, '#0d9488'],  // teal 600
-      [0.60, '#06b6d4'],  // cyan 500
-      [0.85, '#3b82f6'],  // blue 500
-      [1.0, '#6366f1'],   // indigo 500
+      [0.0, isDark ? '#042f2e' : '#ccfbf1'],   // teal
+      [0.15, isDark ? '#065f46' : '#99f6e4'],  // emerald
+      [0.35, isDark ? '#0d9488' : '#2dd4bf'],  // teal
+      [0.60, isDark ? '#06b6d4' : '#06b6d4'],  // cyan
+      [0.85, isDark ? '#3b82f6' : '#2563eb'],  // blue
+      [1.0, isDark ? '#6366f1' : '#4f46e5'],   // indigo
     ];
 
     const changeColorScale: Array<[number, string]> = [
       [0.0, '#ef4444'],   // bright red (melemah)
-      [0.35, '#991b1b'],  // dark red
-      [0.48, '#1e293b'],  // slate dark (netral)
-      [0.52, '#1e293b'],  // slate dark (netral)
-      [0.65, '#065f46'],  // dark emerald
+      [0.35, isDark ? '#991b1b' : '#f87171'],  // red
+      [0.48, isDark ? '#1e293b' : '#e2e8f0'],  // neutral
+      [0.52, isDark ? '#1e293b' : '#e2e8f0'],  // neutral
+      [0.65, isDark ? '#065f46' : '#34d399'],  // emerald
       [1.0, '#10b981'],   // bright emerald (menguat)
     ];
 
@@ -259,12 +262,12 @@
       customdata: customData,
       hovertemplate: 
         '<extra></extra>' +
-        '<span style="font-size: 13px; font-weight: bold; color: #f8fafc;">%{customdata.flag} %{customdata.country} (%{customdata.code})</span><br>' +
-        '<span style="font-size: 11px; color: #94a3b8;">Mata Uang: %{customdata.name}</span><br>' +
-        '<span style="font-size: 12px; font-weight: 600; color: #34d399;">Kurs Tengah: %{customdata.midFormatted}</span><br>' +
-        '<span style="font-size: 11px; color: #cbd5e1;">Beli: %{customdata.buyFormatted} | Jual: %{customdata.sellFormatted}</span><br>' +
-        '<span style="font-size: 11px; font-weight: 600; color: %{customdata.change >= 0 ? "#34d399" : "#f87171"};">Perubahan 24 Jam: %{customdata.changeFormatted}</span><br>' +
-        '<span style="font-size: 10px; color: #38bdf8;">👉 Klik negara untuk membuka Country Inspector Modal</span>',
+        '<span style="font-size: 13px; font-weight: bold; color: ' + (isDark ? '#f8fafc' : '#0f172a') + ';">%{customdata.flag} %{customdata.country} (%{customdata.code})</span><br>' +
+        '<span style="font-size: 11px; color: ' + (isDark ? '#94a3b8' : '#475569') + ';">Mata Uang: %{customdata.name}</span><br>' +
+        '<span style="font-size: 12px; font-weight: 600; color: #10b981;">Kurs Tengah: %{customdata.midFormatted}</span><br>' +
+        '<span style="font-size: 11px; color: ' + (isDark ? '#cbd5e1' : '#334155') + ';">Beli: %{customdata.buyFormatted} | Jual: %{customdata.sellFormatted}</span><br>' +
+        '<span style="font-size: 11px; font-weight: 600; color: %{customdata.change >= 0 ? "#10b981" : "#ef4444"};">Perubahan 24 Jam: %{customdata.changeFormatted}</span><br>' +
+        '<span style="font-size: 10px; color: #0284c7;">👉 Klik negara untuk membuka Country Inspector Modal</span>',
       colorscale: isRateMetric ? rateColorScale : changeColorScale,
       zmin: isRateMetric ? undefined : -1.0,
       zmax: isRateMetric ? undefined : 1.0,
@@ -273,20 +276,20 @@
         title: {
           text: isRateMetric ? 'Kurs (IDR)' : '24h (%)',
           side: 'top' as const,
-          font: { color: '#94a3b8', size: 11, family: 'Inter, sans-serif' },
+          font: { color: isDark ? '#94a3b8' : '#475569', size: 11, family: 'Inter, sans-serif' },
         },
         thickness: 14,
         len: 0.70,
         x: 0.98,
         y: 0.5,
-        tickfont: { color: '#94a3b8', size: 10, family: 'Inter, sans-serif' },
-        bgcolor: 'rgba(15, 23, 42, 0.85)',
-        bordercolor: 'rgba(51, 65, 85, 0.7)',
+        tickfont: { color: isDark ? '#94a3b8' : '#475569', size: 10, family: 'Inter, sans-serif' },
+        bgcolor: isDark ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
+        bordercolor: isDark ? 'rgba(51, 65, 85, 0.7)' : 'rgba(203, 213, 225, 0.9)',
         borderwidth: 1,
       },
       marker: {
         line: {
-          color: '#334155',
+          color: isDark ? '#334155' : '#cbd5e1',
           width: 0.9,
         },
       },
@@ -303,16 +306,16 @@
           lat: regionObj.lat,
         },
         showcoastlines: true,
-        coastlinecolor: '#475569',
+        coastlinecolor: isDark ? '#475569' : '#94a3b8',
         coastlinewidth: 0.9,
         showland: true,
-        landcolor: '#0f172a',
+        landcolor: isDark ? '#0f172a' : '#f8fafc',
         showocean: true,
-        oceancolor: '#020617',
+        oceancolor: isDark ? '#020617' : '#e2e8f0',
         showlakes: true,
-        lakecolor: '#020617',
+        lakecolor: isDark ? '#020617' : '#e2e8f0',
         showcountries: true,
-        countrycolor: '#1e293b',
+        countrycolor: isDark ? '#1e293b' : '#cbd5e1',
         countrywidth: 0.8,
         showframe: false,
         bgcolor: 'rgba(0,0,0,0)',
@@ -323,7 +326,7 @@
       autosize: true,
       font: {
         family: 'Inter, ui-sans-serif, system-ui, sans-serif',
-        color: '#e2e8f0',
+        color: isDark ? '#e2e8f0' : '#1e293b',
       },
     };
 
@@ -455,7 +458,15 @@
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('click', handleClickOutside);
 
+    const unsubTheme = subscribeTheme((th) => {
+      currentTheme = th;
+      if (plotContainer && plotlyModule) {
+        renderPlotlyMap();
+      }
+    });
+
     return () => {
+      unsubTheme();
       window.removeEventListener('resize', handleWindowResize);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('click', handleClickOutside);

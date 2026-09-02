@@ -1,4 +1,13 @@
 export const enTranslations = {
+  // Theme
+  theme: {
+    toggle: 'Toggle Theme',
+    dark: 'Dark Mode',
+    light: 'Light Mode',
+    switchToDark: 'Switch to Dark Mode',
+    switchToLight: 'Switch to Light Mode',
+  },
+
   // Common & Navigation
   common: {
     appName: 'Kurs.World',
@@ -220,8 +229,13 @@ export const enTranslations = {
 
   // Rate Cards
   cards: {
-    title: 'Visual FX Rate Cards',
+    badge: 'FX Rate Snapshot',
+    title: 'Shareable Rate Cards',
     subtitle: 'Save or share daily visual summary cards of foreign exchange rates to social media or your team.',
+    copyButton: 'Copy Summary Text',
+    copied: 'Copied to Clipboard!',
+    buyLabel: 'Buy (Bank Buy)',
+    sellLabel: 'Sell (Bank Sell)',
     downloadPng: 'Download PNG Image',
     copyLink: 'Copy Card Link',
     marketOverview: 'Foreign Exchange Market Overview',

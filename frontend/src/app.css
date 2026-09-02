@@ -2,15 +2,67 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   KURS WORLD — Design System v2
-   WORLD: Indonesian Financial Data Terminal
-   Ground: warm paper #FAF8F3 · Ink: #1A1209 · Signal: #C41E3A (IDX Red)
-   Type: Geist Sans · Figures: tabular-nums
-   Grammar: hairline rules, not cards; data density, not decoration
+   KURS WORLD — Design System v3 (Dual Theme: Dark Default & Light Paper)
+   WORLD: Global Foreign Exchange Financial Terminal
+   Default Dark: Obsidian #0B0F19 · Ink: #F8FAFC · Accent: #38BDF8 · Signal: #FB7185 · Pos: #34D399
+   Light Paper:  Paper #FAF8F3 · Ink: #1A1209 · Accent: #1C2B4A · Signal: #C41E3A · Pos: #1B5E20
    ───────────────────────────────────────────────────────────────────────── */
 
 @layer base {
-  :root {
+  /* Default: DARK THEME */
+  :root,
+  [data-theme="dark"],
+  .dark {
+    color-scheme: dark;
+
+    /* Ground — Obsidian / deep financial terminal */
+    --bg:           #0B0F19;
+    --bg-subtle:    #111827;
+    --bg-raised:    #182234;
+    --bg-rule:      #223049;
+
+    /* Ink hierarchy */
+    --ink:          #F8FAFC;
+    --ink-2:        #E2E8F0;
+    --ink-3:        #94A3B8;
+    --ink-4:        #64748B;
+    --ink-ghost:    #334155;
+
+    /* Signal — Vibrant Rose/Red */
+    --signal:       #FB7185;
+    --signal-bg:    rgba(251, 113, 133, 0.12);
+    --signal-rule:  rgba(251, 113, 133, 0.28);
+
+    /* Positive — Vibrant Emerald */
+    --pos:          #34D399;
+    --pos-bg:       rgba(52, 211, 153, 0.12);
+    --pos-rule:     rgba(52, 211, 153, 0.28);
+
+    /* Accent — Electric Sky/Cyan Financial Accent */
+    --accent:       #38BDF8;
+    --accent-2:     #0EA5E9;
+    --accent-fg:    #0B0F19;
+
+    /* Shimmer skeleton */
+    --shimmer-a:    rgba(34, 48, 73, 0.6);
+    --shimmer-b:    rgba(24, 34, 52, 0.9);
+
+    /* Typography */
+    --font-sans:    'Geist', 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-serif:   'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-mono:    'JetBrains Mono', 'Geist Mono', 'Fira Code', ui-monospace, monospace;
+
+    /* Radius */
+    --radius-sm:    4px;
+    --radius:       6px;
+    --radius-lg:    10px;
+  }
+
+  /* LIGHT THEME */
+  [data-theme="light"],
+  .light {
+    color-scheme: light;
+
     /* Ground — warm paper, like BI annual report stock */
     --bg:           #FAF8F3;
     --bg-subtle:    #F3F0E8;
@@ -24,17 +76,17 @@
     --ink-4:        #9C8E7E;
     --ink-ghost:    #C4BAB0;
 
-    /* Signal — IDX red, used only for alerts, losers, destructive */
+    /* Signal — IDX red */
     --signal:       #C41E3A;
     --signal-bg:    #FFF0F2;
     --signal-rule:  #F7C0C8;
 
-    /* Positive — muted forest, used only in data rows for gains */
+    /* Positive — muted forest */
     --pos:          #1B5E20;
     --pos-bg:       #F0F5F0;
     --pos-rule:     #B8D4BA;
 
-    /* Accent — deep IDX navy for nav/CTA, not decorative */
+    /* Accent — deep IDX navy */
     --accent:       #1C2B4A;
     --accent-2:     #2A3F6A;
     --accent-fg:    #FFFFFF;
@@ -42,16 +94,6 @@
     /* Shimmer skeleton */
     --shimmer-a:    rgba(232,227,216,0.6);
     --shimmer-b:    rgba(250,248,243,0.9);
-
-    /* Typography */
-    --font-sans:    'Geist', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-serif:   'Instrument Serif', Georgia, 'Times New Roman', serif;
-    --font-mono:    'Geist Mono', 'Fira Code', ui-monospace, monospace;
-
-    /* Radius */
-    --radius-sm:    4px;
-    --radius:       6px;
-    --radius-lg:    10px;
   }
 }
 
@@ -62,6 +104,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-feature-settings: "tnum" 1, "kern" 1;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 body {
@@ -70,6 +113,7 @@ body {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 /* ─── Scrollbar ────────────────────────────────────────────────────────── */
@@ -286,4 +330,3 @@ body {
   border-radius: 9999px;
   background: var(--pos);
 }
-

@@ -1,4 +1,13 @@
 export const idTranslations = {
+  // Theme
+  theme: {
+    toggle: 'Ganti Tema',
+    dark: 'Mode Gelap',
+    light: 'Mode Terang',
+    switchToDark: 'Beralih ke Mode Gelap',
+    switchToLight: 'Beralih ke Mode Terang',
+  },
+
   // Common & Navigation
   common: {
     appName: 'Kurs.World',
@@ -220,8 +229,13 @@ export const idTranslations = {
 
   // Rate Cards
   cards: {
-    title: 'Kartu Nilai Tukar (Rate Cards)',
-    subtitle: 'Simpan atau bagikan kartu ringkasan visual kurs mata uang harian ke media sosial atau tim Anda.',
+    badge: 'Snapshot Kurs Valas',
+    title: 'Shareable Rate Cards',
+    subtitle: 'Ringkasan kurs valas terpopuler siap dibagikan ke media sosial / WhatsApp',
+    copyButton: 'Salin Ringkasan Teks',
+    copied: 'Tersalin ke Clipboard!',
+    buyLabel: 'Beli (Bank Beli)',
+    sellLabel: 'Jual (Bank Jual)',
     downloadPng: 'Unduh Gambar PNG',
     copyLink: 'Salin Tautan Kartu',
     marketOverview: 'Ringkasan Pasar Valuta Asing',

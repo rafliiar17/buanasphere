@@ -1,19 +1,31 @@
 <script lang="ts">
-  import { ShieldCheck, Globe } from 'lucide-svelte';
+  import { ShieldCheck, Globe, Sun, Moon } from 'lucide-svelte';
   import { t, getLocale, setLocale, subscribeLocale, SUPPORTED_LOCALES, type SupportedLocale } from '$lib/i18n';
+  import { getTheme, toggleTheme, subscribeTheme, type Theme } from '$lib/theme';
   import { onMount } from 'svelte';
 
   let currentLang = $state<SupportedLocale>(getLocale());
+  let currentTheme = $state<Theme>(getTheme());
 
   onMount(() => {
-    const unsub = subscribeLocale((l) => {
+    const unsubLang = subscribeLocale((l) => {
       currentLang = l;
     });
-    return unsub;
+    const unsubTheme = subscribeTheme((th) => {
+      currentTheme = th;
+    });
+    return () => {
+      unsubLang();
+      unsubTheme();
+    };
   });
 
   function handleLanguageChange(locale: SupportedLocale) {
     setLocale(locale);
+  }
+
+  function handleToggleTheme() {
+    toggleTheme();
   }
 </script>
 
@@ -42,8 +54,8 @@
       </span>
     </a>
 
-    <!-- Right — Language switcher + live status + API link -->
-    <div style="display:flex;align-items:center;gap:12px;">
+    <!-- Right — Language switcher + Theme switcher + live status + API link -->
+    <div style="display:flex;align-items:center;gap:10px;">
 
       <!-- Language Selector Toggle -->
       <div style="display:flex;align-items:center;background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:2px;">
@@ -73,6 +85,35 @@
           </button>
         {/each}
       </div>
+
+      <!-- Theme Switcher Button (Dark / Light) -->
+      <button
+        type="button"
+        onclick={handleToggleTheme}
+        aria-label={currentTheme === 'dark' ? t('theme.switchToLight') : t('theme.switchToDark')}
+        title={currentTheme === 'dark' ? t('theme.switchToLight') : t('theme.switchToDark')}
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 30px;
+          background: var(--bg-subtle);
+          border: 1px solid var(--bg-rule);
+          border-radius: var(--radius);
+          cursor: pointer;
+          color: var(--ink-3);
+          transition: all 120ms;
+        "
+        onmouseenter={(e) => { e.currentTarget.style.background = 'var(--bg-raised)'; e.currentTarget.style.color = 'var(--ink)'; }}
+        onmouseleave={(e) => { e.currentTarget.style.background = 'var(--bg-subtle)'; e.currentTarget.style.color = 'var(--ink-3)'; }}
+      >
+        {#if currentTheme === 'dark'}
+          <Sun style="width:14px;height:14px;color:#FBBF24;" />
+        {:else}
+          <Moon style="width:14px;height:14px;color:#6366F1;" />
+        {/if}
+      </button>
 
       <!-- Live sync indicator -->
       <div style="display:none;align-items:center;gap:7px;font-size:11px;color:var(--ink-3);" class="sm-flex">

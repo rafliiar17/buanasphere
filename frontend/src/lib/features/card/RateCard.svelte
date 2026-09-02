@@ -3,13 +3,9 @@
   import { 
     Copy, 
     Check, 
-    Sparkles, 
     ArrowUpRight, 
     ArrowDownRight
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import CardSkeleton from '$lib/components/skeletons/CardSkeleton.svelte';
   import { apiClient, SUPPORTED_CURRENCIES } from '$lib/api/client';
   import type { RateItem } from '$lib/api/types';
   import { formatRupiah, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
@@ -61,77 +57,101 @@
   });
 </script>
 
-<div class="space-y-4">
-  <!-- Top Action Bar -->
-  <div class="flex items-center justify-between">
+<!-- Rate Cards: snapshot format for sharing -->
+<div style="display:flex;flex-direction:column;gap:20px;">
+
+  <!-- Section header -->
+  <div style="border-bottom:2px solid var(--ink);padding-bottom:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;">
     <div>
-      <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-        <Sparkles class="w-5 h-5 text-indigo-400" />
+      <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">
+        {t('cards.badge')}
+      </p>
+      <h2 style="font-size:20px;font-weight:700;color:var(--ink);margin:0;">
         {t('cards.title')}
-      </h3>
-      <p class="text-xs text-slate-400">
+      </h2>
+      <p style="font-size:12px;color:var(--ink-3);margin-top:4px;">
         {t('cards.subtitle')}
       </p>
     </div>
 
-    <Button
-      variant="subtle"
-      size="sm"
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm"
       onclick={copySummary}
+      style="display:flex;align-items:center;gap:6px;"
     >
       {#if isCopied}
-        <Check class="w-4 h-4 text-emerald-400" />
-        <span class="text-emerald-400 font-semibold">{t('cards.copied')}</span>
+        <Check style="width:13px;height:13px;color:var(--pos);" />
+        <span style="color:var(--pos);font-weight:700;">{t('cards.copied')}</span>
       {:else}
-        <Copy class="w-4 h-4" />
+        <Copy style="width:13px;height:13px;" />
         <span>{t('cards.copyButton')}</span>
       {/if}
-    </Button>
+    </button>
   </div>
 
   {#if isLoading}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
       {#each Array(6) as _}
-        <CardSkeleton type="stat" />
+        <div style="border:1px solid var(--bg-rule);border-radius:var(--radius);padding:16px;background:var(--bg-raised);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+            <div style="height:16px;width:100px;border-radius:2px;" class="animate-shimmer"></div>
+            <div style="height:16px;width:50px;border-radius:2px;" class="animate-shimmer"></div>
+          </div>
+          <div style="height:40px;border-radius:2px;" class="animate-shimmer"></div>
+        </div>
       {/each}
     </div>
   {:else}
     <!-- Grid of currency cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
       {#each rates.slice(0, 6) as item}
         {@const flag = getCurrencyFlag(item.targetCurrency)}
         {@const isUp = (item.change24h || 0) >= 0}
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 backdrop-blur-md hover:border-slate-700/80 transition-all shadow-lg hover:shadow-indigo-950/20">
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2.5">
-              <span class="text-2xl">{flag}</span>
+        <div style="
+          border:1px solid var(--bg-rule);
+          border-radius:var(--radius);
+          padding:16px;
+          background:var(--bg-raised);
+          display:flex;
+          flex-direction:column;
+          gap:12px;
+          transition:border-color 120ms;
+        ">
+          <!-- Card Header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:20px;">{flag}</span>
               <div>
-                <div class="font-bold text-slate-100">{item.targetCurrency} / IDR</div>
-                <div class="text-[11px] text-slate-500">{item.providerName}</div>
+                <div style="font-size:15px;font-weight:700;color:var(--ink);">{item.targetCurrency} / IDR</div>
+                <div style="font-size:11px;color:var(--ink-4);">{item.providerName}</div>
               </div>
             </div>
-            <Badge variant={isUp ? 'destructive' : 'success'} size="sm">
-              <span class="flex items-center gap-0.5">
-                {#if isUp}
-                  <ArrowUpRight class="w-3 h-3" />
-                {:else}
-                  <ArrowDownRight class="w-3 h-3" />
-                {/if}
-                {formatPercent(item.change24h || 0)}
-              </span>
-            </Badge>
+            <span class={isUp ? 'pill-pos' : 'pill-neg'} style="font-size:11px;display:inline-flex;align-items:center;gap:2px;">
+              {#if isUp}
+                <ArrowUpRight style="width:11px;height:11px;" />
+              {:else}
+                <ArrowDownRight style="width:11px;height:11px;" />
+              {/if}
+              {formatPercent(item.change24h || 0)}
+            </span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-800/80 text-xs">
-            <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/50">
-              <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">{t('cards.buyLabel')}</span>
-              <div class="text-sm font-bold text-emerald-400 mt-0.5">
+          <!-- Buy & Sell Rate Cells -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--bg-rule);padding-top:10px;">
+            <div style="padding:8px 10px;background:var(--pos-bg);border:1px solid var(--pos-rule);border-radius:var(--radius-sm);">
+              <span style="display:block;font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--pos);">
+                {t('cards.buyLabel')}
+              </span>
+              <div style="font-size:14px;font-weight:700;color:var(--ink);margin-top:2px;font-variant-numeric:tabular-nums;">
                 {formatRupiah(item.buyRate)}
               </div>
             </div>
-            <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/50">
-              <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">{t('cards.sellLabel')}</span>
-              <div class="text-sm font-bold text-indigo-400 mt-0.5">
+            <div style="padding:8px 10px;background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius-sm);">
+              <span style="display:block;font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);">
+                {t('cards.sellLabel')}
+              </span>
+              <div style="font-size:14px;font-weight:700;color:var(--ink);margin-top:2px;font-variant-numeric:tabular-nums;">
                 {formatRupiah(item.sellRate)}
               </div>
             </div>
