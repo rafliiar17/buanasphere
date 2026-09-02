@@ -1094,7 +1094,7 @@
       {/if}
     </div>
 
-    <!-- ── Interactive Slide-Over Country Inspector Drawer ────────────────── -->
+    <!-- ── Interactive Responsive Country Inspector Drawer / Floating Panel ── -->
     {#if isInspectorOpen && selectedCountry}
       {@const curr = selectedCountry}
       {@const isPositive = curr.change24h >= 0}
@@ -1105,31 +1105,40 @@
         tabindex="0"
         aria-label={t('common.close')}
         onclick={handleCloseInspector}
-        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCloseInspector(); }}
-        class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
+        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') handleCloseInspector(); }}
+        class="fixed inset-0 z-40 bg-black/50 md:bg-black/30 backdrop-blur-sm transition-opacity duration-300"
       ></div>
 
-      <!-- Slide-Over Drawer Panel -->
+      <!-- Adaptive Drawer / Panel Container:
+           - Mobile (< md): Bottom Sheet Drawer (Slide up from bottom, max-h-[85vh], rounded-t-3xl, border-t)
+           - Desktop (>= md): Floating Glass Inspector Panel (Fixed top-4 right-4 bottom-4, max-w-lg, rounded-2xl, border)
+      -->
       <aside
         aria-label={t('map.countryInspector')}
-        class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md md:max-w-lg bg-[var(--bg-raised)] border-l border-[var(--bg-rule)] shadow-2xl backdrop-blur-2xl p-5 sm:p-6 overflow-y-auto transform transition-transform duration-300 flex flex-col justify-between space-y-5"
+        class="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] rounded-t-3xl border-t border-[var(--bg-rule)] bg-[var(--bg-raised)]/95 shadow-2xl backdrop-blur-2xl p-5 overflow-y-auto transform transition-all duration-300 ease-out flex flex-col justify-between space-y-4 md:fixed md:top-4 md:right-4 md:bottom-4 md:left-auto md:w-[480px] md:max-w-lg md:max-h-none md:rounded-2xl md:border md:border-[var(--bg-rule)] md:p-6"
         style="color: var(--ink);"
       >
-        <div class="space-y-5">
-          <!-- Inspector Header -->
-          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-4">
+        <!-- Mobile Drag/Swipe Indicator Bar -->
+        <div class="w-12 h-1.5 rounded-full bg-[var(--ink-4)]/40 mx-auto -mt-1 mb-2 shrink-0 md:hidden"></div>
+
+        <div class="space-y-4">
+          <!-- 1. Header: Country Flag, Name, Currency Code & Close Button -->
+          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-3.5">
             <div class="flex items-center gap-3">
-              <span class="text-4xl">{curr.flag}</span>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="text-xl font-bold text-[var(--ink)]">
+              <span class="text-4xl shrink-0 drop-shadow-md">{curr.flag}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-lg md:text-xl font-bold text-[var(--ink)] truncate">
                     {curr.countryName}
                   </h3>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                  <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-400 border border-sky-500/30">
                     {curr.currencyCode}
                   </span>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--ink-4)]">
+                    {curr.iso3}
+                  </span>
                 </div>
-                <p class="text-xs text-[var(--ink-4)] mt-0.5">
+                <p class="text-xs text-[var(--ink-4)] mt-0.5 truncate">
                   {curr.currencyName} • {curr.regionLabel}
                 </p>
               </div>
@@ -1138,43 +1147,46 @@
             <button
               type="button"
               onclick={handleCloseInspector}
-              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
+              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer shrink-0"
               aria-label={t('common.close')}
             >
               <X class="w-5 h-5" />
             </button>
           </div>
 
-          <!-- Key Rate Statistics Grid -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+          <!-- 2. Key Live Rates Grid (Mid, Buy, Sell, Spread, 24h Trend) -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.midRate')}</span>
-              <div class="text-base font-extrabold text-emerald-400 mt-0.5 font-mono">
+              <div class="text-sm md:text-base font-extrabold text-emerald-400 mt-1 font-mono">
                 {formatRupiah(curr.middleRate, { showFraction: true })}
               </div>
             </div>
 
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.change24h')}</span>
-              <div class={`text-base font-extrabold mt-0.5 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <div class={`text-sm md:text-base font-extrabold mt-1 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {#if isPositive}
-                  <TrendingUp class="w-4 h-4" />
+                  <TrendingUp class="w-4 h-4 shrink-0" />
                 {:else}
-                  <TrendingDown class="w-4 h-4" />
+                  <TrendingDown class="w-4 h-4 shrink-0" />
                 {/if}
                 <span>{formatPercent(curr.change24h)}</span>
               </div>
             </div>
 
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1">
-              <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
-              <div class="text-base font-bold text-sky-400 mt-0.5 font-mono">
-                {formatRupiah(curr.spread)}
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1 flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
+                <span class="text-[9px] text-[var(--ink-4)]">{formatPercent(curr.spreadPercent)}</span>
+              </div>
+              <div class="text-sm md:text-base font-bold text-sky-400 mt-1 font-mono">
+                {formatRupiah(curr.spread, { showFraction: true })}
               </div>
             </div>
           </div>
 
-          <!-- Google Finance-Style Trend Chart Mini -->
+          <!-- 3. Google Finance-Style Trend Chart Mini -->
           <div class="border border-[var(--bg-rule)] rounded-2xl bg-[var(--bg-subtle)] p-3">
             <GoogleRateChart
               initialCurrency={curr.currencyCode}
@@ -1182,14 +1194,17 @@
             />
           </div>
 
-          <!-- Quick Converter in Inspector -->
-          <div class="p-4 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-3">
+          <!-- 4. Quick Mini Converter Inside Drawer -->
+          <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2.5">
             <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
-              <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
+              <span class="flex items-center gap-1.5">
+                <Calculator class="w-3.5 h-3.5 text-emerald-400" />
+                <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
+              </span>
               <button
                 type="button"
                 onclick={toggleConvertDirection}
-                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] cursor-pointer"
+                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
               >
                 <ArrowRightLeft class="w-3 h-3" />
                 <span>{convertDirection === 'foreign_to_idr' ? `${curr.currencyCode} ➔ IDR` : `IDR ➔ ${curr.currencyCode}`}</span>
@@ -1201,20 +1216,20 @@
                 type="number"
                 bind:value={convertAmount}
                 min="1"
-                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
+                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
               />
-              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
+              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs md:text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
                 {calculatedConvertResult.formatted}
               </div>
             </div>
 
             <!-- Preset Nominals -->
-            <div class="flex items-center gap-1.5 flex-wrap pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
               {#each PRESET_AMOUNTS as preset}
                 <button
                   type="button"
                   onclick={() => setPresetAmount(preset)}
-                  class={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition border cursor-pointer ${
+                  class={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition border cursor-pointer ${
                     convertAmount === preset
                       ? 'bg-sky-500 text-slate-950 border-sky-400'
                       : 'bg-[var(--bg-raised)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
@@ -1225,15 +1240,72 @@
               {/each}
             </div>
           </div>
+
+          <!-- 5. Bank Comparison Matrix (If Quotes Available) -->
+          {#if isMatrixLoading}
+            <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2 animate-pulse">
+              <div class="h-4 bg-[var(--bg-rule)] rounded w-1/3"></div>
+              <div class="h-12 bg-[var(--bg-rule)] rounded-xl"></div>
+            </div>
+          {:else if bankMatrix && bankMatrix.rows && bankMatrix.rows.length > 0}
+            <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2.5">
+              <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
+                <span class="flex items-center gap-1.5">
+                  <Building2 class="w-3.5 h-3.5 text-sky-400" />
+                  <span>{t('map.bankComparison')}</span>
+                </span>
+                <span class="text-[10px] text-[var(--ink-4)] font-normal">
+                  {bankMatrix.rows.length} Bank
+                </span>
+              </div>
+
+              <div class="divide-y divide-[var(--bg-rule)] text-[11px]">
+                {#each bankMatrix.rows.slice(0, 4) as item}
+                  <div class="py-2 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                      <div class="font-bold text-[var(--ink)] truncate flex items-center gap-1.5">
+                        <span>{item.providerName}</span>
+                        {#if item.isBestBuy}
+                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
+                            {t('map.bestBuy')}
+                          </span>
+                        {/if}
+                        {#if item.isBestSell}
+                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold">
+                            {t('map.bestSell')}
+                          </span>
+                        {/if}
+                      </div>
+                      <div class="text-[10px] text-[var(--ink-4)]">
+                        Spread: {formatRupiah(item.spread)}
+                      </div>
+                    </div>
+                    <div class="text-right shrink-0 font-mono">
+                      <div class="text-xs font-bold text-emerald-400">
+                        {formatRupiah(item.buyRate, { showFraction: true })}
+                      </div>
+                      <div class="text-[10px] text-[var(--ink-4)]">
+                        Jual: {formatRupiah(item.sellRate, { showFraction: true })}
+                      </div>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
+
         </div>
 
-        <!-- Drawer Footer -->
-        <div class="pt-4 border-t border-[var(--bg-rule)] flex items-center justify-between text-xs text-[var(--ink-4)]">
-          <span>🕒 {formatDateTimeIndo(new Date())}</span>
+        <!-- 6. Drawer Footer & Actions -->
+        <div class="pt-3 border-t border-[var(--bg-rule)] flex items-center justify-between gap-2 text-xs text-[var(--ink-4)]">
+          <div class="flex items-center gap-1.5 truncate">
+            <Clock class="w-3.5 h-3.5 shrink-0" />
+            <span class="truncate">{formatDateTimeIndo(new Date())}</span>
+          </div>
           <button
             type="button"
             onclick={handleCloseInspector}
-            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer"
+            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer shrink-0"
           >
             {t('common.close')}
           </button>

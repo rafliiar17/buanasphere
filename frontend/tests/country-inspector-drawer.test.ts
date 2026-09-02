@@ -21,37 +21,43 @@ describe('Country Inspector Drawer & Floating Panel Unit Tests', () => {
   };
 
   const mockBankMatrix: RateMatrixResponse = {
-    targetCurrency: 'JPY',
+    currency: 'JPY',
     baseCurrency: 'IDR',
-    updatedAt: '2026-09-02T00:00:00Z',
-    bestBuy: {
-      providerId: 'mandiri',
-      providerName: 'Bank Mandiri',
-      rate: 107.8,
-    },
-    bestSell: {
-      providerId: 'bca',
-      providerName: 'BCA (e-Rate)',
-      rate: 109.2,
-    },
-    matrix: [
+    timestamp: '2026-09-02T00:00:00Z',
+    totalProviders: 2,
+    bestBuyProvider: 'mandiri',
+    bestSellProvider: 'bca',
+    lowestSpreadProvider: 'bca',
+    rows: [
       {
         providerId: 'bca',
         providerName: 'BCA (e-Rate)',
+        providerType: 'commercial_bank',
+        rateType: 'e-Rate',
         buyRate: 107.5,
         sellRate: 109.2,
         middleRate: 108.35,
         spread: 1.7,
+        spreadPercent: 1.57,
         updatedAt: '2026-09-02T00:00:00Z',
+        isBestBuy: false,
+        isBestSell: true,
+        isLowestSpread: true,
       },
       {
         providerId: 'mandiri',
         providerName: 'Bank Mandiri',
+        providerType: 'commercial_bank',
+        rateType: 'Special Rate',
         buyRate: 107.8,
         sellRate: 109.5,
         middleRate: 108.65,
         spread: 1.7,
+        spreadPercent: 1.56,
         updatedAt: '2026-09-02T00:00:00Z',
+        isBestBuy: true,
+        isBestSell: false,
+        isLowestSpread: true,
       },
     ],
   };
@@ -68,7 +74,7 @@ describe('Country Inspector Drawer & Floating Panel Unit Tests', () => {
       const buyFormatted = formatRupiah(mockLiveRate.buyRate, { showFraction: true });
       const sellFormatted = formatRupiah(mockLiveRate.sellRate, { showFraction: true });
       const spreadFormatted = formatRupiah(mockLiveRate.spread, { showFraction: true });
-      const changeFormatted = formatPercent(mockLiveRate.change24h);
+      const changeFormatted = formatPercent(mockLiveRate.change24h ?? 0);
 
       expect(midFormatted).toContain('108,35');
       expect(buyFormatted).toContain('107,50');
@@ -78,11 +84,11 @@ describe('Country Inspector Drawer & Floating Panel Unit Tests', () => {
     });
 
     it('determines positive / negative 24h trend styling correctly', () => {
-      const isNegative = mockLiveRate.change24h < 0;
+      const isNegative = (mockLiveRate.change24h ?? 0) < 0;
       expect(isNegative).toBeTrue();
 
       const positiveRate: RateItem = { ...mockLiveRate, change24h: 0.35 };
-      expect(positiveRate.change24h >= 0).toBeTrue();
+      expect((positiveRate.change24h ?? 0) >= 0).toBeTrue();
     });
   });
 
@@ -116,14 +122,20 @@ describe('Country Inspector Drawer & Floating Panel Unit Tests', () => {
 
   describe('Bank Comparison Matrix Inside Drawer', () => {
     it('identifies best buy and best sell bank offers in the matrix', () => {
-      expect(mockBankMatrix.bestBuy?.providerId).toBe('mandiri');
-      expect(mockBankMatrix.bestBuy?.rate).toBe(107.8);
-      expect(mockBankMatrix.bestSell?.providerId).toBe('bca');
-      expect(mockBankMatrix.bestSell?.rate).toBe(109.2);
+      const bestBuyRow = mockBankMatrix.rows.find((r) => r.isBestBuy);
+      const bestSellRow = mockBankMatrix.rows.find((r) => r.isBestSell);
+
+      expect(mockBankMatrix.bestBuyProvider).toBe('mandiri');
+      expect(bestBuyRow?.providerId).toBe('mandiri');
+      expect(bestBuyRow?.buyRate).toBe(107.8);
+
+      expect(mockBankMatrix.bestSellProvider).toBe('bca');
+      expect(bestSellRow?.providerId).toBe('bca');
+      expect(bestSellRow?.sellRate).toBe(109.2);
     });
 
     it('sorts bank matrix providers by lowest spread', () => {
-      const sortedBySpread = [...mockBankMatrix.matrix].sort(
+      const sortedBySpread = [...mockBankMatrix.rows].sort(
         (a, b) => a.spread - b.spread
       );
       expect(sortedBySpread.length).toBe(2);

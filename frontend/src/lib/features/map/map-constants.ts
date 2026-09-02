@@ -1,7 +1,7 @@
 import { COUNTRY_CURRENCY_LIST, type Region } from './country-mapping';
 import { BASE_RATES_IDR } from '../../api/client';
 
-export type MetricType = 'rate' | 'change';
+export type MetricType = 'rate' | 'change' | 'flag';
 export type RegionId = 'all' | 'asean' | 'east_asia' | 'europe' | 'americas' | 'middle_east' | 'africa' | 'oceania';
 
 export interface RegionFilter {
