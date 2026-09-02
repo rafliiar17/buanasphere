@@ -19,6 +19,13 @@ import {
   isCountryMatchingAppFilter,
 } from './filterEngine';
 
+if (typeof (globalThis as any).$state === 'undefined') {
+  (globalThis as any).$state = (val: any) => val;
+}
+if (typeof (globalThis as any).$derived === 'undefined') {
+  (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+}
+
 // Auto-register all built-in apps
 geoRegistry.register(fxRatesApp);
 geoRegistry.register(worldTimeApp);
@@ -33,7 +40,7 @@ export function createGeoStore() {
 
   let activeAppId = $state(initialAppId);
   let activeMetricId = $state('rate');
-  let selectedIso3 = $state('USA');
+  let selectedIso3 = $state('IDN');
   let hoveredIso3 = $state<string | null>(null);
   let projectionMode = $state<'globe' | 'flat'>('globe');
   let isLauncherOpen = $state(false);

@@ -5,16 +5,24 @@
     RotateCcw, 
     Sun, 
     Moon, 
+    Sunrise,
+    Sunset,
     Building2, 
     Eye, 
     EyeOff, 
     ArrowRightLeft,
     SlidersHorizontal,
-    ExternalLink
+    ExternalLink,
+    Sparkles
   } from 'lucide-svelte';
   import type { CountrySpatialMetadata } from '$lib/framework/geoglobe/types';
   import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
-  import { calculateLocalTime, isDaylight, formatUtcOffset } from '$lib/framework/geoglobe/geoMath';
+  import { 
+    calculateLocalTime, 
+    isDaylight, 
+    formatUtcOffset, 
+    getDiurnalPhase 
+  } from '$lib/framework/geoglobe/geoMath';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
 
   interface Props {
@@ -29,7 +37,15 @@
   let searchQuery = $state('');
   let isSearchDropdownOpen = $state(false);
 
-  const now = new Date();
+  let now = $state(new Date());
+
+  // Keep digital clock live
+  $effect(() => {
+    const timer = setInterval(() => {
+      now = new Date();
+    }, 1000);
+    return () => clearInterval(timer);
+  });
 
   // Search Results
   const searchResults = $derived.by(() => {
@@ -45,6 +61,13 @@
 
   const selectedCountry = $derived(geoStore.selectedCountry);
   const localTime = $derived(calculateLocalTime(now, selectedCountry.utcOffset));
+  const selectedPhase = $derived(getDiurnalPhase(localTime.hours, localTime.minutes));
+  const diffHours = $derived(selectedCountry.utcOffset - 7);
+  const diffStr = $derived.by(() => {
+    if (diffHours === 0) return 'Waktu Acuan Lokal (WIB Jakarta)';
+    if (diffHours > 0) return `+${diffHours} Jam lebih cepat dari Jakarta`;
+    return `${Math.abs(diffHours)} Jam lebih lambat dari Jakarta`;
+  });
 
   function handleCountrySelect(iso3: string) {
     geoStore.selectCountry(iso3);
@@ -90,7 +113,7 @@
         <Search class="absolute left-3 w-3.5 h-3.5 text-slate-400" />
         <input
           type="text"
-          placeholder="Cari negara atau ibukota (Tokyo, London)..."
+          placeholder="Cari negara atau ibukota (Jakarta, Tokyo)..."
           bind:value={searchQuery}
           onfocus={() => { isSearchDropdownOpen = true; }}
           class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 transition"
@@ -102,17 +125,21 @@
         <div class="absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
           {#each searchResults as item}
             {@const itemTime = calculateLocalTime(now, item.utcOffset)}
+            {@const itemPhase = getDiurnalPhase(itemTime.hours, itemTime.minutes)}
             <button
               type="button"
               onclick={() => handleCountrySelect(item.iso3)}
-              class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs"
+              class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs cursor-pointer"
             >
               <div class="flex items-center gap-2 truncate">
                 <span>{item.flagEmoji}</span>
                 <span class="font-medium text-white truncate">{item.countryName}</span>
                 <span class="text-[10px] text-slate-400">({item.capital})</span>
               </div>
-              <span class="text-[11px] font-mono font-bold text-amber-400">{itemTime.formatted}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px]">{itemPhase.emoji}</span>
+                <span class="text-[11px] font-mono font-bold text-amber-400">{itemTime.formatted}</span>
+              </div>
             </button>
           {/each}
         </div>
@@ -124,7 +151,7 @@
       <button
         type="button"
         onclick={() => geoStore.setProjection(geoStore.projectionMode === 'globe' ? 'flat' : 'globe')}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition {geoStore.projectionMode === 'globe' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.projectionMode === 'globe' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
         <span>{geoStore.projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'}</span>
       </button>
@@ -132,7 +159,7 @@
       <button
         type="button"
         onclick={() => { geoStore.showLabels = !geoStore.showLabels; }}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition {geoStore.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
         {#if geoStore.showLabels}
           <Eye class="w-3.5 h-3.5" />
@@ -144,9 +171,9 @@
       </button>
     </div>
 
-    <!-- Daylight & Office Hours Filter Pills -->
+    <!-- 8-Phase Diurnal Solar Filters (ADR 0037) -->
     <div class="mt-3">
-      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Filter Jam & Status</span>
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Filter Waktu & Siklus Surya</span>
       <div class="grid grid-cols-2 gap-1.5">
         <button
           type="button"
@@ -158,11 +185,11 @@
 
         <button
           type="button"
-          onclick={() => geoStore.setTimeFilter('working')}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'working' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setTimeFilter('golden_hour')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'golden_hour' ? 'bg-rose-500 text-slate-950 border-rose-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
-          <Building2 class="w-3 h-3" />
-          <span>Jam Kantor Aktif</span>
+          <Sunset class="w-3 h-3" />
+          <span>Fajar & Senja 🌅</span>
         </button>
 
         <button
@@ -182,25 +209,53 @@
           <Moon class="w-3 h-3" />
           <span>Malam Hari 🌙</span>
         </button>
+
+        <button
+          type="button"
+          onclick={() => geoStore.setTimeFilter('working')}
+          class="col-span-2 py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'working' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+        >
+          <Building2 class="w-3 h-3" />
+          <span>Jam Kantor Aktif (09:00 - 17:00)</span>
+        </button>
       </div>
     </div>
 
-    <!-- Active Country Time Card -->
-    <div class="mt-3 rounded-2xl bg-slate-950/80 border border-slate-800 p-3 space-y-1.5">
+    <!-- Active Country Time Card (IDN Default & Diurnal Phase) -->
+    <div class="mt-3 rounded-2xl bg-slate-950/80 border border-slate-800 p-3 space-y-2">
       <div class="flex items-center justify-between text-xs">
-        <span class="font-bold text-slate-300 flex items-center gap-1.5">
-          {selectedCountry.flagEmoji} {selectedCountry.countryName}
+        <span class="font-bold text-slate-200 flex items-center gap-1.5">
+          <span class="text-base">{selectedCountry.flagEmoji}</span>
+          <span>{selectedCountry.countryName}</span>
         </span>
-        <span class="font-mono text-[10px] text-amber-400">
+        <span class="font-mono text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-md">
           {formatUtcOffset(selectedCountry.utcOffset)}
         </span>
       </div>
 
-      <div class="flex items-center justify-between pt-1">
-        <span class="text-[11px] text-slate-400">Jam Digital:</span>
-        <span class="text-lg font-mono font-extrabold text-white">
-          {localTime.formatted}
-        </span>
+      <div class="flex items-center justify-between bg-slate-900/60 p-2 rounded-xl border border-slate-800">
+        <div class="flex flex-col">
+          <span class="text-[10px] text-slate-400 font-medium">Jam Digital:</span>
+          <span class="text-xl font-mono font-extrabold text-white tracking-tight">
+            {localTime.formatted}
+          </span>
+        </div>
+
+        <div class="text-right flex flex-col items-end">
+          <span class="text-[10px] text-slate-400 font-medium mb-0.5">Fase Surya:</span>
+          <span 
+            class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-white flex items-center gap-1 shadow-sm"
+            style="background: {selectedPhase.colorRgba};"
+          >
+            <span>{selectedPhase.emoji}</span>
+            <span>{selectedPhase.label}</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5 px-0.5">
+        <span>Relasi vs WIB:</span>
+        <span class="font-semibold text-slate-200">{diffStr}</span>
       </div>
     </div>
 
@@ -208,9 +263,9 @@
     <button
       type="button"
       onclick={() => { geoStore.isInspectorOpen = true; }}
-      class="mt-3 w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs shadow-lg shadow-amber-950/50 transition flex items-center justify-center gap-2"
+      class="mt-3 w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs shadow-lg shadow-amber-950/50 transition flex items-center justify-center gap-2 cursor-pointer"
     >
-      <span>🕒 Buka Time Inspector</span>
+      <span>🕒 Buka Time Inspector ({selectedCountry.countryName})</span>
       <ExternalLink class="w-3.5 h-3.5" />
     </button>
   </div>

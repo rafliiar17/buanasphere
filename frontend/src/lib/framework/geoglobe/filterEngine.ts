@@ -5,7 +5,7 @@ import {
   getFloraFaunaDataForCountry 
 } from './data/floraFaunaData';
 
-export type TimeFilterType = 'all' | 'working' | 'daylight' | 'night';
+export type TimeFilterType = 'all' | 'working' | 'daylight' | 'night' | 'golden_hour';
 export type FlightCorridorFilterType = 'all' | 'mideast' | 'asean' | 'eastasia' | 'west';
 export type PassportVisaFilterType = 'all' | 'free' | 'voa' | 'required';
 export type NatureFilterType = 'all' | 'megadiverse' | 'endangered' | 'rainforest' | 'endemic';
@@ -59,14 +59,22 @@ export const PASSPORT_ENTRY_STATUS_MAP: Record<string, 'Visa Free' | 'Visa on Ar
 /**
  * Validates if country matches the TimeWorld filter
  */
-export function isCountryMatchingTimeFilter(iso3: string, filter: TimeFilterType, date: Date = new Date()): boolean {
+export function isCountryMatchingTimeFilter(iso3: string, filter: TimeFilterType, dateOrHour: Date | number = new Date()): boolean {
   if (filter === 'all') return true;
   const spatial = EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === iso3);
   if (!spatial) return false;
 
-  const local = calculateLocalTime(date, spatial.utcOffset);
-  const isDay = isDaylight(local.hours);
-  const isWorking = local.hours >= 9 && local.hours < 17;
+  let localHours = 0;
+  if (typeof dateOrHour === 'number') {
+    localHours = dateOrHour;
+  } else {
+    const local = calculateLocalTime(dateOrHour, spatial.utcOffset);
+    localHours = local.hours + local.minutes / 60;
+  }
+
+  const isDay = isDaylight(Math.floor(localHours));
+  const isWorking = localHours >= 9 && localHours < 17;
+  const isGolden = (localHours >= 4.5 && localHours < 6.5) || (localHours >= 17.5 && localHours < 19.0);
 
   switch (filter) {
     case 'working':
@@ -75,6 +83,8 @@ export function isCountryMatchingTimeFilter(iso3: string, filter: TimeFilterType
       return isDay;
     case 'night':
       return !isDay;
+    case 'golden_hour':
+      return isGolden;
     default:
       return true;
   }

@@ -55,7 +55,7 @@ export class MapState {
   activeMetric: MetricType = 'rate';
   activeRegion: string = 'all';
   selectedCurrencyCode: string = 'USD';
-  selectedCountryIso3: string = 'USA';
+  selectedCountryIso3: string = 'IDN';
   hoveredIso3: string | null = null;
   searchQuery: string = '';
   isSearchDropdownOpen: boolean = false;

@@ -69,7 +69,7 @@ export class MapState {
   activeMetric: MetricType = $state('rate');
   activeRegion: string = $state('all');
   selectedCurrencyCode: string = $state('USD');
-  selectedCountryIso3: string = $state('USA');
+  selectedCountryIso3: string = $state('IDN');
   hoveredIso3: string | null = $state(null);
   searchQuery: string = $state('');
   isSearchDropdownOpen: boolean = $state(false);
