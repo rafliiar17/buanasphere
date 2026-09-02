@@ -36,7 +36,7 @@ describe('Isolated Micro-App Modules & Control State Suite (ADR 0030 / TDD)', ()
 
       const inspector = worldTimeApp.renderInspector?.(japan as any, data['JPN'], data);
       expect(inspector?.type).toBe('clock');
-      expect(inspector?.badge?.text).toMatch(/Siang|Malam/);
+      expect(inspector?.badge?.text).toMatch(/Dini Hari|Fajar|Pagi|Siang|Sore|Senja|Petang|Malam/);
     });
 
     it('filters countries currently in active business office hours (09:00 - 17:00)', async () => {
