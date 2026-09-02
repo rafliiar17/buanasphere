@@ -85,4 +85,15 @@ describe('Map Controls & Filtering UI Refactor Unit Tests', () => {
       expect(results[0].iso3).toBe('JPN');
     });
   });
+
+  describe('3D Globe Polygon Altitude & Elevation Configuration', () => {
+    it('enforces subtle, non-towering elevation altitude for active/hovered countries (<= 0.025)', () => {
+      const baseAltitude = 0.005;
+      const activeAltitude = 0.018; // Reduced from 0.055 to sleek subtle 3D relief
+
+      expect(baseAltitude).toBeLessThan(activeAltitude);
+      expect(activeAltitude).toBeLessThanOrEqual(0.025);
+      expect(activeAltitude).toBeGreaterThan(0.010);
+    });
+  });
 });

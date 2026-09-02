@@ -51,6 +51,7 @@
     COUNTRY_CURRENCY_MAP,
     PRESET_AMOUNTS 
   } from './map-constants';
+  import { getCountryFlagColor } from './country-flag-colors';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -191,38 +192,16 @@
   });
 
   // Country 3D Pin Labels with Compact Cartographic Scaling (Prevents crowding in dense regions like Europe)
+  // Country 3D Pin Labels with Compact Cartographic Scaling (Shows Name + Currency Code everywhere by default)
   const globeLabels = $derived.by(() => {
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !showLabels) return [];
     const isDark = currentTheme === 'dark';
-
-    // Concise name aliases for dense clusters (e.g. Europe & Balkans)
-    const conciseNames: Record<string, string> = {
-      BIH: 'Bosnia',
-      MKD: 'Makedonia',
-      LUX: 'Luksemburg',
-      MNE: 'Montenegro',
-      MDA: 'Moldova',
-      SVN: 'Slovenia',
-      SVK: 'Slowakia',
-      CZE: 'Ceko',
-      AUT: 'Austria',
-      CHE: 'Swiss',
-      BEL: 'Belgia',
-      NLD: 'Belanda',
-      PRT: 'Portugal',
-      HRV: 'Kroasia',
-      CYP: 'Siprus',
-      ARE: 'UEA',
-      DOM: 'Dominika',
-      TTO: 'Trinidad',
-    };
 
     return geoJsonFeatures.map((feat: any) => {
       const p = feat.properties;
       const iso3 = getFeatureIso3(feat);
       const country = mapData.find(d => d.iso3 === iso3);
       const rawName = country?.countryName || p.NAME || p.ADMIN || iso3;
-      const shortName = conciseNames[iso3] || rawName;
       const curr = country?.currencyCode || '';
       const lat = Number(p.LABEL_Y) || 0;
       const lng = Number(p.LABEL_X) || 0;
@@ -230,10 +209,8 @@
       const isHovered = hoveredIso3 === iso3;
       const isMajor = ['IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU', 'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP', 'TUR', 'EGY', 'ARE'].includes(iso3);
 
-      // Compact display: short name by default, full name + currency code when hovered or selected
-      const displayText = isSelected || isHovered 
-        ? `${rawName} (${curr})` 
-        : shortName;
+      // Default on Globe: Full Country Name + (Currency Code)
+      const displayText = `${rawName} (${curr || iso3})`;
 
       return {
         iso3,
@@ -242,12 +219,12 @@
         lng,
         text: displayText,
         shortText: curr || iso3,
-        size: isSelected ? 0.72 : (isHovered ? 0.58 : (isMajor ? 0.40 : 0.30)),
+        size: isSelected ? 0.65 : (isHovered ? 0.52 : (isMajor ? 0.36 : 0.28)),
         color: isSelected 
           ? '#38bdf8' 
           : (isHovered 
               ? '#34d399' 
-              : (isDark ? 'rgba(241, 245, 249, 0.88)' : 'rgba(15, 23, 42, 0.88)')),
+              : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)')),
       };
     });
   });
@@ -298,7 +275,7 @@
     }
   });
 
-  // Color generator for 3D Globe polygons (used in 'rate' and 'change' modes)
+  // Color generator for 3D Globe polygons (used in 'rate', 'change', and 'flag' modes)
   function getPolygonColor(feat: any): string {
     const isDark = currentTheme === 'dark';
     const iso3 = getFeatureIso3(feat);
@@ -333,35 +310,8 @@
       if (chg < -0.05) return isDark ? 'rgba(248, 113, 113, 0.75)' : 'rgba(239, 68, 68, 0.75)';
       return isDark ? 'rgba(51, 65, 85, 0.65)' : 'rgba(203, 213, 225, 0.75)';
     } else {
-      // In Flag / Political mode: distinct sovereign country colors
-      const palette = isDark ? [
-        'rgba(225, 29, 72, 0.80)',   // Rose
-        'rgba(37, 99, 235, 0.80)',   // Royal Blue
-        'rgba(5, 150, 105, 0.80)',   // Emerald
-        'rgba(217, 119, 6, 0.80)',   // Amber
-        'rgba(147, 51, 234, 0.80)',  // Purple
-        'rgba(6, 182, 212, 0.80)',   // Cyan
-        'rgba(234, 88, 12, 0.80)',   // Orange
-        'rgba(13, 148, 136, 0.80)',  // Teal
-        'rgba(79, 70, 229, 0.80)',   // Indigo
-        'rgba(22, 163, 74, 0.80)',   // Green
-      ] : [
-        'rgba(244, 63, 94, 0.75)',   // Rose
-        'rgba(59, 130, 246, 0.75)',  // Blue
-        'rgba(16, 185, 129, 0.75)',  // Emerald
-        'rgba(245, 158, 11, 0.75)',  // Amber
-        'rgba(168, 85, 247, 0.75)',  // Purple
-        'rgba(14, 165, 233, 0.75)',  // Sky
-        'rgba(249, 115, 22, 0.75)',  // Orange
-        'rgba(20, 184, 166, 0.75)',  // Teal
-        'rgba(99, 102, 241, 0.75)',  // Indigo
-        'rgba(34, 197, 94, 0.75)',   // Green
-      ];
-      let hash = 0;
-      for (let i = 0; i < iso3.length; i++) {
-        hash = (hash * 31 + iso3.charCodeAt(i)) & 0xffffffff;
-      }
-      return palette[Math.abs(hash) % palette.length];
+      // In Flag mode: Authentic National Flag Colors (Indonesia = Red/White, Brazil = Green, USA = Navy, etc.)
+      return getCountryFlagColor(iso3, isDark);
     }
   }
 
@@ -478,10 +428,11 @@
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
+      .polygonsTransitionDuration(250)
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
-        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
-        return 0.008;
+        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.018;
+        return 0.005;
       })
       .polygonLabel((d: any) => getTooltipHtml(d))
       .onPolygonHover((hoverD: any) => {
@@ -489,8 +440,8 @@
         if (globeInstance) {
           globeInstance.polygonAltitude((d: any) => {
             const iso3 = getFeatureIso3(d);
-            if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
-            return 0.008;
+            if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.018;
+            return 0.005;
           });
           globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
         }
@@ -500,7 +451,7 @@
         const iso3 = getFeatureIso3(clickD);
         const country = mapData.find(d => d.iso3 === iso3);
         if (country) {
-          handleSelectFromSearch(country);
+          handleCountryClick(country);
         }
       });
 
@@ -514,11 +465,11 @@
         .labelSize((d: any) => d.size)
         .labelDotRadius((d: any) => (d.iso3 === selectedCountryIso3 ? 0.15 : 0.06))
         .labelColor((d: any) => d.color)
-        .labelAltitude(0.012)
+        .labelAltitude(0.020)
         .labelResolution(3)
         .onLabelClick((d: any) => {
           if (d.country) {
-            handleSelectFromSearch(d.country);
+            handleCountryClick(d.country);
           }
         })
         .onLabelHover((d: any) => {
@@ -551,8 +502,8 @@
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
-        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
-        return 0.008;
+        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.018;
+        return 0.005;
       })
       .labelsData(showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
@@ -566,11 +517,6 @@
     const isDark = currentTheme === 'dark';
     const dataList = mapData;
     const locations = dataList.map(d => d.iso3);
-    const zValues = dataList.map(d => {
-      if (activeMetric === 'rate') return d.middleRate;
-      if (activeMetric === 'change') return d.change24h;
-      return 1; // flag / neutral mode
-    });
 
     const customData = dataList.map(d => ({
       country: d.countryName,
@@ -587,6 +533,7 @@
     }));
 
     const isRateMetric = activeMetric === 'rate';
+    const isFlagMetric = activeMetric === 'flag';
     const regionObj = REGION_FILTERS.find(r => r.id === activeRegion) || REGION_FILTERS[0];
 
     const rateColorScale: Array<[number, string]> = [
@@ -607,10 +554,23 @@
       [1.0, '#10b981'],
     ];
 
-    const flagColorScale: Array<[number, string]> = [
-      [0.0, isDark ? '#0284c7' : '#38bdf8'],
-      [1.0, isDark ? '#0d9488' : '#2dd4bf'],
-    ];
+    // Build discrete color scale for authentic country flag colors
+    const flagColors = dataList.map(d => getCountryFlagColor(d.iso3, isDark));
+    const flagColorScale: Array<[number, string]> = [];
+    const n = dataList.length;
+    for (let i = 0; i < n; i++) {
+      const c = flagColors[i];
+      const low = i / n;
+      const high = (i + 1) / n;
+      flagColorScale.push([low, c]);
+      flagColorScale.push([high, c]);
+    }
+
+    const zValues = dataList.map((d, i) => {
+      if (activeMetric === 'rate') return d.middleRate;
+      if (activeMetric === 'change') return d.change24h;
+      return i; // index mapped to authentic flag color in discreteScale
+    });
 
     const labelCurrency = t('common.currency');
     const labelMid = t('common.mid');
@@ -619,7 +579,7 @@
     const labelChange24h = t('common.change24h');
     const labelInspect = t('map.inspectCountry');
 
-    const trace = {
+    const choroplethTrace = {
       type: 'choropleth' as const,
       locationmode: 'ISO-3' as const,
       locations: locations,
@@ -634,8 +594,8 @@
         '<span style="font-size: 11px; font-weight: 600; color: %{customdata.changeColor};">' + labelChange24h + ': %{customdata.changeFormatted}</span><br>' +
         '<span style="font-size: 10px; color: #0284c7;">👉 ' + labelInspect + '</span>',
       colorscale: activeMetric === 'rate' ? rateColorScale : (activeMetric === 'change' ? changeColorScale : flagColorScale),
-      zmin: activeMetric === 'change' ? -1.0 : undefined,
-      zmax: activeMetric === 'change' ? 1.0 : undefined,
+      zmin: activeMetric === 'change' ? -1.0 : (activeMetric === 'flag' ? 0 : undefined),
+      zmax: activeMetric === 'change' ? 1.0 : (activeMetric === 'flag' ? n - 1 : undefined),
       zmid: activeMetric === 'change' ? 0 : undefined,
       showscale: activeMetric !== 'flag',
       colorbar: {
@@ -661,6 +621,24 @@
         },
       },
     };
+
+    // Text labels on 2D Flat Map (Country Name + Currency Code)
+    const textTrace = {
+      type: 'scattergeo' as const,
+      locationmode: 'ISO-3' as const,
+      locations: locations,
+      mode: 'text' as const,
+      text: dataList.map(d => `${d.countryName} (${d.currencyCode})`),
+      textposition: 'middle center' as const,
+      textfont: {
+        family: 'Inter, sans-serif',
+        size: 8,
+        color: isDark ? 'rgba(255, 255, 255, 0.92)' : 'rgba(15, 23, 42, 0.92)',
+      },
+      hoverinfo: 'none' as const,
+    };
+
+    const traces = showLabels ? [choroplethTrace, textTrace] : [choroplethTrace];
 
     const layout = {
       geo: {
@@ -703,7 +681,7 @@
       scrollZoom: true,
     };
 
-    plotlyModule.react(flatMapContainer, [trace], layout, config).then(() => {
+    plotlyModule.react(flatMapContainer, traces, layout, config).then(() => {
       if (flatMapContainer && (flatMapContainer as any).on) {
         (flatMapContainer as any).removeAllListeners?.('plotly_click');
         (flatMapContainer as any).on('plotly_click', (data: any) => {
