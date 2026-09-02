@@ -103,6 +103,15 @@ export async function checkRateLimit(
   }
 
   // In-memory sliding window store fallback
+  // Auto-prune expired keys to prevent unbounded memory growth in long-running processes
+  if (memoryStore.size > 500) {
+    for (const [k, v] of memoryStore.entries()) {
+      if (v.resetAt <= now) {
+        memoryStore.delete(k);
+      }
+    }
+  }
+
   const entry = memoryStore.get(key);
   let count = 0;
   let entryResetAt = resetAt;
