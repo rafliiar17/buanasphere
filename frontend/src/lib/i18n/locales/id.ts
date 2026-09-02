@@ -120,6 +120,11 @@ export const idTranslations = {
     middleEast: '🕌 Timur Tengah',
     africa: '🌍 Afrika',
     oceania: '🦘 Oceania',
+    bankComparison: 'Perbandingan Kurs Antar Bank',
+    bestBuy: 'Beli Terbaik',
+    bestSell: 'Jual Terbaik',
+    openFullMatrix: 'Buka di Matrix Lengkap 📊',
+    viewFullChart: 'Buka di Halaman Grafik 📈',
   },
 
   // Google-Style Chart
