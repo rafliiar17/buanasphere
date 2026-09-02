@@ -346,7 +346,11 @@ export class AggregatorService {
 
     if (this.env?.KURS_CACHE) {
       try {
-        await this.env.KURS_CACHE.put(CACHE_KEY_LATEST_RATES, JSON.stringify(rates), {
+        const serialized = JSON.stringify(rates);
+        await this.env.KURS_CACHE.put(CACHE_KEY_LATEST_RATES, serialized, {
+          expirationTtl: CACHE_TTL_SECONDS,
+        });
+        await this.env.KURS_CACHE.put('rates:live:latest', serialized, {
           expirationTtl: CACHE_TTL_SECONDS,
         });
         this.log.debug(
@@ -454,9 +458,9 @@ export class AggregatorService {
   }): Promise<Rate[]> {
     let allRates = await this.readRatesFromCache();
 
-    // If cache is empty, trigger a fast fresh ingestion
+    // If cache and DB are empty or expired, trigger fresh rate ingestion
     if (allRates.length === 0) {
-      this.log.info('Cache miss: triggering fresh rate ingestion');
+      this.log.info('Cache and DB miss: triggering fresh rate ingestion from provider');
       await this.ingestAll();
       allRates = await this.readRatesFromCache();
     }
@@ -482,22 +486,79 @@ export class AggregatorService {
   }
 
   private async readRatesFromCache(): Promise<Rate[]> {
+    // 1. Check in-memory cache
+    if (AggregatorService.memoryCache.length > 0) {
+      return AggregatorService.memoryCache;
+    }
+
+    // 2. Check Cloudflare KV Cache
     if (this.env?.KURS_CACHE) {
       try {
-        const cached = await this.env.KURS_CACHE.get(CACHE_KEY_LATEST_RATES, 'json');
-        if (Array.isArray(cached) && cached.length > 0) {
-          this.log.debug({ key: CACHE_KEY_LATEST_RATES }, 'KV cache hit for latest rates');
+        let cached = await this.env.KURS_CACHE.get(CACHE_KEY_LATEST_RATES, 'json');
+        if (!cached) {
+          cached = await this.env.KURS_CACHE.get('rates:live:latest', 'json');
+        }
+        if (typeof cached === 'string') {
+          try {
+            cached = JSON.parse(cached);
+          } catch {}
+        }
+        if (cached && Array.isArray(cached) && cached.length > 0) {
+          AggregatorService.memoryCache = cached as Rate[];
+          AggregatorService.memoryCacheTimestamp = Date.now();
           return cached as Rate[];
         }
       } catch (err) {
-        this.log.warn(
+        this.log.error(
           { error: err instanceof Error ? err.message : String(err) },
-          'Failed reading from KV cache, using memory fallback'
+          'Failed to read rates from Cloudflare KV cache'
         );
       }
     }
 
-    return AggregatorService.memoryCache;
+    // 3. Check Cloudflare D1 Database
+    const db = getDb(this.env);
+    if (db) {
+      try {
+        const rows = await db.select().from(ratesTable);
+        if (rows && rows.length > 0) {
+          const nowMs = Date.now();
+          const firstRow = rows[0];
+          const rowAgeMs = nowMs - new Date(firstRow.retrievedAt).getTime();
+
+          // If D1 data is fresh (< 15 minutes), restore into KV and memory
+          if (rowAgeMs < CACHE_TTL_SECONDS * 1000) {
+            const ratesFromDb: Rate[] = rows.map((r) => ({
+              provider: r.provider,
+              baseCurrency: r.baseCurrency,
+              quoteCurrency: r.quoteCurrency,
+              buyRate: r.buyRate,
+              sellRate: r.sellRate,
+              midRate: r.midRate,
+              spread: r.spread,
+              retrievedAt: r.retrievedAt,
+              providerTimestamp: r.providerTimestamp || r.retrievedAt,
+              sourceUrl: 'https://open.er-api.com/v6/latest/USD',
+            }));
+
+            AggregatorService.memoryCache = ratesFromDb;
+
+            // Warm up KV cache asynchronously
+            if (this.env?.KURS_CACHE) {
+              const serialized = JSON.stringify(ratesFromDb);
+              this.env.KURS_CACHE.put(CACHE_KEY_LATEST_RATES, serialized, { expirationTtl: CACHE_TTL_SECONDS }).catch(() => {});
+              this.env.KURS_CACHE.put('rates:live:latest', serialized, { expirationTtl: CACHE_TTL_SECONDS }).catch(() => {});
+            }
+
+            return ratesFromDb;
+          }
+        }
+      } catch (err) {
+        this.log.warn({ error: err instanceof Error ? err.message : String(err) }, 'Failed reading rates from D1 database');
+      }
+    }
+
+    return [];
   }
 
   /**
@@ -784,4 +845,20 @@ export class AggregatorService {
       periodDays: days,
     };
   }
+}
+
+export function clearMemoryCache(): void {
+  AggregatorService.memoryCache = [];
+  AggregatorService.memoryCacheTimestamp = 0;
+}
+
+export async function getLiveRatesWithCache(options?: {
+  env?: Env;
+  customFetch?: typeof fetch;
+  base?: string;
+  quote?: string;
+}): Promise<Rate[]> {
+  const providers = createAllProviders({ customFetch: options?.customFetch });
+  const aggregator = new AggregatorService({ providers, env: options?.env });
+  return aggregator.getLatestRates({ base: options?.base, quote: options?.quote });
 }
