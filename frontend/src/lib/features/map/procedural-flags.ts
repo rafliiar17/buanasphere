@@ -16,6 +16,7 @@ export type FlagPatternType =
   | 'cross'
   | 'canton-stripes'
   | 'diamond-emblem'
+  | 'diagonal-stripe'
   | 'solid-emblem';
 
 export interface FlagPatternDefinition {
@@ -154,14 +155,27 @@ export function getFlagPattern(iso3: string): FlagPatternDefinition {
 }
 
 /**
- * Compute bounding coordinates of a GeoJSON feature (minLon, maxLon, minLat, maxLat).
+ * /**
+ * Compute bounding coordinates of a GeoJSON feature (minLon, maxLon, minLat, maxLat),
+ * filtering out far overseas territories (e.g. French Guiana vs Metropolitan France)
+ * based on main centroid location.
  */
 export function computeFeatureBounds(feat: any): { minLon: number; maxLon: number; minLat: number; maxLat: number } {
   let minLon = 180, maxLon = -180, minLat = 90, maxLat = -90;
+  const lx = Number(feat?.properties?.LABEL_X) || 0;
+  const ly = Number(feat?.properties?.LABEL_Y) || 0;
+  const hasCentroid = (lx !== 0 || ly !== 0);
+
   function processCoords(coords: any) {
     if (typeof coords[0] === 'number') {
       const lon = coords[0];
       const lat = coords[1];
+      // Filter out overseas territories > 20 degrees away from main label centroid (e.g. French Guiana vs France)
+      if (hasCentroid) {
+        if (Math.abs(lon - lx) > 20 || Math.abs(lat - ly) > 20) {
+          return;
+        }
+      }
       if (lon < minLon) minLon = lon;
       if (lon > maxLon) maxLon = lon;
       if (lat < minLat) minLat = lat;
@@ -173,10 +187,8 @@ export function computeFeatureBounds(feat: any): { minLon: number; maxLon: numbe
   if (feat && feat.geometry && feat.geometry.coordinates) {
     processCoords(feat.geometry.coordinates);
   }
-  // Fallback to label coords if available
-  if (minLon > maxLon && feat?.properties) {
-    const lx = Number(feat.properties.LABEL_X) || 0;
-    const ly = Number(feat.properties.LABEL_Y) || 0;
+  // Fallback to label coords if bounds not found
+  if (minLon > maxLon) {
     minLon = lx - 2.0;
     maxLon = lx + 2.0;
     minLat = ly - 2.0;
@@ -189,11 +201,15 @@ const proceduralMaterialsCache = new Map<string, THREE.ShaderMaterial>();
 
 /**
  * Generate a procedural WebGL GLSL ShaderMaterial that renders multi-stripe and geometric
- * national flag patterns (e.g. France Blue-White-Red, Indonesia Red-White, Germany Black-Red-Gold).
+ * national flag patterns (e.g. France Blue-White-Red, Portugal Green-Red, Brunei Royal Gold).
  */
 export function createProceduralFlagMaterial(feat: any, isDark: boolean = true): THREE.ShaderMaterial {
   const p = feat.properties || {};
-  const iso3 = (p.ISO_A3 || p.ADM0_A3 || p.ISO_A3_EH || p.GU_A3 || '').toUpperCase();
+  let iso3 = p.ISO_A3 || '';
+  if (!iso3 || iso3 === '-99') {
+    iso3 = p.ADM0_A3 || p.SOV_A3 || p.GU_A3 || p.SU_A3 || '';
+  }
+  iso3 = iso3.toUpperCase();
   const key = `${iso3}_${isDark ? 'dark' : 'light'}`;
 
   if (proceduralMaterialsCache.has(key)) {
@@ -213,10 +229,11 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
   else if (pattern.type === 'canton-stripes') patternTypeId = 7;
   else if (pattern.type === 'diamond-emblem') patternTypeId = 8;
   else if (pattern.type === 'vertical-bicolor') patternTypeId = 9;
+  else if (pattern.type === 'diagonal-stripe') patternTypeId = 10;
 
-  const c1 = new THREE.Color(pattern.colors[0] || '#1d4ed8');
+  const c1 = new THREE.Color(pattern.colors[0] || '#eab308');
   const c2 = new THREE.Color(pattern.colors[1] || '#ffffff');
-  const c3 = new THREE.Color(pattern.colors[2] || '#dc2626');
+  const c3 = new THREE.Color(pattern.colors[2] || '#18181b');
 
   const mat = new THREE.ShaderMaterial({
     uniforms: {
@@ -248,8 +265,12 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
       uniform int patternType;
 
       void main() {
-        // Calculate spherical longitude and latitude in degrees directly from 3D vertex position
-        float lon = atan(vPos.x, -vPos.z) * 57.29577951308232;
+        // Precision spherical coordinate extraction matching globe.gl polar2Cartesian
+        float theta = atan(vPos.x, vPos.z) * 57.29577951308232;
+        float lon = 90.0 - theta;
+        if (lon > 180.0) lon -= 360.0;
+        if (lon < -180.0) lon += 360.0;
+
         float r = length(vPos);
         float lat = asin(clamp(vPos.y / max(0.001, r), -1.0, 1.0)) * 57.29577951308232;
 
@@ -268,25 +289,25 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
           if (v >= 0.50) col = c1;
           else col = c2;
         } else if (patternType == 3) {
-          // Horizontal tricolor (Germany: Black, Red, Gold; Netherlands: Red, White, Blue; Russia: White, Blue, Red; Austria)
+          // Horizontal tricolor (Germany: Black, Red, Gold; Netherlands; Russia; Austria; Egypt)
           if (v >= 0.6666) col = c1;
           else if (v >= 0.3333) col = c2;
           else col = c3;
         } else if (patternType == 4) {
-          // Circle disc (Japan: White + Red disc; Bangladesh: Green + Red disc; Turkey)
+          // Circle disc (Japan: White + Red disc; Bangladesh: Green + Red disc; Turkey; Tunisia)
           float dist = distance(vec2(u, v), vec2(0.5, 0.5));
           if (dist < 0.26) col = c2;
           else col = c1;
         } else if (patternType == 5) {
-          // Nordic cross (Sweden: Blue + Yellow cross; Norway; Denmark; Finland)
+          // Nordic cross (Sweden, Norway, Denmark, Finland, Iceland)
           if (abs(u - 0.38) < 0.07 || abs(v - 0.50) < 0.08) col = c2;
           else col = c1;
         } else if (patternType == 6) {
-          // Symmetric cross (Switzerland: Red + White cross; England)
+          // Symmetric cross (Switzerland, Georgia, England)
           if ((abs(u - 0.5) < 0.08 && abs(v - 0.5) < 0.28) || (abs(v - 0.5) < 0.08 && abs(u - 0.5) < 0.28)) col = c2;
           else col = c1;
         } else if (patternType == 7) {
-          // Canton & stripes (USA, Malaysia, Greece)
+          // Canton & stripes (USA, Malaysia, Taiwan, Greece, Liberia)
           if (u < 0.45 && v >= 0.45) col = c1;
           else {
             float stripe = mod(floor(v * 10.0), 2.0);
@@ -301,9 +322,21 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
           else if (dx + dy <= 0.85) col = c2;
           else col = c1;
         } else if (patternType == 9) {
-          // Vertical bicolor (Portugal, Algeria)
+          // Vertical bicolor (Portugal: Green West, Red East; Algeria; Pakistan; Qatar)
           if (u < 0.40) col = c1;
           else col = c2;
+        } else if (patternType == 10) {
+          // Diagonal stripe (Brunei Darussalam, Congo, Tanzania, Trinidad, PNG, Solomon)
+          float diag = (u + (1.0 - v)) * 0.5;
+          float distCenter = distance(vec2(u, v), vec2(0.5, 0.5));
+          if (distCenter < 0.15) {
+            col = vec3(0.863, 0.149, 0.149); // Red emblem / crest
+          } else if (abs(diag - 0.50) < 0.13) {
+            if (diag < 0.50) col = c2; // White diagonal
+            else col = c3; // Black diagonal
+          } else {
+            col = c1; // Royal Gold background
+          }
         }
 
         gl_FragColor = vec4(col, 0.94);
