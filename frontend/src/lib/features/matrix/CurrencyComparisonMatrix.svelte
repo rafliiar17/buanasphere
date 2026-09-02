@@ -304,7 +304,7 @@
   });
 </script>
 
-<div class={`currency-matrix-container space-y-6 ${className}`}>
+<div class={`currency-matrix-container space-y-6 max-w-8xl mx-auto ${className}`}>
   <!-- TOP HEADER: Title & Quick Stats -->
   <div style="display:flex;flex-direction:column;gap:16px;border-bottom:1px solid var(--bg-rule);padding-bottom:20px;">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">

@@ -39,7 +39,7 @@
     </span>
   </div>
 
-  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;">
+  <div style="max-width:1536px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;">
 
     <!-- Wordmark -->
     <a href="/" style="display:flex;align-items:baseline;gap:1px;text-decoration:none;">

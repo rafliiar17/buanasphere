@@ -85,6 +85,14 @@ export const idTranslations = {
 
   // World Rate Map
   map: {
+    loader: {
+      initializing: 'Menyiapkan Peta Valas Dunia 3D...',
+      subInitializing: 'Memuat geometri 195+ negara dan telemetry exchange rates...',
+      step1: 'Memuat Geometri 195+ Negara Dunia (GeoJSON)...',
+      step2: 'Menginisialisasi Engine 3D WebGL & Shader Atmosfer...',
+      step3: 'Sinkronisasi Live Exchange Rates BI & Multi-Provider...',
+      ready: 'Peta Valuta Asing Dunia Siap Dijelajahi',
+    },
     searchPlaceholder: 'Cari negara, mata uang, atau kode ISO-3 (misal: Jepang, USD, JPN, EUR)...',
     projectionMode: 'Proyeksi:',
     projectionGlobe: 'Globe 3D 🌍',
