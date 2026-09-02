@@ -493,6 +493,7 @@
         if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.018;
         return 0.005;
       })
+      .polygonsData([...geoJsonFeatures])
       .labelsData(showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
       .labelColor((d: any) => d.color);

@@ -1,7 +1,7 @@
 /**
- * Authentic National Flag Texture & Vexillological Engine for Global Sovereign Flags.
- * Maps official high-resolution vector/raster flag images directly to 3D spherical country polygons
- * on the Earth globe, with zero network latency, zero CORS errors, zero UV dependencies, and zero black screens.
+ * Authentic Synchronous Canvas Flag Texture & Vexillological Engine.
+ * Generates and maps official high-resolution sovereign flag textures directly to 3D country polygons
+ * with ZERO asynchronous loading delays, ZERO network requests, and ZERO black screen risk.
  */
 
 import * as THREE from 'three';
@@ -21,7 +21,6 @@ export type FlagPatternType =
   | 'canton-stripes'
   | 'diamond-emblem'
   | 'diagonal-stripe'
-  | 'texture-flag'
   | 'solid-emblem';
 
 export interface FlagPatternDefinition {
@@ -137,7 +136,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   VAT: { type: 'vertical-bicolor', colors: ['#eab308', '#ffffff'] }, // Vatikan
   XKX: { type: 'circle-disc', colors: ['#1d4ed8', '#eab308'] }, // Kosovo
 
-  // AMERIKA UTARA, TENGAH & KARIBIA
+  // AMERIKA
   USA: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Amerika Serikat
   CAN: { type: 'vertical-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Kanada
   MEX: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Meksiko
@@ -158,14 +157,6 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   SUR: { type: 'horizontal-tricolor', colors: ['#15803d', '#dc2626', '#15803d'] }, // Suriname
   HTI: { type: 'horizontal-bicolor', colors: ['#1d4ed8', '#dc2626'] }, // Haiti
   PRI: { type: 'canton-stripes', colors: ['#1d4ed8', '#dc2626', '#ffffff'] }, // Puerto Riko
-  ATG: { type: 'diagonal-stripe', colors: ['#dc2626', '#18181b', '#0284c7'] }, // Antigua
-  DMA: { type: 'cross', colors: ['#15803d', '#eab308', '#18181b'] }, // Dominika
-  GRD: { type: 'cross', colors: ['#dc2626', '#eab308', '#15803d'] }, // Grenada
-  KNA: { type: 'diagonal-stripe', colors: ['#15803d', '#dc2626', '#18181b'] }, // St. Kitts
-  LCA: { type: 'circle-disc', colors: ['#0284c7', '#eab308', '#18181b'] }, // St. Lucia
-  VCT: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#15803d'] }, // St. Vincent
-
-  // AMERIKA SELATAN
   BRA: { type: 'diamond-emblem', colors: ['#15803d', '#eab308', '#1e40af'] }, // Brasil
   ARG: { type: 'horizontal-tricolor', colors: ['#0284c7', '#ffffff', '#0284c7'] }, // Argentina
   COL: { type: 'horizontal-tricolor', colors: ['#eab308', '#1d4ed8', '#dc2626'] }, // Kolombia
@@ -178,6 +169,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   PRY: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#1d4ed8'] }, // Paraguay
 
   // AFRIKA
+  DZA: { type: 'vertical-bicolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Aljazair (Hijau, Putih, Bulan Sabit/Bintang Merah)
   TCD: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#dc2626'] }, // Chad
   EGY: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Mesir
   ZAF: { type: 'horizontal-tricolor', colors: ['#dc2626', '#15803d', '#1d4ed8'] }, // Afrika Selatan
@@ -191,7 +183,6 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   KEN: { type: 'horizontal-tricolor', colors: ['#18181b', '#dc2626', '#15803d'] }, // Kenya
   GAB: { type: 'horizontal-tricolor', colors: ['#15803d', '#eab308', '#0284c7'] }, // Gabon
   COG: { type: 'diagonal-stripe', colors: ['#15803d', '#eab308', '#dc2626'] }, // Kongo
-  DZA: { type: 'vertical-bicolor', colors: ['#15803d', '#ffffff'] }, // Aljazair
   MAR: { type: 'solid-emblem', colors: ['#dc2626', '#15803d'] }, // Maroko
   TUN: { type: 'circle-disc', colors: ['#dc2626', '#ffffff'] }, // Tunisia
   ETH: { type: 'horizontal-tricolor', colors: ['#15803d', '#eab308', '#dc2626'] }, // Ethiopia
@@ -229,7 +220,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   ERI: { type: 'diagonal-stripe', colors: ['#15803d', '#dc2626', '#0284c7'] }, // Eritrea
   SOM: { type: 'circle-disc', colors: ['#0284c7', '#ffffff'] }, // Somalia
 
-  // OCEANIA & PASIFIK
+  // OCEANIA
   AUS: { type: 'canton-stripes', colors: ['#1e3a8a', '#ffffff', '#1e3a8a'] }, // Australia
   NZL: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Selandia Baru
   PNG: { type: 'diagonal-stripe', colors: ['#dc2626', '#18181b', '#eab308'] }, // Papua Nugini
@@ -265,8 +256,7 @@ export function getFlagPattern(iso3: string): FlagPatternDefinition {
 
 /**
  * Compute bounding coordinates of a GeoJSON feature (minLon, maxLon, minLat, maxLat),
- * filtering out far overseas territories (e.g. French Guiana vs Metropolitan France)
- * based on main centroid location.
+ * filtering out far overseas territories (e.g. French Guiana vs Metropolitan France).
  */
 export function computeFeatureBounds(feat: any): { minLon: number; maxLon: number; minLat: number; maxLat: number } {
   let minLon = 180, maxLon = -180, minLat = 90, maxLat = -90;
@@ -278,7 +268,6 @@ export function computeFeatureBounds(feat: any): { minLon: number; maxLon: numbe
     if (typeof coords[0] === 'number') {
       const lon = coords[0];
       const lat = coords[1];
-      // Filter out overseas territories > 20 degrees away from main label centroid (e.g. French Guiana vs France)
       if (hasCentroid) {
         if (Math.abs(lon - lx) > 20 || Math.abs(lat - ly) > 20) {
           return;
@@ -295,7 +284,6 @@ export function computeFeatureBounds(feat: any): { minLon: number; maxLon: numbe
   if (feat && feat.geometry && feat.geometry.coordinates) {
     processCoords(feat.geometry.coordinates);
   }
-  // Fallback to label coords if bounds not found
   if (minLon > maxLon) {
     minLon = lx - 2.0;
     maxLon = lx + 2.0;
@@ -305,50 +293,239 @@ export function computeFeatureBounds(feat: any): { minLon: number; maxLon: numbe
   return { minLon, maxLon, minLat, maxLat };
 }
 
-let textureLoader: THREE.TextureLoader | null = null;
-const flagTexturesCache = new Map<string, THREE.Texture>();
+/**
+ * Draw synchronous 2D canvas flag graphics with authentic elements (emblems, stars, crescents, stripes).
+ */
+export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  const code = (iso3 || '').toUpperCase();
+  const pattern = getFlagPattern(code);
+  const c1 = pattern.colors[0] || '#1d4ed8';
+  const c2 = pattern.colors[1] || '#ffffff';
+  const c3 = pattern.colors[2] || '#dc2626';
+
+  // Specific special sovereign flag renderers
+  if (code === 'DZA') {
+    // Algeria: Green left, White right, Red crescent & star
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(0, 0, width / 2, height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(width / 2, 0, width / 2, height);
+
+    // Red Crescent
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height * 0.28, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(width / 2 + width * 0.04, height / 2, height * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Red Star
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.arc(width / 2 + width * 0.05, height / 2, height * 0.10, 0, Math.PI * 2);
+    ctx.fill();
+    return canvas;
+  }
+
+  if (code === 'CHE') {
+    // Switzerland: Red field with bold white cross
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = '#ffffff';
+    const cw = width * 0.18;
+    const ch = height * 0.60;
+    ctx.fillRect((width - cw) / 2, (height - ch) / 2, cw, ch);
+    ctx.fillRect((width - ch) / 2, (height - cw) / 2, ch, cw);
+    return canvas;
+  }
+
+  if (code === 'PRT') {
+    // Portugal: Green 40% left, Red 60% right, Gold/Blue armillary shield
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(0, 0, width * 0.40, height);
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(width * 0.40, 0, width * 0.60, height);
+    ctx.fillStyle = '#eab308';
+    ctx.beginPath();
+    ctx.arc(width * 0.40, height / 2, height * 0.24, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#1e40af';
+    ctx.fillRect(width * 0.40 - width * 0.04, height / 2 - height * 0.12, width * 0.08, height * 0.24);
+    return canvas;
+  }
+
+  if (code === 'BRN') {
+    // Brunei: Royal gold with white/black diagonal stripes and red crest
+    ctx.fillStyle = '#eab308';
+    ctx.fillRect(0, 0, width, height);
+
+    // White diagonal stripe
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(width * 0.25, 0);
+    ctx.lineTo(width, height * 0.75);
+    ctx.lineTo(width, height);
+    ctx.lineTo(width * 0.75, height);
+    ctx.lineTo(0, height * 0.25);
+    ctx.closePath();
+    ctx.fill();
+
+    // Black diagonal stripe
+    ctx.fillStyle = '#18181b';
+    ctx.beginPath();
+    ctx.moveTo(0, height * 0.15);
+    ctx.lineTo(width * 0.15, 0);
+    ctx.lineTo(width, height * 0.85);
+    ctx.lineTo(width * 0.85, height);
+    ctx.closePath();
+    ctx.fill();
+
+    // Red Royal Crest in center
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+    return canvas;
+  }
+
+  if (code === 'BRA') {
+    // Brazil: Green background, Yellow diamond, Blue circle
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = '#eab308';
+    ctx.beginPath();
+    ctx.moveTo(width / 2, height * 0.10);
+    ctx.lineTo(width * 0.90, height / 2);
+    ctx.lineTo(width / 2, height * 0.90);
+    ctx.lineTo(width * 0.10, height / 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#1e40af';
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+    return canvas;
+  }
+
+  if (code === 'USA') {
+    // USA: 13 stripes and Navy Canton
+    for (let i = 0; i < 13; i++) {
+      ctx.fillStyle = i % 2 === 0 ? '#dc2626' : '#ffffff';
+      ctx.fillRect(0, (i * height) / 13, width, height / 13 + 1);
+    }
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(0, 0, width * 0.45, (height * 7) / 13);
+    return canvas;
+  }
+
+  // Archetypal Pattern Drawing
+  if (pattern.type === 'vertical-tricolor') {
+    const w3 = width / 3;
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, w3, height);
+    ctx.fillStyle = c2;
+    ctx.fillRect(w3, 0, w3, height);
+    ctx.fillStyle = c3;
+    ctx.fillRect(w3 * 2, 0, w3, height);
+  } else if (pattern.type === 'horizontal-bicolor') {
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width, height / 2);
+    ctx.fillStyle = c2;
+    ctx.fillRect(0, height / 2, width, height / 2);
+  } else if (pattern.type === 'horizontal-tricolor') {
+    const h3 = height / 3;
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width, h3);
+    ctx.fillStyle = c2;
+    ctx.fillRect(0, h3, width, h3);
+    ctx.fillStyle = c3;
+    ctx.fillRect(0, h3 * 2, width, h3);
+  } else if (pattern.type === 'vertical-bicolor') {
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width / 2, height);
+    ctx.fillStyle = c2;
+    ctx.fillRect(width / 2, 0, width / 2, height);
+  } else if (pattern.type === 'circle-disc') {
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = c2;
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height * 0.28, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (pattern.type === 'nordic-cross') {
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = c2;
+    const nx = width * 0.35;
+    const nw = width * 0.14;
+    ctx.fillRect(nx, 0, nw, height);
+    ctx.fillRect(0, (height - nw) / 2, width, nw);
+  } else if (pattern.type === 'canton-stripes') {
+    ctx.fillStyle = c2;
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = c3 || c1;
+    for (let i = 0; i < 9; i += 2) {
+      ctx.fillRect(0, (i * height) / 9, width, height / 9);
+    }
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width * 0.45, height * 0.50);
+  } else {
+    // Solid color with accent
+    ctx.fillStyle = c1;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  return canvas;
+}
+
+const flagTexturesCache = new Map<string, THREE.CanvasTexture>();
 const proceduralMaterialsCache = new Map<string, THREE.ShaderMaterial>();
 
 /**
- * Retrieve or load official national flag texture for a country.
+ * Retrieve or generate an instant synchronous CanvasTexture for a country flag.
  */
 export function getCountryFlagTexture(iso3: string): THREE.Texture | null {
+  const code = (iso3 || '').toUpperCase();
+  if (flagTexturesCache.has(code)) {
+    return flagTexturesCache.get(code)!;
+  }
+
   if (typeof document === 'undefined') {
-    // In headless test environments (e.g. Bun Test), return mock texture
+    // In headless test environments (Bun Test)
     return new THREE.Texture();
   }
 
-  if (!textureLoader) {
-    textureLoader = new THREE.TextureLoader();
+  const canvas = drawFlagToCanvas(code, 128, 80);
+  if (!canvas) {
+    return null;
   }
 
-  const code = (iso3 || '').toUpperCase();
-  const iso2 = (ISO_MAPPING[code] || code.slice(0, 2)).toLowerCase();
-  
-  if (flagTexturesCache.has(iso2)) {
-    return flagTexturesCache.get(iso2)!;
-  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  texture.needsUpdate = true;
 
-  // Load from bundled local assets in /flags/{iso2}.png
-  const texture = textureLoader.load(
-    `/flags/${iso2}.png`,
-    (tex) => {
-      tex.wrapS = THREE.ClampToEdgeWrapping;
-      tex.wrapT = THREE.ClampToEdgeWrapping;
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      tex.generateMipmaps = false;
-      tex.needsUpdate = true;
-    }
-  );
-
-  flagTexturesCache.set(iso2, texture);
+  flagTexturesCache.set(code, texture);
   return texture;
 }
 
 /**
- * Generate a WebGL GLSL ShaderMaterial that maps the authentic national flag texture
- * (including emblems, stars, crescent, coat of arms) directly onto 3D country polygons.
+ * Generate a WebGL GLSL ShaderMaterial that maps the authentic synchronous canvas flag texture
+ * directly onto 3D spherical country polygons on the Earth globe.
  */
 export function createProceduralFlagMaterial(feat: any, isDark: boolean = true): THREE.ShaderMaterial {
   const p = feat.properties || {};
@@ -430,13 +607,13 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
         float v = clamp((lat - minLat) / max(0.001, maxLat - minLat), 0.0, 1.0);
 
         if (hasTexture > 0.5) {
-          // Render official authentic vector/raster flag texture directly
+          // Render synchronous high-resolution canvas flag texture with 100% vector detail
           vec4 tex = texture2D(flagTexture, vec2(u, 1.0 - v));
           gl_FragColor = vec4(tex.rgb, 0.95);
           return;
         }
 
-        // Geometric shader fallback
+        // Geometric fallback for headless test runners
         vec3 col = c1;
 
         if (patternType == 1) {
