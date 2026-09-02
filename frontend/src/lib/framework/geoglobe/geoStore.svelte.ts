@@ -6,6 +6,15 @@ import { worldTimeApp } from './plugins/worldTimeApp';
 import { flowCorridorsApp } from './plugins/flowCorridorsApp';
 import { passportWorldApp } from './plugins/passportWorldApp';
 import { resolvePathToAppId, resolveAppIdToPath } from './router';
+import {
+  type TimeFilterType,
+  type FlightCorridorFilterType,
+  type PassportVisaFilterType,
+  isCountryMatchingTimeFilter,
+  isCountryMatchingFlightFilter,
+  isCountryMatchingPassportFilter,
+  isCountryMatchingAppFilter,
+} from './filterEngine';
 
 // Auto-register all built-in apps
 geoRegistry.register(fxRatesApp);
@@ -28,6 +37,11 @@ export function createGeoStore() {
   let showLabels = $state(true);
   let activeRegion = $state('all');
   let searchQuery = $state('');
+
+  // 2-Way Reactive Filter States (ADR 0031)
+  let timeFilter = $state<TimeFilterType>('all');
+  let flightCorridorFilter = $state<FlightCorridorFilterType>('all');
+  let passportVisaFilter = $state<PassportVisaFilterType>('all');
 
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);
@@ -110,6 +124,27 @@ export function createGeoStore() {
     isLauncherOpen = !isLauncherOpen;
   }
 
+  function setTimeFilter(filter: TimeFilterType) {
+    timeFilter = filter;
+  }
+
+  function setFlightCorridorFilter(filter: FlightCorridorFilterType) {
+    flightCorridorFilter = filter;
+  }
+
+  function setPassportVisaFilter(filter: PassportVisaFilterType) {
+    passportVisaFilter = filter;
+  }
+
+  function isCountryMatched(iso3: string): boolean {
+    return isCountryMatchingAppFilter(iso3, activeAppId, {
+      timeFilter,
+      flightFilter: flightCorridorFilter,
+      passportFilter: passportVisaFilter,
+      region: activeRegion,
+    });
+  }
+
   return {
     get activeAppId() { return activeAppId; },
     get activeApp() { return activeApp; },
@@ -129,6 +164,12 @@ export function createGeoStore() {
     set activeRegion(val) { activeRegion = val; },
     get searchQuery() { return searchQuery; },
     set searchQuery(val) { searchQuery = val; },
+    get timeFilter() { return timeFilter; },
+    set timeFilter(val) { timeFilter = val; },
+    get flightCorridorFilter() { return flightCorridorFilter; },
+    set flightCorridorFilter(val) { flightCorridorFilter = val; },
+    get passportVisaFilter() { return passportVisaFilter; },
+    set passportVisaFilter(val) { passportVisaFilter = val; },
     get currentAppData() { return currentAppData; },
     get isLoadingData() { return isLoadingData; },
     switchApp,
@@ -137,6 +178,10 @@ export function createGeoStore() {
     selectCountry,
     closeInspector,
     toggleLauncher,
+    setTimeFilter,
+    setFlightCorridorFilter,
+    setPassportVisaFilter,
+    isCountryMatched,
     allApps: geoRegistry.getAllApps(),
     countries: EXTENDED_COUNTRIES_DATA,
   };

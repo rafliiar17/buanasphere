@@ -22,7 +22,7 @@
 
   let { onSelectCountry, onResetView }: Props = $props();
 
-  let corridorRegion = $state<'all' | 'mideast' | 'asean' | 'eastasia' | 'west'>('all');
+  const corridorRegion = $derived(geoStore.flightCorridorFilter);
   let searchQuery = $state('');
   let isSearchDropdownOpen = $state(false);
 
@@ -145,32 +145,32 @@
       <div class="grid grid-cols-2 gap-1.5">
         <button
           type="button"
-          onclick={() => { corridorRegion = 'all'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {corridorRegion === 'all' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setFlightCorridorFilter('all')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {corridorRegion === 'all' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🇮🇩 Semua Rute (10 Hub)</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { corridorRegion = 'mideast'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {corridorRegion === 'mideast' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setFlightCorridorFilter('mideast')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {corridorRegion === 'mideast' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🕌 Timur Tengah</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { corridorRegion = 'asean'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {corridorRegion === 'asean' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setFlightCorridorFilter('asean')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {corridorRegion === 'asean' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🌴 ASEAN Hub</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { corridorRegion = 'eastasia'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {corridorRegion === 'eastasia' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setFlightCorridorFilter('eastasia')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {corridorRegion === 'eastasia' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🏯 Asia Timur</span>
         </button>

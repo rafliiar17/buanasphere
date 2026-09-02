@@ -118,6 +118,12 @@
 
     // Adapt by Active Micro-App
     const appId = geoStore.activeAppId;
+    const isMatched = geoStore.isCountryMatched(iso3);
+
+    // Dim non-matching countries when a specific filter is active
+    if (!isMatched && (geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all')) {
+      return isDark ? 'rgba(30, 41, 59, 0.20)' : 'rgba(226, 232, 240, 0.35)';
+    }
 
     if (appId === 'world-time') {
       if (!spatial) return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
@@ -125,12 +131,12 @@
       const local = calculateLocalTime(now, spatial.utcOffset);
       const isDay = isDaylight(local.hours);
       return isDay
-        ? (isDark ? 'rgba(245, 158, 11, 0.75)' : 'rgba(217, 119, 6, 0.75)') // Amber Daylight
-        : (isDark ? 'rgba(30, 58, 138, 0.75)' : 'rgba(30, 64, 175, 0.75)'); // Navy Midnight
+        ? (isDark ? 'rgba(245, 158, 11, 0.85)' : 'rgba(217, 119, 6, 0.85)') // Amber Daylight
+        : (isDark ? 'rgba(30, 58, 138, 0.80)' : 'rgba(30, 64, 175, 0.80)'); // Navy Midnight
     }
 
     if (appId === 'remittance-flow') {
-      if (iso3 === 'IDN') return 'rgba(56, 189, 248, 0.9)';
+      if (iso3 === 'IDN') return 'rgba(56, 189, 248, 0.95)';
       if (REMITTANCE_HUBS_SET.has(iso3)) return 'rgba(16, 185, 129, 0.85)';
       return isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.6)';
     }
@@ -349,12 +355,21 @@
 
   import { flowCorridorsApp } from '$lib/framework/geoglobe/plugins/flowCorridorsApp';
 
-  // 3D Arcs for Flow Corridors
+  // 3D Arcs for Flow Corridors filtered by active corridor region
   const remittanceArcs = $derived.by(() => {
     if (geoStore.activeAppId !== 'remittance-flow') return [];
     const indonesia = EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN');
     if (!indonesia) return [];
-    return flowCorridorsApp.getArcData ? flowCorridorsApp.getArcData(indonesia as any, {} as any) : [];
+    const allArcs = flowCorridorsApp.getArcData ? flowCorridorsApp.getArcData(indonesia as any, {} as any) : [];
+    if (geoStore.flightCorridorFilter === 'all') return allArcs;
+
+    return allArcs.filter(arc => {
+      const originCountry = EXTENDED_COUNTRIES_DATA.find(
+        c => Math.abs(c.lat - arc.startLat) < 2.0 && Math.abs(c.lng - arc.startLng) < 2.0
+      );
+      if (!originCountry) return true;
+      return geoStore.isCountryMatched(originCountry.iso3);
+    });
   });
 
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
@@ -377,7 +392,11 @@
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
         if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
-        return 0.005;
+        const isMatched = geoStore.isCountryMatched(iso3);
+        if (!isMatched && (geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all')) {
+          return 0.001;
+        }
+        return 0.008;
       })
       .polygonsData([...geoJsonFeatures])
       .labelsData(mapState.showLabels ? globeLabels : [])
@@ -523,6 +542,9 @@
     if (!isInitialized || !globeInstance) return;
     // Track dependencies
     const _app = geoStore.activeAppId;
+    const _timeFilter = geoStore.timeFilter;
+    const _flightFilter = geoStore.flightCorridorFilter;
+    const _passportFilter = geoStore.passportVisaFilter;
     const _theme = currentTheme;
     const _metric = mapState.activeMetric;
     const _labels = mapState.showLabels;
@@ -539,6 +561,23 @@
     if (regionObj) {
       const altitude = regionId === 'all' ? 2.2 : (regionObj.zoom ? Math.max(0.6, 2.5 / regionObj.zoom) : 1.5);
       globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+    }
+  });
+
+  // React to flight corridor filter camera flight
+  $effect(() => {
+    if (!isInitialized || !globeInstance || geoStore.activeAppId !== 'remittance-flow') return;
+    const filter = geoStore.flightCorridorFilter;
+    if (filter === 'mideast') {
+      globeInstance.pointOfView({ lat: 24, lng: 45, altitude: 1.8 }, 1000);
+    } else if (filter === 'asean') {
+      globeInstance.pointOfView({ lat: 4, lng: 108, altitude: 1.6 }, 1000);
+    } else if (filter === 'eastasia') {
+      globeInstance.pointOfView({ lat: 30, lng: 125, altitude: 1.8 }, 1000);
+    } else if (filter === 'west') {
+      globeInstance.pointOfView({ lat: 38, lng: -97, altitude: 2.2 }, 1000);
+    } else if (filter === 'all') {
+      globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 1000);
     }
   });
 

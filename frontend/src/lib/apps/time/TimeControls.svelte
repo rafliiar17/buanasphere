@@ -24,7 +24,7 @@
 
   let { onSelectCountry, onResetView }: Props = $props();
 
-  let timeFilter = $state<'all' | 'working' | 'daylight' | 'night'>('all');
+  const timeFilter = $derived(geoStore.timeFilter);
   let is24HourFormat = $state(true);
   let searchQuery = $state('');
   let isSearchDropdownOpen = $state(false);
@@ -141,16 +141,16 @@
       <div class="grid grid-cols-2 gap-1.5">
         <button
           type="button"
-          onclick={() => { timeFilter = 'all'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {timeFilter === 'all' ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setTimeFilter('all')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'all' ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🌐 Semua Zona</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { timeFilter = 'working'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {timeFilter === 'working' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setTimeFilter('working')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'working' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <Building2 class="w-3 h-3" />
           <span>Jam Kantor Aktif</span>
@@ -158,8 +158,8 @@
 
         <button
           type="button"
-          onclick={() => { timeFilter = 'daylight'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {timeFilter === 'daylight' ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setTimeFilter('daylight')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'daylight' ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <Sun class="w-3 h-3" />
           <span>Siang Hari ☀️</span>
@@ -167,8 +167,8 @@
 
         <button
           type="button"
-          onclick={() => { timeFilter = 'night'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {timeFilter === 'night' ? 'bg-indigo-500 text-slate-950 border-indigo-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setTimeFilter('night')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {timeFilter === 'night' ? 'bg-indigo-500 text-slate-950 border-indigo-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <Moon class="w-3 h-3" />
           <span>Malam Hari 🌙</span>

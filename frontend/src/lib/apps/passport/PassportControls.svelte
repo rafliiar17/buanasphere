@@ -21,7 +21,7 @@
 
   let { onSelectCountry, onResetView }: Props = $props();
 
-  let visaFilter = $state<'all' | 'free' | 'voa' | 'required'>('all');
+  const visaFilter = $derived(geoStore.passportVisaFilter);
   let searchQuery = $state('');
   let isSearchDropdownOpen = $state(false);
 
@@ -157,32 +157,32 @@
       <div class="grid grid-cols-2 gap-1.5">
         <button
           type="button"
-          onclick={() => { visaFilter = 'all'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {visaFilter === 'all' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setPassportVisaFilter('all')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {visaFilter === 'all' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🌐 Semua Paspor</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { visaFilter = 'free'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {visaFilter === 'free' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setPassportVisaFilter('free')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {visaFilter === 'free' ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🟢 Bebas Visa WNI</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { visaFilter = 'voa'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {visaFilter === 'voa' ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setPassportVisaFilter('voa')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {visaFilter === 'voa' ? 'bg-amber-500 text-slate-950 border-amber-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🟡 VoA / eVisa</span>
         </button>
 
         <button
           type="button"
-          onclick={() => { visaFilter = 'required'; }}
-          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 {visaFilter === 'required' ? 'bg-rose-500 text-slate-950 border-rose-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
+          onclick={() => geoStore.setPassportVisaFilter('required')}
+          class="py-1.5 px-2 rounded-xl text-[11px] font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer {visaFilter === 'required' ? 'bg-rose-500 text-slate-950 border-rose-400 font-extrabold shadow' : 'bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white'}"
         >
           <span>🔴 Butuh Visa</span>
         </button>
