@@ -1,7 +1,7 @@
 import { idTranslations } from './locales/id';
 import { enTranslations } from './locales/en';
 import type { SupportedLocale, TranslationParams } from './types';
-import { localeState } from './state.svelte';
+import { localeState } from './state';
 export * from './types';
 export * from './iso-countries';
 
