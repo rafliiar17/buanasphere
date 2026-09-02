@@ -141,92 +141,6 @@
     return (ISO3_TO_ISO2_MAP[iso3] || iso3.slice(0, 2)).toLowerCase();
   }
 
-  // Generate Flag Material with FlagCDN Texture for Country Polygons
-  function getFlagMaterial(iso2: string): THREE.Material {
-    const key = iso2.toLowerCase();
-    if (flagMaterialsCache.has(key)) {
-      return flagMaterialsCache.get(key)!;
-    }
-    const url = `https://flagcdn.com/w320/${key}.png`;
-    const texture = textureLoader.load(url, () => {
-      updateGlobeMeshUVs();
-    });
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.wrapS = THREE.ClampToEdgeWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-
-    const mat = new THREE.MeshBasicMaterial({
-      map: texture,
-      side: THREE.DoubleSide,
-      transparent: false,
-    });
-    flagMaterialsCache.set(key, mat);
-    return mat;
-  }
-
-  // Generate planar UV coordinates for GeoJSON polygon cap geometries
-  function updateGlobeMeshUVs() {
-    if (!globeInstance) return;
-    const scene = globeInstance.scene?.();
-    if (!scene) return;
-
-    scene.traverse((obj: any) => {
-      if (obj.isMesh && obj.geometry && obj.geometry.attributes && obj.geometry.attributes.position) {
-        if (!obj.geometry.attributes.uv) {
-          const pos = obj.geometry.attributes.position;
-          const count = pos.count;
-          const uvs = new Float32Array(count * 2);
-
-          let minX = Infinity, maxX = -Infinity;
-          let minY = Infinity, maxY = -Infinity;
-          let minZ = Infinity, maxZ = -Infinity;
-
-          for (let i = 0; i < count; i++) {
-            const x = pos.getX(i);
-            const y = pos.getY(i);
-            const z = pos.getZ(i);
-            if (x < minX) minX = x;
-            if (x > maxX) maxX = x;
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
-            if (z < minZ) minZ = z;
-            if (z > maxZ) maxZ = z;
-          }
-
-          const rangeX = maxX - minX || 1;
-          const rangeY = maxY - minY || 1;
-          const rangeZ = maxZ - minZ || 1;
-
-          for (let i = 0; i < count; i++) {
-            const x = pos.getX(i);
-            const y = pos.getY(i);
-            const z = pos.getZ(i);
-
-            let u = 0, v = 0;
-            if (rangeZ <= rangeX && rangeZ <= rangeY) {
-              u = (x - minX) / rangeX;
-              v = (y - minY) / rangeY;
-            } else if (rangeY <= rangeX && rangeY <= rangeZ) {
-              u = (x - minX) / rangeX;
-              v = (z - minZ) / rangeZ;
-            } else {
-              u = (y - minY) / rangeY;
-              v = (z - minZ) / rangeZ;
-            }
-
-            uvs[i * 2] = u;
-            uvs[i * 2 + 1] = v;
-          }
-
-          obj.geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-          obj.geometry.uvsNeedUpdate = true;
-        }
-      }
-    });
-  }
-
   // Derived country map records combining API live rates & fallback
   const mapData = $derived.by<MapCountryData[]>(() => {
     return COUNTRY_CURRENCY_MAP.map(item => {
@@ -490,12 +404,6 @@
       .atmosphereAltitude(0.22)
       .polygonsData(geoJsonFeatures)
       .polygonGeoJsonGeometry((d: any) => d.geometry)
-      .polygonCapMaterial((d: any) => {
-        if (activeMetric !== 'flag') return null;
-        const iso2 = getFeatureIso2(d);
-        if (!iso2) return null;
-        return getFlagMaterial(iso2);
-      })
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
@@ -562,10 +470,6 @@
 
     // Default initial viewpoint (Centered near Indonesia / Asia-Pacific)
     globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 800);
-
-    // Apply UV mapping for polygon textures
-    setTimeout(updateGlobeMeshUVs, 80);
-    setTimeout(updateGlobeMeshUVs, 350);
   }
 
   function updateGlobeVisuals() {
@@ -574,12 +478,6 @@
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .polygonCapMaterial((d: any) => {
-        if (activeMetric !== 'flag') return null;
-        const iso2 = getFeatureIso2(d);
-        if (!iso2) return null;
-        return getFlagMaterial(iso2);
-      })
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
@@ -589,11 +487,6 @@
       .labelsData(showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
       .labelColor((d: any) => d.color);
-
-    if (activeMetric === 'flag') {
-      setTimeout(updateGlobeMeshUVs, 60);
-      setTimeout(updateGlobeMeshUVs, 250);
-    }
   }
 
   // Initialize Flat 2D Map with Plotly
