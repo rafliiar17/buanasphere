@@ -50,6 +50,11 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
+      - name: ⚡ Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: 📥 Download Frontend Build Artifact
         uses: actions/download-artifact@v4
         with:
@@ -61,6 +66,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          packageManager: bun
           command: pages deploy frontend/dist --project-name=kurs-world-frontend --commit-dirty=true
 
   deploy-cloudflare-workers:
@@ -84,6 +90,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          packageManager: bun
           workingDirectory: backend
           command: d1 migrations apply DB --remote
 
@@ -92,5 +99,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          packageManager: bun
           workingDirectory: backend
           command: deploy
