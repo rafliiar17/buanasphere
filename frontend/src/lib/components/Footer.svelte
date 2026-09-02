@@ -11,7 +11,7 @@
   color: var(--ink-3);
   font-size: 12px;
 ">
-  <div style="max-width:1280px;margin:0 auto;padding:40px 24px 32px;">
+  <div style="max-width:1536px;margin:0 auto;padding:40px 24px 32px;">
 
     <!-- Provider attribution grid -->
     <div style="margin-bottom:28px;">

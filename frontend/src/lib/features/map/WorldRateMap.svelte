@@ -18,6 +18,7 @@
   import FlatMap2DView from './components/FlatMap2DView.svelte';
   import MapControlsToolbar from './components/MapControlsToolbar.svelte';
   import CountryInspectorDrawer from './components/CountryInspectorDrawer.svelte';
+  import GlobeEntranceLoader from './components/GlobeEntranceLoader.svelte';
 
   interface Props {
     onSelectCurrency?: (currencyCode: string) => void;
@@ -32,6 +33,7 @@
   let liveRates = $state<RateItem[]>([]);
   let geoJsonFeatures = $state<any[]>([]);
   let isLoading = $state(true);
+  let isGlobeSceneReady = $state(false);
   let currentTheme = $state<Theme>(getTheme());
   let bankMatrix = $state<RateMatrixResponse | null>(null);
   let isMatrixLoading = $state(false);
@@ -169,12 +171,15 @@
   });
 </script>
 
-{#if isLoading}
-  <MapSkeleton class={className} />
-{:else}
-  <!-- Split-Screen Side-by-Side Main Container -->
-  <div class={`relative w-full h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)] flex flex-col md:flex-row ${className}`}>
-    
+<!-- Split-Screen Side-by-Side Main Container -->
+<div class={`relative w-full h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)] flex flex-col md:flex-row ${className}`}>
+  
+  <!-- Holographic Globe Entrance Animation Overlay -->
+  {#if isLoading || !isGlobeSceneReady}
+    <GlobeEntranceLoader isReady={!isLoading && isGlobeSceneReady} />
+  {/if}
+
+  {#if !isLoading}
     <!-- Left Column: Map Viewport (Globe 3D / Flat 2D) -->
     <div class="flex-1 h-full min-w-0 relative overflow-hidden transition-all duration-300 ease-out">
       {#if mapState.projectionMode === 'globe'}
@@ -185,6 +190,7 @@
           {currentTheme}
           onCountryClick={(c) => handleCountryClick(c)}
           onCountryHover={(iso3) => { mapState.hoveredIso3 = iso3; }}
+          onReady={() => { isGlobeSceneReady = true; }}
         />
       {:else}
         <FlatMap2DView
@@ -247,5 +253,5 @@
         {onSelectCurrency}
       />
     {/if}
-  </div>
-{/if}
+  {/if}
+</div>

@@ -16,6 +16,7 @@
     currentTheme: Theme;
     onCountryClick?: (country: MapCountryData) => void;
     onCountryHover?: (iso3: string | null) => void;
+    onReady?: () => void;
   }
 
   let {
@@ -25,6 +26,7 @@
     currentTheme,
     onCountryClick,
     onCountryHover,
+    onReady,
   }: Props = $props();
 
   let globeContainer = $state<HTMLDivElement | null>(null);
@@ -340,6 +342,7 @@
     // Centered initially near Indonesia / Asia-Pacific
     globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 800);
     isInitialized = true;
+    onReady?.();
 
     // Set up Auto-Resize Observer
     if (globeContainer && typeof ResizeObserver !== 'undefined') {

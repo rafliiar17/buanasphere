@@ -85,6 +85,14 @@ export const enTranslations = {
 
   // World Rate Map
   map: {
+    loader: {
+      initializing: 'Initializing 3D World FX Map...',
+      subInitializing: 'Loading 195+ country boundaries and live exchange rates...',
+      step1: 'Loading 195+ World Country Boundaries (GeoJSON)...',
+      step2: 'Initializing 3D WebGL Engine & Atmospheric Shaders...',
+      step3: 'Syncing Live Multi-Provider Exchange Rates...',
+      ready: 'World FX Map Ready to Explore',
+    },
     searchPlaceholder: 'Search country, currency, or ISO-3 code (e.g. Japan, USD, JPN, EUR)...',
     projectionMode: 'Projection:',
     projectionGlobe: '3D Globe 🌍',
