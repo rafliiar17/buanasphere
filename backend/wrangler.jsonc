@@ -20,6 +20,12 @@
       "id": "ecbd16282ee1400fb8913e7356c829b1"
     }
   ],
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS",
+      "dataset": "kurs_world_telemetry"
+    }
+  ],
   "observability": {
     "enabled": true
   }

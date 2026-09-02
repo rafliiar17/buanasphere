@@ -9,6 +9,7 @@ import { loggerMiddleware } from './middleware/logger.ts';
 import { rateLimiterMiddleware } from './middleware/rate-limiter.ts';
 import { AggregatorService } from './service/aggregator.ts';
 import { logger } from './logger/index.ts';
+import { recordApiRequest } from './telemetry/index.ts';
 import type { Env } from './db/index.ts';
 
 export function createApp(env?: Env) {
@@ -198,7 +199,23 @@ export function createApp(env?: Env) {
     .use(ratesRoutes(env))
     .use(convertRoutes(env))
     .use(historyRoutes(env))
-    .use(countriesRoutes(env));
+    .use(countriesRoutes(env))
+    .onAfterResponse(({ request, set }) => {
+      try {
+        const url = new URL(request.url);
+        const cacheHeader = (set.headers['X-Cache'] as 'HIT' | 'MISS' | 'BYPASS') || 'BYPASS';
+        const statusCode = typeof set.status === 'number' ? set.status : 200;
+        recordApiRequest(env?.ANALYTICS, {
+          endpoint: url.pathname,
+          method: request.method,
+          statusCode,
+          durationMs: 1.0,
+          cacheStatus: cacheHeader,
+        });
+      } catch {
+        // Non-blocking telemetry
+      }
+    });
 
   return app;
 }
