@@ -58,11 +58,11 @@ jobs:
         with:
           bun-version: latest
 
-      - name: 📥 Download Frontend Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
+      - name: 📦 Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🏗️ Build Frontend Static Artifacts
+        run: cd frontend && bun run build
 
       - name: 🚀 Deploy to Cloudflare Pages
         env:
