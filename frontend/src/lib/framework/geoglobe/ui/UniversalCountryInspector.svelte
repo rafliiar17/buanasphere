@@ -2,6 +2,12 @@
   import { geoStore } from '../geoStore.svelte';
   import { X, Globe2, Compass } from 'lucide-svelte';
 
+  interface Props {
+    onClose?: () => void;
+  }
+
+  let { onClose }: Props = $props();
+
   const country = $derived(geoStore.selectedCountry);
   const activeApp = $derived(geoStore.activeApp);
   const appData = $derived(geoStore.currentAppData[country.iso3]);
@@ -11,6 +17,14 @@
       ? activeApp.renderInspector(country as any, appData, geoStore.currentAppData)
       : null
   );
+
+  function handleClose() {
+    if (onClose) {
+      onClose();
+    } else {
+      geoStore.isInspectorOpen = false;
+    }
+  }
 </script>
 
 {#if geoStore.isInspectorOpen && country}
@@ -41,8 +55,8 @@
 
         <button
           type="button"
-          class="rounded-xl p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
-          onclick={() => geoStore.closeInspector()}
+          class="rounded-xl p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer"
+          onclick={handleClose}
           aria-label="Tutup Panel"
         >
           <X class="h-5 w-5" />

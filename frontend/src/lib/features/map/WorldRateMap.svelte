@@ -13,13 +13,17 @@
   } from './map-constants';
   import { createMapState } from './mapState';
 
-  // Sub-components decomposition (ADR 0017)
+  // Sub-components decomposition (ADR 0017 & ADR 0030)
   import Globe3DView from './components/Globe3DView.svelte';
   import FlatMap2DView from './components/FlatMap2DView.svelte';
-  import MapControlsToolbar from './components/MapControlsToolbar.svelte';
   import CountryInspectorDrawer from './components/CountryInspectorDrawer.svelte';
   import GlobeEntranceLoader from './components/GlobeEntranceLoader.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
+  import KursControls from '$lib/apps/kurs/KursControls.svelte';
+  import TimeControls from '$lib/apps/time/TimeControls.svelte';
+  import FlightControls from '$lib/apps/flight/FlightControls.svelte';
+  import PassportControls from '$lib/apps/passport/PassportControls.svelte';
+  import UniversalCountryInspector from '$lib/framework/geoglobe/ui/UniversalCountryInspector.svelte';
 
   interface Props {
     onSelectCurrency?: (currencyCode: string) => void;
@@ -226,35 +230,82 @@
         </div>
       </div>
 
-      <!-- Top-Right Floating Controls Card -->
-      <MapControlsToolbar
-        {mapState}
-        {mapData}
-        {selectedCountry}
-        {calculatedConvertResult}
-        onSelectCountry={(c, explicit) => handleCountryClick(c, explicit)}
-        onResetView={() => {
-          mapState.setRegion('all');
-          mapState.setSearchQuery('');
-        }}
-        onToggleProjection={(m) => mapState.setProjection(m)}
-        onToggleMetric={(m) => mapState.setMetric(m)}
-        onSelectRegion={(r) => mapState.setRegion(r)}
-        onToggleLabels={() => mapState.toggleLabels()}
-        onOpenInspector={() => mapState.openInspector()}
-      />
+      <!-- Top-Right Floating Controls Card (Isolated per Micro-App) -->
+      {#if geoStore.activeAppId === 'world-time'}
+        <TimeControls
+          onSelectCountry={(iso3) => {
+            const country = mapData.find(d => d.iso3 === iso3);
+            if (country) handleCountryClick(country);
+          }}
+          onResetView={() => {
+            mapState.setRegion('all');
+            mapState.setSearchQuery('');
+          }}
+        />
+      {:else if geoStore.activeAppId === 'remittance-flow'}
+        <FlightControls
+          onSelectCountry={(iso3) => {
+            const country = mapData.find(d => d.iso3 === iso3);
+            if (country) handleCountryClick(country);
+          }}
+          onResetView={() => {
+            mapState.setRegion('all');
+            mapState.setSearchQuery('');
+          }}
+        />
+      {:else if geoStore.activeAppId === 'passport-power'}
+        <PassportControls
+          onSelectCountry={(iso3) => {
+            const country = mapData.find(d => d.iso3 === iso3);
+            if (country) handleCountryClick(country);
+          }}
+          onResetView={() => {
+            mapState.setRegion('all');
+            mapState.setSearchQuery('');
+          }}
+        />
+      {:else}
+        <KursControls
+          {mapState}
+          {mapData}
+          {selectedCountry}
+          {calculatedConvertResult}
+          onSelectCountry={(c, explicit) => handleCountryClick(c, explicit)}
+          onResetView={() => {
+            mapState.setRegion('all');
+            mapState.setSearchQuery('');
+          }}
+          onToggleProjection={(m) => mapState.setProjection(m)}
+          onToggleMetric={(m) => mapState.setMetric(m)}
+          onSelectRegion={(r) => mapState.setRegion(r)}
+          onToggleLabels={() => mapState.toggleLabels()}
+          onOpenInspector={() => mapState.openInspector()}
+        />
+      {/if}
     </div>
 
     <!-- Right Column: Docked Country Inspector Drawer -->
-    {#if mapState.isInspectorOpen && selectedCountry}
-      <CountryInspectorDrawer
-        {selectedCountry}
-        {mapState}
-        {bankMatrix}
-        {isMatrixLoading}
-        onClose={() => mapState.closeInspector()}
-        {onSelectCurrency}
-      />
+    {#if (mapState.isInspectorOpen || geoStore.isInspectorOpen) && selectedCountry}
+      {#if geoStore.activeAppId === 'fx-rates'}
+        <CountryInspectorDrawer
+          {selectedCountry}
+          {mapState}
+          {bankMatrix}
+          {isMatrixLoading}
+          onClose={() => {
+            mapState.closeInspector();
+            geoStore.isInspectorOpen = false;
+          }}
+          {onSelectCurrency}
+        />
+      {:else}
+        <UniversalCountryInspector
+          onClose={() => {
+            mapState.closeInspector();
+            geoStore.isInspectorOpen = false;
+          }}
+        />
+      {/if}
     {/if}
   {/if}
 </div>

@@ -8,6 +8,9 @@
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
   import { t } from '$lib/i18n';
   import type { Theme } from '$lib/theme';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
+  import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
+  import { calculateLocalTime, isDaylight, formatUtcOffset } from '$lib/framework/geoglobe/geoMath';
 
   interface Props {
     geoJsonFeatures: any[];
@@ -73,10 +76,36 @@
     return (ISO3_TO_ISO2_MAP[iso3] || iso3.slice(0, 2)).toLowerCase();
   }
 
+  const REMITTANCE_HUBS_SET = new Set(['SAU', 'MYS', 'TWN', 'HKG', 'SGP', 'JPN', 'USA', 'KOR', 'ARE', 'AUS']);
+
+  const PASSPORT_SCORES_MAP: Record<string, { visaFree: number; rank: number; req: string }> = {
+    SGP: { visaFree: 195, rank: 1, req: 'Visa Free' },
+    JPN: { visaFree: 194, rank: 2, req: 'Visa Free' },
+    DEU: { visaFree: 193, rank: 3, req: 'Visa Required' },
+    FRA: { visaFree: 193, rank: 3, req: 'Visa Required' },
+    ITA: { visaFree: 193, rank: 3, req: 'Visa Required' },
+    ESP: { visaFree: 193, rank: 3, req: 'Visa Required' },
+    KOR: { visaFree: 192, rank: 4, req: 'Visa Free' },
+    GBR: { visaFree: 191, rank: 5, req: 'Visa Required' },
+    USA: { visaFree: 188, rank: 8, req: 'Visa Required' },
+    MYS: { visaFree: 183, rank: 12, req: 'Visa Free' },
+    ARE: { visaFree: 182, rank: 13, req: 'eVisa' },
+    BRN: { visaFree: 166, rank: 20, req: 'Visa Free' },
+    THA: { visaFree: 82, rank: 64, req: 'Visa Free' },
+    IDN: { visaFree: 78, rank: 68, req: 'Visa Free' },
+    PHL: { visaFree: 69, rank: 75, req: 'Visa Free' },
+    VNM: { visaFree: 55, rank: 88, req: 'Visa Free' },
+    IND: { visaFree: 62, rank: 80, req: 'Visa on Arrival' },
+    CHN: { visaFree: 85, rank: 60, req: 'Visa Required' },
+    SAU: { visaFree: 88, rank: 58, req: 'eVisa' },
+    TUR: { visaFree: 118, rank: 52, req: 'Visa Free' },
+  };
+
   function getPolygonColor(feat: any): string {
     const isDark = currentTheme === 'dark';
     const iso3 = getFeatureIso3(feat);
     const country = mapData.find(d => d.iso3 === iso3);
+    const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3);
     const isSelected = mapState.selectedCountryIso3 === iso3;
     const isHovered = mapState.hoveredIso3 === iso3;
 
@@ -87,6 +116,34 @@
       return '#34d399'; // Emerald hover
     }
 
+    // Adapt by Active Micro-App
+    const appId = geoStore.activeAppId;
+
+    if (appId === 'world-time') {
+      if (!spatial) return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
+      const now = new Date();
+      const local = calculateLocalTime(now, spatial.utcOffset);
+      const isDay = isDaylight(local.hours);
+      return isDay
+        ? (isDark ? 'rgba(245, 158, 11, 0.75)' : 'rgba(217, 119, 6, 0.75)') // Amber Daylight
+        : (isDark ? 'rgba(30, 58, 138, 0.75)' : 'rgba(30, 64, 175, 0.75)'); // Navy Midnight
+    }
+
+    if (appId === 'remittance-flow') {
+      if (iso3 === 'IDN') return 'rgba(56, 189, 248, 0.9)';
+      if (REMITTANCE_HUBS_SET.has(iso3)) return 'rgba(16, 185, 129, 0.85)';
+      return isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.6)';
+    }
+
+    if (appId === 'passport-power') {
+      const pScore = PASSPORT_SCORES_MAP[iso3]?.visaFree ?? 75;
+      if (pScore >= 180) return 'rgba(16, 185, 129, 0.85)';
+      if (pScore >= 120) return 'rgba(6, 182, 212, 0.80)';
+      if (pScore >= 70) return 'rgba(245, 158, 11, 0.80)';
+      return 'rgba(244, 63, 94, 0.80)';
+    }
+
+    // Default: fx-rates
     if (!country) {
       return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
     }
@@ -116,7 +173,94 @@
     const iso3 = getFeatureIso3(feat);
     const iso2 = getFeatureIso2(feat);
     const country = mapData.find(d => d.iso3 === iso3);
-    const name = country?.countryName || feat.properties?.NAME || feat.properties?.ADMIN || iso3;
+    const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3);
+    const name = spatial?.countryName || country?.countryName || feat.properties?.NAME || feat.properties?.ADMIN || iso3;
+    const capital = spatial?.capital || '';
+    const appId = geoStore.activeAppId;
+
+    if (appId === 'world-time') {
+      const now = new Date();
+      const offset = spatial?.utcOffset ?? 0;
+      const local = calculateLocalTime(now, offset);
+      const isDay = isDaylight(local.hours);
+      const isWorking = local.hours >= 9 && local.hours < 17;
+      const diffWib = offset - 7;
+      const diffStr = diffWib === 0 ? 'Sama dengan WIB (Jakarta)' : (diffWib > 0 ? `+${diffWib} Jam lebih cepat dari Jakarta` : `${Math.abs(diffWib)} Jam lebih lambat dari Jakarta`);
+
+      return `
+        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 20px; height: 14px; border-radius: 2px; object-fit: cover;" onerror="this.style.display='none'" />
+              <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+            </div>
+            <span style="font-size: 10px; font-weight: 700; color: #f59e0b; font-family: monospace;">${formatUtcOffset(offset)}</span>
+          </div>
+          <div style="font-size: 16px; font-weight: 800; color: ${isDay ? '#f59e0b' : '#38bdf8'}; font-family: monospace; margin-bottom: 4px;">
+            🕒 ${local.formatted}
+          </div>
+          <div style="display: flex; gap: 6px; font-size: 10px; font-weight: 700; margin-bottom: 4px;">
+            <span style="padding: 2px 6px; border-radius: 4px; background: ${isDay ? 'rgba(245, 158, 11, 0.2)' : 'rgba(99, 102, 241, 0.2)'}; color: ${isDay ? '#fbbf24' : '#818cf8'};">
+              ${isDay ? '☀️ Siang Hari' : '🌙 Malam Hari'}
+            </span>
+            <span style="padding: 2px 6px; border-radius: 4px; background: ${isWorking ? 'rgba(16, 185, 129, 0.2)' : 'rgba(100, 116, 139, 0.2)'}; color: ${isWorking ? '#34d399' : '#94a3b8'};">
+              ${isWorking ? '🏢 Jam Kantor' : '🏢 Tutup'}
+            </span>
+          </div>
+          <div style="font-size: 10px; color: ${isDark ? '#94a3b8' : '#64748b'};">
+            ${diffStr}
+          </div>
+        </div>
+      `;
+    }
+
+    if (appId === 'remittance-flow') {
+      const isHub = REMITTANCE_HUBS_SET.has(iso3);
+      return `
+        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 20px; height: 14px; border-radius: 2px; object-fit: cover;" onerror="this.style.display='none'" />
+              <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+            </div>
+            <span style="font-size: 10px; font-weight: 700; color: ${isHub ? '#10b981' : '#64748b'};">
+              ${isHub ? '✈️ Koridor Aktif' : 'Non-Hub'}
+            </span>
+          </div>
+          <div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#64748b'}; margin-bottom: 4px;">
+            Rute: ${capital || name} ➔ Jakarta
+          </div>
+          <div style="font-size: 10px; color: #10b981; font-weight: 600;">
+            👉 Klik untuk rincian arus remitansi 3D
+          </div>
+        </div>
+      `;
+    }
+
+    if (appId === 'passport-power') {
+      const pScore = PASSPORT_SCORES_MAP[iso3] ?? { visaFree: 75, rank: 70, req: 'Visa Required' };
+      const reqColor = pScore.req === 'Visa Free' ? '#10b981' : (pScore.req === 'Visa on Arrival' || pScore.req === 'eVisa' ? '#f59e0b' : '#f43f5e');
+
+      return `
+        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 20px; height: 14px; border-radius: 2px; object-fit: cover;" onerror="this.style.display='none'" />
+              <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+            </div>
+            <span style="font-size: 10px; font-weight: 700; color: #10b981; font-family: monospace;">Rank #${pScore.rank}</span>
+          </div>
+          <div style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'}; margin-bottom: 4px;">
+            Akses Bebas: ${pScore.visaFree} Destinasi
+          </div>
+          <div style="font-size: 11px; font-weight: 700; color: ${reqColor};">
+            Bagi WNI: ${pScore.req}
+          </div>
+        </div>
+      `;
+    }
+
+    // Default: fx-rates
     const code = country?.currencyCode || '';
     const currName = country?.currencyName || '';
     const midFormatted = country ? formatRupiah(country.middleRate) : '-';
@@ -203,6 +347,16 @@
     });
   });
 
+  import { flowCorridorsApp } from '$lib/framework/geoglobe/plugins/flowCorridorsApp';
+
+  // 3D Arcs for Flow Corridors
+  const remittanceArcs = $derived.by(() => {
+    if (geoStore.activeAppId !== 'remittance-flow') return [];
+    const indonesia = EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN');
+    if (!indonesia) return [];
+    return flowCorridorsApp.getArcData ? flowCorridorsApp.getArcData(indonesia as any, {} as any) : [];
+  });
+
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
     if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
@@ -216,7 +370,7 @@
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
       .polygonCapMaterial((d: any) => {
-        if (mapState.activeMetric !== 'flag') return null;
+        if (geoStore.activeAppId !== 'fx-rates' || mapState.activeMetric !== 'flag') return null;
         return createProceduralFlagMaterial(d, isDark);
       })
       .polygonCapColor((d: any) => getPolygonColor(d))
@@ -228,7 +382,14 @@
       .polygonsData([...geoJsonFeatures])
       .labelsData(mapState.showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
-      .labelColor((d: any) => d.color);
+      .labelColor((d: any) => d.color)
+      .arcsData(remittanceArcs)
+      .arcColor((d: any) => d.color || ['#10b981', '#38bdf8'])
+      .arcAltitude((d: any) => d.altitude || 0.35)
+      .arcStroke((d: any) => d.stroke || 1.8)
+      .arcDashLength((d: any) => d.dashLength || 0.4)
+      .arcDashGap((d: any) => d.dashGap || 0.2)
+      .arcDashAnimateTime((d: any) => d.dashAnimateTime || 2000);
   }
 
   async function initGlobe() {
@@ -361,6 +522,7 @@
   $effect(() => {
     if (!isInitialized || !globeInstance) return;
     // Track dependencies
+    const _app = geoStore.activeAppId;
     const _theme = currentTheme;
     const _metric = mapState.activeMetric;
     const _labels = mapState.showLabels;
