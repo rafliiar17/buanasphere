@@ -75,6 +75,28 @@ export const quarantineRatesTable = sqliteTable(
   ]
 );
 
+export const countriesTable = sqliteTable(
+  'countries',
+  {
+    iso3: text('iso3').primaryKey(),
+    name: text('name').notNull(),
+    currencyCode: text('currency_code').notNull(),
+    currencyName: text('currency_name').notNull(),
+    flagEmoji: text('flag_emoji').notNull(),
+    region: text('region').notNull(),
+    capital: text('capital'),
+    lat: real('lat'),
+    lon: real('lon'),
+    isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_countries_region').on(table.region),
+    index('idx_countries_currency').on(table.currencyCode),
+  ]
+);
+
 export type RateRow = typeof ratesTable.$inferSelect;
 export type InsertRateRow = typeof ratesTable.$inferInsert;
 
@@ -86,3 +108,7 @@ export type InsertApiKeyRow = typeof apiKeysTable.$inferInsert;
 
 export type QuarantineRateRow = typeof quarantineRatesTable.$inferSelect;
 export type InsertQuarantineRateRow = typeof quarantineRatesTable.$inferInsert;
+
+export type CountryRow = typeof countriesTable.$inferSelect;
+export type InsertCountryRow = typeof countriesTable.$inferInsert;
+

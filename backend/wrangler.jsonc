@@ -21,6 +21,12 @@
   "triggers": {
     "crons": ["*/15 * * * *"]
   },
+  "routes": [
+    {
+      "pattern": "api.kurs.arafz.id",
+      "custom_domain": true
+    }
+  ],
   "observability": {
     "enabled": true
   }

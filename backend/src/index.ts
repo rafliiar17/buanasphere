@@ -4,6 +4,7 @@ import { swagger } from '@elysiajs/swagger';
 import { ratesRoutes } from './routes/rates.ts';
 import { convertRoutes } from './routes/convert.ts';
 import { historyRoutes } from './routes/history.ts';
+import { countriesRoutes } from './routes/countries.ts';
 import { loggerMiddleware } from './middleware/logger.ts';
 import { rateLimiterMiddleware } from './middleware/rate-limiter.ts';
 import { AggregatorService } from './service/aggregator.ts';
@@ -42,6 +43,7 @@ export function createApp(env?: Env) {
           tags: [
             { name: 'General', description: 'System health and overview' },
             { name: 'Rates', description: 'Current rates and side-by-side bank comparisons' },
+            { name: 'Countries', description: 'Global country metadata and currency mappings' },
             { name: 'Converter', description: 'Multi-source currency conversion calculations' },
             { name: 'History', description: 'Historical time-series trend queries' },
           ],
@@ -195,7 +197,8 @@ export function createApp(env?: Env) {
     )
     .use(ratesRoutes(env))
     .use(convertRoutes(env))
-    .use(historyRoutes(env));
+    .use(historyRoutes(env))
+    .use(countriesRoutes(env));
 
   return app;
 }
