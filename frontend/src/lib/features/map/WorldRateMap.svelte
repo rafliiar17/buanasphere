@@ -27,9 +27,8 @@
     BarChart3,
     Clock,
     SlidersHorizontal,
-    Plus,
-    Minus,
-    LineChart
+    ChevronDown,
+    ChevronUp
   } from 'lucide-svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
@@ -66,6 +65,7 @@
   let selectedCountryIso3 = $state<string>('USA');
   let isInspectorOpen = $state(false);
   let isSearchDropdownOpen = $state(false);
+  let isControlsCollapsed = $state(false);
   let searchQuery = $state('');
   let isLoading = $state(true);
   let liveRates = $state<RateItem[]>([]);
@@ -108,8 +108,6 @@
         spread,
         spreadPercent,
         change24h,
-        rateType: live?.rateType || 'SPECIAL_RATE',
-        isEurozone: item.isEurozone,
       };
     });
   });
@@ -263,11 +261,11 @@
       hovertemplate: 
         '<extra></extra>' +
         '<span style="font-size: 13px; font-weight: bold; color: ' + (isDark ? '#f8fafc' : '#0f172a') + ';">%{customdata.flag} %{customdata.country} (%{customdata.code})</span><br>' +
-        '<span style="font-size: 11px; color: ' + (isDark ? '#94a3b8' : '#475569') + ';">Mata Uang: %{customdata.name}</span><br>' +
-        '<span style="font-size: 12px; font-weight: 600; color: #10b981;">Kurs Tengah: %{customdata.midFormatted}</span><br>' +
-        '<span style="font-size: 11px; color: ' + (isDark ? '#cbd5e1' : '#334155') + ';">Beli: %{customdata.buyFormatted} | Jual: %{customdata.sellFormatted}</span><br>' +
-        '<span style="font-size: 11px; font-weight: 600; color: %{customdata.change >= 0 ? "#10b981" : "#ef4444"};">Perubahan 24 Jam: %{customdata.changeFormatted}</span><br>' +
-        '<span style="font-size: 10px; color: #0284c7;">👉 Klik negara untuk membuka Country Inspector Modal</span>',
+        '<span style="font-size: 11px; color: ' + (isDark ? '#94a3b8' : '#475569') + ';">' + t('common.currency') + ': %{customdata.name}</span><br>' +
+        '<span style="font-size: 12px; font-weight: 600; color: #10b981;">' + t('matrix.table.midRate') + ': %{customdata.midFormatted}</span><br>' +
+        '<span style="font-size: 11px; color: ' + (isDark ? '#cbd5e1' : '#334155') + ';">' + t('matrix.table.buy') + ': %{customdata.buyFormatted} | ' + t('matrix.table.sell') + ': %{customdata.sellFormatted}</span><br>' +
+        '<span style="font-size: 11px; font-weight: 600; color: %{customdata.change >= 0 ? "#10b981" : "#ef4444"};">' + t('matrix.table.change24h') + ': %{customdata.changeFormatted}</span><br>' +
+        '<span style="font-size: 10px; color: #0284c7;">👉 ' + t('map.inspectCountry') + '</span>',
       colorscale: isRateMetric ? rateColorScale : changeColorScale,
       zmin: isRateMetric ? undefined : -1.0,
       zmax: isRateMetric ? undefined : 1.0,
@@ -278,11 +276,12 @@
           side: 'top' as const,
           font: { color: isDark ? '#94a3b8' : '#475569', size: 11, family: 'Inter, sans-serif' },
         },
-        thickness: 14,
-        len: 0.70,
-        x: 0.98,
-        y: 0.5,
-        tickfont: { color: isDark ? '#94a3b8' : '#475569', size: 10, family: 'Inter, sans-serif' },
+        thickness: 12,
+        len: 0.55,
+        x: 0.02,
+        y: 0.30,
+        xanchor: 'left' as const,
+        tickfont: { color: isDark ? '#94a3b8' : '#475569', size: 9, family: 'Inter, sans-serif' },
         bgcolor: isDark ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)',
         bordercolor: isDark ? 'rgba(51, 65, 85, 0.7)' : 'rgba(203, 213, 225, 0.9)',
         borderwidth: 1,
@@ -290,7 +289,7 @@
       marker: {
         line: {
           color: isDark ? '#334155' : '#cbd5e1',
-          width: 0.9,
+          width: 0.8,
         },
       },
     };
@@ -311,9 +310,9 @@
         showland: true,
         landcolor: isDark ? '#0f172a' : '#f8fafc',
         showocean: true,
-        oceancolor: isDark ? '#020617' : '#e2e8f0',
+        oceancolor: isDark ? '#080d1a' : '#e2e8f0',
         showlakes: true,
-        lakecolor: isDark ? '#020617' : '#e2e8f0',
+        lakecolor: isDark ? '#080d1a' : '#e2e8f0',
         showcountries: true,
         countrycolor: isDark ? '#1e293b' : '#cbd5e1',
         countrywidth: 0.8,
@@ -332,17 +331,8 @@
 
     const config = {
       responsive: true,
-      displayModeBar: true,
-      displaylogo: false,
-      modeBarButtonsToRemove: [
-        'toImage',
-        'sendDataToCloud',
-        'hoverClosestGeo',
-        'hoverClosestGl2d',
-        'toggleHover',
-        'resetGeo',
-      ],
-      scrollZoom: false,
+      displayModeBar: false,
+      scrollZoom: true,
     };
 
     plotlyModule.react(plotContainer, [trace], layout, config).then(() => {
@@ -351,9 +341,13 @@
         (plotContainer as any).on('plotly_click', (data: any) => {
           if (data && data.points && data.points.length > 0) {
             const point = data.points[0];
-            const clickedCustom = point.customdata;
-            if (clickedCustom) {
-              handleOpenInspector(clickedCustom.code, clickedCustom.iso3);
+            const custom = point.customdata;
+            if (custom) {
+              selectedCurrencyCode = custom.code;
+              selectedCountryIso3 = custom.iso3;
+              isInspectorOpen = true;
+              loadBankMatrixForSelectedCurrency(custom.code);
+              onSelectCurrency?.(custom.code);
             }
           }
         });
@@ -361,32 +355,22 @@
     });
   }
 
-  function handleOpenInspector(currencyCode: string, iso3?: string) {
-    selectedCurrencyCode = currencyCode;
-    if (iso3) {
-      selectedCountryIso3 = iso3;
-    } else {
-      const match = mapData.find(d => d.currencyCode === currencyCode);
-      if (match) selectedCountryIso3 = match.iso3;
-    }
+  function handleOpenInspector(code: string, iso3: string) {
+    selectedCurrencyCode = code;
+    selectedCountryIso3 = iso3;
     isInspectorOpen = true;
-    isSearchDropdownOpen = false;
-    loadBankMatrixForSelectedCurrency(currencyCode);
+    loadBankMatrixForSelectedCurrency(code);
+    onSelectCurrency?.(code);
   }
 
   function handleCloseInspector() {
     isInspectorOpen = false;
   }
 
-  function handleSelectFromSearch(country: MapCountryData) {
-    handleOpenInspector(country.currencyCode, country.iso3);
-    searchQuery = '';
-    isSearchDropdownOpen = false;
-    // Auto-switch region view if specific
-    if (country.regionId && activeRegion !== country.regionId) {
-      activeRegion = country.regionId;
-      renderPlotlyMap();
-    }
+  function toggleMetric(metric: MetricType) {
+    if (activeMetric === metric) return;
+    activeMetric = metric;
+    renderPlotlyMap();
   }
 
   function handleRegionSelect(regionId: RegionId) {
@@ -399,46 +383,39 @@
     renderPlotlyMap();
   }
 
-  function handleConvertFullClick() {
-    if (onSelectCurrency && selectedCountry) {
-      onSelectCurrency(selectedCountry.currencyCode);
-      isInspectorOpen = false;
-    }
-  }
-
-  function toggleMetric(metric: MetricType) {
-    activeMetric = metric;
-    renderPlotlyMap();
-  }
-
-  function setPresetAmount(val: number) {
-    convertAmount = val;
+  function handleSelectFromSearch(item: MapCountryData) {
+    selectedCurrencyCode = item.currencyCode;
+    selectedCountryIso3 = item.iso3;
+    searchQuery = `${item.flag} ${item.countryName} (${item.currencyCode})`;
+    isSearchDropdownOpen = false;
+    isInspectorOpen = true;
+    loadBankMatrixForSelectedCurrency(item.currencyCode);
+    onSelectCurrency?.(item.currencyCode);
   }
 
   function toggleConvertDirection() {
     convertDirection = convertDirection === 'foreign_to_idr' ? 'idr_to_foreign' : 'foreign_to_idr';
   }
 
-  // Keyboard shortcut: Escape closes drawer and search dropdown
-  function handleKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
-      if (isSearchDropdownOpen) {
-        isSearchDropdownOpen = false;
-      } else if (isInspectorOpen) {
-        isInspectorOpen = false;
-      }
-    }
-  }
-
-  // Click outside listener for search dropdown
-  function handleClickOutside(e: MouseEvent) {
-    if (searchContainerRef && !searchContainerRef.contains(e.target as Node)) {
-      isSearchDropdownOpen = false;
-    }
+  function setPresetAmount(amt: number) {
+    convertAmount = amt;
   }
 
   onMount(() => {
     loadDataAndRenderMap();
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef && !searchContainerRef.contains(e.target as Node)) {
+        isSearchDropdownOpen = false;
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        isSearchDropdownOpen = false;
+        isInspectorOpen = false;
+      }
+    };
 
     if (plotContainer) {
       resizeObserver = new ResizeObserver(() => {
@@ -489,436 +466,369 @@
 {#if isLoading}
   <MapSkeleton class={className} />
 {:else}
-  <div class={`relative overflow-hidden rounded-3xl border border-slate-800/80 bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-950 p-4 sm:p-6 lg:p-7 shadow-2xl backdrop-blur-md space-y-5 sm:space-y-6 ${className}`}>
-    <!-- Top glowing ambient accents -->
-    <div class="absolute -top-40 -left-40 w-[30rem] h-[30rem] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-40 -right-40 w-[30rem] h-[30rem] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- Full-Screen 100vh Map-First Terminal Container -->
+  <div class={`relative w-full h-full min-h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)] ${className}`}>
 
-    <!-- Top Header: Title, Live Pulse & Metric Switcher -->
-    <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
-      <div class="space-y-1.5 max-w-2xl">
-        <div class="flex items-center gap-2.5 flex-wrap">
-          <div class="p-2 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-lg shadow-emerald-500/20">
-            <Globe class="w-5 h-5" />
-          </div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            Peta Kurs Valuta Asing Dunia
-          </h2>
-          <Badge variant="success" size="sm" class="flex items-center gap-1.5 shadow-sm">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-            Live Global Edge
-          </Badge>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-300">
-          Visualisasi geografis interaktif 100% Full Width mencakup 195+ negara dunia. Klik negara mana pun pada peta untuk membuka <strong>Country Inspector Drawer</strong>, kalkulator valas instan, dan komparasi bank langsung.
-        </p>
-      </div>
+    <!-- 100% Full-Viewport Plotly Choropleth World Map Canvas -->
+    <div
+      bind:this={plotContainer}
+      class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+      style="z-index: 1;"
+    ></div>
 
-      <!-- Metric Switcher Toggle & Reset Zoom Controls -->
-      <div class="flex items-center gap-2 flex-wrap self-start lg:self-auto">
-        <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/90 border border-slate-800/80 shadow-inner">
-          <button
-            type="button"
-            onclick={() => toggleMetric('rate')}
-            class={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-              activeMetric === 'rate'
-                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-950/60 ring-1 ring-emerald-400/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
-            }`}
-          >
-            <Coins class="w-3.5 h-3.5" />
-            <span>Nilai Kurs (Rp)</span>
-          </button>
-
-          <button
-            type="button"
-            onclick={() => toggleMetric('change')}
-            class={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-              activeMetric === 'change'
-                ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-950/60 ring-1 ring-indigo-400/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
-            }`}
-          >
-            <TrendingUp class="w-3.5 h-3.5" />
-            <span>Performa 24 Jam (%)</span>
-          </button>
-        </div>
-
-        <!-- Reset View Button -->
-        <button
-          type="button"
-          onclick={handleResetView}
-          class="flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700 text-xs font-semibold shadow-sm transition cursor-pointer"
-          title="Reset Zoom & Pusatkan Peta Dunia"
-        >
-          <RotateCcw class="w-3.5 h-3.5 text-slate-400" />
-          <span class="hidden sm:inline">Reset View</span>
-        </button>
+    <!-- ── Top-Left Floating Live Status Pill ──────────────────────────────── -->
+    <div class="absolute top-4 left-4 z-10 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[var(--bg-raised)]/85 border border-[var(--bg-rule)] text-xs font-semibold text-[var(--ink)] backdrop-blur-xl shadow-xl">
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+        </span>
+        <span class="font-bold tracking-tight">Kurs.World</span>
+        <span class="text-[10px] text-[var(--ink-4)] font-normal">• 195+ {t('map.quickSelection')}</span>
       </div>
     </div>
 
-    <!-- Top Controls Toolbar: Search Autocomplete & Region Filter Pills -->
-    <div class="relative z-20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pt-1">
-      <!-- Search Autocomplete Bar -->
-      <div class="relative flex-1 max-w-md" bind:this={searchContainerRef}>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-            <Search class="w-4 h-4" />
+    <!-- ── Top-Right Floating Controls Card ("Inputan di Kanan Atas") ─────── -->
+    <div
+      class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[380px] max-w-sm bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
+      style="color: var(--ink);"
+    >
+      <!-- Panel Header & Collapse Toggle -->
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--bg-rule)]">
+        <div class="flex items-center gap-2">
+          <SlidersHorizontal class="w-4 h-4 text-sky-400" />
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">{t('map.countryInspector')}</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button
+            type="button"
+            onclick={handleResetView}
+            class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition text-[11px] font-semibold flex items-center gap-1 cursor-pointer"
+            title="Reset Zoom & Center"
+          >
+            <RotateCcw class="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onclick={() => (isControlsCollapsed = !isControlsCollapsed)}
+            class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
+            aria-label="Toggle Panel"
+          >
+            {#if isControlsCollapsed}
+              <ChevronDown class="w-4 h-4" />
+            {:else}
+              <ChevronUp class="w-4 h-4" />
+            {/if}
+          </button>
+        </div>
+      </div>
+
+      {#if !isControlsCollapsed}
+        <div class="mt-3.5 space-y-3.5">
+          <!-- 1. Search Autocomplete Bar -->
+          <div class="relative" bind:this={searchContainerRef}>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--ink-4)]">
+                <Search class="w-3.5 h-3.5" />
+              </div>
+              <input
+                bind:this={searchInputRef}
+                type="text"
+                bind:value={searchQuery}
+                onfocus={() => (isSearchDropdownOpen = true)}
+                oninput={() => (isSearchDropdownOpen = true)}
+                placeholder={t('map.searchPlaceholder')}
+                class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-8 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner"
+              />
+              {#if searchQuery}
+                <button
+                  type="button"
+                  onclick={() => { searchQuery = ''; searchInputRef?.focus(); }}
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--ink-4)] hover:text-[var(--ink)] cursor-pointer"
+                >
+                  <X class="w-3.5 h-3.5" />
+                </button>
+              {/if}
+            </div>
+
+            <!-- Autocomplete Suggestions Dropdown -->
+            {#if isSearchDropdownOpen && searchResults.length > 0}
+              <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-60 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
+                {#each searchResults as item}
+                  <button
+                    type="button"
+                    onclick={() => handleSelectFromSearch(item)}
+                    class="w-full text-left px-3 py-2.5 hover:bg-[var(--bg-subtle)] flex items-center justify-between gap-2.5 transition cursor-pointer group"
+                  >
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <span class="text-xl shrink-0">{item.flag}</span>
+                      <div class="truncate">
+                        <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
+                          <span>{item.countryName}</span>
+                          <span class="text-[9px] font-semibold px-1 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--ink-3)]">{item.currencyCode}</span>
+                        </div>
+                        <div class="text-[10px] text-[var(--ink-4)] truncate">
+                          {item.currencyName}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                      <div class="text-xs font-bold text-emerald-400">
+                        {formatRupiah(item.middleRate, { showFraction: true })}
+                      </div>
+                      <div class={`text-[10px] font-semibold ${item.change24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {formatPercent(item.change24h)}
+                      </div>
+                    </div>
+                  </button>
+                {/each}
+              </div>
+            {/if}
           </div>
-          <input
-            bind:this={searchInputRef}
-            type="text"
-            bind:value={searchQuery}
-            onfocus={() => (isSearchDropdownOpen = true)}
-            oninput={() => (isSearchDropdownOpen = true)}
-            placeholder={t('map.searchPlaceholder')}
-            class="w-full bg-slate-950/90 border border-slate-800 hover:border-slate-700 focus:border-emerald-500 rounded-2xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 outline-none transition shadow-inner focus:ring-2 focus:ring-emerald-500/20"
-          />
-          {#if searchQuery}
+
+          <!-- 2. Metric Switcher Toggle -->
+          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
             <button
               type="button"
-              onclick={() => { searchQuery = ''; searchInputRef?.focus(); }}
-              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
+              onclick={() => toggleMetric('rate')}
+              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                activeMetric === 'rate'
+                  ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
+                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+              }`}
             >
-              <X class="w-4 h-4" />
+              <Coins class="w-3.5 h-3.5" />
+              <span>{t('map.modeRate')}</span>
             </button>
-          {/if}
-        </div>
+            <button
+              type="button"
+              onclick={() => toggleMetric('change')}
+              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                activeMetric === 'change'
+                  ? 'bg-indigo-500 text-white shadow-md font-extrabold'
+                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+              }`}
+            >
+              <TrendingUp class="w-3.5 h-3.5" />
+              <span>{t('map.modeChange')}</span>
+            </button>
+          </div>
 
-        <!-- Autocomplete Suggestions Dropdown -->
-        {#if isSearchDropdownOpen && searchResults.length > 0}
-          <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-xl max-h-72 overflow-y-auto divide-y divide-slate-800/80 scrollbar-thin">
-            <div class="px-3.5 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-950/60 flex items-center justify-between">
-              <span>{t('common.search')} ({searchResults.length})</span>
-              <span class="text-[10px] text-emerald-400 font-normal">{t('map.inspectCountry')}</span>
-            </div>
-            {#each searchResults as item}
+          <!-- 3. Region Filter Selector (Scrollable Chips) -->
+          <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
+            {#each REGION_FILTERS as reg}
+              {@const isActive = activeRegion === reg.id}
               <button
                 type="button"
-                onclick={() => handleSelectFromSearch(item)}
-                class="w-full text-left px-3.5 py-2.5 hover:bg-slate-800/80 flex items-center justify-between gap-3 transition cursor-pointer group"
+                onclick={() => handleRegionSelect(reg.id)}
+                class={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition shrink-0 cursor-pointer border ${
+                  isActive
+                    ? 'bg-sky-500/20 border-sky-500/60 text-sky-300 ring-1 ring-sky-500/40'
+                    : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
+                }`}
               >
-                <div class="flex items-center gap-3 min-w-0">
-                  <span class="text-2xl shrink-0">{item.flag}</span>
-                  <div class="truncate">
-                    <div class="text-xs font-bold text-slate-100 group-hover:text-emerald-400 transition flex items-center gap-1.5">
-                      <span>{item.countryName}</span>
-                      <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">{item.currencyCode}</span>
-                    </div>
-                    <div class="text-[11px] text-slate-400 truncate">
-                      {item.currencyName} • {item.regionLabel}
-                    </div>
-                  </div>
-                </div>
-                <div class="text-right shrink-0">
-                  <div class="text-xs font-black text-emerald-400">
-                    {formatRupiah(item.middleRate, { showFraction: true })}
-                  </div>
-                  <div class={`text-[10px] font-semibold flex items-center justify-end gap-0.5 ${item.change24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    <span>{formatPercent(item.change24h)}</span>
-                  </div>
-                </div>
+                <span>{reg.emoji}</span>
+                <span>{reg.label}</span>
               </button>
             {/each}
           </div>
-        {/if}
-      </div>
 
-      <!-- Region Quick Filter Bar -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-        {#each REGION_FILTERS as reg}
-          {@const isActive = activeRegion === reg.id}
-          <button
-            type="button"
-            onclick={() => handleRegionSelect(reg.id)}
-            class={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 shrink-0 cursor-pointer border ${
-              isActive
-                ? 'bg-gradient-to-r from-emerald-600/30 to-teal-600/30 border-emerald-500/60 text-emerald-200 shadow-md ring-1 ring-emerald-500/30'
-                : 'bg-slate-950/70 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-900/80 hover:border-slate-700'
-            }`}
-          >
-            <span>{reg.emoji}</span>
-            <span>{reg.label}</span>
-          </button>
-        {/each}
-      </div>
-    </div>
+          <!-- 4. Quick Mini Converter Box -->
+          <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-[var(--ink-4)] font-semibold">
+              <span class="flex items-center gap-1 text-[var(--ink)]">
+                <Calculator class="w-3.5 h-3.5 text-emerald-400" />
+                <span>{t('converter.title')}</span>
+              </span>
+              <button
+                type="button"
+                onclick={toggleConvertDirection}
+                class="hover:text-sky-400 flex items-center gap-1 transition cursor-pointer"
+              >
+                <ArrowRightLeft class="w-3 h-3" />
+                <span>{convertDirection === 'foreign_to_idr' ? `${selectedCountry.currencyCode} ➔ IDR` : `IDR ➔ ${selectedCountry.currencyCode}`}</span>
+              </button>
+            </div>
 
-    <!-- Quick Currency Selection Strip -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-      <span class="text-slate-400 font-semibold shrink-0 flex items-center gap-1.5">
-        <Layers class="w-3.5 h-3.5 text-indigo-400" />
-        <span>{t('map.quickSelection')}</span>
-      </span>
-      {#each filteredQuickList as curr}
-        {@const isSelected = selectedCurrencyCode === curr.currencyCode}
-        <button
-          type="button"
-          onclick={() => handleOpenInspector(curr.currencyCode, curr.iso3)}
-          class={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl font-bold transition-all duration-150 shrink-0 cursor-pointer border ${
-            isSelected
-              ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 ring-1 ring-emerald-500/40 shadow-sm'
-              : 'bg-slate-950/60 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-900/80'
-          }`}
-        >
-          <span>{curr.flag}</span>
-          <span>{curr.currencyCode}</span>
-          {#if isSelected}
-            <Check class="w-3 h-3 text-emerald-400" />
-          {/if}
-        </button>
-      {/each}
-    </div>
-
-    <!-- Full-Width Canvas World Map Container (100% Immersive View) -->
-    <div class="relative w-full rounded-2xl bg-slate-950/90 border border-slate-800/90 overflow-hidden shadow-2xl p-2 sm:p-3.5">
-      <!-- Top floating info status badge -->
-      <div class="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/85 border border-slate-700/60 text-[11px] font-medium text-slate-300 backdrop-blur-md shadow-lg">
-        <Info class="w-3.5 h-3.5 text-cyan-400" />
-        <span>{t('map.modeLabel')} <strong class="text-emerald-400">{activeMetric === 'rate' ? t('map.modeRate') : t('map.modeChange')}</strong></span>
-      </div>
-
-      <!-- Bottom Floating Inspector Trigger Pill -->
-      <div class="absolute bottom-4 left-4 right-4 sm:right-auto z-10 flex items-center justify-between sm:justify-start gap-3 px-3.5 py-2 rounded-2xl bg-slate-900/90 border border-emerald-500/40 text-xs font-semibold text-slate-200 backdrop-blur-md shadow-2xl">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">{selectedCountry.flag}</span>
-          <div class="flex flex-col">
-            <span class="text-[11px] text-slate-400 leading-none">{selectedCountry.countryName} ({selectedCountry.currencyCode})</span>
-            <span class="text-xs font-bold text-emerald-400 leading-tight">
-              {formatRupiah(selectedCountry.middleRate, { showFraction: true })}
-            </span>
-          </div>
-        </div>
-        <button
-          type="button"
-          onclick={() => (isInspectorOpen = true)}
-          class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow cursor-pointer"
-        >
-          <span>{t('map.inspectCountry')}</span>
-          <ChevronRight class="w-3.5 h-3.5" />
-        </button>
-      </div>
-
-      <!-- Plotly Choropleth 100% Full-Width Map Canvas -->
-      <div
-        bind:this={plotContainer}
-        class="w-full h-[520px] sm:h-[580px] lg:h-[640px]"
-      ></div>
-    </div>
-  </div>
-
-  <!-- Interactive Floating Country Inspector Slide-Over Drawer / Modal Sheet -->
-  {#if isInspectorOpen && selectedCountry}
-    {@const curr = selectedCountry}
-    {@const isPositive = curr.change24h >= 0}
-
-    <!-- Backdrop Overlay -->
-    <div
-      role="button"
-      tabindex="0"
-      aria-label={t('common.close')}
-      onclick={handleCloseInspector}
-      onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCloseInspector(); }}
-      class="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300"
-    ></div>
-
-    <!-- Slide-Over Drawer Panel -->
-    <aside
-      aria-label={t('map.countryInspector')}
-      class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md md:max-w-lg lg:max-w-xl bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 border-l border-emerald-500/30 shadow-2xl backdrop-blur-2xl p-5 sm:p-7 overflow-y-auto transform transition-transform duration-300 flex flex-col justify-between space-y-6"
-    >
-      <!-- Top Decorative Accent -->
-      <div class="absolute -top-24 -right-24 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="space-y-6">
-        <!-- Inspector Header: Flag, Name, Currency, Badges, Close Button -->
-        <div class="flex items-start justify-between gap-3 border-b border-slate-800/80 pb-4">
-          <div class="flex items-center gap-3.5">
-            <span class="text-4xl sm:text-5xl">{curr.flag}</span>
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  {curr.countryName}
-                </h3>
-                <Badge variant="default" size="sm" class="bg-indigo-600/30 text-indigo-300 border border-indigo-500/30">
-                  {curr.currencyCode}
-                </Badge>
+            <!-- Input & Live Result Row -->
+            <div class="flex items-center gap-2">
+              <div class="relative flex-1">
+                <input
+                  type="number"
+                  bind:value={convertAmount}
+                  min="1"
+                  step="any"
+                  class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-lg px-2.5 py-1.5 text-xs font-bold text-[var(--ink)] outline-none focus:border-sky-500 font-mono"
+                />
+                <span class="absolute right-2 top-1.5 text-[10px] text-[var(--ink-4)] font-bold">
+                  {convertDirection === 'foreign_to_idr' ? selectedCountry.currencyCode : 'IDR'}
+                </span>
               </div>
-              <p class="text-xs sm:text-sm text-slate-400 mt-0.5 flex items-center gap-1.5">
-                <span class="text-slate-200 font-semibold">{curr.currencyName}</span>
-                <span>•</span>
-                <span class="text-slate-400">{curr.regionLabel}</span>
-                <span>•</span>
-                <span class="text-emerald-400 font-mono font-bold">{curr.iso3}</span>
-              </p>
+              <div class="flex-1 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs font-bold text-emerald-400 text-right truncate font-mono">
+                {calculatedConvertResult.formatted}
+              </div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            onclick={handleCloseInspector}
-            class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-            title={t('common.close')}
-          >
-            <X class="w-5 h-5" />
-          </button>
-        </div>
-
-        <!-- 24h Performance & Key Rate Alert Ribbon -->
-        <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-slate-950/80 border border-slate-800/90">
-          <div class="flex items-center gap-2">
-            <Activity class="w-4 h-4 text-emerald-400" />
-            <span class="text-xs font-semibold text-slate-300">{t('map.status24h')}</span>
-          </div>
-          <div class={`px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 border ${
-            isPositive 
-              ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' 
-              : 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-          }`}>
-            {#if isPositive}
-              <TrendingUp class="w-3.5 h-3.5" />
-            {:else}
-              <TrendingDown class="w-3.5 h-3.5" />
-            {/if}
-            <span>{isPositive ? t('map.strengthening') : t('map.weakening')} ({formatPercent(curr.change24h)})</span>
-          </div>
-        </div>
-
-        <!-- Grid Statistik Kurs: Kurs Tengah, Spread, Kurs Beli, Kurs Jual -->
-        <div class="grid grid-cols-2 gap-3">
-          <!-- Kurs Tengah (Mid) -->
-          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-emerald-500/30 space-y-1 shadow-lg">
-            <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>{t('map.midRate')}</span>
-              <Coins class="w-3.5 h-3.5 text-emerald-400" />
-            </div>
-            <div class="text-lg sm:text-xl font-black text-emerald-400">
-              {formatRupiah(curr.middleRate, { showFraction: true })}
-            </div>
-            <span class="text-[10px] text-slate-500 block">{t('map.midRateDesc', { currency: curr.currencyCode })}</span>
-          </div>
-
-          <!-- Spread Margin -->
-          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 space-y-1 shadow-lg">
-            <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>{t('map.spread')}</span>
-              <BarChart3 class="w-3.5 h-3.5 text-cyan-400" />
-            </div>
-            <div class="text-lg sm:text-xl font-black text-cyan-300">
-              {formatRupiah(curr.spread, { showFraction: true })}
-            </div>
-            <span class="text-[10px] text-slate-500 block">{t('map.margin', { percent: curr.spreadPercent.toFixed(2) })}</span>
-          </div>
-
-          <!-- Kurs Beli (Bank Beli dari Anda) -->
-          <div class="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800/90 space-y-1">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('map.buyRate')}</span>
-            <div class="text-sm sm:text-base font-bold text-slate-200">
-              {formatRupiah(curr.buyRate, { showFraction: true })}
-            </div>
-            <span class="text-[10px] text-slate-500 block">{t('map.buyRateDesc')}</span>
-          </div>
-
-          <!-- Kurs Jual (Bank Jual ke Anda) -->
-          <div class="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800/90 space-y-1">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('map.sellRate')}</span>
-            <div class="text-sm sm:text-base font-bold text-slate-200">
-              {formatRupiah(curr.sellRate, { showFraction: true })}
-            </div>
-            <span class="text-[10px] text-slate-500 block">{t('map.sellRateDesc')}</span>
-          </div>
-        </div>
-
-        <!-- Kalkulator Konversi Kilat Valas <-> IDR -->
-        <div class="p-4 rounded-2xl bg-slate-950/90 border border-slate-800/90 space-y-3.5 shadow-xl">
-          <div class="flex items-center justify-between">
-            <span class="text-xs sm:text-sm font-bold text-slate-100 flex items-center gap-2">
-              <Calculator class="w-4 h-4 text-emerald-400" />
-              {t('map.quickConvertTitle')}
-            </span>
+            <!-- Inspect Selected Country Action Button -->
             <button
               type="button"
-              onclick={toggleConvertDirection}
-              class="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 px-2.5 py-1 rounded-xl bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 transition cursor-pointer"
+              onclick={() => (isInspectorOpen = true)}
+              class="w-full py-2 rounded-lg bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <ArrowRightLeft class="w-3.5 h-3.5" />
-              <span>{t('map.switchDirection')}</span>
+              <span>{selectedCountry.flag} {t('map.inspectCountry')}: {selectedCountry.countryName}</span>
+              <ChevronRight class="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      {/if}
+    </div>
+
+    <!-- ── Interactive Slide-Over Country Inspector Drawer ────────────────── -->
+    {#if isInspectorOpen && selectedCountry}
+      {@const curr = selectedCountry}
+      {@const isPositive = curr.change24h >= 0}
+
+      <!-- Backdrop -->
+      <div
+        role="button"
+        tabindex="0"
+        aria-label={t('common.close')}
+        onclick={handleCloseInspector}
+        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCloseInspector(); }}
+        class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
+      ></div>
+
+      <!-- Slide-Over Drawer Panel -->
+      <aside
+        aria-label={t('map.countryInspector')}
+        class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md md:max-w-lg bg-[var(--bg-raised)] border-l border-[var(--bg-rule)] shadow-2xl backdrop-blur-2xl p-5 sm:p-6 overflow-y-auto transform transition-transform duration-300 flex flex-col justify-between space-y-5"
+        style="color: var(--ink);"
+      >
+        <div class="space-y-5">
+          <!-- Inspector Header -->
+          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-4">
+            <div class="flex items-center gap-3">
+              <span class="text-4xl">{curr.flag}</span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-xl font-bold text-[var(--ink)]">
+                    {curr.countryName}
+                  </h3>
+                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                    {curr.currencyCode}
+                  </span>
+                </div>
+                <p class="text-xs text-[var(--ink-4)] mt-0.5">
+                  {curr.currencyName} • {curr.regionLabel}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick={handleCloseInspector}
+              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
+              aria-label={t('common.close')}
+            >
+              <X class="w-5 h-5" />
             </button>
           </div>
 
-          <!-- Input Nominal & Direction -->
-          <div class="space-y-2.5">
-            <div class="relative">
-              <input
-                type="number"
-                min="0"
-                step="any"
-                bind:value={convertAmount}
-                class="w-full bg-slate-900 border border-slate-700/80 focus:border-emerald-500 rounded-xl px-3.5 py-2 text-sm sm:text-base text-white font-bold outline-none shadow-inner"
-                placeholder={t('map.convertAmountPlaceholder')}
-              />
-              <span class="absolute right-3.5 top-2 text-xs font-bold text-slate-400">
-                {convertDirection === 'foreign_to_idr' ? curr.currencyCode : 'IDR'}
-              </span>
+          <!-- Key Rate Statistics Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+              <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.midRate')}</span>
+              <div class="text-base font-extrabold text-emerald-400 mt-0.5 font-mono">
+                {formatRupiah(curr.middleRate, { showFraction: true })}
+              </div>
             </div>
 
-            <!-- Quick Preset Amount Buttons: 1, 10, 50, 100, 1000, 10000 -->
-            <div class="flex items-center gap-1.5 flex-wrap">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+              <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.change24h')}</span>
+              <div class={`text-base font-extrabold mt-0.5 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {#if isPositive}
+                  <TrendingUp class="w-4 h-4" />
+                {:else}
+                  <TrendingDown class="w-4 h-4" />
+                {/if}
+                <span>{formatPercent(curr.change24h)}</span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1">
+              <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
+              <div class="text-base font-bold text-sky-400 mt-0.5 font-mono">
+                {formatRupiah(curr.spread)}
+              </div>
+            </div>
+          </div>
+
+          <!-- Google Finance-Style Trend Chart Mini -->
+          <div class="border border-[var(--bg-rule)] rounded-2xl bg-[var(--bg-subtle)] p-3">
+            <GoogleRateChart
+              initialCurrency={curr.currencyCode}
+              showCurrencySelector={false}
+            />
+          </div>
+
+          <!-- Quick Converter in Inspector -->
+          <div class="p-4 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-3">
+            <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
+              <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
+              <button
+                type="button"
+                onclick={toggleConvertDirection}
+                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] cursor-pointer"
+              >
+                <ArrowRightLeft class="w-3 h-3" />
+                <span>{convertDirection === 'foreign_to_idr' ? `${curr.currencyCode} ➔ IDR` : `IDR ➔ ${curr.currencyCode}`}</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <input
+                type="number"
+                bind:value={convertAmount}
+                min="1"
+                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
+              />
+              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
+                {calculatedConvertResult.formatted}
+              </div>
+            </div>
+
+            <!-- Preset Nominals -->
+            <div class="flex items-center gap-1.5 flex-wrap pt-1">
               {#each PRESET_AMOUNTS as preset}
                 <button
                   type="button"
                   onclick={() => setPresetAmount(preset)}
-                  class={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer border ${
+                  class={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition border cursor-pointer ${
                     convertAmount === preset
-                      ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
-                      : 'bg-slate-900 text-slate-400 hover:text-slate-200 border-slate-800'
+                      ? 'bg-sky-500 text-slate-950 border-sky-400'
+                      : 'bg-[var(--bg-raised)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
                   }`}
                 >
                   {preset.toLocaleString('id-ID')}
                 </button>
               {/each}
             </div>
-
-            <!-- Instant Calculated Result Banner -->
-            <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-center space-y-0.5">
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">{t('map.estimatedResult')}</span>
-              <div class="text-xl sm:text-2xl font-black text-emerald-300">
-                {calculatedConvertResult.formatted}
-              </div>
-            </div>
           </div>
         </div>
 
-        <!-- Grafik Nilai Tukar Interaktif Google-Style untuk Valas Ini -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between px-1">
-            <span class="text-xs sm:text-sm font-bold text-slate-100 flex items-center gap-2">
-              <LineChart class="w-4 h-4 text-indigo-400" />
-              {t('map.chartTrendTitle', { currency: curr.currencyCode })}
-            </span>
-            <span class="text-[10px] text-emerald-400 font-mono">{t('map.googleCrosshair')}</span>
-          </div>
-
-          <GoogleRateChart
-            initialCurrency={curr.currencyCode}
-            compact={true}
-            showCurrencySelector={false}
-          />
+        <!-- Drawer Footer -->
+        <div class="pt-4 border-t border-[var(--bg-rule)] flex items-center justify-between text-xs text-[var(--ink-4)]">
+          <span>🕒 {formatDateTimeIndo(new Date())}</span>
+          <button
+            type="button"
+            onclick={handleCloseInspector}
+            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer"
+          >
+            {t('common.close')}
+          </button>
         </div>
-      </div>
+      </aside>
+    {/if}
 
-      <!-- Action Button at Drawer Bottom -->
-      <div class="pt-4 border-t border-slate-800/80">
-        <Button
-          variant="default"
-          size="lg"
-          onclick={handleConvertFullClick}
-          class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-xl shadow-emerald-950/70 cursor-pointer"
-        >
-          <ArrowRightLeft class="w-4 h-4" />
-          <span>{t('map.openFullConverter')}</span>
-        </Button>
-      </div>
-    </aside>
-  {/if}
+  </div>
 {/if}
