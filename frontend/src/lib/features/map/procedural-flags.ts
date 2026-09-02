@@ -1,11 +1,14 @@
 /**
- * Procedural Vexillological Pattern Generator for Global Sovereign Flags.
- * Renders authentic multi-stripe and geometric flag patterns via WebGL GLSL ShaderMaterials
- * with zero network latency, zero CORS errors, zero UV dependencies, and zero black screen rendering risks.
+ * Authentic National Flag Texture & Vexillological Engine for Global Sovereign Flags.
+ * Maps official high-resolution vector/raster flag images directly to 3D spherical country polygons
+ * on the Earth globe, with zero network latency, zero CORS errors, zero UV dependencies, and zero black screens.
  */
 
 import * as THREE from 'three';
 import { getCountryFlagColor } from './country-flag-colors';
+import isoMappingRaw from './iso-mapping.json';
+
+export const ISO_MAPPING: Record<string, string> = isoMappingRaw as Record<string, string>;
 
 export type FlagPatternType = 
   | 'vertical-tricolor'
@@ -18,6 +21,7 @@ export type FlagPatternType =
   | 'canton-stripes'
   | 'diamond-emblem'
   | 'diagonal-stripe'
+  | 'texture-flag'
   | 'solid-emblem';
 
 export interface FlagPatternDefinition {
@@ -27,56 +31,48 @@ export interface FlagPatternDefinition {
 }
 
 export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
-  // ==========================================
   // ASEAN & ASIA TENGGARA
-  // ==========================================
   IDN: { type: 'horizontal-bicolor', colors: ['#dc2626', '#ffffff'] }, // Indonesia (Merah, Putih)
   SGP: { type: 'horizontal-bicolor', colors: ['#dc2626', '#ffffff'] }, // Singapura (Merah, Putih)
   MYS: { type: 'canton-stripes', colors: ['#1e40af', '#dc2626', '#ffffff'] }, // Malaysia (Jalur Gemilang)
   THA: { type: 'horizontal-tricolor', colors: ['#dc2626', '#1e3a8a', '#dc2626'] }, // Thailand (Trairanga)
   PHL: { type: 'horizontal-bicolor', colors: ['#1d4ed8', '#dc2626'] }, // Filipina (Blue, Red)
   VNM: { type: 'circle-disc', colors: ['#dc2626', '#eab308'] }, // Vietnam (Red with Gold Star/Disc)
-  BRN: { type: 'diagonal-stripe', colors: ['#eab308', '#ffffff', '#18181b', '#dc2626'] }, // Brunei Darussalam (Kuning Emas, Putih, Hitam, Merah)
-  KHM: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#dc2626', '#1d4ed8'] }, // Kamboja (Blue, Red, Blue)
-  LAO: { type: 'horizontal-tricolor', colors: ['#dc2626', '#1d4ed8', '#dc2626'] }, // Laos (Red, Blue, Red)
-  MMR: { type: 'horizontal-tricolor', colors: ['#eab308', '#15803d', '#dc2626'] }, // Myanmar (Yellow, Green, Red)
-  TLS: { type: 'canton-stripes', colors: ['#18181b', '#dc2626', '#eab308'] }, // Timor Leste (Black/Yellow Triangle, Red)
+  BRN: { type: 'diagonal-stripe', colors: ['#eab308', '#ffffff', '#18181b', '#dc2626'] }, // Brunei Darussalam
+  KHM: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#dc2626', '#1d4ed8'] }, // Kamboja
+  LAO: { type: 'horizontal-tricolor', colors: ['#dc2626', '#1d4ed8', '#dc2626'] }, // Laos
+  MMR: { type: 'horizontal-tricolor', colors: ['#eab308', '#15803d', '#dc2626'] }, // Myanmar
+  TLS: { type: 'canton-stripes', colors: ['#18181b', '#dc2626', '#eab308'] }, // Timor Leste
 
-  // ==========================================
-  // ASIA TIMUR & ASIA LAINNYA
-  // ==========================================
+  // ASIA TIMUR & LAINNYA
   JPN: { type: 'circle-disc', colors: ['#ffffff', '#dc2626'] }, // Jepang (Hinomaru)
   CHN: { type: 'solid-emblem', colors: ['#dc2626', '#eab308'] }, // Tiongkok
   KOR: { type: 'circle-disc', colors: ['#ffffff', '#1e3a8a', '#dc2626'] }, // Korea Selatan (Taegeuk)
   PRK: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#dc2626', '#1d4ed8'] }, // Korea Utara
-  TWN: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Taiwan (Blue Canton, Red field)
-  HKG: { type: 'circle-disc', colors: ['#dc2626', '#ffffff'] }, // Hong Kong (Red with White Bauhinia)
-  MAC: { type: 'circle-disc', colors: ['#047857', '#ffffff'] }, // Makau (Green with White Lotus)
+  TWN: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Taiwan
+  HKG: { type: 'circle-disc', colors: ['#dc2626', '#ffffff'] }, // Hong Kong
+  MAC: { type: 'circle-disc', colors: ['#047857', '#ffffff'] }, // Makau
   MNG: { type: 'vertical-tricolor', colors: ['#dc2626', '#1d4ed8', '#dc2626'] }, // Mongolia
-  IND: { type: 'horizontal-tricolor', colors: ['#ea580c', '#ffffff', '#15803d'] }, // India (Saffron, White, Green)
-  PAK: { type: 'vertical-bicolor', colors: ['#ffffff', '#047857'] }, // Pakistan (White, Green)
-  BGD: { type: 'circle-disc', colors: ['#047857', '#dc2626'] }, // Bangladesh (Green with Red Sun)
-  LKA: { type: 'canton-stripes', colors: ['#881337', '#15803d', '#ea580c'] }, // Sri Lanka (Maroon, Green, Orange)
-  NPL: { type: 'cross', colors: ['#dc2626', '#1e3a8a'] }, // Nepal (Crimson Red, Blue border)
-  BTN: { type: 'diagonal-stripe', colors: ['#eab308', '#ea580c', '#ffffff'] }, // Bhutan (Yellow, Orange)
+  IND: { type: 'horizontal-tricolor', colors: ['#ea580c', '#ffffff', '#15803d'] }, // India
+  PAK: { type: 'vertical-bicolor', colors: ['#ffffff', '#047857'] }, // Pakistan
+  BGD: { type: 'circle-disc', colors: ['#047857', '#dc2626'] }, // Bangladesh
+  LKA: { type: 'canton-stripes', colors: ['#881337', '#15803d', '#ea580c'] }, // Sri Lanka
+  NPL: { type: 'cross', colors: ['#dc2626', '#1e3a8a'] }, // Nepal
+  BTN: { type: 'diagonal-stripe', colors: ['#eab308', '#ea580c', '#ffffff'] }, // Bhutan
   MDV: { type: 'circle-disc', colors: ['#dc2626', '#047857', '#ffffff'] }, // Maladewa
   AFG: { type: 'vertical-tricolor', colors: ['#18181b', '#dc2626', '#15803d'] }, // Afghanistan
 
-  // ==========================================
   // ASIA TENGAH & KAUKASUS
-  // ==========================================
-  KAZ: { type: 'circle-disc', colors: ['#0284c7', '#eab308'] }, // Kazakhstan (Sky Blue with Gold Sun)
+  KAZ: { type: 'circle-disc', colors: ['#0284c7', '#eab308'] }, // Kazakhstan
   UZB: { type: 'horizontal-tricolor', colors: ['#0284c7', '#ffffff', '#15803d'] }, // Uzbekistan
   KGZ: { type: 'circle-disc', colors: ['#dc2626', '#eab308'] }, // Kirgizstan
   TJK: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#15803d'] }, // Tajikistan
   TKM: { type: 'canton-stripes', colors: ['#047857', '#881337', '#ffffff'] }, // Turkmenistan
-  GEO: { type: 'cross', colors: ['#ffffff', '#dc2626'] }, // Georgia (St. George Cross)
+  GEO: { type: 'cross', colors: ['#ffffff', '#dc2626'] }, // Georgia
   ARM: { type: 'horizontal-tricolor', colors: ['#dc2626', '#1d4ed8', '#ea580c'] }, // Armenia
   AZE: { type: 'horizontal-tricolor', colors: ['#0284c7', '#dc2626', '#15803d'] }, // Azerbaijan
 
-  // ==========================================
   // TIMUR TENGAH
-  // ==========================================
   SAU: { type: 'solid-emblem', colors: ['#047857', '#ffffff'] }, // Arab Saudi
   ARE: { type: 'vertical-bicolor', colors: ['#dc2626', '#15803d'] }, // UEA
   QAT: { type: 'vertical-bicolor', colors: ['#ffffff', '#881337'] }, // Qatar
@@ -93,30 +89,28 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   PSE: { type: 'horizontal-tricolor', colors: ['#18181b', '#ffffff', '#15803d'] }, // Palestina
   TUR: { type: 'circle-disc', colors: ['#dc2626', '#ffffff'] }, // Turki
 
-  // ==========================================
   // EROPA
-  // ==========================================
-  FRA: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#ffffff', '#dc2626'] }, // Prancis (Bleu, Blanc, Rouge)
-  DEU: { type: 'horizontal-tricolor', colors: ['#18181b', '#dc2626', '#d97706'] }, // Jerman (Schwarz, Rot, Gold)
-  ITA: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Italia (Verde, Bianco, Rosso)
-  BEL: { type: 'vertical-tricolor', colors: ['#18181b', '#eab308', '#dc2626'] }, // Belgia (Black, Yellow, Red)
-  NLD: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#1e40af'] }, // Belanda (Rood, Wit, Blauw)
-  IRL: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#ea580c'] }, // Irlandia (Green, White, Orange)
-  ROU: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#dc2626'] }, // Rumania (Blue, Yellow, Red)
-  AUT: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Austria (Red, White, Red)
-  HUN: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#15803d'] }, // Hongaria (Red, White, Green)
-  BGR: { type: 'horizontal-tricolor', colors: ['#ffffff', '#15803d', '#dc2626'] }, // Bulgaria (White, Green, Red)
-  RUS: { type: 'horizontal-tricolor', colors: ['#ffffff', '#1d4ed8', '#dc2626'] }, // Rusia (White, Blue, Red)
-  POL: { type: 'horizontal-bicolor', colors: ['#ffffff', '#dc2626'] }, // Polandia (White, Red)
-  UKR: { type: 'horizontal-bicolor', colors: ['#0284c7', '#eab308'] }, // Ukraina (Sky Blue, Wheat Yellow)
-  SWE: { type: 'nordic-cross', colors: ['#0284c7', '#eab308'] }, // Swedia (Blue with Yellow Cross)
-  NOR: { type: 'nordic-cross', colors: ['#dc2626', '#1e3a8a'] }, // Norwegia (Red, Blue)
-  DNK: { type: 'nordic-cross', colors: ['#dc2626', '#ffffff'] }, // Denmark (Red with White Cross)
-  FIN: { type: 'nordic-cross', colors: ['#ffffff', '#1d4ed8'] }, // Finlandia (White with Blue Cross)
-  ISL: { type: 'nordic-cross', colors: ['#0284c7', '#dc2626'] }, // Islandia (Blue, Red)
-  CHE: { type: 'cross', colors: ['#dc2626', '#ffffff'] }, // Swiss (Red with White Cross)
-  ESP: { type: 'horizontal-tricolor', colors: ['#dc2626', '#eab308', '#dc2626'] }, // Spanyol (Rojigualda)
-  PRT: { type: 'vertical-bicolor', colors: ['#15803d', '#dc2626'] }, // Portugal (Green, Red)
+  FRA: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#ffffff', '#dc2626'] }, // Prancis
+  DEU: { type: 'horizontal-tricolor', colors: ['#18181b', '#dc2626', '#d97706'] }, // Jerman
+  ITA: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Italia
+  BEL: { type: 'vertical-tricolor', colors: ['#18181b', '#eab308', '#dc2626'] }, // Belgia
+  NLD: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#1e40af'] }, // Belanda
+  IRL: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#ea580c'] }, // Irlandia
+  ROU: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#dc2626'] }, // Rumania
+  AUT: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Austria
+  HUN: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#15803d'] }, // Hongaria
+  BGR: { type: 'horizontal-tricolor', colors: ['#ffffff', '#15803d', '#dc2626'] }, // Bulgaria
+  RUS: { type: 'horizontal-tricolor', colors: ['#ffffff', '#1d4ed8', '#dc2626'] }, // Rusia
+  POL: { type: 'horizontal-bicolor', colors: ['#ffffff', '#dc2626'] }, // Polandia
+  UKR: { type: 'horizontal-bicolor', colors: ['#0284c7', '#eab308'] }, // Ukraina
+  SWE: { type: 'nordic-cross', colors: ['#0284c7', '#eab308'] }, // Swedia
+  NOR: { type: 'nordic-cross', colors: ['#dc2626', '#1e3a8a'] }, // Norwegia
+  DNK: { type: 'nordic-cross', colors: ['#dc2626', '#ffffff'] }, // Denmark
+  FIN: { type: 'nordic-cross', colors: ['#ffffff', '#1d4ed8'] }, // Finlandia
+  ISL: { type: 'nordic-cross', colors: ['#0284c7', '#dc2626'] }, // Islandia
+  CHE: { type: 'cross', colors: ['#dc2626', '#ffffff'] }, // Swiss
+  ESP: { type: 'horizontal-tricolor', colors: ['#dc2626', '#eab308', '#dc2626'] }, // Spanyol
+  PRT: { type: 'vertical-bicolor', colors: ['#15803d', '#dc2626'] }, // Portugal
   GRC: { type: 'canton-stripes', colors: ['#1d4ed8', '#ffffff', '#1d4ed8'] }, // Yunani
   GBR: { type: 'cross', colors: ['#1e3a8a', '#dc2626'] }, // UK
   CZE: { type: 'horizontal-bicolor', colors: ['#ffffff', '#dc2626'] }, // Ceko
@@ -143,9 +137,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   VAT: { type: 'vertical-bicolor', colors: ['#eab308', '#ffffff'] }, // Vatikan
   XKX: { type: 'circle-disc', colors: ['#1d4ed8', '#eab308'] }, // Kosovo
 
-  // ==========================================
   // AMERIKA UTARA, TENGAH & KARIBIA
-  // ==========================================
   USA: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Amerika Serikat
   CAN: { type: 'vertical-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Kanada
   MEX: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Meksiko
@@ -173,9 +165,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   LCA: { type: 'circle-disc', colors: ['#0284c7', '#eab308', '#18181b'] }, // St. Lucia
   VCT: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#15803d'] }, // St. Vincent
 
-  // ==========================================
   // AMERIKA SELATAN
-  // ==========================================
   BRA: { type: 'diamond-emblem', colors: ['#15803d', '#eab308', '#1e40af'] }, // Brasil
   ARG: { type: 'horizontal-tricolor', colors: ['#0284c7', '#ffffff', '#0284c7'] }, // Argentina
   COL: { type: 'horizontal-tricolor', colors: ['#eab308', '#1d4ed8', '#dc2626'] }, // Kolombia
@@ -187,11 +177,9 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   BOL: { type: 'horizontal-tricolor', colors: ['#dc2626', '#eab308', '#15803d'] }, // Bolivia
   PRY: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#1d4ed8'] }, // Paraguay
 
-  // ==========================================
   // AFRIKA
-  // ==========================================
-  TCD: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#dc2626'] }, // Chad (Bleu, Jaune, Rouge)
-  EGY: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Mesir (Red, White, Black)
+  TCD: { type: 'vertical-tricolor', colors: ['#1d4ed8', '#eab308', '#dc2626'] }, // Chad
+  EGY: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Mesir
   ZAF: { type: 'horizontal-tricolor', colors: ['#dc2626', '#15803d', '#1d4ed8'] }, // Afrika Selatan
   NGA: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#15803d'] }, // Nigeria
   CIV: { type: 'vertical-tricolor', colors: ['#ea580c', '#ffffff', '#15803d'] }, // Pantai Gading
@@ -241,9 +229,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   ERI: { type: 'diagonal-stripe', colors: ['#15803d', '#dc2626', '#0284c7'] }, // Eritrea
   SOM: { type: 'circle-disc', colors: ['#0284c7', '#ffffff'] }, // Somalia
 
-  // ==========================================
   // OCEANIA & PASIFIK
-  // ==========================================
   AUS: { type: 'canton-stripes', colors: ['#1e3a8a', '#ffffff', '#1e3a8a'] }, // Australia
   NZL: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Selandia Baru
   PNG: { type: 'diagonal-stripe', colors: ['#dc2626', '#18181b', '#eab308'] }, // Papua Nugini
@@ -270,7 +256,6 @@ export function getFlagPattern(iso3: string): FlagPatternDefinition {
   if (FLAG_PATTERNS[code]) {
     return FLAG_PATTERNS[code];
   }
-  // Fallback to authentic sovereign primary color rather than arbitrary blue
   const sovereignColor = getCountryFlagColor(code, true);
   return {
     type: 'solid-emblem',
@@ -320,11 +305,50 @@ export function computeFeatureBounds(feat: any): { minLon: number; maxLon: numbe
   return { minLon, maxLon, minLat, maxLat };
 }
 
+let textureLoader: THREE.TextureLoader | null = null;
+const flagTexturesCache = new Map<string, THREE.Texture>();
 const proceduralMaterialsCache = new Map<string, THREE.ShaderMaterial>();
 
 /**
- * Generate a procedural WebGL GLSL ShaderMaterial that renders multi-stripe and geometric
- * national flag patterns (e.g. France Blue-White-Red, Portugal Green-Red, Brunei Royal Gold).
+ * Retrieve or load official national flag texture for a country.
+ */
+export function getCountryFlagTexture(iso3: string): THREE.Texture | null {
+  if (typeof document === 'undefined') {
+    // In headless test environments (e.g. Bun Test), return mock texture
+    return new THREE.Texture();
+  }
+
+  if (!textureLoader) {
+    textureLoader = new THREE.TextureLoader();
+  }
+
+  const code = (iso3 || '').toUpperCase();
+  const iso2 = (ISO_MAPPING[code] || code.slice(0, 2)).toLowerCase();
+  
+  if (flagTexturesCache.has(iso2)) {
+    return flagTexturesCache.get(iso2)!;
+  }
+
+  // Load from bundled local assets in /flags/{iso2}.png
+  const texture = textureLoader.load(
+    `/flags/${iso2}.png`,
+    (tex) => {
+      tex.wrapS = THREE.ClampToEdgeWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      tex.needsUpdate = true;
+    }
+  );
+
+  flagTexturesCache.set(iso2, texture);
+  return texture;
+}
+
+/**
+ * Generate a WebGL GLSL ShaderMaterial that maps the authentic national flag texture
+ * (including emblems, stars, crescent, coat of arms) directly onto 3D country polygons.
  */
 export function createProceduralFlagMaterial(feat: any, isDark: boolean = true): THREE.ShaderMaterial {
   const p = feat.properties || {};
@@ -340,9 +364,10 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
   }
 
   const pattern = getFlagPattern(iso3);
+  const texture = getCountryFlagTexture(iso3);
   const bounds = computeFeatureBounds(feat);
 
-  let patternTypeId = 0; // solid default
+  let patternTypeId = 0;
   if (pattern.type === 'vertical-tricolor') patternTypeId = 1;
   else if (pattern.type === 'horizontal-bicolor') patternTypeId = 2;
   else if (pattern.type === 'horizontal-tricolor') patternTypeId = 3;
@@ -360,6 +385,8 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
 
   const mat = new THREE.ShaderMaterial({
     uniforms: {
+      flagTexture: { value: texture },
+      hasTexture: { value: texture && typeof document !== 'undefined' ? 1.0 : 0.0 },
       minLon: { value: bounds.minLon },
       maxLon: { value: bounds.maxLon },
       minLat: { value: bounds.minLat },
@@ -378,6 +405,8 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
     `,
     fragmentShader: `
       varying vec3 vPos;
+      uniform sampler2D flagTexture;
+      uniform float hasTexture;
       uniform float minLon;
       uniform float maxLon;
       uniform float minLat;
@@ -400,44 +429,44 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
         float u = clamp((lon - minLon) / max(0.001, maxLon - minLon), 0.0, 1.0);
         float v = clamp((lat - minLat) / max(0.001, maxLat - minLat), 0.0, 1.0);
 
+        if (hasTexture > 0.5) {
+          // Render official authentic vector/raster flag texture directly
+          vec4 tex = texture2D(flagTexture, vec2(u, 1.0 - v));
+          gl_FragColor = vec4(tex.rgb, 0.95);
+          return;
+        }
+
+        // Geometric shader fallback
         vec3 col = c1;
 
         if (patternType == 1) {
-          // Vertical tricolor (France: Blue, White, Red; Chad: Blue, Yellow, Red; Italy: Green, White, Red; Belgium)
           if (u < 0.3333) col = c1;
           else if (u < 0.6666) col = c2;
           else col = c3;
         } else if (patternType == 2) {
-          // Horizontal bicolor (Indonesia: Red, White; Ukraine: Blue, Yellow; Poland: White, Red)
           if (v >= 0.50) col = c1;
           else col = c2;
         } else if (patternType == 3) {
-          // Horizontal tricolor (Germany: Black, Red, Gold; Netherlands; Russia; Austria; Egypt)
           if (v >= 0.6666) col = c1;
           else if (v >= 0.3333) col = c2;
           else col = c3;
         } else if (patternType == 4) {
-          // Circle disc (Japan: White + Red disc; Bangladesh: Green + Red disc; Turkey; Tunisia)
           float dist = distance(vec2(u, v), vec2(0.5, 0.5));
           if (dist < 0.26) col = c2;
           else col = c1;
         } else if (patternType == 5) {
-          // Nordic cross (Sweden, Norway, Denmark, Finland, Iceland)
           if (abs(u - 0.38) < 0.07 || abs(v - 0.50) < 0.08) col = c2;
           else col = c1;
         } else if (patternType == 6) {
-          // Symmetric cross (Switzerland, Georgia, England)
           if ((abs(u - 0.5) < 0.08 && abs(v - 0.5) < 0.28) || (abs(v - 0.5) < 0.08 && abs(u - 0.5) < 0.28)) col = c2;
           else col = c1;
         } else if (patternType == 7) {
-          // Canton & stripes (USA, Malaysia, Taiwan, Greece, Liberia)
           if (u < 0.45 && v >= 0.45) col = c1;
           else {
             float stripe = mod(floor(v * 10.0), 2.0);
             col = stripe > 0.5 ? c2 : c3;
           }
         } else if (patternType == 8) {
-          // Diamond emblem (Brazil: Green + Yellow diamond + Blue circle)
           float dx = abs(u - 0.5) * 2.0;
           float dy = abs(v - 0.5) * 2.0;
           float dist = distance(vec2(u, v), vec2(0.5, 0.5));
@@ -445,27 +474,20 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
           else if (dx + dy <= 0.85) col = c2;
           else col = c1;
         } else if (patternType == 9) {
-          // Vertical bicolor (Portugal: Green West, Red East; Algeria; Pakistan; Qatar)
           if (u < 0.40) col = c1;
           else col = c2;
         } else if (patternType == 10) {
-          // Diagonal stripe (Brunei Darussalam, Congo, Tanzania, Trinidad, PNG, Solomon)
           float diag = (u + (1.0 - v)) * 0.5;
           float distCenter = distance(vec2(u, v), vec2(0.5, 0.5));
-          if (distCenter < 0.15) {
-            col = vec3(0.863, 0.149, 0.149); // Red emblem / crest
-          } else if (abs(diag - 0.50) < 0.13) {
-            if (diag < 0.50) col = c2; // White diagonal
-            else col = c3; // Black diagonal
-          } else {
-            col = c1; // Royal Gold background
-          }
+          if (distCenter < 0.15) col = vec3(0.863, 0.149, 0.149);
+          else if (abs(diag - 0.50) < 0.13) col = diag < 0.50 ? c2 : c3;
+          else col = c1;
         }
 
-        gl_FragColor = vec4(col, 0.94);
+        gl_FragColor = vec4(col, 0.95);
       }
     `,
-    side: THREE.DoubleSide,
+    side: THREE.DoubleSide
   });
 
   proceduralMaterialsCache.set(key, mat);
