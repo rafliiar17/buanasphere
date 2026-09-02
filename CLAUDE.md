@@ -36,6 +36,13 @@ rtk bun --filter frontend check  # run svelte-check
 rtk bun --filter frontend test   # run frontend unit & integration tests
 ```
 
+## SDLC Workflow (`/plan` ➔ `/to-spec` ➔ `/tdd` ➔ `implement` ➔ `check hasil/plan`)
+1. **`/plan`**: Requirement analysis, codebase exploration, write `implementation_plan.md`, get user approval.
+2. **`/to-spec`**: Write ADR (`docs/adr/`) or Tech Spec (`docs/specs/`), create feature branch (`feat/...`, `fix/...`).
+3. **`/tdd`**: Write unit/integration tests first (*Red State*), run `rtk bun test`.
+4. **`implement`**: Implement production code until tests pass (*Green State*), refactor cleanly.
+5. **`check hasil/plan`**: Run quality gates (`check`, `test`, `build`), generate `walkthrough.md`, commit with conventional commits.
+
 ## UI/UX Mandate
 - **shadcn-svelte (Bits UI) Only**: Always use official shadcn-svelte components (`Select`, `Dialog`, `Alert`, `Button`, `Input`, `Tabs`, `Popover`, `Badge`, `Card`, `Table`). Avoid unstyled HTML elements.
 - **High-Fidelity Shimmer Skeletons**: Every async data view must include a pixel-matching shimmer skeleton (`animate-shimmer`) to eliminate Cumulative Layout Shift (CLS).

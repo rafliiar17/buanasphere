@@ -24,6 +24,13 @@ Refer to [**`AGENTS.md`**](file:///home/archy/Projects/kurs-world/AGENTS.md) for
    - Use official shadcn-svelte components (`Select`, `Dialog`, `Alert`, `Button`, `Input`, `Tabs`, `Badge`, `Card`, `Table`).
    - Implement pixel-accurate shimmer skeleton loading states (`animate-shimmer`) for all async data-fetching views.
 
-4. **Git Safety & SDLC**:
+4. **SDLC Pipeline (`/plan` ➔ `/to-spec` ➔ `/tdd` ➔ `implement` ➔ `check hasil/plan`)**:
+   - **Tahap 1 (`/plan`)**: Analisis masalah, telusuri codebase, susun `implementation_plan.md`, minta persetujuan user.
+   - **Tahap 2 (`/to-spec`)**: Tulis ADR / Technical Spec di `docs/`, buat branch fitur baru (`feat/...`, `fix/...`).
+   - **Tahap 3 (`/tdd`)**: Tulis unit/integration test dulu (*Red State*), jalankan `rtk bun test`.
+   - **Tahap 4 (`implement`)**: Tulis kode implementasi hingga test lulus (*Green State*), lakukan refactor bersih.
+   - **Tahap 5 (`check hasil/plan`)**: Jalankan quality gates (`rtk bun run check`, `rtk bun test`, `rtk bun run build`), buat `walkthrough.md`, dan commit dengan conventional commits.
+
+5. **Git Safety & SDLC**:
    - Never push directly to `main`.
    - Work on feature/fix branches with conventional commits (`feat:`, `fix:`, `wip:` during TDD).

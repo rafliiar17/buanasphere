@@ -1,0 +1,332 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────
+   KURS WORLD — Design System v3 (Dual Theme: Dark Default & Light Paper)
+   WORLD: Global Foreign Exchange Financial Terminal
+   Default Dark: Obsidian #0B0F19 · Ink: #F8FAFC · Accent: #38BDF8 · Signal: #FB7185 · Pos: #34D399
+   Light Paper:  Paper #FAF8F3 · Ink: #1A1209 · Accent: #1C2B4A · Signal: #C41E3A · Pos: #1B5E20
+   ───────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  /* Default: DARK THEME */
+  :root,
+  [data-theme="dark"],
+  .dark {
+    color-scheme: dark;
+
+    /* Ground — Obsidian / deep financial terminal */
+    --bg:           #0B0F19;
+    --bg-subtle:    #111827;
+    --bg-raised:    #182234;
+    --bg-rule:      #223049;
+
+    /* Ink hierarchy */
+    --ink:          #F8FAFC;
+    --ink-2:        #E2E8F0;
+    --ink-3:        #94A3B8;
+    --ink-4:        #64748B;
+    --ink-ghost:    #334155;
+
+    /* Signal — Vibrant Rose/Red */
+    --signal:       #FB7185;
+    --signal-bg:    rgba(251, 113, 133, 0.12);
+    --signal-rule:  rgba(251, 113, 133, 0.28);
+
+    /* Positive — Vibrant Emerald */
+    --pos:          #34D399;
+    --pos-bg:       rgba(52, 211, 153, 0.12);
+    --pos-rule:     rgba(52, 211, 153, 0.28);
+
+    /* Accent — Electric Sky/Cyan Financial Accent */
+    --accent:       #38BDF8;
+    --accent-2:     #0EA5E9;
+    --accent-fg:    #0B0F19;
+
+    /* Shimmer skeleton */
+    --shimmer-a:    rgba(34, 48, 73, 0.6);
+    --shimmer-b:    rgba(24, 34, 52, 0.9);
+
+    /* Typography */
+    --font-sans:    'Geist', 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-serif:   'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-mono:    'JetBrains Mono', 'Geist Mono', 'Fira Code', ui-monospace, monospace;
+
+    /* Radius */
+    --radius-sm:    4px;
+    --radius:       6px;
+    --radius-lg:    10px;
+  }
+
+  /* LIGHT THEME */
+  [data-theme="light"],
+  .light {
+    color-scheme: light;
+
+    /* Ground — warm paper, like BI annual report stock */
+    --bg:           #FAF8F3;
+    --bg-subtle:    #F3F0E8;
+    --bg-raised:    #FFFFFF;
+    --bg-rule:      #E8E3D8;
+
+    /* Ink hierarchy */
+    --ink:          #1A1209;
+    --ink-2:        #3D3022;
+    --ink-3:        #6B5D4A;
+    --ink-4:        #9C8E7E;
+    --ink-ghost:    #C4BAB0;
+
+    /* Signal — IDX red */
+    --signal:       #C41E3A;
+    --signal-bg:    #FFF0F2;
+    --signal-rule:  #F7C0C8;
+
+    /* Positive — muted forest */
+    --pos:          #1B5E20;
+    --pos-bg:       #F0F5F0;
+    --pos-rule:     #B8D4BA;
+
+    /* Accent — deep IDX navy */
+    --accent:       #1C2B4A;
+    --accent-2:     #2A3F6A;
+    --accent-fg:    #FFFFFF;
+
+    /* Shimmer skeleton */
+    --shimmer-a:    rgba(232,227,216,0.6);
+    --shimmer-b:    rgba(250,248,243,0.9);
+  }
+}
+
+/* ─── Reset & Base ─────────────────────────────────────────────────────── */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "tnum" 1, "kern" 1;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--bg-rule); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-ghost); }
+
+/* ─── Status pills ─────────────────────────────────────────────────────── */
+
+.pill-pos {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--pos-bg); color: var(--pos);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--pos-rule);
+}
+
+.pill-neg {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--signal-bg); color: var(--signal);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--signal-rule);
+}
+
+.pill-neutral {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--bg-subtle); color: var(--ink-3);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--bg-rule);
+}
+
+/* ─── Shimmer skeleton ─────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg,
+    var(--shimmer-a) 0%,
+    var(--shimmer-b) 50%,
+    var(--shimmer-a) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* ─── Ticker marquee ───────────────────────────────────────────────────── */
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 60s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+
+/* ─── Focus ring ───────────────────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── Selection ────────────────────────────────────────────────────────── */
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* ─── Data table base ──────────────────────────────────────────────────── */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.data-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--ink);
+  white-space: nowrap;
+}
+
+.data-table th.right,
+.data-table td.right { text-align: right; }
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--bg-rule);
+  color: var(--ink-2);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg-subtle); }
+
+/* ─── Nav tab underline ────────────────────────────────────────────────── */
+
+.nav-tab {
+  position: relative;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 120ms;
+  background: none;
+  border: none;
+}
+
+.nav-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-tab:hover { color: var(--ink); }
+.nav-tab.active { color: var(--ink); font-weight: 600; }
+.nav-tab.active::after { transform: scaleX(1); }
+
+/* ─── Button ────────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 120ms, color 120ms;
+  white-space: nowrap;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.btn-primary:hover { background: var(--accent-2); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-3);
+  border: 1px solid var(--bg-rule);
+}
+.btn-ghost:hover { background: var(--bg-subtle); color: var(--ink); }
+
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-lg { padding: 11px 24px; font-size: 14px; }
+
+/* ─── Input ─────────────────────────────────────────────────────────────── */
+
+.field {
+  width: 100%;
+  background: var(--bg-raised);
+  border: 1px solid var(--bg-rule);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  transition: border-color 120ms;
+  outline: none;
+}
+.field:focus { border-color: var(--accent); }
+.field::placeholder { color: var(--ink-ghost); }
+
+/* ─── Live dot ─────────────────────────────────────────────────────────── */
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.7; }
+  70%  { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px; height: 8px;
+}
+.live-dot::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 9999px;
+  background: var(--pos);
+  animation: pulse-ring 2s ease-out infinite;
+}
+.live-dot::after {
+  content: '';
+  position: absolute; inset: 0;
+  display: block;
+  border-radius: 9999px;
+  background: var(--pos);
+}
