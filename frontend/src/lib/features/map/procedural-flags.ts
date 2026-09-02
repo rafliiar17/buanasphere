@@ -23,6 +23,8 @@ export type FlagPatternType =
   | 'diamond-emblem'
   | 'diagonal-stripe'
   | 'blue-ensign'
+  | 'israel-flag'
+  | 'canada-flag'
   | 'solid-emblem';
 
 export interface FlagPatternDefinition {
@@ -86,7 +88,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   SYR: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Suriah
   IRQ: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Irak
   IRN: { type: 'horizontal-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Iran
-  ISR: { type: 'horizontal-tricolor', colors: ['#ffffff', '#0038b8', '#ffffff'] }, // Israel (White with Blue Stripes & Magen David)
+  ISR: { type: 'israel-flag', colors: ['#ffffff', '#0038b8'] }, // Israel (White with Blue Stripes & Magen David)
   PSE: { type: 'horizontal-tricolor', colors: ['#18181b', '#ffffff', '#15803d'] }, // Palestina
   TUR: { type: 'circle-disc', colors: ['#dc2626', '#ffffff'] }, // Turki
 
@@ -140,7 +142,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
 
   // AMERIKA
   USA: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Amerika Serikat (Stars and Stripes)
-  CAN: { type: 'vertical-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Kanada (Red, White with Maple Leaf, Red)
+  CAN: { type: 'canada-flag', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Kanada (Red, White with Maple Leaf, Red)
   MEX: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Meksiko
   CRI: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#ffffff', '#dc2626'] }, // Kosta Rika
   PAN: { type: 'cross', colors: ['#ffffff', '#1d4ed8', '#dc2626'] }, // Panama
@@ -674,6 +676,8 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
   else if (pattern.type === 'vertical-bicolor') patternTypeId = 9;
   else if (pattern.type === 'diagonal-stripe') patternTypeId = 10;
   else if (pattern.type === 'blue-ensign') patternTypeId = 11;
+  else if (pattern.type === 'israel-flag') patternTypeId = 12;
+  else if (pattern.type === 'canada-flag') patternTypeId = 13;
 
   const c1 = new THREE.Color(pattern.colors[0] || '#eab308');
   const c2 = new THREE.Color(pattern.colors[1] || '#ffffff');
@@ -760,10 +764,17 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
           if ((abs(u - 0.5) < 0.08 && abs(v - 0.5) < 0.28) || (abs(v - 0.5) < 0.08 && abs(u - 0.5) < 0.28)) col = c2;
           else col = c1;
         } else if (patternType == 7) {
-          if (u < 0.45 && v >= 0.45) col = c1;
-          else {
-            float stripe = mod(floor(v * 10.0), 2.0);
-            col = stripe > 0.5 ? c2 : c3;
+          // 9 blue/white stripes
+          float stripe = mod(floor(v * 9.0), 2.0);
+          col = stripe < 0.5 ? vec3(0.114, 0.306, 0.847) : vec3(1.0, 1.0, 1.0);
+          // Canton on top-left
+          if (u < 0.40 && v >= 0.44) {
+            col = vec3(0.114, 0.306, 0.847);
+            float cu = u / 0.40;
+            float cv = (v - 0.44) / 0.56;
+            if (abs(cu - 0.50) < 0.12 || abs(cv - 0.50) < 0.12) {
+              col = vec3(1.0, 1.0, 1.0);
+            }
           }
         } else if (patternType == 8) {
           float dx = abs(u - 0.5) * 2.0;
@@ -783,8 +794,56 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
           else col = c1;
         } else if (patternType == 11) {
           // Blue Ensign (Australia & New Zealand)
-          if (u < 0.50 && v >= 0.50) col = c2; // Union Jack canton
-          else col = c1; // Navy blue field
+          col = vec3(0.0, 0.141, 0.490); // Navy Blue #00247d
+
+          // Union Jack Canton (u in [0.0, 0.50], v in [0.50, 1.0])
+          if (u < 0.50 && v >= 0.50) {
+            float cu = u / 0.50;
+            float cv = (v - 0.50) / 0.50;
+            if (abs(cu - 0.50) < 0.12 || abs(cv - 0.50) < 0.12 || abs(cu - cv) < 0.08 || abs(cu - (1.0 - cv)) < 0.08) {
+              col = vec3(1.0, 1.0, 1.0); // White
+            }
+            if (abs(cu - 0.50) < 0.07 || abs(cv - 0.50) < 0.07 || abs(cu - cv) < 0.04 || abs(cu - (1.0 - cv)) < 0.04) {
+              col = vec3(0.812, 0.078, 0.169); // Red #cf142b
+            }
+          }
+
+          // Commonwealth Star (under canton: u around 0.25, v around 0.25)
+          float distCommonwealth = distance(vec2(u, v), vec2(0.25, 0.25));
+          if (distCommonwealth < 0.065) {
+            col = vec3(1.0, 1.0, 1.0); // White Star
+          }
+
+          // Southern Cross Stars (fly)
+          float d1 = distance(vec2(u, v), vec2(0.75, 0.78));
+          float d2 = distance(vec2(u, v), vec2(0.86, 0.50));
+          float d3 = distance(vec2(u, v), vec2(0.75, 0.22));
+          float d4 = distance(vec2(u, v), vec2(0.64, 0.54));
+          float d5 = distance(vec2(u, v), vec2(0.80, 0.38));
+          if (d1 < 0.025 || d2 < 0.025 || d3 < 0.025 || d4 < 0.025 || d5 < 0.015) {
+            col = vec3(1.0, 1.0, 1.0);
+          }
+        } else if (patternType == 12) {
+          // Israel: White field, 2 Blue stripes, Blue Star of David
+          col = vec3(1.0, 1.0, 1.0);
+          if ((v >= 0.12 && v <= 0.24) || (v >= 0.76 && v <= 0.88)) {
+            col = vec3(0.0, 0.220, 0.722);
+          }
+          float distCenter = distance(vec2(u, v), vec2(0.50, 0.50));
+          if (distCenter >= 0.08 && distCenter <= 0.15) {
+            col = vec3(0.0, 0.220, 0.722);
+          }
+        } else if (patternType == 13) {
+          // Canada: Red, White with Maple Leaf, Red
+          if (u < 0.25 || u > 0.75) {
+            col = vec3(0.863, 0.149, 0.149);
+          } else {
+            col = vec3(1.0, 1.0, 1.0);
+            float distCenter = distance(vec2(u, v), vec2(0.50, 0.50));
+            if (distCenter < 0.14) {
+              col = vec3(0.863, 0.149, 0.149);
+            }
+          }
         }
 
         gl_FragColor = vec4(col, 0.95);
