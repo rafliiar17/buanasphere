@@ -52,6 +52,7 @@
     PRESET_AMOUNTS 
   } from './map-constants';
   import { getCountryFlagColor } from './country-flag-colors';
+  import { createProceduralFlagMaterial } from './procedural-flags';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -404,6 +405,10 @@
       .atmosphereAltitude(0.22)
       .polygonsData(geoJsonFeatures)
       .polygonGeoJsonGeometry((d: any) => d.geometry)
+      .polygonCapMaterial((d: any) => {
+        if (activeMetric !== 'flag') return null;
+        return createProceduralFlagMaterial(d, isDark);
+      })
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
@@ -478,6 +483,10 @@
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
+      .polygonCapMaterial((d: any) => {
+        if (activeMetric !== 'flag') return null;
+        return createProceduralFlagMaterial(d, isDark);
+      })
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);

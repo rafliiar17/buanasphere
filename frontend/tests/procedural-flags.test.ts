@@ -2,8 +2,8 @@ import { describe, it, expect } from 'bun:test';
 import { 
   FLAG_PATTERNS, 
   getFlagPattern, 
-  drawFlagPatternToContext,
-  type FlagPatternDefinition 
+  computeFeatureBounds,
+  createProceduralFlagMaterial,
 } from '../src/lib/features/map/procedural-flags';
 
 describe('Procedural Flag Vexillological Engine Unit Tests (TDD)', () => {
@@ -72,28 +72,40 @@ describe('Procedural Flag Vexillological Engine Unit Tests (TDD)', () => {
     });
   });
 
-  describe('Drawing Context Mock Verification', () => {
-    it('executes drawing routines on 2D context without throwing errors', () => {
-      const calls: string[] = [];
-      const mockCtx: any = {
-        fillStyle: '',
-        fillRect: (x: number, y: number, w: number, h: number) => {
-          calls.push(`fillRect(${x},${y},${w},${h},${mockCtx.fillStyle})`);
-        },
-        beginPath: () => calls.push('beginPath'),
-        arc: (x: number, y: number, r: number) => calls.push(`arc(${x},${y},${r})`),
-        moveTo: (x: number, y: number) => calls.push(`moveTo(${x},${y})`),
-        lineTo: (x: number, y: number) => calls.push(`lineTo(${x},${y})`),
-        closePath: () => calls.push('closePath'),
-        fill: () => calls.push('fill'),
+  describe('Procedural WebGL ShaderMaterial Generation', () => {
+    it('creates valid ShaderMaterial with calculated bounds for France', () => {
+      const mockFranceFeature = {
+        properties: { ISO_A3: 'FRA', NAME: 'France' },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[-5.0, 42.0], [8.5, 42.0], [8.5, 51.0], [-5.0, 51.0], [-5.0, 42.0]]]
+        }
       };
 
-      const francePattern = getFlagPattern('FRA');
-      drawFlagPatternToContext(mockCtx, francePattern, 120, 80);
-      expect(calls.length).toBeGreaterThan(0);
-      expect(calls.some(c => c.includes('#1d4ed8'))).toBe(true);
-      expect(calls.some(c => c.includes('#ffffff'))).toBe(true);
-      expect(calls.some(c => c.includes('#dc2626'))).toBe(true);
+      const mat = createProceduralFlagMaterial(mockFranceFeature, true);
+      expect(mat).toBeDefined();
+      expect(mat.type).toBe('ShaderMaterial');
+      expect(mat.uniforms.patternType.value).toBe(1); // vertical-tricolor
+      expect(mat.uniforms.minLon.value).toBe(-5.0);
+      expect(mat.uniforms.maxLon.value).toBe(8.5);
+    });
+
+    it('computes bounding coordinates for complex geometry safely', () => {
+      const mockIndonesiaFeature = {
+        properties: { ISO_A3: 'IDN' },
+        geometry: {
+          type: 'MultiPolygon',
+          coordinates: [
+            [[[95.0, -11.0], [141.0, -11.0], [141.0, 6.0], [95.0, 6.0]]],
+          ]
+        }
+      };
+
+      const bounds = computeFeatureBounds(mockIndonesiaFeature);
+      expect(bounds.minLon).toBe(95.0);
+      expect(bounds.maxLon).toBe(141.0);
+      expect(bounds.minLat).toBe(-11.0);
+      expect(bounds.maxLat).toBe(6.0);
     });
   });
 });
