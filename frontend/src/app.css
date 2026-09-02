@@ -1,95 +1,290 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────
+   KURS WORLD — Design System v2
+   WORLD: Indonesian Financial Data Terminal
+   Ground: warm paper #FAF8F3 · Ink: #1A1209 · Signal: #C41E3A (IDX Red)
+   Type: Geist Sans · Figures: tabular-nums
+   Grammar: hairline rules, not cards; data density, not decoration
+   ───────────────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #090d16;
-    --card: #ffffff;
-    --card-foreground: #090d16;
-    --popover: #ffffff;
-    --popover-foreground: #090d16;
-    --primary: #4f46e5;
-    --primary-foreground: #ffffff;
-    --secondary: #f1f5f9;
-    --secondary-foreground: #0f172a;
-    --muted: #f8fafc;
-    --muted-foreground: #64748b;
-    --accent: #f1f5f9;
-    --accent-foreground: #0f172a;
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-    --border: #e2e8f0;
-    --input: #e2e8f0;
-    --ring: #6366f1;
-    --radius: 0.75rem;
-  }
+    /* Ground — warm paper, like BI annual report stock */
+    --bg:           #FAF8F3;
+    --bg-subtle:    #F3F0E8;
+    --bg-raised:    #FFFFFF;
+    --bg-rule:      #E8E3D8;
 
-  .dark {
-    --background: #030712;
-    --foreground: #f9fafb;
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-    --popover: #0f172a;
-    --popover-foreground: #f8fafc;
-    --primary: #6366f1;
-    --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f8fafc;
-    --destructive: #7f1d1d;
-    --destructive-foreground: #f8fafc;
-    --border: #1e293b;
-    --input: #1e293b;
-    --ring: #818cf8;
+    /* Ink hierarchy */
+    --ink:          #1A1209;
+    --ink-2:        #3D3022;
+    --ink-3:        #6B5D4A;
+    --ink-4:        #9C8E7E;
+    --ink-ghost:    #C4BAB0;
+
+    /* Signal — IDX red, used only for alerts, losers, destructive */
+    --signal:       #C41E3A;
+    --signal-bg:    #FFF0F2;
+    --signal-rule:  #F7C0C8;
+
+    /* Positive — muted forest, used only in data rows for gains */
+    --pos:          #1B5E20;
+    --pos-bg:       #F0F5F0;
+    --pos-rule:     #B8D4BA;
+
+    /* Accent — deep IDX navy for nav/CTA, not decorative */
+    --accent:       #1C2B4A;
+    --accent-2:     #2A3F6A;
+    --accent-fg:    #FFFFFF;
+
+    /* Shimmer skeleton */
+    --shimmer-a:    rgba(232,227,216,0.6);
+    --shimmer-b:    rgba(250,248,243,0.9);
+
+    /* Typography */
+    --font-sans:    'Geist', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-serif:   'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-mono:    'Geist Mono', 'Fira Code', ui-monospace, monospace;
+
+    /* Radius */
+    --radius-sm:    4px;
+    --radius:       6px;
+    --radius-lg:    10px;
   }
 }
 
+/* ─── Reset & Base ─────────────────────────────────────────────────────── */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "tnum" 1, "kern" 1;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--bg-rule); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-ghost); }
+
+/* ─── Status pills ─────────────────────────────────────────────────────── */
+
+.pill-pos {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--pos-bg); color: var(--pos);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--pos-rule);
+}
+
+.pill-neg {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--signal-bg); color: var(--signal);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--signal-rule);
+}
+
+.pill-neutral {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--bg-subtle); color: var(--ink-3);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+  padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--bg-rule);
+}
+
+/* ─── Shimmer skeleton ─────────────────────────────────────────────────── */
+
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 .animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(30, 41, 59, 0.4) 0%,
-    rgba(51, 65, 85, 0.8) 50%,
-    rgba(30, 41, 59, 0.4) 100%
+  background: linear-gradient(90deg,
+    var(--shimmer-a) 0%,
+    var(--shimmer-b) 50%,
+    var(--shimmer-a) 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
+  animation: shimmer 1.6s ease-in-out infinite;
 }
 
-.light .animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(226, 232, 240, 0.6) 0%,
-    rgba(241, 245, 249, 0.9) 50%,
-    rgba(226, 232, 240, 0.6) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
+/* ─── Ticker marquee ───────────────────────────────────────────────────── */
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 60s linear infinite;
 }
-::-webkit-scrollbar-track {
+.ticker-track:hover { animation-play-state: paused; }
+
+/* ─── Focus ring ───────────────────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── Selection ────────────────────────────────────────────────────────── */
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* ─── Data table base ──────────────────────────────────────────────────── */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.data-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--ink);
+  white-space: nowrap;
+}
+
+.data-table th.right,
+.data-table td.right { text-align: right; }
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--bg-rule);
+  color: var(--ink-2);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg-subtle); }
+
+/* ─── Nav tab underline ────────────────────────────────────────────────── */
+
+.nav-tab {
+  position: relative;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 120ms;
+  background: none;
+  border: none;
+}
+
+.nav-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-tab:hover { color: var(--ink); }
+.nav-tab.active { color: var(--ink); font-weight: 600; }
+.nav-tab.active::after { transform: scaleX(1); }
+
+/* ─── Button ────────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 120ms, color 120ms;
+  white-space: nowrap;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.btn-primary:hover { background: var(--accent-2); }
+
+.btn-ghost {
   background: transparent;
+  color: var(--ink-3);
+  border: 1px solid var(--bg-rule);
 }
-::-webkit-scrollbar-thumb {
-  background: #334155;
+.btn-ghost:hover { background: var(--bg-subtle); color: var(--ink); }
+
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-lg { padding: 11px 24px; font-size: 14px; }
+
+/* ─── Input ─────────────────────────────────────────────────────────────── */
+
+.field {
+  width: 100%;
+  background: var(--bg-raised);
+  border: 1px solid var(--bg-rule);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  transition: border-color 120ms;
+  outline: none;
+}
+.field:focus { border-color: var(--accent); }
+.field::placeholder { color: var(--ink-ghost); }
+
+/* ─── Live dot ─────────────────────────────────────────────────────────── */
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.7; }
+  70%  { transform: scale(2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px; height: 8px;
+}
+.live-dot::before {
+  content: '';
+  position: absolute; inset: 0;
   border-radius: 9999px;
+  background: var(--pos);
+  animation: pulse-ring 2s ease-out infinite;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+.live-dot::after {
+  content: '';
+  position: absolute; inset: 0;
+  display: block;
+  border-radius: 9999px;
+  background: var(--pos);
 }
+
