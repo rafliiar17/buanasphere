@@ -169,19 +169,20 @@
 
     if (mapState.activeMetric === 'rate') {
       const r = country.middleRate;
-      if (r > 20000) return isDark ? 'rgba(99, 102, 241, 0.75)' : 'rgba(79, 70, 229, 0.75)';
-      if (r > 14000) return isDark ? 'rgba(59, 130, 246, 0.75)' : 'rgba(37, 99, 235, 0.75)';
-      if (r > 10000) return isDark ? 'rgba(6, 182, 212, 0.75)' : 'rgba(8, 145, 178, 0.75)';
-      if (r > 2000)  return isDark ? 'rgba(16, 185, 129, 0.75)' : 'rgba(5, 150, 105, 0.75)';
-      if (r > 500)   return isDark ? 'rgba(20, 184, 166, 0.7)' : 'rgba(13, 148, 136, 0.7)';
-      return isDark ? 'rgba(15, 118, 110, 0.65)' : 'rgba(45, 212, 191, 0.65)';
+      if (r > 20000) return isDark ? 'rgba(99, 102, 241, 0.90)' : 'rgba(79, 70, 229, 0.90)'; // Royal Indigo
+      if (r > 14000) return isDark ? 'rgba(37, 99, 235, 0.90)' : 'rgba(29, 78, 216, 0.90)'; // Royal Blue
+      if (r > 3000)  return isDark ? 'rgba(6, 182, 212, 0.85)' : 'rgba(8, 145, 178, 0.85)';  // Cyan Azure
+      if (r > 500)   return isDark ? 'rgba(245, 158, 11, 0.85)' : 'rgba(217, 119, 6, 0.85)'; // Amber Gold
+      return isDark ? 'rgba(234, 88, 12, 0.80)' : 'rgba(194, 65, 12, 0.80)';                // Sunset Orange
     } else if (mapState.activeMetric === 'change') {
       const chg = country.change24h;
-      if (chg > 0.25) return isDark ? 'rgba(16, 185, 129, 0.85)' : 'rgba(5, 150, 105, 0.85)';
-      if (chg > 0.05) return isDark ? 'rgba(52, 211, 153, 0.75)' : 'rgba(16, 185, 129, 0.75)';
-      if (chg < -0.25) return isDark ? 'rgba(239, 68, 68, 0.85)' : 'rgba(220, 38, 38, 0.85)';
-      if (chg < -0.05) return isDark ? 'rgba(248, 113, 113, 0.75)' : 'rgba(239, 68, 68, 0.75)';
-      return isDark ? 'rgba(51, 65, 85, 0.65)' : 'rgba(203, 213, 225, 0.75)';
+      if (chg >= 0.20) return isDark ? 'rgba(16, 185, 129, 0.95)' : 'rgba(5, 150, 105, 0.95)'; // Strong Neon Green
+      if (chg > 0.02)  return isDark ? 'rgba(34, 197, 94, 0.90)' : 'rgba(22, 163, 74, 0.90)';   // Bright Green
+      if (chg > 0.00)  return isDark ? 'rgba(52, 211, 153, 0.85)' : 'rgba(16, 185, 129, 0.85)'; // Mint Green
+      if (chg <= -0.20) return isDark ? 'rgba(225, 29, 72, 0.95)' : 'rgba(190, 18, 60, 0.95)';  // Deep Crimson Red
+      if (chg < -0.02) return isDark ? 'rgba(244, 63, 94, 0.90)' : 'rgba(225, 29, 72, 0.90)';   // Bright Red Coral
+      if (chg < 0.00)  return isDark ? 'rgba(251, 113, 133, 0.85)' : 'rgba(244, 63, 94, 0.85)'; // Soft Rose Red
+      return isDark ? 'rgba(100, 116, 139, 0.70)' : 'rgba(148, 163, 184, 0.75)';               // Neutral Slate
     } else {
       return getCountryFlagColor(iso3, isDark);
     }
@@ -203,8 +204,8 @@
       const local = calculateLocalTime(now, offset);
       const isDay = isDaylight(local.hours);
       const isWorking = local.hours >= 9 && local.hours < 17;
-      const diffWib = offset - 7;
-      const diffStr = diffWib === 0 ? 'Sama dengan WIB (Jakarta)' : (diffWib > 0 ? `+${diffWib} Jam lebih cepat dari Jakarta` : `${Math.abs(diffWib)} Jam lebih lambat dari Jakarta`);
+      const diffHours = offset - 7;
+      const diffStr = diffHours === 0 ? 'Sama dengan WIB (UTC+7)' : `${diffHours > 0 ? '+' : ''}${diffHours} jam vs WIB`;
 
       return `
         <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
@@ -213,21 +214,18 @@
               <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 20px; height: 14px; border-radius: 2px; object-fit: cover;" onerror="this.style.display='none'" />
               <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
             </div>
-            <span style="font-size: 10px; font-weight: 700; color: #f59e0b; font-family: monospace;">${formatUtcOffset(offset)}</span>
+            <span style="font-size: 10px; font-weight: 700; color: #38bdf8; font-family: monospace;">${formatUtcOffset(offset)}</span>
           </div>
-          <div style="font-size: 16px; font-weight: 800; color: ${isDay ? '#f59e0b' : '#38bdf8'}; font-family: monospace; margin-bottom: 4px;">
-            🕒 ${local.formatted}
+          <div style="font-size: 20px; font-weight: 900; color: #38bdf8; font-family: monospace; letter-spacing: -0.03em; margin-bottom: 4px;">
+            ${local.formatted}
           </div>
-          <div style="display: flex; gap: 6px; font-size: 10px; font-weight: 700; margin-bottom: 4px;">
-            <span style="padding: 2px 6px; border-radius: 4px; background: ${isDay ? 'rgba(245, 158, 11, 0.2)' : 'rgba(99, 102, 241, 0.2)'}; color: ${isDay ? '#fbbf24' : '#818cf8'};">
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; margin-bottom: 4px;">
+            <span style="padding: 2px 6px; border-radius: 4px; background: ${isDay ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)'}; color: ${isDay ? '#f59e0b' : '#60a5fa'};">
               ${isDay ? '☀️ Siang Hari' : '🌙 Malam Hari'}
             </span>
             <span style="padding: 2px 6px; border-radius: 4px; background: ${isWorking ? 'rgba(16, 185, 129, 0.2)' : 'rgba(100, 116, 139, 0.2)'}; color: ${isWorking ? '#34d399' : '#94a3b8'};">
               ${isWorking ? '🏢 Jam Kantor' : '🏢 Tutup'}
             </span>
-          </div>
-          <div style="font-size: 10px; color: ${isDark ? '#94a3b8' : '#64748b'};">
-            ${diffStr}
           </div>
         </div>
       `;
@@ -286,7 +284,28 @@
     const buyFormatted = country ? formatRupiah(country.buyRate) : '-';
     const sellFormatted = country ? formatRupiah(country.sellRate) : '-';
     const chgFormatted = country ? formatPercent(country.change24h) : '0.00%';
-    const chgColor = country && country.change24h >= 0 ? '#10b981' : '#ef4444';
+    const chgColor = (country?.change24h ?? 0) >= 0 ? '#10b981' : '#ef4444';
+
+    if (mapState.activeMetric === 'change') {
+      return `
+        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 22px; height: 15px; border-radius: 3px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);" onerror="this.style.display='none'" />
+            <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+            ${code ? `<span style="font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">${code}</span>` : ''}
+          </div>
+          <div style="font-size: 13px; font-weight: 800; color: ${chgColor}; margin: 6px 0 3px 0;">
+            📈 Tren 24 Jam: ${chgFormatted} (${(country?.change24h ?? 0) >= 0 ? 'Menguat' : 'Melemah'})
+          </div>
+          <div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#475569'}; margin-bottom: 2px;">
+            Kurs Tengah: ${midFormatted}
+          </div>
+          <div style="font-size: 10px; color: #38bdf8; margin-top: 4px; font-weight: 600;">
+            👉 Klik untuk pilih • Klik 2x untuk split view
+          </div>
+        </div>
+      `;
+    }
 
     return `
       <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
