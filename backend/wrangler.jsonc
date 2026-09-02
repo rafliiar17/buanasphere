@@ -8,7 +8,7 @@
   "workers_dev": true,
   "routes": [
     {
-      "pattern": "api-globe.arafz.id/*",
+      "pattern": "api-globe.arafz.id",
       "custom_domain": true
     }
   ],
