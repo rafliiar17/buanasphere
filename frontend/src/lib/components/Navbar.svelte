@@ -56,7 +56,7 @@
     </span>
   </div>
 
-  <div style="max-width:1800px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;">
+  <div style="max-width:2000px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;">
 
     <!-- Left: Wordmark & App Switcher -->
     <div style="display:flex;align-items:center;gap:16px;">
