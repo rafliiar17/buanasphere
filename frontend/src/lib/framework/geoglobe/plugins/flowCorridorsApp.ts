@@ -136,8 +136,31 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
     };
   },
 
-  getArcData: (_selectedCountry: CountrySpatialMetadata, allData: Record<string, RemittanceCorridorData>): GeoArc[] => {
-    return flowCorridorsApp.getArcs ? flowCorridorsApp.getArcs(allData, 'all') : [];
+  getArcData: (selectedCountry: CountrySpatialMetadata, _allData: Record<string, RemittanceCorridorData>): GeoArc[] => {
+    const destination = {
+      lat: selectedCountry.lat,
+      lng: selectedCountry.lng,
+      label: selectedCountry.countryName,
+    };
+    const arcs: GeoArc[] = [];
+    for (const [iso3, hub] of Object.entries(REMITTANCE_HUBS)) {
+      if (iso3 === selectedCountry.iso3) continue;
+      const arc = generateGreatCircleArc(
+        { lat: hub.lat, lng: hub.lng, label: iso3 },
+        destination,
+        {
+          color: [hub.color, '#10b981'],
+          altitude: 0.25 + (hub.volumeM / 3200) * 0.20,
+          stroke: 1.5 + (hub.volumeM / 3200) * 1.5,
+          dashLength: 0.4,
+          dashGap: 0.2,
+          dashAnimateTime: 2500,
+          label: `${iso3} ➔ ${selectedCountry.countryName} ($${hub.volumeM}M USD)`,
+        }
+      );
+      arcs.push(arc);
+    }
+    return arcs;
   },
 
   getArcs: (_data: any, activeFilter: string = 'all'): GeoArc[] => {
