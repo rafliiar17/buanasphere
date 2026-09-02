@@ -105,22 +105,22 @@
       <WorldRateMap onSelectCurrency={handleMapCurrencySelect} class="w-full h-full" />
 
       <!-- Floating Bottom Dock: Ticker & View Selector -->
-      <div class="absolute bottom-3 left-3 right-3 sm:left-6 sm:right-6 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pointer-events-none">
+      <div class="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 z-20 flex flex-col sm:flex-row items-end justify-between gap-3 pointer-events-none">
         
         <!-- Floating Ticker Strip -->
-        <div class="pointer-events-auto bg-[var(--bg-raised)]/90 border border-[var(--bg-rule)] rounded-2xl shadow-xl backdrop-blur-xl px-3 py-1.5 overflow-hidden max-w-xl">
+        <div class="pointer-events-auto bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-xl px-3 py-1.5 overflow-hidden max-w-xl hidden lg:block">
           <GlobalMoversTicker onSelectCurrency={handleTickerCurrencySelect} />
         </div>
 
-        <!-- Floating Navigation View Pills -->
-        <div class="pointer-events-auto flex items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] shadow-2xl backdrop-blur-xl overflow-x-auto">
+        <!-- Floating Navigation View Pills (Anchored to the very bottom) -->
+        <div class="pointer-events-auto flex items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-raised)]/95 border border-[var(--bg-rule)] shadow-2xl backdrop-blur-xl overflow-x-auto ml-auto">
           {#each viewOptions as opt}
             {@const isActive = activeView === opt.id}
             {@const IconComponent = opt.icon}
             <button
               type="button"
               onclick={() => (activeView = opt.id as any)}
-              class={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              class={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 isActive
                   ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
                   : 'text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--bg-subtle)]'
@@ -134,7 +134,7 @@
           <button
             type="button"
             onclick={() => (isAlertModalOpen = true)}
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--signal)] border border-[var(--signal-rule)] transition cursor-pointer"
+            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--signal)] border border-[var(--signal-rule)] transition cursor-pointer"
             title={t('masthead.ctaAlert')}
           >
             <Bell class="w-3.5 h-3.5" />

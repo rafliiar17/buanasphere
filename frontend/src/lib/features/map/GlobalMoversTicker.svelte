@@ -64,137 +64,91 @@
   }
 </script>
 
-<!-- Ticker: market data strip, editorial style -->
-<div
-  style="
-    padding: 10px 0;
-    overflow: hidden;
-    font-size: 12px;
-    position: relative;
-  "
-  class={className}
->
+<!-- Ticker: market data strip, horizontal layout -->
+<div class="py-1 px-1 text-xs select-none {className}">
   {#if isLoading}
     <!-- Skeleton row -->
-    <div style="display:flex;gap:16px;align-items:center;padding:4px 0;">
-      {#each Array(8) as _}
-        <div style="height:22px;width:80px;border-radius:3px;" class="animate-shimmer"></div>
+    <div class="flex items-center gap-3 py-1">
+      {#each Array(6) as _}
+        <div class="h-6 w-20 rounded-md animate-shimmer"></div>
       {/each}
     </div>
   {:else}
     <!-- Header row: label + live dot -->
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-      <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-[10px] font-bold tracking-wider uppercase text-[var(--ink-4)]">
         {t('ticker.marketStatus')}
       </span>
       <span class="live-dot"></span>
     </div>
 
-    <!-- Three sections: Gainers · Losers · Popular in one dense row -->
-    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;">
-
+    <!-- Row 1: Gaining & Declining side-by-side -->
+    <div class="flex items-center gap-3 flex-wrap mb-2">
       <!-- Gainers -->
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--pos);white-space:nowrap;">
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-[10px] font-bold tracking-wider uppercase text-[var(--pos)] shrink-0">
           ↑ {t('map.strengthening')}
         </span>
         {#each topGainers as item}
           <button
             type="button"
             onclick={() => handleCurrencyClick(item.targetCurrency)}
-            style="
-              display:inline-flex;align-items:center;gap:5px;
-              padding:3px 8px;
-              border:1px solid var(--pos-rule);
-              background:var(--pos-bg);
-              border-radius:3px;
-              cursor:pointer;
-              transition:all 120ms;
-              white-space:nowrap;
-            "
-            title={`${item.targetCurrency}`}
-            onmouseenter={(e) => (e.currentTarget.style.borderColor = 'var(--pos)')}
-            onmouseleave={(e) => (e.currentTarget.style.borderColor = 'var(--pos-rule)')}
+            class="inline-flex items-center gap-1.5 px-2 py-1 border border-[var(--pos-rule)] bg-[var(--pos-bg)] rounded-md hover:border-[var(--pos)] transition cursor-pointer text-xs font-semibold whitespace-nowrap"
+            title={item.targetCurrency}
           >
-            <span style="font-size:11px;">{getCurrencyFlag(item.targetCurrency)}</span>
-            <span style="font-size:12px;font-weight:700;color:var(--ink);">{item.targetCurrency}</span>
-            <span style="font-size:11px;font-weight:600;color:var(--pos);font-variant-numeric:tabular-nums;">{formatPercent(item.change24h ?? 0)}</span>
+            <span class="text-[11px]">{getCurrencyFlag(item.targetCurrency)}</span>
+            <span class="font-bold text-[var(--ink)]">{item.targetCurrency}</span>
+            <span class="text-[11px] font-semibold text-[var(--pos)] font-mono">{formatPercent(item.change24h ?? 0)}</span>
           </button>
         {/each}
       </div>
 
-      <!-- Separator -->
-      <div style="width:1px;background:var(--bg-rule);align-self:stretch;flex-shrink:0;"></div>
+      <div class="w-px h-4 bg-[var(--bg-rule)] hidden sm:block"></div>
 
       <!-- Losers -->
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--signal);white-space:nowrap;">
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-[10px] font-bold tracking-wider uppercase text-[var(--signal)] shrink-0">
           ↓ {t('map.weakening')}
         </span>
         {#each topLosers as item}
           <button
             type="button"
             onclick={() => handleCurrencyClick(item.targetCurrency)}
-            style="
-              display:inline-flex;align-items:center;gap:5px;
-              padding:3px 8px;
-              border:1px solid var(--signal-rule);
-              background:var(--signal-bg);
-              border-radius:3px;
-              cursor:pointer;
-              transition:all 120ms;
-              white-space:nowrap;
-            "
-            title={`${item.targetCurrency}`}
-            onmouseenter={(e) => (e.currentTarget.style.borderColor = 'var(--signal)')}
-            onmouseleave={(e) => (e.currentTarget.style.borderColor = 'var(--signal-rule)')}
+            class="inline-flex items-center gap-1.5 px-2 py-1 border border-[var(--signal-rule)] bg-[var(--signal-bg)] rounded-md hover:border-[var(--signal)] transition cursor-pointer text-xs font-semibold whitespace-nowrap"
+            title={item.targetCurrency}
           >
-            <span style="font-size:11px;">{getCurrencyFlag(item.targetCurrency)}</span>
-            <span style="font-size:12px;font-weight:700;color:var(--ink);">{item.targetCurrency}</span>
-            <span style="font-size:11px;font-weight:600;color:var(--signal);font-variant-numeric:tabular-nums;">{formatPercent(item.change24h ?? 0)}</span>
+            <span class="text-[11px]">{getCurrencyFlag(item.targetCurrency)}</span>
+            <span class="font-bold text-[var(--ink)]">{item.targetCurrency}</span>
+            <span class="text-[11px] font-semibold text-[var(--signal)] font-mono">{formatPercent(item.change24h ?? 0)}</span>
           </button>
         {/each}
       </div>
+    </div>
 
-      <!-- Separator -->
-      <div style="width:1px;background:var(--bg-rule);align-self:stretch;flex-shrink:0;"></div>
-
-      <!-- Popular: scrolling rate ticker chips -->
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0;">
-        <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);white-space:nowrap;flex-shrink:0;">
-          {t('ticker.popularCurrencies')}
-        </span>
-        {#each popularRates as item}
-          {@const changeVal = item.change24h ?? 0}
-          {@const isPos = changeVal >= 0}
-          <button
-            type="button"
-            onclick={() => handleCurrencyClick(item.targetCurrency)}
-            style="
-              display:inline-flex;align-items:center;gap:5px;
-              padding:3px 8px;
-              border:1px solid var(--bg-rule);
-              background:var(--bg-raised);
-              border-radius:3px;
-              cursor:pointer;
-              transition:all 120ms;
-              white-space:nowrap;
-            "
-            title={`Kurs ${item.targetCurrency}/IDR`}
-            onmouseenter={(e) => { e.currentTarget.style.background = 'var(--bg-subtle)'; e.currentTarget.style.borderColor = 'var(--ink-ghost)'; }}
-            onmouseleave={(e) => { e.currentTarget.style.background = 'var(--bg-raised)'; e.currentTarget.style.borderColor = 'var(--bg-rule)'; }}
-          >
-            <span style="font-size:11px;">{getCurrencyFlag(item.targetCurrency)}</span>
-            <span style="font-size:12px;font-weight:700;color:var(--ink);">{item.targetCurrency}</span>
-            <span style="font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums;">
-              {formatRupiah(item.middleRate, { showFraction: false, withPrefix: false })}
-            </span>
-            <span style="font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;color:{isPos ? 'var(--pos)' : 'var(--signal)'}">
-              {formatPercent(changeVal)}
-            </span>
-          </button>
-        {/each}
-      </div>
+    <!-- Row 2: Popular Currencies flowing horizontally across full width -->
+    <div class="flex items-center gap-1.5 flex-wrap pt-2 border-t border-[var(--bg-rule)]/60">
+      <span class="text-[10px] font-bold tracking-wider uppercase text-[var(--ink-4)] shrink-0 mr-1">
+        {t('ticker.popularCurrencies')}:
+      </span>
+      {#each popularRates as item}
+        {@const changeVal = item.change24h ?? 0}
+        {@const isPos = changeVal >= 0}
+        <button
+          type="button"
+          onclick={() => handleCurrencyClick(item.targetCurrency)}
+          class="inline-flex items-center gap-1 px-2 py-0.5 border border-[var(--bg-rule)] bg-[var(--bg-raised)] rounded-md hover:bg-[var(--bg-subtle)] hover:border-[var(--ink-ghost)] transition cursor-pointer text-xs font-semibold whitespace-nowrap"
+          title={`Kurs ${item.targetCurrency}/IDR`}
+        >
+          <span class="text-[11px]">{getCurrencyFlag(item.targetCurrency)}</span>
+          <span class="font-bold text-[var(--ink)]">{item.targetCurrency}</span>
+          <span class="text-[11px] text-[var(--ink-3)] font-mono">
+            {formatRupiah(item.middleRate, { showFraction: false, withPrefix: false })}
+          </span>
+          <span class="text-[10px] font-semibold font-mono {isPos ? 'text-[var(--pos)]' : 'text-[var(--signal)]'}">
+            {formatPercent(changeVal)}
+          </span>
+        </button>
+      {/each}
     </div>
   {/if}
 </div>
