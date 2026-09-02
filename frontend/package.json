@@ -13,12 +13,14 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-svelte": "^0.475.0",
+    "plotly.js-dist-min": "^4.0.0",
     "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/vite": "^4.0.6",
     "@types/bun": "^1.2.2",
+    "@types/plotly.js-dist-min": "^2.3.4",
     "svelte": "^5.20.2",
     "svelte-check": "^4.1.4",
     "tailwindcss": "^4.0.6",

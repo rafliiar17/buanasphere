@@ -8,6 +8,19 @@
   import type { ConversionResult, ProviderInfo } from '$lib/api/types';
   import { formatRupiah, formatCurrency, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
 
+  // Component Props
+  interface Props {
+    initialFromCurrency?: string;
+    initialToCurrency?: string;
+    class?: string;
+  }
+
+  let {
+    initialFromCurrency = 'USD',
+    initialToCurrency = 'IDR',
+    class: className = '',
+  }: Props = $props();
+
   // Svelte 5 Runes State
   let fromCurrency = $state('USD');
   let toCurrency = $state('IDR');
@@ -15,6 +28,17 @@
   let selectedProvider = $state('bca');
   let isLoading = $state(false);
   let conversionResult = $state<ConversionResult | null>(null);
+
+  // Sync prop changes if passed from parent
+  $effect(() => {
+    if (initialFromCurrency && initialFromCurrency !== fromCurrency) {
+      fromCurrency = initialFromCurrency;
+    }
+    if (initialToCurrency && initialToCurrency !== toCurrency) {
+      toCurrency = initialToCurrency;
+    }
+    performConversion();
+  });
 
   const fromInfo = $derived(SUPPORTED_CURRENCIES.find(c => c.code === fromCurrency) || SUPPORTED_CURRENCIES[0]);
   const toInfo = $derived(SUPPORTED_CURRENCIES.find(c => c.code === toCurrency) || SUPPORTED_CURRENCIES[11]);

@@ -15,6 +15,17 @@ export type CurrencyCode =
   | 'MYR'
   | 'SAR'
   | 'THB'
+  | 'CAD'
+  | 'CHF'
+  | 'HKD'
+  | 'KRW'
+  | 'NZD'
+  | 'INR'
+  | 'BRL'
+  | 'ZAR'
+  | 'AED'
+  | 'PHP'
+  | 'VND'
   | string;
 
 export type ProviderType = 'central_bank' | 'commercial_bank' | 'market_reference';

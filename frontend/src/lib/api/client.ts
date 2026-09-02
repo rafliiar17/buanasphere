@@ -12,14 +12,24 @@ export const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
   { code: 'USD', name: 'US Dollar', symbol: '$', flag: '🇺🇸', country: 'Amerika Serikat' },
   { code: 'EUR', name: 'Euro', symbol: '€', flag: '🇪🇺', country: 'Uni Eropa' },
   { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$', flag: '🇸🇬', country: 'Singapura' },
-  { code: 'JPY', name: 'Japanese Yen (100)', symbol: '¥', flag: '🇯🇵', country: 'Jepang' },
+  { code: 'JPY', name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵', country: 'Jepang' },
   { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', flag: '🇦🇺', country: 'Australia' },
   { code: 'GBP', name: 'British Pound', symbol: '£', flag: '🇬🇧', country: 'Inggris' },
   { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM', flag: '🇲🇾', country: 'Malaysia' },
   { code: 'CNY', name: 'Chinese Yuan', symbol: '¥', flag: '🇨🇳', country: 'Tiongkok' },
   { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼', flag: '🇸🇦', country: 'Arab Saudi' },
   { code: 'THB', name: 'Thai Baht', symbol: '฿', flag: '🇹🇭', country: 'Thailand' },
+  { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', flag: '🇨🇦', country: 'Kanada' },
+  { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', flag: '🇨🇭', country: 'Swiss' },
   { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$', flag: '🇭🇰', country: 'Hong Kong' },
+  { code: 'KRW', name: 'South Korean Won', symbol: '₩', flag: '🇰🇷', country: 'Korea Selatan' },
+  { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', flag: '🇳🇿', country: 'Selandia Baru' },
+  { code: 'INR', name: 'Indian Rupee', symbol: '₹', flag: '🇮🇳', country: 'India' },
+  { code: 'BRL', name: 'Brazilian Real', symbol: 'R$', flag: '🇧🇷', country: 'Brasil' },
+  { code: 'ZAR', name: 'South African Rand', symbol: 'R', flag: '🇿🇦', country: 'Afrika Selatan' },
+  { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ', flag: '🇦🇪', country: 'Uni Emirat Arab' },
+  { code: 'PHP', name: 'Philippine Peso', symbol: '₱', flag: '🇵🇭', country: 'Filipina' },
+  { code: 'VND', name: 'Vietnamese Dong', symbol: '₫', flag: '🇻🇳', country: 'Vietnam' },
   { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp', flag: '🇮🇩', country: 'Indonesia' },
 ];
 
@@ -101,7 +111,18 @@ const BASE_RATES_IDR: Record<string, { buy: number; sell: number; mid: number; c
   CNY: { buy: 2230, sell: 2270, mid: 2250, change: -0.09 },
   SAR: { buy: 4310, sell: 4360, mid: 4335, change: 0.12 },
   THB: { buy: 470, sell: 490, mid: 480, change: 0.18 },
+  CAD: { buy: 11800, sell: 11900, mid: 11850, change: 0.10 },
+  CHF: { buy: 18280, sell: 18420, mid: 18350, change: -0.05 },
   HKD: { buy: 2070, sell: 2110, mid: 2090, change: 0.14 },
+  KRW: { buy: 11.5, sell: 12.2, mid: 11.85, change: -0.15 },
+  NZD: { buy: 9700, sell: 9800, mid: 9750, change: 0.22 },
+  INR: { buy: 192.0, sell: 197.0, mid: 194.5, change: -0.08 },
+  BRL: { buy: 2880, sell: 2960, mid: 2920, change: 0.40 },
+  ZAR: { buy: 880, sell: 910, mid: 895, change: 0.15 },
+  AED: { buy: 4400, sell: 4450, mid: 4425, change: 0.11 },
+  PHP: { buy: 280, sell: 290, mid: 285, change: -0.05 },
+  VND: { buy: 0.62, sell: 0.66, mid: 0.64, change: 0.02 },
+  IDR: { buy: 1, sell: 1, mid: 1, change: 0.00 },
 };
 
 export class ApiClient {
@@ -159,6 +180,7 @@ export class ApiClient {
       const now = new Date().toISOString();
 
       Object.entries(BASE_RATES_IDR).forEach(([curr, val]) => {
+        if (curr === 'IDR') return;
         const spread = val.sell - val.buy;
         const spreadPercent = (spread / val.mid) * 100;
         items.push({

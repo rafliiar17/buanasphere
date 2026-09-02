@@ -76,6 +76,99 @@ export function createApp(env?: Env) {
         },
       }
     )
+    .get(
+      '/api/v1/providers',
+      () => ({
+        success: true,
+        data: [
+          {
+            id: 'bi',
+            name: 'Bank Indonesia (JISDOR)',
+            shortName: 'BI JISDOR',
+            type: 'central_bank',
+            badgeText: 'Bank Sentral',
+            website: 'https://www.bi.go.id',
+            lastUpdated: new Date().toISOString(),
+          },
+          {
+            id: 'bca',
+            name: 'Bank Central Asia (BCA)',
+            shortName: 'BCA',
+            type: 'commercial_bank',
+            badgeText: 'Bank Komersial',
+            website: 'https://www.bca.co.id',
+            lastUpdated: new Date().toISOString(),
+          },
+          {
+            id: 'mandiri',
+            name: 'Bank Mandiri',
+            shortName: 'Mandiri',
+            type: 'commercial_bank',
+            badgeText: 'Bank Komersial',
+            website: 'https://www.bankmandiri.co.id',
+            lastUpdated: new Date().toISOString(),
+          },
+          {
+            id: 'bri',
+            name: 'Bank Rakyat Indonesia (BRI)',
+            shortName: 'BRI',
+            type: 'commercial_bank',
+            badgeText: 'Bank Komersial',
+            website: 'https://bri.co.id',
+            lastUpdated: new Date().toISOString(),
+          },
+          {
+            id: 'bni',
+            name: 'Bank Negara Indonesia (BNI)',
+            shortName: 'BNI',
+            type: 'commercial_bank',
+            badgeText: 'Bank Komersial',
+            website: 'https://www.bni.co.id',
+            lastUpdated: new Date().toISOString(),
+          },
+          {
+            id: 'cimb',
+            name: 'CIMB Niaga',
+            shortName: 'CIMB',
+            type: 'commercial_bank',
+            badgeText: 'Bank Komersial',
+            website: 'https://www.cimbniaga.co.id',
+            lastUpdated: new Date().toISOString(),
+          },
+          {
+            id: 'dolarasia',
+            name: 'DolarAsia Money Changer',
+            shortName: 'DolarAsia',
+            type: 'money_changer',
+            badgeText: 'Money Changer',
+            website: 'https://dolarasia.com',
+            lastUpdated: new Date().toISOString(),
+          },
+        ],
+      }),
+      {
+        detail: {
+          summary: 'List of registered rate providers',
+          tags: ['General'],
+        },
+      }
+    )
+    .post(
+      '/api/v1/alerts',
+      async ({ body }) => {
+        const payload = body as any;
+        return {
+          success: true,
+          message: `Notifikasi berhasil didaftarkan untuk ${payload?.email || 'user'}. Anda akan menerima email saat kurs mencapai target.`,
+        };
+      },
+      {
+        detail: {
+          summary: 'Register rate alert',
+          tags: ['General'],
+        },
+      }
+    )
     .use(ratesRoutes(env))
     .use(convertRoutes(env))
     .use(historyRoutes(env));

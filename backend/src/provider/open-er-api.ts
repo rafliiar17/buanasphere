@@ -33,6 +33,17 @@ export const MAJOR_CURRENCIES = [
   'MYR',
   'SAR',
   'THB',
+  'CAD',
+  'CHF',
+  'HKD',
+  'KRW',
+  'NZD',
+  'INR',
+  'BRL',
+  'ZAR',
+  'AED',
+  'PHP',
+  'VND',
 ] as const;
 
 export class OpenERApiProvider implements IRateProvider {

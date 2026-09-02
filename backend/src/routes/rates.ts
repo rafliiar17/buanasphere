@@ -1,6 +1,7 @@
 import { Elysia, t } from 'elysia';
 import { AggregatorService } from '../service/aggregator.ts';
 import { ComparatorService } from '../service/comparator.ts';
+import { getAllCountryMappings } from '../domain/country-map.ts';
 import type { Env } from '../db/index.ts';
 
 export const ratesRoutes = (env?: Env) => {
@@ -8,6 +9,23 @@ export const ratesRoutes = (env?: Env) => {
   const comparator = new ComparatorService({ aggregator });
 
   return new Elysia({ prefix: '/api/v1/rates' })
+    .get(
+      '/countries',
+      () => {
+        return {
+          success: true,
+          data: getAllCountryMappings(),
+        };
+      },
+      {
+        detail: {
+          summary: 'Get ISO-3 country to currency mapping list',
+          description:
+            'Retrieves complete ISO-3 country definitions and currency mappings for map visualizations.',
+          tags: ['Rates'],
+        },
+      }
+    )
     .get(
       '/latest',
       async ({ query, set }) => {
@@ -91,6 +109,80 @@ export const ratesRoutes = (env?: Env) => {
           summary: 'Compare exchange rates side-by-side across banks',
           description:
             'Evaluates exchange rates from all registered providers for a currency pair, highlighting best buy/sell.',
+          tags: ['Rates'],
+        },
+      }
+    )
+    .get(
+      '/matrix',
+      async ({ query, set }) => {
+        try {
+          const currency = (query.currency || query.base || 'USD').toUpperCase();
+          const baseCurrency = (query.quote || 'IDR').toUpperCase();
+          const result = await comparator.compareRates(currency, baseCurrency);
+
+          let lowestSpreadProvider = '';
+          let minSpread = Number.MAX_VALUE;
+
+          const rows = result.rates.map((r) => {
+            const spread = r.spread;
+            const spreadPercent = r.midRate > 0 ? (spread / r.midRate) * 100 : 0;
+            if (spread < minSpread) {
+              minSpread = spread;
+              lowestSpreadProvider = r.providerName;
+            }
+            return {
+              providerId: r.provider,
+              providerName: r.providerName,
+              providerType: r.providerType || 'commercial_bank',
+              rateType: r.provider === 'bi' ? 'JISDOR' : 'Special Rate',
+              buyRate: r.buyRate,
+              sellRate: r.sellRate,
+              middleRate: r.midRate,
+              spread,
+              spreadPercent: Math.round(spreadPercent * 100) / 100,
+              updatedAt: r.updatedAt,
+              isBestBuy: result.bestForCustomerSell?.provider === r.provider,
+              isBestSell: result.bestForCustomerBuy?.provider === r.provider,
+              isLowestSpread: false,
+            };
+          });
+
+          for (const row of rows) {
+            if (row.providerName === lowestSpreadProvider) {
+              row.isLowestSpread = true;
+            }
+          }
+
+          return {
+            success: true,
+            data: {
+              currency,
+              baseCurrency,
+              timestamp: result.timestamp,
+              totalProviders: rows.length,
+              bestBuyProvider: result.bestForCustomerSell?.providerName || '-',
+              bestSellProvider: result.bestForCustomerBuy?.providerName || '-',
+              lowestSpreadProvider: lowestSpreadProvider || '-',
+              rows,
+            },
+          };
+        } catch (error) {
+          set.status = 500;
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to retrieve rate matrix',
+          };
+        }
+      },
+      {
+        query: t.Object({
+          currency: t.Optional(t.String({ description: 'Foreign currency e.g. USD, EUR, SGD' })),
+          base: t.Optional(t.String({ description: 'Base foreign currency' })),
+          quote: t.Optional(t.String({ description: 'Quote currency e.g. IDR' })),
+        }),
+        detail: {
+          summary: 'Get side-by-side exchange rate matrix for currency table',
           tags: ['Rates'],
         },
       }

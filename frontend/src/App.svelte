@@ -11,7 +11,8 @@
     X,
     TrendingUp,
     ShieldCheck,
-    Zap
+    Zap,
+    Globe
   } from 'lucide-svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import Footer from '$lib/components/Footer.svelte';
@@ -20,6 +21,7 @@
   import Card from '$lib/components/ui/Card.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
   import RateMatrix from '$lib/features/matrix/RateMatrix.svelte';
+  import WorldRateMap from '$lib/features/map/WorldRateMap.svelte';
   import CurrencyConverter from '$lib/features/converter/CurrencyConverter.svelte';
   import TrendChart from '$lib/features/chart/TrendChart.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
@@ -27,6 +29,7 @@
 
   // Svelte 5 State
   let activeTab = $state('matrix');
+  let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
   let alertEmail = $state('');
   let alertCurrency = $state('USD');
@@ -37,10 +40,16 @@
 
   const mainTabs = [
     { id: 'matrix', label: 'Komparasi Kurs Bank', badge: 'Utama' },
+    { id: 'map', label: 'Peta Kurs Dunia', badge: 'Interaktif' },
     { id: 'converter', label: 'Multi-Source Converter', badge: 'Instan' },
     { id: 'chart', label: 'Grafik Tren Historis' },
     { id: 'cards', label: 'Shareable Rate Cards' },
   ];
+
+  function handleMapCurrencySelect(currencyCode: string) {
+    converterFromCurrency = currencyCode;
+    activeTab = 'converter';
+  }
 
   async function handleCreateAlert(e: Event) {
     e.preventDefault();
@@ -117,8 +126,10 @@
     <section class="transition-all duration-200">
       {#if activeTab === 'matrix'}
         <RateMatrix />
+      {:else if activeTab === 'map'}
+        <WorldRateMap onSelectCurrency={handleMapCurrencySelect} />
       {:else if activeTab === 'converter'}
-        <CurrencyConverter />
+        <CurrencyConverter initialFromCurrency={converterFromCurrency} />
       {:else if activeTab === 'chart'}
         <TrendChart />
       {:else if activeTab === 'cards'}
