@@ -18,7 +18,7 @@
   import { apiClient, SUPPORTED_CURRENCIES, BASE_RATES_IDR } from '$lib/api/client';
   import type { CurrencyInfo } from '$lib/api/types';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
-  import { t, formatDateLocale, formatDateTimeLocale } from '$lib/i18n';
+  import { t, formatDateLocale, formatDateTimeLocale, getLocalizedCurrencyName } from '$lib/i18n';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -490,7 +490,7 @@
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
           <span style="font-size:22px;">{activeCurrency.flag}</span>
           <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);">
-            {activeCurrency.name} ({activeCurrency.code}) / Indonesian Rupiah
+            {getLocalizedCurrencyName(activeCurrency.code, activeCurrency.name)} ({activeCurrency.code}) / Indonesian Rupiah
           </span>
         </div>
 
@@ -546,7 +546,7 @@
             style="font-weight:600;font-size:12px;padding:6px 12px;cursor:pointer;"
           >
             {#each SUPPORTED_CURRENCIES.filter(c => c.code !== 'IDR') as curr}
-              <option value={curr.code}>{curr.flag} {curr.code} — {curr.name}</option>
+              <option value={curr.code}>{curr.flag} {curr.code} — {getLocalizedCurrencyName(curr.code, curr.name)}</option>
             {/each}
           </select>
         </div>

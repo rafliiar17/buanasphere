@@ -28,7 +28,7 @@
   import type { RateItem, CurrencyInfo } from '$lib/api/types';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
   import { COUNTRY_CURRENCY_MAP, REGION_FILTERS, type RegionId } from '../map/map-constants';
-  import { t } from '$lib/i18n';
+  import { t, getLocalizedCountryName, getLocalizedCurrencyName, getLocalizedRegion } from '$lib/i18n';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -100,12 +100,12 @@
       const matchMap = COUNTRY_CURRENCY_MAP.find(m => m.currencyCode === c.code);
       currencyMap.set(c.code, {
         code: c.code,
-        name: c.name,
+        name: getLocalizedCurrencyName(c.code, c.name),
         symbol: c.symbol,
         flag: c.flag,
-        countryName: matchMap?.countryName || c.country,
+        countryName: getLocalizedCountryName(matchMap?.iso3 || '', matchMap?.countryName || c.country),
         regionId: matchMap?.regionId || 'all',
-        regionLabel: matchMap?.regionLabel || 'Global',
+        regionLabel: getLocalizedRegion(matchMap?.regionId || 'all'),
       });
     });
 
@@ -114,12 +114,12 @@
       if (m.currencyCode === 'IDR' || currencyMap.has(m.currencyCode)) return;
       currencyMap.set(m.currencyCode, {
         code: m.currencyCode,
-        name: m.currencyName,
+        name: getLocalizedCurrencyName(m.currencyCode, m.currencyName),
         symbol: m.currencyCode,
         flag: m.flag,
-        countryName: m.countryName,
+        countryName: getLocalizedCountryName(m.iso3, m.countryName),
         regionId: m.regionId,
-        regionLabel: m.regionLabel,
+        regionLabel: getLocalizedRegion(m.regionId),
       });
     });
 

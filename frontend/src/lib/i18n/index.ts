@@ -1,7 +1,9 @@
 import { idTranslations } from './locales/id';
 import { enTranslations } from './locales/en';
 import type { SupportedLocale, TranslationParams } from './types';
+import { localeState } from './state.svelte';
 export * from './types';
+export * from './iso-countries';
 
 // Map of translations
 const translations: Record<SupportedLocale, typeof idTranslations> = {
@@ -9,54 +11,31 @@ const translations: Record<SupportedLocale, typeof idTranslations> = {
   en: enTranslations,
 };
 
-// Initial locale detection (localStorage -> browser language -> 'id')
-function getInitialLocale(): SupportedLocale {
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('kurs_world_locale');
-    if (saved === 'id' || saved === 'en') {
-      return saved;
-    }
-    const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith('en')) {
-      return 'en';
-    }
-  }
-  return 'id';
-}
-
-// Reactive state container using an internal closure / module state
-let currentLocaleState = getInitialLocale();
 const listeners = new Set<(locale: SupportedLocale) => void>();
 
 export function getLocale(): SupportedLocale {
-  return currentLocaleState;
+  return localeState.current;
 }
 
 export function setLocale(newLocale: SupportedLocale) {
-  if (newLocale !== currentLocaleState) {
-    currentLocaleState = newLocale;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('kurs_world_locale', newLocale);
-      document.documentElement.lang = newLocale;
-    }
-    listeners.forEach(fn => fn(newLocale));
-  }
+  localeState.set(newLocale);
+  listeners.forEach(fn => fn(newLocale));
 }
 
 export function subscribeLocale(callback: (locale: SupportedLocale) => void): () => void {
   listeners.add(callback);
-  callback(currentLocaleState);
+  callback(localeState.current);
   return () => {
     listeners.delete(callback);
   };
 }
 
 /**
- * Main translation function with dot-notation key lookup and parameter interpolation
- * Example: t('navbar.disclaimerStrip') or t('matrix.pagination', { from: 1, to: 20, total: 195 })
+ * Main translation function with dot-notation key lookup and parameter interpolation.
+ * Accesses localeState.current so that Svelte 5 automatically tracks reactivity in components!
  */
 export function t(keyPath: string, params?: TranslationParams, targetLocale?: SupportedLocale): string {
-  const activeLocale = targetLocale || currentLocaleState;
+  const activeLocale = targetLocale || localeState.current;
   const dict = translations[activeLocale] || translations.id;
   const fallbackDict = translations.id;
 
@@ -89,7 +68,8 @@ export function formatCurrencyLocale(
   options: { showFraction?: boolean; withPrefix?: boolean } = {}
 ): string {
   const { showFraction = false, withPrefix = true } = options;
-  const locale = currentLocaleState === 'en' ? 'en-US' : 'id-ID';
+  const activeLocale = localeState.current;
+  const locale = activeLocale === 'en' ? 'en-US' : 'id-ID';
 
   if (currencyCode === 'IDR') {
     const formatted = new Intl.NumberFormat(locale, {
@@ -97,7 +77,7 @@ export function formatCurrencyLocale(
       maximumFractionDigits: showFraction ? 2 : 0,
     }).format(amount);
 
-    return withPrefix ? (currentLocaleState === 'en' ? `IDR ${formatted}` : `Rp ${formatted}`) : formatted;
+    return withPrefix ? (activeLocale === 'en' ? `IDR ${formatted}` : `Rp ${formatted}`) : formatted;
   }
 
   return new Intl.NumberFormat(locale, {
@@ -112,7 +92,8 @@ export function formatDateLocale(dateInput: string | number | Date, options?: In
   try {
     const d = new Date(dateInput);
     if (isNaN(d.getTime())) return '-';
-    const locale = currentLocaleState === 'en' ? 'en-US' : 'id-ID';
+    const activeLocale = localeState.current;
+    const locale = activeLocale === 'en' ? 'en-US' : 'id-ID';
     return d.toLocaleDateString(locale, options || { day: 'numeric', month: 'short', year: 'numeric' });
   } catch {
     return '-';
@@ -123,7 +104,8 @@ export function formatTimeLocale(dateInput: string | number | Date, options?: In
   try {
     const d = new Date(dateInput);
     if (isNaN(d.getTime())) return '-';
-    const locale = currentLocaleState === 'en' ? 'en-US' : 'id-ID';
+    const activeLocale = localeState.current;
+    const locale = activeLocale === 'en' ? 'en-US' : 'id-ID';
     return d.toLocaleTimeString(locale, options || { hour: '2-digit', minute: '2-digit' });
   } catch {
     return '-';
@@ -134,7 +116,8 @@ export function formatDateTimeLocale(dateInput: string | number | Date): string 
   try {
     const d = new Date(dateInput);
     if (isNaN(d.getTime())) return '-';
-    const locale = currentLocaleState === 'en' ? 'en-US' : 'id-ID';
+    const activeLocale = localeState.current;
+    const locale = activeLocale === 'en' ? 'en-US' : 'id-ID';
     const dateStr = d.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
     const timeStr = d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
     return `${dateStr}, ${timeStr}`;
@@ -147,8 +130,9 @@ export function formatDateTimeLocale(dateInput: string | number | Date): string 
  * Get localized region label based on active locale
  */
 export function getLocalizedRegion(regionId: string, targetLocale?: SupportedLocale): string {
+  const activeLocale = targetLocale || localeState.current;
   const key = `map.regions.${regionId}`;
-  const translated = t(key, undefined, targetLocale);
+  const translated = t(key, undefined, activeLocale);
   if (translated !== key) return translated;
   return regionId;
 }

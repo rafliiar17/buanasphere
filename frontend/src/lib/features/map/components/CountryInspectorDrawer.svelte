@@ -13,7 +13,7 @@
     ShieldCheck,
     Layers
   } from 'lucide-svelte';
-  import { t, formatDateTimeLocale } from '$lib/i18n';
+  import { t, formatDateTimeLocale, getLocalizedCountryName, getLocalizedCurrencyName, getLocalizedRegion } from '$lib/i18n';
   import { formatRupiah, formatPercent, formatCurrency } from '$lib/formatters/currency';
   import type { MapCountryData } from '../map-constants';
   import type { MapStateStore } from '../mapState.svelte';
@@ -132,7 +132,7 @@
             {#if !flagImgError && iso2Code}
               <img
                 src={flagSrc}
-                alt={t('map.flagAlt', { country: curr.countryName })}
+                alt={t('map.flagAlt', { country: getLocalizedCountryName(curr.iso3, curr.countryName) })}
                 class="w-full h-full object-cover"
                 onerror={() => (flagImgError = true)}
               />
@@ -143,7 +143,7 @@
           <div class="min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
               <h3 class="text-lg md:text-xl font-bold text-[var(--ink)] truncate">
-                {curr.countryName}
+                {getLocalizedCountryName(curr.iso3, curr.countryName)}
               </h3>
               <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-400 border border-sky-500/30">
                 {curr.currencyCode}
@@ -153,7 +153,7 @@
               </span>
             </div>
             <p class="text-xs text-[var(--ink-4)] mt-0.5 truncate">
-              {curr.currencyName} • {curr.regionLabel}
+              {getLocalizedCurrencyName(curr.currencyCode, curr.currencyName)} • {getLocalizedRegion(curr.regionId)}
             </p>
           </div>
         </div>

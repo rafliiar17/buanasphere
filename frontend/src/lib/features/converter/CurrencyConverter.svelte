@@ -4,7 +4,7 @@
   import { apiClient, SUPPORTED_CURRENCIES, MOCK_PROVIDERS } from '$lib/api/client';
   import type { ConversionResult } from '$lib/api/types';
   import { formatRupiah, formatCurrency } from '$lib/formatters/currency';
-  import { t } from '$lib/i18n';
+  import { t, getLocalizedCurrencyName } from '$lib/i18n';
 
   // Component Props
   interface Props {
@@ -142,7 +142,7 @@
           </select>
         </div>
       </div>
-      <p style="font-size:11px;color:var(--ink-4);margin-top:4px;">{fromInfo.name}</p>
+      <p style="font-size:11px;color:var(--ink-4);margin-top:4px;">{getLocalizedCurrencyName(fromInfo.code, fromInfo.name)}</p>
     </div>
 
     <!-- Swap -->
@@ -187,7 +187,7 @@
           </select>
         </div>
       </div>
-      <p style="font-size:11px;color:var(--ink-4);margin-top:4px;">{toInfo.name}</p>
+      <p style="font-size:11px;color:var(--ink-4);margin-top:4px;">{getLocalizedCurrencyName(toInfo.code, toInfo.name)}</p>
     </div>
   </div>
 
