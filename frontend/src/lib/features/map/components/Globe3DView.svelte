@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { Loader2 } from 'lucide-svelte';
-  import type { MapStateStore } from '../mapState';
+  import type { MapStateStore } from '../mapState.svelte';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
   import { getCountryFlagColor } from '../country-flag-colors';
@@ -469,10 +469,22 @@
     }
   }
 
+  function applyOptimalDpr() {
+    if (!globeInstance || typeof window === 'undefined') return;
+    const renderer = globeInstance.renderer?.();
+    if (!renderer) return;
+    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+    const dpr = isTurbo ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.35);
+    renderer.setPixelRatio(dpr);
+  }
+
   export function updateVisuals() {
     if (!globeInstance) return;
     const isDark = currentTheme === 'dark';
     const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
+    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+
+    applyOptimalDpr();
 
     if (!isFlag) {
       globeInstance.polygonCapMaterial(null);
@@ -483,6 +495,7 @@
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
+      .atmosphereAltitude(isTurbo ? 0.14 : 0.22)
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
@@ -493,10 +506,10 @@
         }
         return 0.008;
       })
-      .polygonsData(geoJsonFeatures.map(f => ({ ...f })))
       .labelsData(mapState.showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
       .labelColor((d: any) => d.color)
+      .labelResolution(isTurbo ? 1.2 : 1.8)
       .arcsData(remittanceArcs)
       .arcColor((d: any) => d.color || ['#10b981', '#38bdf8'])
       .arcAltitude((d: any) => d.altitude || 0.35)
@@ -554,12 +567,16 @@
         mapState.hoveredIso3 = iso3;
         onCountryHover?.(iso3);
         if (globeInstance) {
-          globeInstance.polygonAltitude((d: any) => {
-            const featIso3 = getFeatureIso3(d);
-            if (mapState.selectedCountryIso3 === featIso3 || mapState.hoveredIso3 === featIso3) return 0.018;
-            return 0.005;
+          requestAnimationFrame(() => {
+            if (globeInstance) {
+              globeInstance.polygonAltitude((d: any) => {
+                const featIso3 = getFeatureIso3(d);
+                if (mapState.selectedCountryIso3 === featIso3 || mapState.hoveredIso3 === featIso3) return 0.018;
+                return 0.005;
+              });
+              globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
+            }
           });
-          globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
         }
       })
       .onPolygonClick((clickD: any) => {
@@ -571,12 +588,8 @@
         }
       });
 
-    // Enforce WebGL DPR Clamp (max 1.5) to prevent GPU fragment overload on HiDPI / 4K
-    const renderer = globeInstance.renderer?.();
-    if (renderer && typeof window !== 'undefined') {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      renderer.setPixelRatio(dpr);
-    }
+    // Enforce WebGL Adaptive DPR Clamp (ADR 0035)
+    applyOptimalDpr();
 
     if (mapState.showLabels && globeLabels.length > 0) {
       globeInstance
@@ -648,6 +661,8 @@
     const _selected = mapState.selectedCountryIso3;
     const _hovered = mapState.hoveredIso3;
     const _data = mapData;
+    const _perfMap = mapState.performanceMode;
+    const _perfGeo = geoStore.performanceMode;
 
     if (previousMetric && previousMetric !== currentMetric) {
       isSwitchingMetric = true;

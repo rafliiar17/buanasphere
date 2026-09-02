@@ -80,6 +80,7 @@ export class MapState {
   isControlsCollapsed: boolean = $state(false);
   isRegionDropdownOpen: boolean = $state(false);
   highlightedIndex: number = $state(0);
+  performanceMode: 'turbo' | 'quality' = $state('turbo');
 
   constructor(initial?: Partial<MapStateConfig>) {
     if (initial) {
@@ -173,6 +174,14 @@ export class MapState {
 
   toggleRegionDropdown = (open?: boolean) => {
     this.isRegionDropdownOpen = open !== undefined ? open : !this.isRegionDropdownOpen;
+  };
+
+  setPerformanceMode = (mode: 'turbo' | 'quality') => {
+    this.performanceMode = mode;
+  };
+
+  togglePerformanceMode = () => {
+    this.performanceMode = this.performanceMode === 'turbo' ? 'quality' : 'turbo';
   };
 
   resetView = () => {
