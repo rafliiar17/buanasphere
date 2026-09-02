@@ -20,7 +20,6 @@
   import CurrencyComparisonMatrix from '$lib/features/matrix/CurrencyComparisonMatrix.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
   import GlobalAppSplashScreen from '$lib/components/GlobalAppSplashScreen.svelte';
-  import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
   import { apiClient } from '$lib/api/client';
   import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
 
@@ -315,8 +314,5 @@
       </div>
     </div>
   {/if}
-
-  <!-- GeoGlobe App Suite Launcher Modal -->
-  <GeoAppLauncherModal />
 
 </div>
