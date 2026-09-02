@@ -100,7 +100,7 @@
       <!-- Left: editorial headline -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px;">
-          Agregator Informasi Kurs Valas — Indonesia
+          Pasar Valuta Asing Global — Terhadap Rupiah (IDR)
         </p>
         <h1 style="
           font-family: var(--font-serif);
@@ -112,11 +112,11 @@
           letter-spacing: -0.01em;
           margin: 0;
         ">
-          Kurs Valas Hari Ini,<br>
-          <span style="font-style:normal;font-weight:700;color:var(--ink);">Dari Semua Bank Indonesia</span>
+          Jelajahi Kurs Valas Dunia,<br>
+          <span style="font-style:normal;font-weight:700;color:var(--ink);">195+ Negara Terhadap Rupiah</span>
         </h1>
-        <p style="margin-top:10px;font-size:13px;color:var(--ink-3);max-width:560px;line-height:1.55;">
-          Data kurs beli, kurs jual, dan spread nyata dari Bank Indonesia (JISDOR), BCA, Mandiri, BRI, BNI, CIMB Niaga — tanpa markup tersembunyi dan tanpa registrasi wajib.
+        <p style="margin-top:10px;font-size:13px;color:var(--ink-3);max-width:580px;line-height:1.55;">
+          Data nilai tukar resmi dan tren interaktif 195+ mata uang dunia terhadap Indonesian Rupiah (IDR) — grafik multi-timeframe ala Google Finance, pergerakan harian real-time, dan tanpa markup komersial.
         </p>
       </div>
 
@@ -130,7 +130,7 @@
           <Bell style="width:13px;height:13px;" />
           Pasang Rate Alert
         </button>
-        <span style="font-size:10px;color:var(--ink-4);">Notifikasi email gratis</span>
+        <span style="font-size:10px;color:var(--ink-4);">Notifikasi email gratis saat target tercapai</span>
       </div>
     </div>
 
@@ -188,10 +188,10 @@
       <!-- Col 1 -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
-          Transparansi Sumber
+          Cakupan 195+ Negara Dunia
         </p>
         <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
-          Seluruh data diambil langsung dari publikasi resmi masing-masing bank dan bank sentral. Tidak ada intervensi komersial atau markup harga.
+          Eksplorasi nilai tukar seluruh mata uang fiat resmi global terpetakan ke wilayah geografis dunia. Klik negara mana pun untuk melihat kurs live dan grafik tren.
         </p>
       </div>
 
@@ -201,17 +201,17 @@
           Latensi Edge Sub-50ms
         </p>
         <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
-          Cloudflare Workers & KV cache SWR 15 menit. Eksekusi dari titik edge terdekat ke pengguna di seluruh dunia.
+          Didukung Cloudflare Workers & edge cache SWR 15 menit. Data nilai tukar terdistribusi global dari titik edge terdekat dengan latensi minimal.
         </p>
       </div>
 
       <!-- Col 3 -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
-          Perbandingan Cerdas
+          Grafik ala Google Finance
         </p>
         <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
-          Temukan bank dengan harga beli terbaik saat menjual valas, dan harga jual termurah saat membeli valas.
+          Visualisasi kurva multi-timeframe (1H, 5H, 1B, 6B, 1T, 5T, Maks) dengan pelacakan kursor crosshair interaktif dan metrik pasar real-time.
         </p>
       </div>
     </div>

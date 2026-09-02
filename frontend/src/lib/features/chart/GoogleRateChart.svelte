@@ -480,113 +480,110 @@
   });
 </script>
 
-<div class={`google-rate-chart relative rounded-3xl bg-slate-900/95 border border-slate-800/80 p-4 sm:p-6 shadow-2xl backdrop-blur-xl space-y-5 ${className}`}>
-  <!-- Glowing Background Accent -->
-  <div class="absolute -top-32 -right-32 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
+<div class={`google-rate-chart relative ${className}`} style="background:var(--bg-raised);border:1px solid var(--bg-rule);border-radius:var(--radius-lg);padding:24px;box-shadow:0 4px 20px rgba(26,18,9,0.04);">
   <!-- TOP HEADER: Google Finance Headline & Currency Selector -->
-  <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-800/70 pb-4">
-    <!-- Left: Google Finance Style Big Rate & Performance Ribbon -->
-    <div class="space-y-1">
-      <!-- Title & Currency Subtitle -->
-      <div class="flex items-center gap-2 flex-wrap">
-        <span class="text-xl sm:text-2xl">{activeCurrency.flag}</span>
-        <h3 class="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wider">
-          {activeCurrency.name} ({activeCurrency.code}) / Indonesian Rupiah
-        </h3>
-      </div>
-
-      <!-- BIG RATE NUMBER (Reactively updates on hover!) -->
-      <div class="flex items-baseline gap-2.5 flex-wrap pt-0.5">
-        <span class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight tabular-nums transition-all">
-          {formatRupiah(activeDisplayRate, { showFraction: true, withPrefix: false })}
-        </span>
-        <span class="text-base sm:text-lg font-semibold text-slate-400">
-          Indonesian Rupiah
-        </span>
-      </div>
-
-      <!-- Subtitle Label & Time / Disclaimer Strip -->
-      <div class="flex items-center gap-2 text-xs text-slate-400 flex-wrap">
-        <span class="font-mono font-medium text-slate-300">1 {activeCurrency.code} = {formatRupiah(activeDisplayRate, { showFraction: true })}</span>
-        <span>•</span>
-        <span class="text-slate-400">{activeTimestampLabel}</span>
-      </div>
-
-      <!-- PERFORMANCE PERIOD BADGE (Green if positive, Red if negative) -->
-      <div class="pt-1.5 flex items-center gap-2">
-        <div class={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold tabular-nums transition-all border ${
-          activeDisplayChange.isPositive
-            ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300'
-            : 'bg-rose-950/60 border-rose-500/40 text-rose-300'
-        }`}>
-          {#if activeDisplayChange.isPositive}
-            <ArrowUpRight class="w-3.5 h-3.5 shrink-0" />
-            <span>+{formatRupiah(activeDisplayChange.amount, { showFraction: true, withPrefix: false })} (+{activeDisplayChange.percent}%)</span>
-          {:else}
-            <ArrowDownRight class="w-3.5 h-3.5 shrink-0" />
-            <span>{formatRupiah(activeDisplayChange.amount, { showFraction: true, withPrefix: false })} ({activeDisplayChange.percent}%)</span>
-          {/if}
-          <span class="text-[10px] font-normal text-slate-400">
-            {isHovered ? 'dari Titik Awal' : rangeLabelText}
+  <div style="display:flex;flex-direction:column;gap:16px;border-bottom:1px solid var(--bg-rule);padding-bottom:20px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <!-- Left: Big Rate Number & Header -->
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:22px;">{activeCurrency.flag}</span>
+          <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);">
+            {activeCurrency.name} ({activeCurrency.code}) / Indonesian Rupiah
           </span>
         </div>
 
-        {#if isHovered}
-          <span class="text-[11px] text-indigo-400 font-medium animate-pulse">
-            ● Mode Inspeksi Kursor
+        <!-- Big Rate Number (Reactivates on Hover!) -->
+        <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:clamp(30px, 4vw, 44px);font-weight:800;color:var(--ink);letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.15;">
+            {formatRupiah(activeDisplayRate, { showFraction: true, withPrefix: false })}
           </span>
-        {/if}
-      </div>
-    </div>
+          <span style="font-size:15px;font-weight:600;color:var(--ink-3);">
+            Indonesian Rupiah
+          </span>
+        </div>
 
-    <!-- Right: Currency Switcher & Global Badge -->
-    {#if showCurrencySelector}
-      <div class="flex items-center gap-2 self-start sm:self-auto">
-        <div class="relative">
+        <!-- Subtitle & Timestamp -->
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-4);margin-top:4px;flex-wrap:wrap;">
+          <span style="font-family:var(--font-mono);font-weight:500;color:var(--ink-2);">1 {activeCurrency.code} = {formatRupiah(activeDisplayRate, { showFraction: true })}</span>
+          <span>•</span>
+          <span>{activeTimestampLabel}</span>
+        </div>
+
+        <!-- Performance Badge -->
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+          <div class={activeDisplayChange.isPositive ? 'pill-pos' : 'pill-neg'} style="padding:3px 10px;font-size:12px;">
+            {#if activeDisplayChange.isPositive}
+              <ArrowUpRight style="width:14px;height:14px;" />
+              <span>+{formatRupiah(activeDisplayChange.amount, { showFraction: true, withPrefix: false })} (+{activeDisplayChange.percent}%)</span>
+            {:else}
+              <ArrowDownRight style="width:14px;height:14px;" />
+              <span>{formatRupiah(activeDisplayChange.amount, { showFraction: true, withPrefix: false })} ({activeDisplayChange.percent}%)</span>
+            {/if}
+            <span style="font-size:10px;font-weight:normal;opacity:0.75;margin-left:4px;">
+              {isHovered ? 'dari Titik Awal' : rangeLabelText}
+            </span>
+          </div>
+
+          {#if isHovered}
+            <span style="font-size:11px;color:var(--accent);font-weight:600;">
+              ● Mode Inspeksi Kursor
+            </span>
+          {/if}
+        </div>
+      </div>
+
+      <!-- Right: Currency Selector Dropdown -->
+      {#if showCurrencySelector}
+        <div>
           <select
             bind:value={selectedCurrency}
             onchange={() => handleCurrencyChange(selectedCurrency)}
-            class="bg-slate-950/90 border border-slate-700/80 hover:border-slate-600 focus:border-indigo-500 text-xs font-bold text-slate-200 rounded-2xl px-3.5 py-2.5 outline-none cursor-pointer appearance-none pr-8 shadow-inner"
+            class="field"
+            style="font-weight:600;font-size:12px;padding:6px 12px;cursor:pointer;"
           >
             {#each SUPPORTED_CURRENCIES.filter(c => c.code !== 'IDR') as curr}
               <option value={curr.code}>{curr.flag} {curr.code} — {curr.name}</option>
             {/each}
           </select>
-          <ChevronDown class="w-3.5 h-3.5 text-slate-400 absolute right-3 top-3 pointer-events-none" />
         </div>
+      {/if}
+    </div>
+
+    <!-- Range Selector Pills: 1H, 5H, 1B, 6B, 1T, 5T, Maks -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+      <div style="display:flex;align-items:center;gap:4px;background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:3px;">
+        {#each rangeOptions as r}
+          {@const isActive = selectedRange === r.id}
+          <button
+            type="button"
+            onclick={() => handleRangeChange(r.id)}
+            style="
+              padding: 4px 12px;
+              font-size: 12px;
+              font-weight: 600;
+              border-radius: var(--radius-sm);
+              border: none;
+              cursor: pointer;
+              transition: all 120ms;
+              background: {isActive ? 'var(--accent)' : 'transparent'};
+              color: {isActive ? 'var(--accent-fg)' : 'var(--ink-3)'};
+            "
+            title={r.fullLabel}
+          >
+            <span>{r.label}</span>
+          </button>
+        {/each}
       </div>
-    {/if}
-  </div>
 
-  <!-- GOOGLE FINANCE RANGE SELECTOR PILLS: 1H, 5H, 1B, 6B, 1T, 5T, Maks -->
-  <div class="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
-    <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/90 border border-slate-800/90 shadow-inner">
-      {#each rangeOptions as r}
-        {@const isActive = selectedRange === r.id}
-        <button
-          type="button"
-          onclick={() => handleRangeChange(r.id)}
-          class={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
-            isActive
-              ? 'bg-gradient-to-r from-indigo-600 to-teal-600 text-white shadow-md shadow-indigo-950/60 ring-1 ring-indigo-400/40'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
-          }`}
-          title={r.fullLabel}
-        >
-          <span>{r.label}</span>
-        </button>
-      {/each}
-    </div>
-
-    <!-- Live Market indicator -->
-    <div class="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 font-medium px-3 py-1 rounded-xl bg-slate-950/60 border border-slate-800/80">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-      <span>Interaktif Crosshair</span>
+      <div style="display:none;align-items:center;gap:6px;font-size:11px;color:var(--ink-4);" class="sm-flex">
+        <span class="live-dot"></span>
+        <span>Crosshair Interaktif</span>
+      </div>
     </div>
   </div>
 
-  <!-- INTERACTIVE SVG LINE CHART CONTAINER -->
+  <!-- INTERACTIVE SVG LINE CHART -->
   {#if isLoading}
     <CardSkeleton type="chart" />
   {:else}
@@ -596,24 +593,50 @@
       aria-label="Area Interaktif Grafik Nilai Tukar"
       onpointermove={handlePointerMove}
       onpointerleave={handlePointerLeave}
-      class="relative w-full rounded-2xl bg-slate-950/90 border border-slate-800/90 p-2 sm:p-4 select-none touch-none overflow-hidden cursor-crosshair group shadow-inner"
+      style="
+        position: relative;
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--bg-rule);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-top: 16px;
+        user-select: none;
+        touch-action: none;
+        overflow: hidden;
+        cursor: crosshair;
+      "
     >
       <!-- Floating Interactive Tooltip -->
       {#if isHovered && hoveredPoint && currentHoverCoord && chartContainerRef}
         {@const pctX = (currentHoverCoord.x / svgWidth) * 100}
         {@const isRightHalf = pctX > 60}
         <div
-          class="absolute z-30 pointer-events-none transform -translate-y-full mb-3 bg-slate-900/95 border border-indigo-500/50 backdrop-blur-md rounded-2xl p-3 shadow-2xl text-xs space-y-1 transition-all duration-75 min-w-44"
-          style={`left: ${pctX}%; top: ${Math.max(35, (currentHoverCoord.y / svgHeight) * 100)}%; transform: translate(${isRightHalf ? '-100%' : '0%'}, -100%); margin-left: ${isRightHalf ? '-12px' : '12px'};`}
+          style="
+            position: absolute;
+            z-index: 30;
+            pointer-events: none;
+            left: {pctX}%;
+            top: {Math.max(35, (currentHoverCoord.y / svgHeight) * 100)}%;
+            transform: translate({isRightHalf ? '-100%' : '0%'}, -100%);
+            margin-left: {isRightHalf ? '-12px' : '12px'};
+            margin-top: -8px;
+            background: var(--bg-raised);
+            border: 1px solid var(--bg-rule);
+            box-shadow: 0 6px 24px rgba(26,18,9,0.12);
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            min-width: 180px;
+          "
         >
-          <div class="text-[11px] text-slate-400 font-medium border-b border-slate-800 pb-1 flex items-center justify-between">
+          <div style="font-size:11px;color:var(--ink-4);border-bottom:1px solid var(--bg-rule);padding-bottom:4px;display:flex;justify-content:space-between;margin-bottom:6px;">
             <span>{hoveredPoint.dateTimeLabel}</span>
-            <span class="text-[9px] px-1 rounded bg-indigo-500/20 text-indigo-300 font-mono">1 {activeCurrency.code}</span>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--ink-3);">1 {activeCurrency.code}</span>
           </div>
-          <div class="text-base font-black text-emerald-300 tabular-nums pt-0.5">
+          <div style="font-size:16px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;">
             {formatRupiah(hoveredPoint.rate, { showFraction: true })}
           </div>
-          <div class="text-[10px] text-slate-400 flex items-center justify-between pt-0.5 font-mono">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);margin-top:4px;font-variant-numeric:tabular-nums;">
             <span>Beli: {formatRupiah(hoveredPoint.buyRate, { showFraction: false, withPrefix: false })}</span>
             <span>Jual: {formatRupiah(hoveredPoint.sellRate, { showFraction: false, withPrefix: false })}</span>
           </div>
@@ -623,21 +646,13 @@
       <!-- SVG Drawing -->
       <svg
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-        class="w-full h-56 sm:h-72 overflow-visible"
+        style="width:100%;height:280px;overflow:visible;"
       >
         <defs>
-          <!-- Gradient fill for area under line (adapts to positive/negative performance) -->
           <linearGradient id={`chartGradient-${selectedCurrency}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color={summary.change >= 0 ? '#10b981' : '#f43f5e'} stop-opacity="0.25" />
-            <stop offset="60%" stop-color={summary.change >= 0 ? '#065f46' : '#881337'} stop-opacity="0.08" />
-            <stop offset="100%" stop-color="#0f172a" stop-opacity="0.0" />
+            <stop offset="0%" stop-color={summary.change >= 0 ? '#1B5E20' : '#C41E3A'} stop-opacity="0.16" />
+            <stop offset="100%" stop-color="#FAF8F3" stop-opacity="0.0" />
           </linearGradient>
-
-          <!-- Glow filter for line and active crosshair point -->
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
         </defs>
 
         <!-- Horizontal Background Grid Lines -->
@@ -648,7 +663,7 @@
             y1={yGrid}
             x2={svgWidth - padding.right}
             y2={yGrid}
-            stroke="#1e293b"
+            stroke="var(--bg-rule)"
             stroke-dasharray="3 3"
             stroke-width="1"
           />
@@ -662,18 +677,17 @@
               y1={baselineY}
               x2={svgWidth - padding.right}
               y2={baselineY}
-              stroke="#475569"
+              stroke="var(--ink-ghost)"
               stroke-dasharray="4 4"
-              stroke-width="1.2"
-              opacity="0.7"
+              stroke-width="1"
             />
             <text
               x={svgWidth - padding.right}
               y={baselineY - 4}
               text-anchor="end"
               font-size="9"
-              font-family="monospace"
-              fill="#94a3b8"
+              font-family="var(--font-mono)"
+              fill="var(--ink-4)"
             >
               Buka: {formatRupiah(summary.open, { showFraction: false })}
             </text>
@@ -690,15 +704,14 @@
           <path
             d={pathD}
             fill="none"
-            stroke={summary.change >= 0 ? '#34d399' : '#fb7185'}
-            stroke-width="2.6"
+            stroke={summary.change >= 0 ? '#1B5E20' : '#C41E3A'}
+            stroke-width="2.4"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="transition-colors duration-200"
           />
         {/if}
 
-        <!-- Interactive Crosshair (Vertical Line & Glowing Point) -->
+        <!-- Interactive Crosshair -->
         {#if isHovered && currentHoverCoord}
           <!-- Vertical Crosshair Line -->
           <line
@@ -706,20 +719,9 @@
             y1={padding.top}
             x2={currentHoverCoord.x}
             y2={padding.top + plotBounds.height}
-            stroke="#94a3b8"
+            stroke="var(--ink-3)"
             stroke-dasharray="3 3"
             stroke-width="1.2"
-            opacity="0.9"
-          />
-
-          <!-- Glowing Halo Ring -->
-          <circle
-            cx={currentHoverCoord.x}
-            cy={currentHoverCoord.y}
-            r="8"
-            fill={summary.change >= 0 ? '#34d399' : '#fb7185'}
-            opacity="0.35"
-            class="animate-ping"
           />
 
           <!-- Active Crosshair Dot -->
@@ -727,8 +729,8 @@
             cx={currentHoverCoord.x}
             cy={currentHoverCoord.y}
             r="4.5"
-            fill={summary.change >= 0 ? '#10b981' : '#f43f5e'}
-            stroke="#ffffff"
+            fill={summary.change >= 0 ? '#1B5E20' : '#C41E3A'}
+            stroke="var(--bg-raised)"
             stroke-width="2.5"
           />
         {/if}
@@ -741,7 +743,7 @@
             text-anchor="middle"
             font-size={compact ? "8.5" : "10"}
             font-weight="500"
-            fill="#64748b"
+            fill="var(--ink-4)"
           >
             {tick.point.shortTimeLabel}
           </text>
@@ -750,42 +752,56 @@
     </div>
   {/if}
 
-  <!-- KEY STATISTICS GRID (Google Finance Style 4-Column Bar) -->
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+  <!-- KEY STATISTICS GRID (4-Column Bar) -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:12px;margin-top:16px;">
     <!-- Harga Buka (Open) -->
-    <div class="p-3 sm:p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-0.5">
-      <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Harga Buka (Open)</span>
-      <div class="text-sm sm:text-base font-black text-slate-100 tabular-nums">
+    <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
+        Harga Buka (Open)
+      </span>
+      <div style="font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.open, { showFraction: true })}
       </div>
-      <span class="text-[9px] sm:text-[10px] text-slate-500 block">Awal periode {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Awal {rangeLabelText}</span>
     </div>
 
     <!-- Tertinggi (High) -->
-    <div class="p-3 sm:p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-0.5">
-      <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Tertinggi (High)</span>
-      <div class="text-sm sm:text-base font-black text-emerald-400 tabular-nums">
+    <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
+        Tertinggi (High)
+      </span>
+      <div style="font-size:15px;font-weight:700;color:var(--pos);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.high, { showFraction: true })}
       </div>
-      <span class="text-[9px] sm:text-[10px] text-slate-500 block">Puncak {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Puncak {rangeLabelText}</span>
     </div>
 
     <!-- Terendah (Low) -->
-    <div class="p-3 sm:p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-0.5">
-      <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Terendah (Low)</span>
-      <div class="text-sm sm:text-base font-black text-rose-400 tabular-nums">
+    <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
+        Terendah (Low)
+      </span>
+      <div style="font-size:15px;font-weight:700;color:var(--signal);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.low, { showFraction: true })}
       </div>
-      <span class="text-[9px] sm:text-[10px] text-slate-500 block">Dasar {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Dasar {rangeLabelText}</span>
     </div>
 
     <!-- Rata-rata (Avg) -->
-    <div class="p-3 sm:p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-0.5">
-      <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Rata-rata (Avg)</span>
-      <div class="text-sm sm:text-base font-black text-cyan-300 tabular-nums">
+    <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
+        Rata-rata (Avg)
+      </span>
+      <div style="font-size:15px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.avg, { showFraction: true })}
       </div>
-      <span class="text-[9px] sm:text-[10px] text-slate-500 block">Mean {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Mean {rangeLabelText}</span>
     </div>
   </div>
 </div>
+
+<style>
+  @media (min-width: 640px) {
+    .sm-flex { display: flex !important; }
+  }
+</style>

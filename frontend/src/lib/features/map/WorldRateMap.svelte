@@ -904,7 +904,7 @@
           class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-xl shadow-emerald-950/70 cursor-pointer"
         >
           <ArrowRightLeft class="w-4 h-4" />
-          <span>Buka di Kalkulator Multi-Bank Lengkap</span>
+          <span>Buka di Kalkulator Konversi Lengkap</span>
         </Button>
       </div>
     </aside>
