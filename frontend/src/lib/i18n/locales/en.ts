@@ -120,6 +120,11 @@ export const enTranslations = {
     middleEast: '🕌 Middle East',
     africa: '🌍 Africa',
     oceania: '🦘 Oceania',
+    bankComparison: 'Interbank Rate Comparison',
+    bestBuy: 'Best Buy',
+    bestSell: 'Best Sell',
+    openFullMatrix: 'Open Full Matrix 📊',
+    viewFullChart: 'Open in Chart View 📈',
   },
 
   // Google-Style Chart
