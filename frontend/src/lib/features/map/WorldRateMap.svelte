@@ -37,6 +37,21 @@
   // Reactive Map State Store with deep reactivity
   const mapState = $state(createMapState());
 
+  // 2-Way Reactive Synchronization between geoStore.showLabels and mapState.showLabels
+  $effect(() => {
+    const geoLabels = geoStore.showLabels;
+    if (mapState.showLabels !== geoLabels) {
+      mapState.showLabels = geoLabels;
+    }
+  });
+
+  $effect(() => {
+    const mapLabels = mapState.showLabels;
+    if (geoStore.showLabels !== mapLabels) {
+      geoStore.showLabels = mapLabels;
+    }
+  });
+
   let liveRates = $state<RateItem[]>([]);
   let geoJsonFeatures = $state<any[]>([]);
   let isLoading = $state(true);

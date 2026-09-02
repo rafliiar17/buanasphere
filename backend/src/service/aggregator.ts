@@ -206,8 +206,9 @@ export class AggregatorService {
 
   /**
    * Validate single rate record against financial invariants.
+   * Checks positive values, valid spread (sell >= buy), and detects rate spikes >50%.
    */
-  validateRate(rate: Rate): { valid: boolean; reason?: string } {
+  validateRate(rate: Rate, previousRate?: Rate): { valid: boolean; reason?: string } {
     if (rate.buyRate <= 0) {
       return { valid: false, reason: `Buy rate must be strictly positive: ${rate.buyRate}` };
     }
@@ -222,6 +223,15 @@ export class AggregatorService {
         valid: false,
         reason: `Spread anomaly: sellRate (${rate.sellRate}) cannot be lower than buyRate (${rate.buyRate})`,
       };
+    }
+    if (previousRate && previousRate.midRate > 0) {
+      const changePct = Math.abs(rate.midRate - previousRate.midRate) / previousRate.midRate;
+      if (changePct > 0.5) {
+        return {
+          valid: false,
+          reason: `Rate spike anomaly: midRate changed by ${(changePct * 100).toFixed(1)}% (> 50% threshold) from previous ${previousRate.midRate} to ${rate.midRate}`,
+        };
+      }
     }
     return { valid: true };
   }
@@ -295,7 +305,13 @@ export class AggregatorService {
       if (res.status === 'fulfilled') {
         successfulProviders++;
         for (const rate of res.value.rates) {
-          const validation = this.validateRate(rate);
+          const previousRate = AggregatorService.memoryCache.find(
+            (r) =>
+              r.provider === rate.provider &&
+              r.baseCurrency === rate.baseCurrency &&
+              r.quoteCurrency === rate.quoteCurrency
+          );
+          const validation = this.validateRate(rate, previousRate);
           if (validation.valid) {
             validRates.push(rate);
           } else {
@@ -401,7 +417,11 @@ export class AggregatorService {
     const now = new Date().toISOString();
 
     try {
-      // Upsert rates table
+      // Batch size for history table bulk inserts
+      const CHUNK_SIZE = 50;
+
+      // Upsert rates table — onConflictDoUpdate requires individual rows
+      // (Drizzle D1 does not support array values() with onConflictDoUpdate)
       for (const rate of rates) {
         const id = `${rate.provider}_${rate.baseCurrency}_${rate.quoteCurrency}`;
         await db
@@ -430,21 +450,26 @@ export class AggregatorService {
               providerTimestamp: rate.providerTimestamp,
             },
           });
-
-        // Insert historical record
-        await db.insert(rateHistoryTable).values({
-          provider: rate.provider,
-          baseCurrency: rate.baseCurrency,
-          quoteCurrency: rate.quoteCurrency,
-          buyRate: rate.buyRate,
-          sellRate: rate.sellRate,
-          midRate: rate.midRate,
-          spread: rate.spread,
-          timestamp: rate.retrievedAt,
-        });
       }
 
-      // Insert quarantined records
+      // Batch insert historical records in chunks of CHUNK_SIZE
+      for (let i = 0; i < rates.length; i += CHUNK_SIZE) {
+        const chunk = rates.slice(i, i + CHUNK_SIZE);
+        await db.insert(rateHistoryTable).values(
+          chunk.map((rate) => ({
+            provider: rate.provider,
+            baseCurrency: rate.baseCurrency,
+            quoteCurrency: rate.quoteCurrency,
+            buyRate: rate.buyRate,
+            sellRate: rate.sellRate,
+            midRate: rate.midRate,
+            spread: rate.spread,
+            timestamp: rate.retrievedAt,
+          }))
+        );
+      }
+
+      // Insert quarantined records sequentially (low volume, no conflict handling needed)
       for (const q of quarantined) {
         await db.insert(quarantineRatesTable).values({
           provider: q.provider,
@@ -508,8 +533,13 @@ export class AggregatorService {
   }
 
   private async readRatesFromCache(): Promise<Rate[]> {
-    // 1. Check in-memory cache
-    if (AggregatorService.memoryCache.length > 0) {
+    // 1. Check in-memory cache with TTL validation
+    const now = Date.now();
+    if (
+      AggregatorService.memoryCache.length > 0 &&
+      AggregatorService.memoryCacheTimestamp > 0 &&
+      now - AggregatorService.memoryCacheTimestamp < CACHE_TTL_SECONDS * 1000
+    ) {
       return AggregatorService.memoryCache;
     }
 

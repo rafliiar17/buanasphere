@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { 
     LineChart as ChartIcon, 
     TrendingUp, 
@@ -74,11 +74,12 @@
     changePercent: 0.28,
   });
 
-  // Sync prop initialCurrency
+  // Sync prop initialCurrency — untrack selectedRange to avoid resetting currency on range change
   $effect(() => {
     if (initialCurrency) {
+      const currentRange = untrack(() => selectedRange);
       selectedCurrency = initialCurrency;
-      loadChartData(initialCurrency, selectedRange);
+      loadChartData(initialCurrency, currentRange);
     }
   });
 

@@ -48,6 +48,18 @@ export const MAJOR_CURRENCIES = [
 
 export const MAX_INGESTION_RESPONSE_BYTES = 5 * 1024 * 1024; // 5 MB
 
+/**
+ * Adaptive precision rounding for exchange rates.
+ * - value >= 100 → 2 decimal places  (e.g. IDR/USD ~17765)
+ * - value >= 1   → 4 decimal places  (e.g. JPY/IDR ~118.xx)
+ * - value < 1    → 6 decimal places  (micro-rates: VND, LAK, IQD, LBP, etc.)
+ */
+export function roundRate(value: number): number {
+  if (value >= 100) return Math.round(value * 100) / 100;
+  if (value >= 1) return Math.round(value * 10000) / 10000;
+  return Math.round(value * 1000000) / 1000000;
+}
+
 const ALLOWED_DOMAINS = [
   'open.er-api.com',
   'bi.go.id',
@@ -183,9 +195,9 @@ export class OpenERApiProvider implements IRateProvider {
         // 1 USD = idrRate IDR, 1 USD = ccyRateAgainstUSD CCY => 1 CCY = (idrRate / ccyRateAgainstUSD) IDR
         const midRate = idrRate / ccyRateAgainstUSD;
         // Market spot reference indicative spread (0.15% bid-ask margin)
-        const buyRate = Math.round((midRate * 0.9985) * 100) / 100;
-        const sellRate = Math.round((midRate * 1.0015) * 100) / 100;
-        const spread = Math.round((sellRate - buyRate) * 100) / 100;
+        const buyRate = roundRate(midRate * 0.9985);
+        const sellRate = roundRate(midRate * 1.0015);
+        const spread = roundRate(sellRate - buyRate);
 
         rates.push({
           provider: this.info.id,
@@ -193,12 +205,13 @@ export class OpenERApiProvider implements IRateProvider {
           quoteCurrency: 'IDR',
           buyRate,
           sellRate,
-          midRate: Math.round(midRate * 100) / 100,
+          midRate: roundRate(midRate),
           spread,
           retrievedAt,
           providerTimestamp,
           sourceUrl: this.baseUrl,
         });
+
       }
 
       const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;

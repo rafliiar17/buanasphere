@@ -38,3 +38,17 @@ export function resolvePathToAppId(pathname: string): string {
 export function resolveAppIdToPath(appId: string): string {
   return CANONICAL_APP_PATHS[appId] ?? '/kurs';
 }
+
+/**
+ * Detects whether the given URL pathname is the root landing page.
+ */
+export function isLandingPath(pathname: string): boolean {
+  if (!pathname || pathname === '') return true;
+
+  const normalized = pathname.length > 1 && pathname.endsWith('/')
+    ? pathname.slice(0, -1)
+    : pathname;
+
+  return normalized === '/' || normalized === '' || normalized === '/index.html';
+}
+

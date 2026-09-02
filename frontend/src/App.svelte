@@ -13,6 +13,7 @@
     ArrowLeft
   } from 'lucide-svelte';
   import Navbar from '$lib/components/Navbar.svelte';
+  import GlobeLandingPage from '$lib/components/GlobeLandingPage.svelte';
   import WorldRateMap from '$lib/features/map/WorldRateMap.svelte';
   import CurrencyConverter from '$lib/features/converter/CurrencyConverter.svelte';
   import GoogleRateChart from '$lib/features/chart/GoogleRateChart.svelte';
@@ -25,8 +26,12 @@
   import FlightBottomDock from '$lib/apps/flight/FlightBottomDock.svelte';
   import PassportBottomDock from '$lib/apps/passport/PassportBottomDock.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
+  import { isLandingPath } from '$lib/framework/geoglobe/router';
   import { apiClient } from '$lib/api/client';
   import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
+
+  // Detect if we're on the root landing page (globe.arafz.id/)
+  const isLanding = typeof window !== 'undefined' ? isLandingPath(window.location.pathname) : false;
 
   let currentLang = $state<SupportedLocale>(getLocale());
   let isAppInitialLoading = $state(true);
@@ -110,9 +115,17 @@
 </script>
 
 <svelte:head>
-  <title>{activeApp.name} — {activeApp.tagline} | globe.arafz.id</title>
+  {#if isLanding}
+    <title>Globe — Platform Informasi Dunia Real-Time | globe.arafz.id</title>
+  {:else}
+    <title>{activeApp.name} — {activeApp.tagline} | globe.arafz.id</title>
+  {/if}
 </svelte:head>
 
+{#if isLanding}
+  <!-- Root Landing Page: Pilih Aplikasi -->
+  <GlobeLandingPage />
+{:else}
 <!-- Shell: 100vh Full Viewport Application (Map-First) -->
 <div class="h-screen w-screen overflow-hidden flex flex-col bg-[var(--bg)] text-[var(--ink)] select-none">
   
@@ -307,3 +320,5 @@
   <GeoAppLauncherModal />
 
 </div>
+{/if}
+

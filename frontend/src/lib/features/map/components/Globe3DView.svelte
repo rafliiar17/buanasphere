@@ -42,7 +42,7 @@
   // Holographic Lazy-Loading & Transition State (ADR 0032)
   let isSwitchingMetric = $state(false);
   let transitionLabel = $state('Mengalibrasi Tampilan Globe...');
-  let previousMetric = $state<string>('');
+  let previousMetric = '';
 
   function getTransitionMessage(metric: string): string {
     if (metric === 'flag') return '🎨 Memuat & Memetakan Tekstur Bendera 195+ Negara...';
@@ -585,8 +585,10 @@
     const _theme = currentTheme;
     const currentMetric = mapState.activeMetric;
     const _labels = mapState.showLabels;
+    const _geoLabels = geoStore.showLabels;
     const _selected = mapState.selectedCountryIso3;
     const _hovered = mapState.hoveredIso3;
+    const _data = mapData;
 
     if (previousMetric && previousMetric !== currentMetric) {
       isSwitchingMetric = true;
@@ -646,6 +648,17 @@
       resizeObserver = null;
     }
     if (globeInstance) {
+      // Dispose Three.js WebGL renderer to prevent GPU context leaks
+      const renderer = globeInstance.renderer?.();
+      if (renderer) {
+        renderer.dispose?.();
+        renderer.forceContextLoss?.();
+        renderer.domElement?.remove();
+      }
+      const scene = globeInstance.scene?.();
+      if (scene) {
+        scene.clear?.();
+      }
       try {
         globeInstance._destructor?.();
       } catch {}
