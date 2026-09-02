@@ -65,7 +65,7 @@ describe('Centralized D1 Database & KV Caching Ingestion Flow (SDLC)', () => {
     // User 1: Cold start / Cache Miss (triggers 1 ingestion cycle across providers)
     const user1Rates = await getLiveRatesWithCache({
       env: { KURS_CACHE: mockKv },
-      customFetch: mockFetchFn,
+      customFetch: mockFetchFn as unknown as typeof fetch,
     });
 
     expect(user1Rates.length).toBeGreaterThan(0);
@@ -82,7 +82,7 @@ describe('Centralized D1 Database & KV Caching Ingestion Flow (SDLC)', () => {
     clearMemoryCache(); // Clear in-memory to test pure KV hit
     const user2Rates = await getLiveRatesWithCache({
       env: { KURS_CACHE: mockKv },
-      customFetch: mockFetchFn,
+      customFetch: mockFetchFn as unknown as typeof fetch,
     });
 
     expect(user2Rates.length).toBe(user1Rates.length);

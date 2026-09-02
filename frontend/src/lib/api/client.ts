@@ -370,53 +370,7 @@ export class ApiClient {
       const data = await this.fetchJson<{ success: boolean; data: RateItem[] }>(`/rates/latest?base=${baseCurrency}`);
       return data.data;
     } catch {
-      // Direct Live Fallback: Fetch real-time exchange rates from OpenERAPI
-      try {
-        const openErRes = await fetch('https://open.er-api.com/v6/latest/USD');
-        if (openErRes.ok) {
-          const json: any = await openErRes.json();
-          if (json && json.result === 'success' && json.rates) {
-            const idrRate = json.rates['IDR'] || 16250;
-            const liveItems: RateItem[] = [];
-            const nowIso = new Date().toISOString();
-
-            for (const [ccyRaw, ccyVal] of Object.entries(json.rates)) {
-              const ccy = ccyRaw.toUpperCase();
-              if (ccy === 'IDR' || typeof ccyVal !== 'number' || ccyVal <= 0) continue;
-              const midRate = Math.round((idrRate / ccyVal) * 100) / 100;
-              const buyRate = Math.round(midRate * 0.9985 * 100) / 100;
-              const sellRate = Math.round(midRate * 1.0015 * 100) / 100;
-              const spread = Math.round((sellRate - buyRate) * 100) / 100;
-              const spreadPercent = Math.round(((spread / midRate) * 100) * 100) / 100;
-              const staticChange = BASE_RATES_IDR[ccy]?.change ?? 0;
-
-              liveItems.push({
-                id: `open_er_${ccy.toLowerCase()}`,
-                providerId: 'open_er_api',
-                providerName: 'ExchangeRate-API (Market Spot)',
-                baseCurrency: 'IDR',
-                targetCurrency: ccy,
-                buyRate,
-                sellRate,
-                middleRate: midRate,
-                spread,
-                spreadPercent,
-                change24h: staticChange,
-                updatedAt: json.time_last_update_utc || nowIso,
-                rateType: 'SPECIAL_RATE',
-              });
-            }
-
-            if (liveItems.length > 0) {
-              return liveItems;
-            }
-          }
-        }
-      } catch {
-        // Fallback to static base rates dictionary if network is fully offline
-      }
-
-      // Offline dictionary fallback
+      // Offline fallback dictionary from bundled ISO dataset
       const items: RateItem[] = [];
       const now = new Date().toISOString();
 
@@ -425,9 +379,9 @@ export class ApiClient {
         const spread = Math.round((val.sell - val.buy) * 100) / 100;
         const spreadPercent = Math.round(((spread / val.mid) * 100) * 100) / 100;
         items.push({
-          id: `bca-${curr.toLowerCase()}`,
-          providerId: 'bca',
-          providerName: 'BCA (e-Rate)',
+          id: `db-${curr.toLowerCase()}`,
+          providerId: 'cf_d1_database',
+          providerName: 'Cloudflare D1 (Kurs World Reference)',
           baseCurrency: 'IDR',
           targetCurrency: curr,
           buyRate: val.buy,
