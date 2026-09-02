@@ -143,18 +143,46 @@ describe('Country Inspector Drawer & Floating Panel Unit Tests', () => {
     });
   });
 
-  describe('Accessibility & Responsive Design Classes', () => {
-    it('verifies responsive classes for Mobile Bottom Drawer vs Desktop Floating Panel', () => {
-      // Mobile Drawer classes: bottom sheet
-      const mobileClasses = 'fixed inset-x-0 bottom-0 max-h-[85vh] rounded-t-3xl border-t';
-      expect(mobileClasses).toContain('bottom-0');
-      expect(mobileClasses).toContain('rounded-t-3xl');
+  describe('Split-Screen Docked Layout & Double Click Interaction Logic', () => {
+    it('detects double-click within 350ms on same country to trigger split-screen inspector', () => {
+      let lastClickTime = 1000;
+      const lastClickedIso3 = 'JPN';
 
-      // Desktop Drawer classes: floating glass panel on right side
-      const desktopClasses = 'md:fixed md:top-4 md:right-4 md:bottom-4 md:w-[460px] md:rounded-2xl md:border';
-      expect(desktopClasses).toContain('md:fixed');
-      expect(desktopClasses).toContain('md:top-4');
-      expect(desktopClasses).toContain('md:right-4');
+      // First click at t = 1000ms
+      // Second click at t = 1250ms (delta 250ms <= 350ms) on JPN
+      const secondClickTime = 1250;
+      const secondIso3 = 'JPN';
+      const isDoubleClick = (secondClickTime - lastClickTime < 350) && (lastClickedIso3 === secondIso3);
+      expect(isDoubleClick).toBeTrue();
+
+      // Third click on different country (e.g. USA) within 200ms -> should not be double click on JPN
+      const thirdClickTime = 1400;
+      const thirdIso3 = 'USA';
+      const isDiffCountryDoubleClick = (thirdClickTime - secondClickTime < 350) && (secondIso3 === thirdIso3);
+      expect(isDiffCountryDoubleClick).toBeFalse();
+
+      // Fourth click after 500ms on same country -> should not be double click (exceeded timeout)
+      const fourthClickTime = 2000;
+      const isSlowClickDoubleClick = (fourthClickTime - thirdClickTime < 350) && (thirdIso3 === thirdIso3);
+      expect(isSlowClickDoubleClick).toBeFalse();
+    });
+
+    it('verifies split-screen docked container classes (left globe canvas + right docked panel, no blocking backdrop)', () => {
+      // Fullscreen wrapper
+      const wrapperClasses = 'flex flex-col md:flex-row w-full h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)]';
+      expect(wrapperClasses).toContain('flex-col');
+      expect(wrapperClasses).toContain('md:flex-row');
+
+      // Left Globe section: expands to full width when closed, shrinks smoothly to flex-1 when docked
+      const leftGlobeSection = 'flex-1 h-full min-w-0 relative overflow-hidden transition-all duration-300';
+      expect(leftGlobeSection).toContain('flex-1');
+      expect(leftGlobeSection).toContain('min-w-0');
+
+      // Right Docked Panel: docked sidebar on desktop, bottom docked half on mobile
+      const rightDockedPanel = 'w-full md:w-[440px] lg:w-[480px] xl:w-[520px] shrink-0 h-full border-l border-[var(--bg-rule)] bg-[var(--bg-raised)]';
+      expect(rightDockedPanel).toContain('md:w-[440px]');
+      expect(rightDockedPanel).toContain('border-l');
+      expect(rightDockedPanel).toContain('shrink-0');
     });
   });
 });

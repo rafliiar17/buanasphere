@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import * as THREE from 'three';
   import { 
     Globe, 
     TrendingUp, 
@@ -28,7 +29,8 @@
     Clock,
     SlidersHorizontal,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Flag
   } from 'lucide-svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
@@ -92,6 +94,27 @@
   let geoJsonFeatures: any[] = [];
   let resizeObserver: ResizeObserver | null = null;
 
+  // Three.js Texture Loader & Flag Material Cache
+  const textureLoader = new THREE.TextureLoader();
+  const flagMaterialsCache = new Map<string, THREE.Material>();
+
+  // ISO-3 to ISO-2 Fallback Mapping for FlagCDN
+  const ISO3_TO_ISO2_MAP: Record<string, string> = {
+    IDN: 'id', USA: 'us', JPN: 'jp', CHN: 'cn', GBR: 'gb', DEU: 'de', FRA: 'fr', SGP: 'sg',
+    AUS: 'au', SAU: 'sa', MYS: 'my', THA: 'th', IND: 'in', BRA: 'br', ZAF: 'za', KOR: 'kr',
+    CAN: 'ca', RUS: 'ru', ITA: 'it', ESP: 'es', TUR: 'tr', EGY: 'eg', ARE: 'ae', PHL: 'ph',
+    VNM: 'vn', KAZ: 'kz', NLD: 'nl', CHE: 'ch', SWE: 'se', NOR: 'no', DNK: 'dk', POL: 'pl',
+    MEX: 'mx', ARG: 'ar', CHL: 'cl', COL: 'co', PER: 'pe', NZL: 'nz', QAT: 'qa', KWT: 'kw',
+    OMN: 'om', BHR: 'bh', JOR: 'jo', LBN: 'lb', IRQ: 'iq', ISR: 'il', IRN: 'ir', PAK: 'pk',
+    BGD: 'bd', LKA: 'lk', NPL: 'np', MMR: 'mm', KHM: 'kh', LAO: 'la', BRN: 'bn', NGA: 'ng',
+    KEN: 'ke', GHA: 'gh', MAR: 'ma', DZA: 'dz', TUN: 'tn', ETH: 'et', TZA: 'tz', UGA: 'ug',
+    UKR: 'ua', ROU: 'ro', CZE: 'cz', GRC: 'gr', PRT: 'pt', BEL: 'be', AUT: 'at', IRL: 'ie',
+    FIN: 'fi', HUN: 'hu', HRV: 'hr', BGR: 'bg', SRB: 'rs', SVK: 'sk', SVN: 'si', EST: 'ee',
+    LVA: 'lv', LTU: 'lt', CYP: 'cy', ISL: 'is', LUX: 'lu', MLT: 'mt', GEO: 'ge', ARM: 'am',
+    AZE: 'az', UZB: 'uz', TKM: 'tm', TJK: 'tj', KGZ: 'kg', MNG: 'mn', TWN: 'tw', HKG: 'hk',
+    MAC: 'mo', FJI: 'fj', PNG: 'pg', SLB: 'sb', VUT: 'vu', WSM: 'ws', TON: 'to', SOM: 'so',
+  };
+
   // Helper to extract ISO3 from geojson feature
   function getFeatureIso3(feat: any): string {
     if (!feat || !feat.properties) return '';
@@ -101,6 +124,39 @@
       return p.ADM0_A3 || p.SOV_A3 || p.GU_A3 || p.BRK_A3 || '';
     }
     return code;
+  }
+
+  // Helper to extract ISO2 code for FlagCDN
+  function getFeatureIso2(feat: any): string {
+    if (!feat || !feat.properties) return '';
+    const p = feat.properties;
+    const a2 = p.ISO_A2 || p.ISO_A2_EH || p.WB_A2 || p.POSTAL || p.FIPS_10 || '';
+    if (a2 && a2 !== '-99' && a2.length === 2) {
+      return a2.toLowerCase();
+    }
+    const iso3 = getFeatureIso3(feat);
+    return (ISO3_TO_ISO2_MAP[iso3] || iso3.slice(0, 2)).toLowerCase();
+  }
+
+  // Generate Flag Material with FlagCDN Texture for Country Polygons
+  function getFlagMaterial(iso2: string): THREE.Material {
+    const key = iso2.toLowerCase();
+    if (flagMaterialsCache.has(key)) {
+      return flagMaterialsCache.get(key)!;
+    }
+    const url = `https://flagcdn.com/w320/${key}.png`;
+    const texture = textureLoader.load(url);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+
+    const mat = new THREE.MeshLambertMaterial({
+      map: texture,
+      side: THREE.DoubleSide,
+      transparent: false,
+    });
+    flagMaterialsCache.set(key, mat);
+    return mat;
   }
 
   // Derived country map records combining API live rates & fallback
@@ -132,7 +188,7 @@
     });
   });
 
-  // Country Flag & Name 3D Pin Labels
+  // Country 3D Pin Labels (Clean text without emoji sequences to avoid '??' canvas rendering bug)
   const globeLabels = $derived.by(() => {
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !showLabels) return [];
     const isDark = currentTheme === 'dark';
@@ -141,8 +197,7 @@
       const p = feat.properties;
       const iso3 = getFeatureIso3(feat);
       const country = mapData.find(d => d.iso3 === iso3);
-      const flag = country?.flag || '🌐';
-      const name = country?.countryName || p.NAME || iso3;
+      const name = country?.countryName || p.NAME || p.ADMIN || iso3;
       const curr = country?.currencyCode || '';
       const lat = Number(p.LABEL_Y) || 0;
       const lng = Number(p.LABEL_X) || 0;
@@ -155,14 +210,14 @@
         country,
         lat,
         lng,
-        text: `${flag} ${name} ${curr ? `(${curr})` : ''}`,
-        shortText: `${flag} ${curr || iso3}`,
-        size: isSelected ? 1.5 : (isHovered ? 1.3 : (isMajor ? 1.05 : 0.75)),
+        text: `${name} (${curr || iso3})`,
+        shortText: curr || iso3,
+        size: isSelected ? 1.45 : (isHovered ? 1.25 : (isMajor ? 0.95 : 0.70)),
         color: isSelected 
           ? '#38bdf8' 
           : (isHovered 
               ? '#34d399' 
-              : (isDark ? 'rgba(241, 245, 249, 0.95)' : 'rgba(15, 23, 42, 0.95)')),
+              : (isDark ? 'rgba(241, 245, 249, 0.92)' : 'rgba(15, 23, 42, 0.92)')),
       };
     });
   });
@@ -180,25 +235,6 @@
       d.iso3.toLowerCase().includes(raw) ||
       d.regionLabel.toLowerCase().includes(raw)
     );
-  });
-
-  // Filtered Country list for region quick strip
-  const filteredQuickList = $derived.by<MapCountryData[]>(() => {
-    let list = mapData;
-    if (activeRegion !== 'all') {
-      const regionObj = REGION_FILTERS.find(r => r.id === activeRegion);
-      if (regionObj?.iso3List) {
-        list = list.filter(d => regionObj.iso3List!.includes(d.iso3));
-      } else {
-        list = list.filter(d => d.regionId === activeRegion);
-      }
-    }
-    const seen = new Set<string>();
-    return list.filter(d => {
-      if (seen.has(d.currencyCode)) return false;
-      seen.add(d.currencyCode);
-      return true;
-    });
   });
 
   // Selected Country details
@@ -227,7 +263,7 @@
     }
   });
 
-  // Color generator for 3D Globe polygons
+  // Color generator for 3D Globe polygons (used in 'rate' and 'change' modes)
   function getPolygonColor(feat: any): string {
     const isDark = currentTheme === 'dark';
     const iso3 = getFeatureIso3(feat);
@@ -247,7 +283,6 @@
     }
 
     if (activeMetric === 'rate') {
-      // Scale by middleRate (IDR)
       const r = country.middleRate;
       if (r > 20000) return isDark ? 'rgba(99, 102, 241, 0.75)' : 'rgba(79, 70, 229, 0.75)'; // Indigo
       if (r > 14000) return isDark ? 'rgba(59, 130, 246, 0.75)' : 'rgba(37, 99, 235, 0.75)'; // Blue
@@ -255,20 +290,23 @@
       if (r > 2000)  return isDark ? 'rgba(16, 185, 129, 0.75)' : 'rgba(5, 150, 105, 0.75)'; // Emerald
       if (r > 500)   return isDark ? 'rgba(20, 184, 166, 0.7)' : 'rgba(13, 148, 136, 0.7)'; // Teal
       return isDark ? 'rgba(15, 118, 110, 0.65)' : 'rgba(45, 212, 191, 0.65)';
-    } else {
-      // Scale by change24h (%)
+    } else if (activeMetric === 'change') {
       const chg = country.change24h;
       if (chg > 0.25) return isDark ? 'rgba(16, 185, 129, 0.85)' : 'rgba(5, 150, 105, 0.85)';
       if (chg > 0.05) return isDark ? 'rgba(52, 211, 153, 0.75)' : 'rgba(16, 185, 129, 0.75)';
       if (chg < -0.25) return isDark ? 'rgba(239, 68, 68, 0.85)' : 'rgba(220, 38, 38, 0.85)';
       if (chg < -0.05) return isDark ? 'rgba(248, 113, 113, 0.75)' : 'rgba(239, 68, 68, 0.75)';
       return isDark ? 'rgba(51, 65, 85, 0.65)' : 'rgba(203, 213, 225, 0.75)';
+    } else {
+      // In Flag mode: default neutral background behind texture
+      return isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(241, 245, 249, 0.95)';
     }
   }
 
   function getTooltipHtml(feat: any): string {
     const isDark = currentTheme === 'dark';
     const iso3 = getFeatureIso3(feat);
+    const iso2 = getFeatureIso2(feat);
     const country = mapData.find(d => d.iso3 === iso3);
     const name = country?.countryName || feat.properties?.NAME || feat.properties?.ADMIN || iso3;
     const flag = country?.flag || '🌐';
@@ -281,9 +319,11 @@
     const chgColor = country && country.change24h >= 0 ? '#10b981' : '#ef4444';
 
     return `
-      <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.94)' : 'rgba(255, 255, 255, 0.96)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-family: Inter, sans-serif; pointer-events: none; min-width: 200px;">
-        <div style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'}; margin-bottom: 2px;">
-          ${flag} ${name} ${code ? `<span style="font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; margin-left: 4px;">${code}</span>` : ''}
+      <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 22px; height: 15px; border-radius: 3px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);" onerror="this.style.display='none'" />
+          <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+          ${code ? `<span style="font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">${code}</span>` : ''}
         </div>
         ${currName ? `<div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#475569'}; margin-bottom: 6px;">${currName}</div>` : ''}
         <div style="font-size: 12px; font-weight: 700; color: #10b981; margin-bottom: 2px;">
@@ -352,7 +392,6 @@
   function initGlobeGl() {
     if (!globeContainer || !GlobeModule || geoJsonFeatures.length === 0) return;
 
-    // Purge previous instance if any
     if (globeInstance) {
       try {
         if (globeContainer.firstChild) {
@@ -374,12 +413,21 @@
       .atmosphereAltitude(0.22)
       .polygonsData(geoJsonFeatures)
       .polygonGeoJsonGeometry((d: any) => d.geometry)
-      .polygonCapColor((d: any) => getPolygonColor(d))
+      .polygonCapMaterial((d: any) => {
+        if (activeMetric !== 'flag') return null;
+        const iso2 = getFeatureIso2(d);
+        if (!iso2) return null;
+        return getFlagMaterial(iso2);
+      })
+      .polygonCapColor((d: any) => {
+        if (activeMetric === 'flag') return 'rgba(30, 41, 59, 0.9)';
+        return getPolygonColor(d);
+      })
       .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
-        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
+        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
         return 0.008;
       })
       .polygonLabel((d: any) => getTooltipHtml(d))
@@ -388,10 +436,12 @@
         if (globeInstance) {
           globeInstance.polygonAltitude((d: any) => {
             const iso3 = getFeatureIso3(d);
-            if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
+            if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
             return 0.008;
           });
-          globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
+          if (activeMetric !== 'flag') {
+            globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
+          }
         }
       })
       .onPolygonClick((clickD: any) => {
@@ -411,7 +461,7 @@
         .labelLng((d: any) => d.lng)
         .labelText((d: any) => d.text)
         .labelSize((d: any) => d.size)
-        .labelDotRadius((d: any) => (d.iso3 === selectedCountryIso3 ? 0.4 : 0.22))
+        .labelDotRadius((d: any) => (d.iso3 === selectedCountryIso3 ? 0.35 : 0.20))
         .labelColor((d: any) => d.color)
         .labelAltitude(0.015)
         .labelResolution(2)
@@ -447,10 +497,19 @@
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .polygonCapColor((d: any) => getPolygonColor(d))
+      .polygonCapMaterial((d: any) => {
+        if (activeMetric !== 'flag') return null;
+        const iso2 = getFeatureIso2(d);
+        if (!iso2) return null;
+        return getFlagMaterial(iso2);
+      })
+      .polygonCapColor((d: any) => {
+        if (activeMetric === 'flag') return 'rgba(30, 41, 59, 0.9)';
+        return getPolygonColor(d);
+      })
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
-        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
+        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
         return 0.008;
       })
       .labelsData(showLabels ? globeLabels : [])
@@ -465,7 +524,12 @@
     const isDark = currentTheme === 'dark';
     const dataList = mapData;
     const locations = dataList.map(d => d.iso3);
-    const zValues = dataList.map(d => (activeMetric === 'rate' ? d.middleRate : d.change24h));
+    const zValues = dataList.map(d => {
+      if (activeMetric === 'rate') return d.middleRate;
+      if (activeMetric === 'change') return d.change24h;
+      return 1; // flag / neutral mode
+    });
+
     const customData = dataList.map(d => ({
       country: d.countryName,
       code: d.currencyCode,
@@ -501,6 +565,11 @@
       [1.0, '#10b981'],
     ];
 
+    const flagColorScale: Array<[number, string]> = [
+      [0.0, isDark ? '#0284c7' : '#38bdf8'],
+      [1.0, isDark ? '#0d9488' : '#2dd4bf'],
+    ];
+
     const labelCurrency = t('common.currency');
     const labelMid = t('common.mid');
     const labelBuy = t('common.buy');
@@ -522,10 +591,11 @@
         '<span style="font-size: 11px; color: ' + (isDark ? '#cbd5e1' : '#334155') + ';">' + labelBuy + ': %{customdata.buyFormatted} | ' + labelSell + ': %{customdata.sellFormatted}</span><br>' +
         '<span style="font-size: 11px; font-weight: 600; color: %{customdata.changeColor};">' + labelChange24h + ': %{customdata.changeFormatted}</span><br>' +
         '<span style="font-size: 10px; color: #0284c7;">👉 ' + labelInspect + '</span>',
-      colorscale: isRateMetric ? rateColorScale : changeColorScale,
-      zmin: isRateMetric ? undefined : -1.0,
-      zmax: isRateMetric ? undefined : 1.0,
-      zmid: isRateMetric ? undefined : 0,
+      colorscale: activeMetric === 'rate' ? rateColorScale : (activeMetric === 'change' ? changeColorScale : flagColorScale),
+      zmin: activeMetric === 'change' ? -1.0 : undefined,
+      zmax: activeMetric === 'change' ? 1.0 : undefined,
+      zmid: activeMetric === 'change' ? 0 : undefined,
+      showscale: activeMetric !== 'flag',
       colorbar: {
         title: {
           text: isRateMetric ? 'Kurs (IDR)' : '24h (%)',
@@ -820,13 +890,18 @@
           <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
         </span>
         <span class="font-bold tracking-tight">Kurs.World</span>
-        <span class="text-[10px] text-[var(--ink-4)] font-normal">• {projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} (195+ Valas)</span>
+        <span class="text-[10px] text-[var(--ink-4)] font-normal">
+          • {projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} 
+          {#if activeMetric === 'flag'}
+            • 🏁 Mode Bendera
+          {/if}
+        </span>
       </div>
     </div>
 
     <!-- ── Top-Right Floating Controls Card ("Inputan di Kanan Atas") ─────── -->
     <div
-      class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[380px] max-w-sm bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
+      class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[390px] max-w-sm bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
       style="color: var(--ink);"
     >
       <!-- Panel Header & Collapse Toggle -->
@@ -997,31 +1072,43 @@
             {/if}
           </div>
 
-          <!-- 3. Metric Switcher Toggle -->
-          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+          <!-- 3. Metric Switcher Toggle (3 Modes: Kurs IDR | Tren 24h | Bendera Penuh) -->
+          <div class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
             <button
               type="button"
               onclick={() => toggleMetric('rate')}
-              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+              class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
                 activeMetric === 'rate'
                   ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
                   : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
               }`}
             >
-              <Coins class="w-3.5 h-3.5" />
-              <span>{t('map.modeRate')}</span>
+              <Coins class="w-3.5 h-3.5 shrink-0" />
+              <span class="truncate">{t('map.modeRate')}</span>
             </button>
             <button
               type="button"
               onclick={() => toggleMetric('change')}
-              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+              class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
                 activeMetric === 'change'
                   ? 'bg-indigo-500 text-white shadow-md font-extrabold'
                   : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
               }`}
             >
-              <TrendingUp class="w-3.5 h-3.5" />
-              <span>{t('map.modeChange')}</span>
+              <TrendingUp class="w-3.5 h-3.5 shrink-0" />
+              <span class="truncate">{t('map.modeChange')}</span>
+            </button>
+            <button
+              type="button"
+              onclick={() => toggleMetric('flag')}
+              class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                activeMetric === 'flag'
+                  ? 'bg-amber-400 text-slate-950 shadow-md font-extrabold'
+                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+              }`}
+            >
+              <Flag class="w-3.5 h-3.5 shrink-0" />
+              <span class="truncate">{t('map.modeFlag')}</span>
             </button>
           </div>
 
@@ -1094,7 +1181,7 @@
       {/if}
     </div>
 
-    <!-- ── Interactive Responsive Country Inspector Drawer / Floating Panel ── -->
+    <!-- ── Interactive Slide-Over Country Inspector Drawer ────────────────── -->
     {#if isInspectorOpen && selectedCountry}
       {@const curr = selectedCountry}
       {@const isPositive = curr.change24h >= 0}
@@ -1105,40 +1192,31 @@
         tabindex="0"
         aria-label={t('common.close')}
         onclick={handleCloseInspector}
-        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') handleCloseInspector(); }}
-        class="fixed inset-0 z-40 bg-black/50 md:bg-black/30 backdrop-blur-sm transition-opacity duration-300"
+        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCloseInspector(); }}
+        class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
       ></div>
 
-      <!-- Adaptive Drawer / Panel Container:
-           - Mobile (< md): Bottom Sheet Drawer (Slide up from bottom, max-h-[85vh], rounded-t-3xl, border-t)
-           - Desktop (>= md): Floating Glass Inspector Panel (Fixed top-4 right-4 bottom-4, max-w-lg, rounded-2xl, border)
-      -->
+      <!-- Slide-Over Drawer Panel -->
       <aside
         aria-label={t('map.countryInspector')}
-        class="fixed inset-x-0 bottom-0 z-50 max-h-[85vh] rounded-t-3xl border-t border-[var(--bg-rule)] bg-[var(--bg-raised)]/95 shadow-2xl backdrop-blur-2xl p-5 overflow-y-auto transform transition-all duration-300 ease-out flex flex-col justify-between space-y-4 md:fixed md:top-4 md:right-4 md:bottom-4 md:left-auto md:w-[480px] md:max-w-lg md:max-h-none md:rounded-2xl md:border md:border-[var(--bg-rule)] md:p-6"
+        class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md md:max-w-lg bg-[var(--bg-raised)] border-l border-[var(--bg-rule)] shadow-2xl backdrop-blur-2xl p-5 sm:p-6 overflow-y-auto transform transition-transform duration-300 flex flex-col justify-between space-y-5"
         style="color: var(--ink);"
       >
-        <!-- Mobile Drag/Swipe Indicator Bar -->
-        <div class="w-12 h-1.5 rounded-full bg-[var(--ink-4)]/40 mx-auto -mt-1 mb-2 shrink-0 md:hidden"></div>
-
-        <div class="space-y-4">
-          <!-- 1. Header: Country Flag, Name, Currency Code & Close Button -->
-          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-3.5">
+        <div class="space-y-5">
+          <!-- Inspector Header -->
+          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-4">
             <div class="flex items-center gap-3">
-              <span class="text-4xl shrink-0 drop-shadow-md">{curr.flag}</span>
-              <div class="min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <h3 class="text-lg md:text-xl font-bold text-[var(--ink)] truncate">
+              <span class="text-4xl">{curr.flag}</span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-xl font-bold text-[var(--ink)]">
                     {curr.countryName}
                   </h3>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
                     {curr.currencyCode}
                   </span>
-                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--ink-4)]">
-                    {curr.iso3}
-                  </span>
                 </div>
-                <p class="text-xs text-[var(--ink-4)] mt-0.5 truncate">
+                <p class="text-xs text-[var(--ink-4)] mt-0.5">
                   {curr.currencyName} • {curr.regionLabel}
                 </p>
               </div>
@@ -1147,46 +1225,43 @@
             <button
               type="button"
               onclick={handleCloseInspector}
-              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer shrink-0"
+              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
               aria-label={t('common.close')}
             >
               <X class="w-5 h-5" />
             </button>
           </div>
 
-          <!-- 2. Key Live Rates Grid (Mid, Buy, Sell, Spread, 24h Trend) -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] flex flex-col justify-between">
+          <!-- Key Rate Statistics Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
               <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.midRate')}</span>
-              <div class="text-sm md:text-base font-extrabold text-emerald-400 mt-1 font-mono">
+              <div class="text-base font-extrabold text-emerald-400 mt-0.5 font-mono">
                 {formatRupiah(curr.middleRate, { showFraction: true })}
               </div>
             </div>
 
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] flex flex-col justify-between">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
               <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.change24h')}</span>
-              <div class={`text-sm md:text-base font-extrabold mt-1 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <div class={`text-base font-extrabold mt-0.5 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {#if isPositive}
-                  <TrendingUp class="w-4 h-4 shrink-0" />
+                  <TrendingUp class="w-4 h-4" />
                 {:else}
-                  <TrendingDown class="w-4 h-4 shrink-0" />
+                  <TrendingDown class="w-4 h-4" />
                 {/if}
                 <span>{formatPercent(curr.change24h)}</span>
               </div>
             </div>
 
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1 flex flex-col justify-between">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
-                <span class="text-[9px] text-[var(--ink-4)]">{formatPercent(curr.spreadPercent)}</span>
-              </div>
-              <div class="text-sm md:text-base font-bold text-sky-400 mt-1 font-mono">
-                {formatRupiah(curr.spread, { showFraction: true })}
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1">
+              <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
+              <div class="text-base font-bold text-sky-400 mt-0.5 font-mono">
+                {formatRupiah(curr.spread)}
               </div>
             </div>
           </div>
 
-          <!-- 3. Google Finance-Style Trend Chart Mini -->
+          <!-- Google Finance-Style Trend Chart Mini -->
           <div class="border border-[var(--bg-rule)] rounded-2xl bg-[var(--bg-subtle)] p-3">
             <GoogleRateChart
               initialCurrency={curr.currencyCode}
@@ -1194,17 +1269,14 @@
             />
           </div>
 
-          <!-- 4. Quick Mini Converter Inside Drawer -->
-          <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2.5">
+          <!-- Quick Converter in Inspector -->
+          <div class="p-4 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-3">
             <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
-              <span class="flex items-center gap-1.5">
-                <Calculator class="w-3.5 h-3.5 text-emerald-400" />
-                <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
-              </span>
+              <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
               <button
                 type="button"
                 onclick={toggleConvertDirection}
-                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
+                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] cursor-pointer"
               >
                 <ArrowRightLeft class="w-3 h-3" />
                 <span>{convertDirection === 'foreign_to_idr' ? `${curr.currencyCode} ➔ IDR` : `IDR ➔ ${curr.currencyCode}`}</span>
@@ -1216,20 +1288,20 @@
                 type="number"
                 bind:value={convertAmount}
                 min="1"
-                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
+                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
               />
-              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs md:text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
+              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
                 {calculatedConvertResult.formatted}
               </div>
             </div>
 
             <!-- Preset Nominals -->
-            <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+            <div class="flex items-center gap-1.5 flex-wrap pt-1">
               {#each PRESET_AMOUNTS as preset}
                 <button
                   type="button"
                   onclick={() => setPresetAmount(preset)}
-                  class={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition border cursor-pointer ${
+                  class={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition border cursor-pointer ${
                     convertAmount === preset
                       ? 'bg-sky-500 text-slate-950 border-sky-400'
                       : 'bg-[var(--bg-raised)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
@@ -1240,72 +1312,15 @@
               {/each}
             </div>
           </div>
-
-          <!-- 5. Bank Comparison Matrix (If Quotes Available) -->
-          {#if isMatrixLoading}
-            <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2 animate-pulse">
-              <div class="h-4 bg-[var(--bg-rule)] rounded w-1/3"></div>
-              <div class="h-12 bg-[var(--bg-rule)] rounded-xl"></div>
-            </div>
-          {:else if bankMatrix && bankMatrix.rows && bankMatrix.rows.length > 0}
-            <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2.5">
-              <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
-                <span class="flex items-center gap-1.5">
-                  <Building2 class="w-3.5 h-3.5 text-sky-400" />
-                  <span>{t('map.bankComparison')}</span>
-                </span>
-                <span class="text-[10px] text-[var(--ink-4)] font-normal">
-                  {bankMatrix.rows.length} Bank
-                </span>
-              </div>
-
-              <div class="divide-y divide-[var(--bg-rule)] text-[11px]">
-                {#each bankMatrix.rows.slice(0, 4) as item}
-                  <div class="py-2 flex items-center justify-between gap-2">
-                    <div class="min-w-0">
-                      <div class="font-bold text-[var(--ink)] truncate flex items-center gap-1.5">
-                        <span>{item.providerName}</span>
-                        {#if item.isBestBuy}
-                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
-                            {t('map.bestBuy')}
-                          </span>
-                        {/if}
-                        {#if item.isBestSell}
-                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold">
-                            {t('map.bestSell')}
-                          </span>
-                        {/if}
-                      </div>
-                      <div class="text-[10px] text-[var(--ink-4)]">
-                        Spread: {formatRupiah(item.spread)}
-                      </div>
-                    </div>
-                    <div class="text-right shrink-0 font-mono">
-                      <div class="text-xs font-bold text-emerald-400">
-                        {formatRupiah(item.buyRate, { showFraction: true })}
-                      </div>
-                      <div class="text-[10px] text-[var(--ink-4)]">
-                        Jual: {formatRupiah(item.sellRate, { showFraction: true })}
-                      </div>
-                    </div>
-                  </div>
-                {/each}
-              </div>
-            </div>
-          {/if}
-
         </div>
 
-        <!-- 6. Drawer Footer & Actions -->
-        <div class="pt-3 border-t border-[var(--bg-rule)] flex items-center justify-between gap-2 text-xs text-[var(--ink-4)]">
-          <div class="flex items-center gap-1.5 truncate">
-            <Clock class="w-3.5 h-3.5 shrink-0" />
-            <span class="truncate">{formatDateTimeIndo(new Date())}</span>
-          </div>
+        <!-- Drawer Footer -->
+        <div class="pt-4 border-t border-[var(--bg-rule)] flex items-center justify-between text-xs text-[var(--ink-4)]">
+          <span>🕒 {formatDateTimeIndo(new Date())}</span>
           <button
             type="button"
             onclick={handleCloseInspector}
-            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer shrink-0"
+            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer"
           >
             {t('common.close')}
           </button>
