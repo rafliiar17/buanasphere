@@ -110,7 +110,7 @@
           <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
             Eksplorasi Kurs Valas Dunia <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">Secara Transparan</span>
           </h1>
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
             Pantau kurs beli, kurs jual, dan spread harga nyata dari Bank Indonesia (JISDOR), BCA, Bank Mandiri, BRI, BNI, CIMB Niaga, serta money changer tanpa markup tersembunyi.
           </p>
         </div>

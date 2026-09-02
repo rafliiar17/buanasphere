@@ -104,9 +104,11 @@ export class OpenERApiProvider implements IRateProvider {
       const providerTimestamp = data.time_last_update_utc ?? retrievedAt;
       const rates: Rate[] = [];
 
-      for (const ccy of MAJOR_CURRENCIES) {
-        const ccyRateAgainstUSD = data.rates[ccy];
-        if (!ccyRateAgainstUSD || ccyRateAgainstUSD <= 0) continue;
+      // Parse ALL currencies returned by ExchangeRate-API (160+ currency codes)
+      for (const [ccyRaw, ccyRateAgainstUSD] of Object.entries(data.rates)) {
+        const ccy = ccyRaw.toUpperCase();
+        if (!ccy || typeof ccyRateAgainstUSD !== 'number' || ccyRateAgainstUSD <= 0) continue;
+        if (ccy === 'IDR') continue; // IDR is the target quote currency
 
         // 1 USD = idrRate IDR, 1 USD = ccyRateAgainstUSD CCY => 1 CCY = (idrRate / ccyRateAgainstUSD) IDR
         const midRate = idrRate / ccyRateAgainstUSD;

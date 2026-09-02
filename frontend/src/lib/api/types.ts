@@ -1,4 +1,4 @@
-export type ProviderType = 'central_bank' | 'commercial_bank' | 'money_changer';
+export type ProviderType = 'central_bank' | 'commercial_bank' | 'money_changer' | 'market_reference' | 'global_feed';
 
 export interface ProviderInfo {
   id: string;

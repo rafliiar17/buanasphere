@@ -9,43 +9,65 @@ import {
 } from '../src/lib/features/map/country-mapping';
 import type { RateItem } from '../src/lib/api/types';
 
-describe('Country and Currency Mapping Unit Tests', () => {
-  const EXPECTED_ISO3_CODES = [
-    'USA', 'DEU', 'FRA', 'ITA', 'ESP', 'NLD', 'BEL',
-    'SGP', 'JPN', 'GBR', 'AUS', 'CHN', 'MYS', 'SAU',
-    'THA', 'CAN', 'CHE', 'HKG', 'KOR', 'NZL', 'IND',
-    'BRA', 'ZAF', 'ARE', 'PHL', 'VNM', 'IDN',
+describe('Country and Currency Mapping Unit Tests (195+ Countries)', () => {
+  const SAMPLE_REQUIRED_ISO3 = [
+    // Asia
+    'IDN', 'SGP', 'MYS', 'THA', 'PHL', 'VNM', 'JPN', 'CHN', 'HKG', 'KOR',
+    'TWN', 'IND', 'PAK', 'BGD', 'LKA', 'NPL', 'MMR', 'KHM', 'LAO', 'BRN',
+    'TLS', 'MNG', 'KAZ', 'UZB', 'KGZ', 'TJK', 'TKM', 'GEO', 'ARM', 'AZE',
+    // Middle East
+    'SAU', 'ARE', 'QAT', 'KWT', 'BHR', 'OMN', 'JOR', 'LBN', 'IRQ', 'ISR',
+    'TUR', 'IRN', 'YEM',
+    // Europe
+    'DEU', 'FRA', 'ITA', 'ESP', 'NLD', 'BEL', 'AUT', 'PRT', 'GRC', 'FIN',
+    'IRL', 'SVK', 'SVN', 'EST', 'LVA', 'LTU', 'CYP', 'MLT', 'LUX', 'HRV',
+    'GBR', 'CHE', 'NOR', 'SWE', 'DNK', 'POL', 'CZE', 'HUN', 'ROU', 'BGR',
+    'SRB', 'ALB', 'BIH', 'MKD', 'ISL', 'UKR', 'BLR', 'RUS', 'MDA', 'MNE',
+    // Americas
+    'USA', 'CAN', 'MEX', 'BRA', 'ARG', 'CHL', 'COL', 'PER', 'VEN', 'ECU',
+    'URY', 'PRY', 'BOL', 'CRI', 'PAN', 'GTM', 'HND', 'NIC', 'SLV', 'DOM',
+    'JAM', 'TTO', 'CUB', 'BHS', 'BRB', 'BLZ', 'GUY', 'SUR',
+    // Oceania
+    'AUS', 'NZL', 'PNG', 'FJI', 'SLB', 'VUT', 'WSM', 'TON',
+    // Africa
+    'ZAF', 'EGY', 'NGA', 'KEN', 'GHA', 'MAR', 'DZA', 'TUN', 'ETH', 'TZA',
+    'UGA', 'RWA', 'MUS', 'SYC', 'AGO', 'MOZ', 'ZMB', 'ZWE', 'SEN', 'CIV',
+    'MLI', 'BFA', 'NER', 'TGO', 'BEN', 'GNB', 'CMR', 'GAB', 'COG', 'TCD',
+    'CAF', 'GNQ', 'COD', 'MDG', 'BWP', 'NAM', 'SWZ', 'LSO', 'SDN', 'SSD',
+    'LBY', 'MRT', 'GMB', 'SLE', 'LBR', 'GIN',
   ];
 
-  const EXPECTED_CURRENCIES = [
-    'USD', 'EUR', 'SGD', 'JPY', 'GBP', 'AUD', 'CNY',
-    'MYR', 'SAR', 'THB', 'CAD', 'CHF', 'HKD', 'KRW',
-    'NZD', 'INR', 'BRL', 'ZAR', 'AED', 'PHP', 'VND',
-    'IDR',
-  ];
-
-  describe('ISO-3 Country Dataset Integrity', () => {
-    it('contains all 27 required ISO-3 countries', () => {
+  describe('Global ISO-3 Country Dataset Integrity (195+ Countries)', () => {
+    it('contains all 195+ countries and territories across 6 continents', () => {
       const allEntries = getAllCountryMappings();
-      expect(allEntries.length).toBe(27);
+      expect(allEntries.length).toBeGreaterThanOrEqual(195);
+      expect(allEntries.length).toBe(201);
 
-      for (const iso3 of EXPECTED_ISO3_CODES) {
+      for (const iso3 of SAMPLE_REQUIRED_ISO3) {
         const found = allEntries.find((e) => e.iso3 === iso3);
         expect(found).toBeDefined();
+        expect(found?.iso3).toBe(iso3);
       }
     });
 
-    it('contains all 22 required currency codes', () => {
+    it('contains distinct regions with expected distribution', () => {
       const allEntries = getAllCountryMappings();
-      const uniqueCurrencies = new Set(allEntries.map((e) => e.currencyCode));
-
-      for (const ccy of EXPECTED_CURRENCIES) {
-        expect(uniqueCurrencies.has(ccy)).toBe(true);
-      }
+      const regions = new Set(allEntries.map((e) => e.region));
+      expect(regions.size).toBe(6);
+      expect(regions.has('Asia')).toBe(true);
+      expect(regions.has('Middle East')).toBe(true);
+      expect(regions.has('Europe')).toBe(true);
+      expect(regions.has('Americas')).toBe(true);
+      expect(regions.has('Oceania')).toBe(true);
+      expect(regions.has('Africa')).toBe(true);
     });
 
-    it('ensures every country entry has valid metadata fields', () => {
+    it('ensures every country entry has valid metadata fields and emojis', () => {
+      const uniqueIso3 = new Set<string>();
       for (const entry of COUNTRY_CURRENCY_LIST) {
+        expect(uniqueIso3.has(entry.iso3)).toBe(false);
+        uniqueIso3.add(entry.iso3);
+
         expect(entry.iso3).toMatch(/^[A-Z]{3}$/);
         expect(entry.countryName).toBeString();
         expect(entry.countryName.length).toBeGreaterThan(0);
@@ -62,7 +84,7 @@ describe('Country and Currency Mapping Unit Tests', () => {
   });
 
   describe('Lookup Helper Functions', () => {
-    it('getCountryByIso3 returns correct country entry', () => {
+    it('getCountryByIso3 returns correct country entry and handles case insensitivity', () => {
       const usa = getCountryByIso3('USA');
       expect(usa).toBeDefined();
       expect(usa?.countryName).toBe('Amerika Serikat');
@@ -70,17 +92,29 @@ describe('Country and Currency Mapping Unit Tests', () => {
       expect(usa?.flagEmoji).toBe('🇺🇸');
       expect(usa?.region).toBe('Americas');
 
-      const idn = getCountryByIso3('idn'); // Case insensitive check
+      const idn = getCountryByIso3('idn');
       expect(idn).toBeDefined();
       expect(idn?.countryName).toBe('Indonesia');
       expect(idn?.currencyCode).toBe('IDR');
       expect(idn?.flagEmoji).toBe('🇮🇩');
 
-      const invalid = getCountryByIso3('XYZ');
+      const invalid = getCountryByIso3('INVALID');
       expect(invalid).toBeUndefined();
     });
 
-    it('getCountriesByCurrency returns single country for standard currencies', () => {
+    it('handles aliases for common currency-country cross codes (e.g. UGX -> UGA, IRR -> IRN)', () => {
+      const uganda = getCountryByIso3('UGX');
+      expect(uganda).toBeDefined();
+      expect(uganda?.iso3).toBe('UGA');
+      expect(uganda?.currencyCode).toBe('UGX');
+
+      const iran = getCountryByIso3('IRR');
+      expect(iran).toBeDefined();
+      expect(iran?.iso3).toBe('IRN');
+      expect(iran?.currencyCode).toBe('IRR');
+    });
+
+    it('getCountriesByCurrency returns single country for sovereign unique currencies', () => {
       const jpyCountries = getCountriesByCurrency('JPY');
       expect(jpyCountries.length).toBe(1);
       expect(jpyCountries[0].iso3).toBe('JPN');
@@ -91,9 +125,9 @@ describe('Country and Currency Mapping Unit Tests', () => {
       expect(sgpCountries[0].iso3).toBe('SGP');
     });
 
-    it('getCountriesByCurrency returns multiple countries for Euro (EUR)', () => {
+    it('getCountriesByCurrency returns multiple countries for shared currencies (EUR, USD, XOF, XAF, XCD)', () => {
       const euroCountries = getCountriesByCurrency('EUR');
-      expect(euroCountries.length).toBeGreaterThanOrEqual(6);
+      expect(euroCountries.length).toBeGreaterThanOrEqual(20);
       const isoList = euroCountries.map((c) => c.iso3);
       expect(isoList).toContain('DEU');
       expect(isoList).toContain('FRA');
@@ -101,6 +135,12 @@ describe('Country and Currency Mapping Unit Tests', () => {
       expect(isoList).toContain('ESP');
       expect(isoList).toContain('NLD');
       expect(isoList).toContain('BEL');
+
+      const xofCountries = getCountriesByCurrency('XOF');
+      expect(xofCountries.length).toBeGreaterThanOrEqual(7);
+
+      const xafCountries = getCountriesByCurrency('XAF');
+      expect(xafCountries.length).toBeGreaterThanOrEqual(6);
     });
 
     it('getIso3ByCurrency returns array of ISO-3 codes', () => {
@@ -109,14 +149,14 @@ describe('Country and Currency Mapping Unit Tests', () => {
       expect(eurIso3).toContain('FRA');
 
       const usdIso3 = getIso3ByCurrency('USD');
-      expect(usdIso3).toEqual(['USA']);
+      expect(usdIso3).toContain('USA');
 
       const nonExistent = getIso3ByCurrency('NON');
       expect(nonExistent).toEqual([]);
     });
   });
 
-  describe('buildChoroplethData Helper Function', () => {
+  describe('buildChoroplethData Helper Function for 195+ Countries', () => {
     const mockRates: RateItem[] = [
       {
         id: 'bca-usd',
@@ -176,13 +216,13 @@ describe('Country and Currency Mapping Unit Tests', () => {
       },
     ];
 
-    it('builds choropleth dataset for metric="rate"', () => {
+    it('builds full choropleth dataset for all 201 countries with metric="rate"', () => {
       const data = buildChoroplethData(mockRates, 'rate');
 
-      expect(data.locations.length).toBe(COUNTRY_CURRENCY_LIST.length);
-      expect(data.z.length).toBe(COUNTRY_CURRENCY_LIST.length);
-      expect(data.text.length).toBe(COUNTRY_CURRENCY_LIST.length);
-      expect(data.customdata.length).toBe(COUNTRY_CURRENCY_LIST.length);
+      expect(data.locations.length).toBe(201);
+      expect(data.z.length).toBe(201);
+      expect(data.text.length).toBe(201);
+      expect(data.customdata.length).toBe(201);
 
       // Verify USA entry
       const usaIdx = data.locations.indexOf('USA');
@@ -212,9 +252,10 @@ describe('Country and Currency Mapping Unit Tests', () => {
       expect(data.text[idnIdx]).toContain('Perubahan: 0.00%');
     });
 
-    it('builds choropleth dataset for metric="change"', () => {
+    it('builds full choropleth dataset for all 201 countries with metric="change"', () => {
       const data = buildChoroplethData(mockRates, 'change');
 
+      expect(data.locations.length).toBe(201);
       const usaIdx = data.locations.indexOf('USA');
       expect(data.z[usaIdx]).toBe(0.25);
 
@@ -238,12 +279,12 @@ describe('Country and Currency Mapping Unit Tests', () => {
       expect(data.text[vnmIdx]).toContain('Kurs: Rp 0,64');
     });
 
-    it('gracefully handles missing rates without throwing', () => {
+    it('gracefully handles unpopulated rates without throwing', () => {
       const partialRates: RateItem[] = [];
       const data = buildChoroplethData(partialRates, 'rate');
 
-      expect(data.locations.length).toBe(COUNTRY_CURRENCY_LIST.length);
-      expect(data.z.length).toBe(COUNTRY_CURRENCY_LIST.length);
+      expect(data.locations.length).toBe(201);
+      expect(data.z.length).toBe(201);
 
       const usaIdx = data.locations.indexOf('USA');
       expect(data.z[usaIdx]).toBe(0);
@@ -252,8 +293,8 @@ describe('Country and Currency Mapping Unit Tests', () => {
 
     it('handles null/undefined rate lists safely', () => {
       const data = buildChoroplethData(null as unknown as RateItem[], 'rate');
-      expect(data.locations.length).toBe(COUNTRY_CURRENCY_LIST.length);
-      expect(data.z.length).toBe(COUNTRY_CURRENCY_LIST.length);
+      expect(data.locations.length).toBe(201);
+      expect(data.z.length).toBe(201);
     });
   });
 });

@@ -19,10 +19,20 @@ describe('OpenERApiProvider', () => {
       MYR: 4.4,
       SAR: 3.75,
       THB: 34.0,
+      CAD: 1.35,
+      CHF: 0.88,
+      BRL: 5.4,
+      ZAR: 18.2,
+      AED: 3.67,
+      PHP: 56.5,
+      VND: 24500,
+      NGN: 1500,
+      EGP: 48.5,
+      KES: 130,
     },
   };
 
-  it('should fetch and normalize rates for major currencies against IDR', async () => {
+  it('should fetch and normalize all currencies against IDR from OpenERApi', async () => {
     const customFetch = mock(() =>
       Promise.resolve(
         new Response(JSON.stringify(mockApiResponse), {
@@ -35,7 +45,9 @@ describe('OpenERApiProvider', () => {
     const provider = new OpenERApiProvider({ customFetch });
     const rates = await provider.fetchLatestRates();
 
-    expect(rates.length).toBeGreaterThan(0);
+    // 21 currencies in response minus IDR (as base quote) => 20 rates
+    expect(rates.length).toBe(20);
+
     const usdRate = rates.find((r) => r.baseCurrency === 'USD');
     expect(usdRate).toBeDefined();
     expect(usdRate?.quoteCurrency).toBe('IDR');
@@ -48,6 +60,16 @@ describe('OpenERApiProvider', () => {
     const eurRate = rates.find((r) => r.baseCurrency === 'EUR');
     expect(eurRate).toBeDefined();
     expect(eurRate?.midRate).toBeCloseTo(15500 / 0.92, 1);
+
+    // Verify African & emerging market currency (NGN: 15500 / 1500 = ~10.33)
+    const ngnRate = rates.find((r) => r.baseCurrency === 'NGN');
+    expect(ngnRate).toBeDefined();
+    expect(ngnRate?.midRate).toBeCloseTo(15500 / 1500, 1);
+
+    // Verify micro currency (VND: 15500 / 24500 = ~0.63)
+    const vndRate = rates.find((r) => r.baseCurrency === 'VND');
+    expect(vndRate).toBeDefined();
+    expect(vndRate?.midRate).toBeCloseTo(15500 / 24500, 2);
   });
 
   it('should throw an error when API returns error status', async () => {
