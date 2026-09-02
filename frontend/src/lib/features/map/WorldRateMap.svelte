@@ -229,6 +229,7 @@
       midFormatted: formatRupiah(d.middleRate),
       changeFormatted: formatPercent(d.change24h),
       change: d.change24h,
+      changeColor: d.change24h >= 0 ? '#10b981' : '#ef4444',
     }));
 
     // Color Scales
@@ -253,6 +254,13 @@
     const isRateMetric = activeMetric === 'rate';
     const regionObj = REGION_FILTERS.find(r => r.id === activeRegion) || REGION_FILTERS[0];
 
+    const labelCurrency = t('common.currency');
+    const labelMid = t('common.mid');
+    const labelBuy = t('common.buy');
+    const labelSell = t('common.sell');
+    const labelChange24h = t('common.change24h');
+    const labelInspect = t('map.inspectCountry');
+
     const trace = {
       type: 'choropleth' as const,
       locationmode: 'ISO-3' as const,
@@ -262,11 +270,11 @@
       hovertemplate: 
         '<extra></extra>' +
         '<span style="font-size: 13px; font-weight: bold; color: ' + (isDark ? '#f8fafc' : '#0f172a') + ';">%{customdata.flag} %{customdata.country} (%{customdata.code})</span><br>' +
-        '<span style="font-size: 11px; color: ' + (isDark ? '#94a3b8' : '#475569') + ';">' + t('common.currency') + ': %{customdata.name}</span><br>' +
-        '<span style="font-size: 12px; font-weight: 600; color: #10b981;">' + t('matrix.table.midRate') + ': %{customdata.midFormatted}</span><br>' +
-        '<span style="font-size: 11px; color: ' + (isDark ? '#cbd5e1' : '#334155') + ';">' + t('matrix.table.buy') + ': %{customdata.buyFormatted} | ' + t('matrix.table.sell') + ': %{customdata.sellFormatted}</span><br>' +
-        '<span style="font-size: 11px; font-weight: 600; color: %{customdata.change >= 0 ? "#10b981" : "#ef4444"};">' + t('matrix.table.change24h') + ': %{customdata.changeFormatted}</span><br>' +
-        '<span style="font-size: 10px; color: #0284c7;">👉 ' + t('map.inspectCountry') + '</span>',
+        '<span style="font-size: 11px; color: ' + (isDark ? '#94a3b8' : '#475569') + ';">' + labelCurrency + ': %{customdata.name}</span><br>' +
+        '<span style="font-size: 12px; font-weight: 600; color: #10b981;">' + labelMid + ': %{customdata.midFormatted}</span><br>' +
+        '<span style="font-size: 11px; color: ' + (isDark ? '#cbd5e1' : '#334155') + ';">' + labelBuy + ': %{customdata.buyFormatted} | ' + labelSell + ': %{customdata.sellFormatted}</span><br>' +
+        '<span style="font-size: 11px; font-weight: 600; color: %{customdata.changeColor};">' + labelChange24h + ': %{customdata.changeFormatted}</span><br>' +
+        '<span style="font-size: 10px; color: #0284c7;">👉 ' + labelInspect + '</span>',
       colorscale: isRateMetric ? rateColorScale : changeColorScale,
       zmin: isRateMetric ? undefined : -1.0,
       zmax: isRateMetric ? undefined : 1.0,
