@@ -74,6 +74,7 @@
   let bankMatrix = $state<RateMatrixResponse | null>(null);
   let isMatrixLoading = $state(false);
   let hoveredIso3 = $state<string | null>(null);
+  let showLabels = $state(true);
 
   // Quick Convert Mini State
   let convertAmount = $state<number>(100);
@@ -127,6 +128,41 @@
         spread,
         spreadPercent,
         change24h,
+      };
+    });
+  });
+
+  // Country Flag & Name 3D Pin Labels
+  const globeLabels = $derived.by(() => {
+    if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !showLabels) return [];
+    const isDark = currentTheme === 'dark';
+
+    return geoJsonFeatures.map((feat: any) => {
+      const p = feat.properties;
+      const iso3 = getFeatureIso3(feat);
+      const country = mapData.find(d => d.iso3 === iso3);
+      const flag = country?.flag || '🌐';
+      const name = country?.countryName || p.NAME || iso3;
+      const curr = country?.currencyCode || '';
+      const lat = Number(p.LABEL_Y) || 0;
+      const lng = Number(p.LABEL_X) || 0;
+      const isSelected = selectedCountryIso3 === iso3;
+      const isHovered = hoveredIso3 === iso3;
+      const isMajor = ['IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU', 'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP', 'TUR', 'EGY', 'ARE', 'PHL', 'VNM'].includes(iso3);
+
+      return {
+        iso3,
+        country,
+        lat,
+        lng,
+        text: `${flag} ${name} ${curr ? `(${curr})` : ''}`,
+        shortText: `${flag} ${curr || iso3}`,
+        size: isSelected ? 1.5 : (isHovered ? 1.3 : (isMajor ? 1.05 : 0.75)),
+        color: isSelected 
+          ? '#38bdf8' 
+          : (isHovered 
+              ? '#34d399' 
+              : (isDark ? 'rgba(241, 245, 249, 0.95)' : 'rgba(15, 23, 42, 0.95)')),
       };
     });
   });
@@ -367,6 +403,29 @@
         }
       });
 
+    // Configure country flag and name labels in 3D
+    if (showLabels && globeLabels.length > 0) {
+      globeInstance
+        .labelsData(globeLabels)
+        .labelLat((d: any) => d.lat)
+        .labelLng((d: any) => d.lng)
+        .labelText((d: any) => d.text)
+        .labelSize((d: any) => d.size)
+        .labelDotRadius((d: any) => (d.iso3 === selectedCountryIso3 ? 0.4 : 0.22))
+        .labelColor((d: any) => d.color)
+        .labelAltitude(0.015)
+        .labelResolution(2)
+        .onLabelClick((d: any) => {
+          if (d.country) {
+            handleSelectFromSearch(d.country);
+          }
+        })
+        .onLabelHover((d: any) => {
+          hoveredIso3 = d ? d.iso3 : null;
+          updateGlobeVisuals();
+        });
+    }
+
     // Configure smooth Google Earth 3D camera controls
     const controls = globeInstance.controls();
     if (controls) {
@@ -393,7 +452,10 @@
         const iso3 = getFeatureIso3(d);
         if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
         return 0.008;
-      });
+      })
+      .labelsData(showLabels ? globeLabels : [])
+      .labelSize((d: any) => d.size)
+      .labelColor((d: any) => d.color);
   }
 
   // Initialize Flat 2D Map with Plotly
@@ -882,32 +944,57 @@
             {/if}
           </div>
 
-          <!-- 2. Projection Switcher (Globe 3D WebGL vs Peta Datar) -->
-          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
-            <button
-              type="button"
-              onclick={() => toggleProjection('globe')}
-              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                projectionMode === 'globe'
-                  ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
-                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-              }`}
-            >
-              <Globe class="w-3.5 h-3.5" />
-              <span>{t('map.projectionGlobe')}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => toggleProjection('flat')}
-              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                projectionMode === 'flat'
-                  ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
-                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-              }`}
-            >
-              <Compass class="w-3.5 h-3.5" />
-              <span>{t('map.projectionFlat')}</span>
-            </button>
+          <!-- 2. Projection & Labels Switcher -->
+          <div class="space-y-1.5">
+            <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+              <button
+                type="button"
+                onclick={() => toggleProjection('globe')}
+                class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  projectionMode === 'globe'
+                    ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
+                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <Globe class="w-3.5 h-3.5" />
+                <span>{t('map.projectionGlobe')}</span>
+              </button>
+              <button
+                type="button"
+                onclick={() => toggleProjection('flat')}
+                class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  projectionMode === 'flat'
+                    ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
+                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <Compass class="w-3.5 h-3.5" />
+                <span>{t('map.projectionFlat')}</span>
+              </button>
+            </div>
+
+            {#if projectionMode === 'globe'}
+              <button
+                type="button"
+                onclick={() => {
+                  showLabels = !showLabels;
+                  updateGlobeVisuals();
+                }}
+                class={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
+                  showLabels
+                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                    : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <span class="flex items-center gap-1.5">
+                  <MapPin class="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{t('map.showLabels')}</span>
+                </span>
+                <span class={`text-[10px] px-2 py-0.5 rounded-md font-extrabold ${showLabels ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'bg-[var(--bg-raised)] text-[var(--ink-4)]'}`}>
+                  {showLabels ? 'AKTIF' : 'NONAKTIF'}
+                </span>
+              </button>
+            {/if}
           </div>
 
           <!-- 3. Metric Switcher Toggle -->

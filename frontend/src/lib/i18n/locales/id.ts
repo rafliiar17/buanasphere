@@ -87,6 +87,7 @@ export const idTranslations = {
     projectionMode: 'Proyeksi:',
     projectionGlobe: 'Globe 3D 🌍',
     projectionFlat: 'Peta Datar 🗺️',
+    showLabels: 'Label & Bendera 🏷️',
     modeRate: 'Kurs Nominal (IDR)',
     modeChange: 'Tren 24 Jam (%)',
     modeLabel: 'Mode:',

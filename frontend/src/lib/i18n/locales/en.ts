@@ -87,6 +87,7 @@ export const enTranslations = {
     projectionMode: 'Projection:',
     projectionGlobe: '3D Globe 🌍',
     projectionFlat: 'Flat Map 🗺️',
+    showLabels: 'Labels & Flags 🏷️',
     modeRate: 'Nominal Rate (IDR)',
     modeChange: '24h Trend (%)',
     modeLabel: 'Mode:',
