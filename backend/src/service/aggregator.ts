@@ -192,8 +192,8 @@ export class AggregatorService {
   private readonly log = logger.child({ module: 'aggregator_service' });
 
   // In-memory fallback cache when KV is not bound
-  private static memoryCache: Rate[] = [];
-  private static memoryCacheTimestamp = 0;
+  public static memoryCache: Rate[] = [];
+  public static memoryCacheTimestamp = 0;
 
   // Single-flight in-flight promise lock to prevent cache stampedes (SEC-05)
   private static inFlightIngestion: Promise<IngestionResult> | null = null;
