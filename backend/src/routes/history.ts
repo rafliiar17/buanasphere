@@ -77,7 +77,7 @@ export const historyRoutes = (env?: Env) => {
     },
   };
 
-  return new Elysia({ prefix: '/api/v1' })
+  return new Elysia({ prefix: '/api/v1', aot: false })
     .get('/history', handler, historySchema)
     .get('/rates/history', handler, historySchema);
 };

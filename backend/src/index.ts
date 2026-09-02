@@ -10,7 +10,7 @@ import { logger } from './logger/index.ts';
 import type { Env } from './db/index.ts';
 
 export function createApp(env?: Env) {
-  const app = new Elysia()
+  const app = new Elysia({ aot: false })
     .use(loggerMiddleware())
     .use(
       cors({

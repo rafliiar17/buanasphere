@@ -7,7 +7,7 @@ export const convertRoutes = (env?: Env) => {
   const aggregator = new AggregatorService({ env });
   const converter = new ConverterService({ aggregator });
 
-  return new Elysia({ prefix: '/api/v1' }).get(
+  return new Elysia({ prefix: '/api/v1', aot: false }).get(
     '/convert',
     async ({ query, set }) => {
       try {

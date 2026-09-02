@@ -8,7 +8,7 @@ export const ratesRoutes = (env?: Env) => {
   const aggregator = new AggregatorService({ env });
   const comparator = new ComparatorService({ aggregator });
 
-  return new Elysia({ prefix: '/api/v1/rates' })
+  return new Elysia({ prefix: '/api/v1/rates', aot: false })
     .get(
       '/countries',
       () => {

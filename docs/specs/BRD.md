@@ -1,9 +1,10 @@
 # Business Requirements Document — kurs-world
 
-> **Versi:** 0.1-draft  
+> **Versi:** 0.2-draft  
 > **Tanggal:** 2 September 2026  
 > **Pemilik Dokumen:** Founder / Business Lead  
-> **Status:** Draft untuk review
+> **Status:** Siap untuk Review Bisnis & SDLC  
+> **Diferensiasi Utama:** *Visual Storytelling, Interactive World FX Map & Agregasi Multi-Bank Independen*
 
 ---
 
@@ -11,18 +12,21 @@
 
 ### Latar Belakang
 
-Pasar informasi kurs mata uang di Indonesia adalah pasar yang besar, terfragmentasi, dan belum dilayani dengan baik oleh produk digital yang benar-benar berpusat pada pengguna. Di satu sisi, Bank Indonesia (BI) menyediakan kurs resmi yang menjadi acuan regulasi — namun tampilan dan aksesibilitasnya masih jauh dari user-friendly. Di sisi lain, raksasa global seperti Google dan xe.com hadir dengan kekuatan brand dan SEO yang sangat kuat, namun tidak memberikan konteks lokal yang relevan untuk pengguna Indonesia: tidak ada perbandingan antar bank lokal, tidak ada nuansa kurs beli/jual yang benar-benar berlaku di lapangan.
+Pasar informasi kurs mata uang di Indonesia adalah pasar yang sangat besar, terfragmentasi, dan selama ini didominasi oleh antarmuka teks/tabel kaku yang membosankan. Di satu sisi, Bank Indonesia (BI) menyediakan kurs resmi acuan regulasi yang disajikan dalam bentuk tabel statis tanpa visualisasi atau konversi. Di sisi lain, raksasa global seperti Google Finance dan xe.com memiliki kekuatan SEO tinggi namun tidak memberikan visualisasi geografis interaktif maupun perbandingan kurs beli/jual riil di perbankan lokal Indonesia (BCA, Mandiri, BRI, BNI, CIMB Niaga).
 
-Celah ini menghasilkan situasi di mana **jutaan orang Indonesia setiap hari membuat keputusan finansial berdasarkan informasi yang tidak lengkap** — karena mendapatkan informasi yang lengkap terlalu mahal dalam hal waktu dan usaha.
+Celah besar ini menciptakan peluang pasar: **Pengguna membutuhkan visual storytelling yang intuitif untuk memahami posisi Rupiah terhadap mata uang dunia, sekaligus membutuhkan data komparasi konkret untuk transaksi penukaran riil.**
 
-kurs-world didirikan dengan premis sederhana: informasi kurs yang akurat, komparatif, dan mudah diakses seharusnya gratis dan tersedia untuk semua orang. Dari premis ini lahir platform yang mengagregasi, memformat, dan menyajikan data kurs dari berbagai sumber resmi dan semi-resmi dalam satu antarmuka yang bersih.
+kurs-world hadir sebagai platform **Peta Kurs Valuta Asing Dunia Interaktif & Agregator FX Multi-Bank**. Platform ini menyajikan:
+1. **Interactive World FX Choropleth Map & Global Heatmap**: Visualisasi interaktif kekuatan valas seluruh dunia terhadap IDR dalam satu peta global.
+2. **Komparasi Bank Side-by-Side**: Transparansi kurs beli, jual, dan spread antar bank nasional dengan rekomendasi *Best Buy* dan *Best Sell*.
+3. **100% Free Public Good**: Zero paywall, zero registrasi wajib, dan edge performance sub-50ms berbasis ekosistem serverless Cloudflare Workers + Elysia.js + Svelte 5.
 
 ### Konteks Makro
 
-- **Volume transaksi valas Indonesia:** Bank Indonesia mencatat volume transaksi valuta asing di pasar spot domestik rata-rata USD 6–8 miliar per hari (sumber: Statistik Pasar Valas BI, 2025).
-- **Remittance inbound:** Indonesia menerima sekitar USD 14,5 miliar remitansi per tahun — salah satu yang terbesar di Asia Tenggara (World Bank, 2025).
-- **Penetrasi internet:** 212 juta pengguna internet aktif (We Are Social, 2026) dengan mayoritas mengakses via mobile.
-- **UMKM importir/eksportir:** Lebih dari 15 juta UMKM, di mana sebagian bersentuhan langsung dengan transaksi valas meski dalam skala kecil.
+- **Volume transaksi valas Indonesia:** Bank Indonesia mencatat volume transaksi valas spot domestik rata-rata USD 6–8 miliar per hari (Statistik Pasar Valas BI, 2025).
+- **Remittance inbound:** Indonesia menerima sekitar USD 14,5 miliar remitansi per tahun (World Bank, 2025).
+- **Penetrasi internet & visual content consumption:** 212 juta pengguna internet aktif (We Are Social, 2026) dengan preferensi kuat terhadap konten visual interaktif dan mobile-friendly.
+- **UMKM & Komunitas Digital:** Lebih dari 15 juta UMKM dan jutaan pekerja remote/freelancer yang secara aktif memantau pergerakan valas untuk keputusan bisnis.
 
 ---
 
@@ -30,11 +34,11 @@ kurs-world didirikan dengan premis sederhana: informasi kurs yang akurat, kompar
 
 | # | Objective | Specific | Measurable | Achievable | Relevant | Time-bound |
 |---|---|---|---|---|---|---|
-| BO-1 | Membangun aset traffic organik yang sustainable | Mendominasi keyword informasional seputar kurs IDR di Google Indonesia | Top 3 untuk 10 target keyword utama (e.g., "kurs dollar hari ini") | Ya — melalui SEO teknis + content strategy | Mengurangi ketergantungan pada paid acquisition | Dalam 6 bulan sejak launch |
-| BO-2 | Memvalidasi product-market fit | Mencapai pengguna aktif yang berulang datang tanpa diajak | 30% dari pengguna bulan pertama kembali dalam 30 hari | Ya — dengan fitur Rate Alert sebagai hook | Membuktikan nilai produk sebelum investasi lebih besar | Dalam 3 bulan sejak launch |
-| BO-3 | Membangun ekosistem developer | Menjadi data layer pilihan untuk aplikasi kurs di Indonesia | 200 API developer aktif | Ya — lewat API self-service + free tier yang generous | Developer ecosystem memperluas jangkauan tanpa biaya akuisisi | Dalam 6 bulan sejak launch |
-| BO-4 | Mencapai unit economics positif | Menghasilkan pendapatan yang menutup biaya operasional | Break-even pada biaya infrastruktur + 1 orang (sekitar Rp 15 juta/bulan) | Ya — dengan opsi monetisasi yang sudah diidentifikasi | Fondasi untuk pertumbuhan yang berkelanjutan | Dalam 12 bulan sejak launch |
-| BO-5 | Memposisikan diri untuk partnership strategis | Menjadi mitra data terpercaya bagi bank atau fintech | Minimal 1 LOI (Letter of Intent) dari partner potensial | Ya — traffic dan API ecosystem menjadi leverage | Revenue diversification dan credibility | Dalam 12 bulan sejak launch |
+| **BO-1** | **Dominasi Traffic Organik & Visual FX** | Menjadi destinasi #1 visualisasi peta kurs valas dan komparasi bank di Indonesia | Top 3 Google Search untuk target keyword kurs utama & >65% map engagement | Ya — via SEO terstruktur + UX peta choropleth interaktif | Mengurangi biaya akuisisi berbayar | Dalam 6 bulan sejak launch |
+| **BO-2** | **Validasi Product-Market Fit & Viralitas** | Membuktikan daya tarik visual map & komparasi bank | 30% return user rate dalam 30 hari; 1.000 shareable map cards dibagikan | Ya — hook visual peta + Rate Alert | Membuktikan keunggulan visual dibanding tabel kompetitor | Dalam 3 bulan sejak launch |
+| **BO-3** | **Ekosistem Developer & Open Data** | Menjadi data layer kurs publik pilihan developer | 200 API developer aktif terdaftar | Ya — Public REST API OpenAPI gratis dengan KV edge rate limiter | Memperluas jangkauan brand secara organik | Dalam 6 bulan sejak launch |
+| **BO-4** | **Efisiensi Biaya Ekstrem ($0 Marginal Cost)** | Menjalankan seluruh platform dengan biaya serverless mendekati nol | Biaya infra Cloudflare < Rp 100.000 / bulan | Ya — Cloudflare Workers, D1, KV, dan Pages free/standard tier | Keberlanjutan jangka panjang model 100% Free | Sejak hari pertama rilis |
+| **BO-5** | **Reputasi Netralitas & Otoritas Informasi** | Menjadi rujukan data independen yang objektif | Diakui dan dikutip oleh media digital / komunitas bisnis | Ya — Tanpa bias komersial/afiliasi bank | Membangun reputasi brand yang tak tergantikan | Dalam 12 bulan sejak launch |
 
 ---
 
@@ -44,210 +48,152 @@ kurs-world didirikan dengan premis sederhana: informasi kurs yang akurat, kompar
 
 | Stakeholder | Peran | Interest | Influence | Engagement Strategy |
 |---|---|---|---|---|
-| Founder/CEO | Pemilik visi, pengambil keputusan final | Tinggi | Sangat Tinggi | Decision maker di semua milestone |
-| Tech Lead/Engineering | Membangun dan memelihara platform | Tinggi | Tinggi | Review requirement teknis, sprint planning |
-| Content/SEO | Mendorong traffic organik | Sedang | Sedang | Align pada keyword strategy dan content calendar |
+| **Founder / Product Lead** | Pemilik visi produk & arah strategis | Sangat Tinggi | Sangat Tinggi | Pengambil keputusan di setiap milestone |
+| **Tech Lead / Engineering** | Arsitektur edge, Elysia API, & Svelte Map | Sangat Tinggi | Tinggi | Sprint TDD, review arsitektur & benchmark |
+| **UI/UX & Content Specialist** | Visual mapping, estetika choropleth, SEO | Tinggi | Sedang | Kurasi visual peta, design tokens shadcn-svelte |
 
 ### External Stakeholders
 
 | Stakeholder | Hubungan | Interest | Concern | Pendekatan |
 |---|---|---|---|---|
-| **Pengguna akhir (konsumen)** | Pengguna langsung produk | Informasi kurs cepat dan akurat | Akurasi data, privacy | User research, feedback loop reguler |
-| **Developer / API Users** | Pengguna API | Data yang handal dan murah | Uptime, breaking changes | Versioning API, changelog, community forum |
-| **Bank Indonesia (BI)** | Sumber data regulasi | Platform menggunakan data mereka dengan benar | Misrepresentasi data BI | Tampilkan logo, link sumber, disclaimer BI |
-| **Bank Komersial (BCA, dll.)** | Sumber data scraping | Tidak relevan saat ini | Scraping melanggar ToS | Inisiasi data partnership formal di Phase 2 |
-| **OJK (Otoritas Jasa Keuangan)** | Regulator potensial | Platform beroperasi sesuai regulasi | Layanan keuangan tanpa izin | Konsultasi legal; pastikan posisi sebagai "platform informasi" |
-| **Partner Iklan/Affiliate** | Monetisasi potensial | Akses ke audience yang relevan | Brand safety | Kurasi ketat partner di Phase 3 |
+| **Pengguna Umum (Konsumen)** | Pengguna akhir website | Peta interaktif cepat, komparasi bank akurat | Akurasi data, zero iklan pop-up | Visual UX instan, zero-friction |
+| **Developer / Startup** | Konsumen Public API | Uptime API, dokumentasi OpenAPI | Breaking changes, limitasi kuota | Swagger UI, rate limiting transparan |
+| **Bank Indonesia & Bank Komersial** | Sumber data publik | Penggunaan data sesuai kepatuhan | Integritas data & atribusi | Atribusi resmi, rate limiting scraper, disclaimer tegas |
+| **Regulator (OJK / BI)** | Otoritas keuangan | Kepatuhan batasan non-fintech | Menghindari aktivitas perbankan tanpa izin | Disclaimer publik: murni platform informasi |
 
 ---
 
 ## 4. Current State vs Future State
 
-### Current State (As-Is)
+### Current State (As-Is) — Eksplorasi Konvensional yang Membosankan
 
 ```
-Pengguna yang butuh kurs IDR hari ini:
+Pengguna yang butuh informasi kurs & pergerakan valas global:
 
-→ Buka Google
-  Dapat 1 kurs (mid rate, sumber tidak jelas)
-  Tidak bisa bandingkan dengan bank lokal
+→ Buka Google Search
+  Hanya dapat 1 angka statis (mid-rate grosir)
+  Tidak ada gambaran visual peta dunia
+  Tidak tahu bank mana yang memberikan rate terbaik
 
-→ Buka website BI
-  Kurs tengah official
-  Tabel statis, tidak ada konversi, tidak ada visualisasi
+→ Buka Website Bank Indonesia
+  Tabel teks statis yang kaku dan rumit
+  Tidak ada alat konversi interaktif atau peta visual
 
-→ Buka aplikasi bank masing-masing
-  Kurs bank itu saja
-  Tidak bisa bandingkan antar bank tanpa buka 4 app berbeda
+→ Buka 4-5 Aplikasi Bank Berbeda (BCA, Mandiri, BRI, BNI)
+  Membuang waktu 10-15 menit untuk mencatat kurs satu per satu
+  Rentan salah kalkulasi spread
 
-→ Hubungi money changer
-  Kurs aktual
-  Time-consuming, tidak scalable
+→ Buka xe.com / Wise
+  Fokus jualan transfer uang berbayar, dipenuhi iklan
+  Tidak ada integrasi data perbankan lokal Indonesia
 ```
 
-**Pain di current state:**
-- Rata-rata 3–5 touchpoint untuk mendapat informasi yang cukup
-- Tidak ada tool komparasi antar sumber
-- Informasi kurs di luar jam kerja tidak diperbarui
-- Developer tidak punya akses API kurs lokal yang mudah dan gratis
-
-### Future State (To-Be) dengan kurs-world
+### Future State (To-Be) — Visual Exploration dengan kurs-world
 
 ```
-Pengguna yang butuh kurs IDR hari ini:
+Pengguna membuka kurs-world.com:
 
-→ Buka kurs-world.com (atau hasil Google yang mengarah ke sana)
-  Dashboard: Kurs semua mata uang utama + sumber (< 3 detik)
-  Konverter: Input → Hasil dari 3+ sumber simultan
-  Komparasi: Tabel bank-by-bank untuk pasangan tertentu
-  Alert: Set threshold → Dapat notifikasi otomatis
-  API: Developer akses data yang sama secara programatik
+→ HERO: INTERACTIVE WORLD FX MAP (< 2 detik)
+  • Langsung melihat visual peta dunia berwarna (Heatmap 24h vs IDR)
+  • Hover negara (misal Jepang/JPY) → Muncul kurs terbaik & trend harian
+  • Klik negara → Peta langsung memfilter tabel komparasi bank & konverter
+
+→ SIDE-BY-SIDE BANK COMPARISON MATRIX
+  • Tabel transparan kurs Beli/Jual/Spread BCA, Mandiri, BRI, BNI, CIMB Niaga, BI
+  • Otomatis tersorot [Best Buy: Rp 105,20] dan [Best Sell: Rp 106,90]
+
+→ QUICK COUNTRY CONVERTER & CHARTS
+  • Nominal dihitung simultan ke seluruh bank
+  • Grafik histori tren 30/90/365 hari
+
+→ RATE ALERT & SHAREABLE CARD
+  • Pasang notifikasi push browser atau bagikan kartu peta ke WhatsApp
 ```
 
-**Perubahan kunci:**
+### Matriks Perubahan Nilai Bisnis
 
-| Aspek | Before | After |
+| Aspek | Status Saat Ini (As-Is) | Solusi kurs-world (To-Be) |
 |---|---|---|
-| Jumlah touchpoint | 3–5 | 1 |
-| Komparasi antar bank | Tidak ada | Side-by-side tabel |
-| Histori kurs | Tersebar, tidak mudah | Grafik interaktif |
-| Akses API kurs lokal | Tidak ada yang free dan reliable | Self-service, free tier |
-| Konteks Indonesia | Minimal | Native: IDR-first, bank lokal |
+| **Cara Eksplorasi** | Teks pencarian & tabel angka kaku | **Peta Dunia Interaktif & Heatmap Visual (Choropleth Map)** |
+| **Jumlah Touchpoint** | 3–5 situs/aplikasi berbeda | **1 Halaman Terintegrasi (Single Page Overview)** |
+| **Komparasi Antar Bank** | Manual & membingungkan | **Otomatis Side-by-Side dengan Best Buy/Sell Highlight** |
+| **Konteks Indonesia** | Terabaikan di platform global | **Native IDR-First dengan Format Baku Rupiah** |
+| **Model Akses** | Dibatasi paywall / iklan agresif | **100% Free Public Good tanpa Iklan Invasif** |
+| **Kecepatan Akses** | Lambat & penuh script pihak ketiga | **Edge Cache Sub-50ms (Cloudflare Workers + Elysia)** |
 
 ---
 
-## 5. Business Requirements
+## 5. Market Analysis & Competitive Differentiation
 
-### BR Fungsional
+### Landscape Kompetitor & Diferensiasi Strategis
 
-| ID | Business Requirement | Rationale |
-|---|---|---|
-| BR-F1 | Platform harus menampilkan kurs dari minimal 3 sumber berbeda secara bersamaan | Nilai utama produk adalah komparasi; satu sumber tidak berbeda dari Google |
-| BR-F2 | Tidak ada fitur utama yang mensyaratkan registrasi di v1 | Friction registrasi akan membunuh konversi pengguna baru; trust harus dibangun dulu |
-| BR-F3 | Platform harus memiliki public API dengan self-service key | Developer ecosystem adalah asset strategis jangka panjang |
-| BR-F4 | Semua sumber data harus dilabeli dengan jelas | Transparansi adalah differentiator utama vs. Google |
-| BR-F5 | Platform harus menyediakan disclaimer yang jelas bahwa kurs bersifat informatif | Mitigasi risiko hukum dan perlindungan pengguna |
+| Platform | Kekuatan | Kelemahan Utama | Keunggulan Komparatif kurs-world |
+|---|---|---|---|
+| **Google Search / Finance** | Dominasi search traffic, instan | Hanya 1 angka kurs tengah, tidak ada peta interaktif global, tidak ada perbandingan bank lokal | **Menang di Visual Storytelling Peta Dunia & Komparasi Bank Lokal Riil** |
+| **Bank Indonesia (bi.go.id)** | Sumber data resmi pemerintah | Tampilan tabel PDF/HTML statis, tidak responsif, tanpa fitur konversi atau peta | **Menang di Modern UX, Interaktivitas Peta, & Konversi Multi-Bank** |
+| **xe.com** | Brand global, database mata uang luas | UI dipenuhi iklan display agresif, berfokus jualan transfer valas, tidak ada data bank Indonesia | **Menang di Clean UI (Zero Ad Noise), IDR-First, & Visual FX Heatmap** |
+| **Wise (wise.com)** | UX modern, kalkulator transparan | Wajib registrasi/login, hanya menampilkan kurs platform Wise sendiri | **Menang di Zero Friction (Bebas Login) & Komparasi Agregasi Multi-Bank** |
+| **Aplikasi Mobile Bank (BCA, Mandiri, dll.)** | Transaksi langsung dalam rekening nasabah | Tertutup untuk non-nasabah, hanya menampilkan kurs sendiri, tidak komparatif | **Menang di Aksesibilitas Publik & Komparasi Antar Lembaga Finansial** |
 
-### BR Non-Fungsional
+### Peta Posisi Persaingan (Competitive Matrix)
 
-| ID | Business Requirement | Rationale |
-|---|---|---|
-| BR-NF1 | Platform harus bisa di-serve tanpa biaya infrastruktur > Rp 3 juta/bulan di Phase 1 | Bootstrapped; cashflow harus dijaga |
-| BR-NF2 | Seluruh data yang dikumpulkan dari pengguna harus mematuhi UU PDP No. 27 Tahun 2022 | Kepatuhan hukum non-negotiable |
-| BR-NF3 | Platform harus mudah ditemukan via pencarian organik tanpa biaya iklan | CAC harus mendekati nol di awal |
-| BR-NF4 | Platform harus dapat dikembangkan oleh tim kecil (2–3 orang) | Keterbatasan sumber daya awal |
+```
+                    Visual / UX Tinggi
+                            |
+             [Wise]         |       ★ [kurs-world]
+                            |   (Interactive Map + Multi-Bank)
+                            |
+Fokus Transaksi ------------+------------ Fokus Informasi Publik
+                            |
+       [Bank Apps]          |    [xe.com]     [Google Search]
+                            |    [BI Website] [kursdolar.net]
+                            |
+                    Visual / UX Rendah
+```
 
----
+### Strategic Moat (Parit Pertahanan Bisnis)
+
+1. **The Visual & Geographic Moat (Peta Dunia Interaktif)**:
+   - Visualisasi spasial mata uang global memberikan *engagement hook* yang kuat. Pengguna tidak hanya mencari angka, tetapi juga menikmati pengalaman visual menjelajahi dunia melalui pergerakan kurs valas.
+2. **The Virality & Shareability Hook**:
+   - Peta visual dan kartu snapshot pergerakan kurs jauh lebih menarik untuk dibagikan ke media sosial (X, Instagram, LinkedIn) dan WhatsApp dibanding tangkapan layar tabel angka biasa.
+3. **The Zero-Cost Serverless Advantage**:
+   - Beroperasi di atas runtime Cloudflare Workers dan D1 dengan biaya marjinal mendekati nol membuat kurs-world kebal terhadap tekanan monetisasi jangka pendek. Platform dapat tetap 100% gratis selamanya tanpa perlu memasang iklan yang merusak UX.
+4. **The Developer Network Effect**:
+   - Public REST API yang cepat, gratis, dan terdokumentasi OpenAPI Swagger menjadi standar integrasi bagi ekosistem aplikasi di Indonesia.
 
 ---
 
 ## 6. Product Model: 100% Free & Open Public Utility
 
-kurs-world secara definitif mengadopsi model **100% FREE (Gratis & Terbuka)** sebagai layanan utilitas informasi publik (*Public Good Data Layer*). 
+kurs-world secara tegas memposisikan diri sebagai **100% Free Public Good Data Layer**.
 
-### 6.1 Mengapa Model 100% Free?
-
-1. **Zero Marginal Serverless Cost (Cloudflare Ecosystem)**:
-   - Arsitektur berbasis **Cloudflare Workers**, **Cloudflare D1**, **Cloudflare KV**, dan **Cloudflare Pages** memungkinkan platform melayani hingga jutaan request bulanan dengan biaya infrastruktur hampir Rp 0 (masuk dalam free/standard tier Cloudflare Workers < $5/bulan).
-2. **Eliminasi Friction Pengguna & Pertumbuhan Organik Maksimal**:
-   - Tidak ada paywall, tidak ada pop-up iklan invasif, dan tidak ada registrasi wajib untuk fitur esensial. Pengguna mendapatkan informasi seketika dalam <2 detik.
-3. **Pemberdayaan Ekosistem Developer**:
-   - Public REST API disediakan secara gratis dengan rate limiting berbasis edge KV, menciptakan adopsi masif di kalangan developer dan komunitas open-source.
-4. **Netralitas & Integritas Data**:
-   - Tanpa ketergantungan pada komisi affiliate fintech atau iklan perbankan, kurs-world mempertahankan posisi independen dan objektif dalam menampilkan perbandingan kurs antar bank.
+### Rationale:
+1. **Zero Infrastructure Burden**: Arsitektur serverless edge Cloudflare mengeliminasi kebutuhan server fisik yang mahal.
+2. **Maximizing Top-of-Funnel Growth**: Tanpa paywall dan tanpa registrasi wajib, konversi pengunjung menjadi pengguna setia mencapai efisiensi tertinggi.
+3. **Uncompromising Neutrality**: Menolak komisi sponsor perbankan menjaga integritas rekomendasi *Best Buy* dan *Best Sell* tetap 100% objektif dan dipercaya publik.
 
 ---
 
----
+## 7. Regulatory & Compliance Considerations
 
-## 7. Market Analysis
+### 7.1 Kepatuhan Status Non-Fintech (Media Informasi Publik)
+- **Bukan Penyelenggara Jasa Pembayaran (PJP) & Bukan Pedagang Valas (PBFX)**: Platform murni mengagregasi data publik dan tidak memproses dana pengguna.
+- **Kewajiban Penafian (Disclaimer) Hukum**: Menampilkan penafian tegas di antarmuka web dan API:
+  > *"Data nilai tukar yang disajikan di kurs-world bersumber dari data publik untuk tujuan informasi dan referensi umum. Data ini bukan penawaran mengikat atau nasihat finansial. kurs-world tidak memfasilitasi transaksi valas."*
 
-### Landscape Kompetitor
-
-| Produk | Kekuatan | Kelemahan | Posisi terhadap kurs-world |
-|---|---|---|---|
-| **Google Finance / Google Search** | Omnipresent, UX familiar, SEO dominant | Satu sumber, tidak ada konteks lokal, tidak ada komparasi bank | Kompetitor SEO utama; kurs-world harus menang di intent yang lebih spesifik |
-| **xe.com** | Brand global kuat, histori panjang, banyak mata uang | UX tidak dioptimasi untuk IDR, fokus pada transfer bukan informasi, iklan agresif | Kompetitor informasi global; kurs-world lebih lokal dan bersih |
-| **Wise (wise.com)** | Kurs yang kompetitif, UX premium, trust tinggi | Fokus pada layanan transfer (butuh akun), bukan informasi kurs | Kompetitor tidak langsung; bisa jadi affiliate partner |
-| **Bank Indonesia (bi.go.id)** | Sumber resmi/regulasi, gratis | UX sangat kaku, hanya kurs tengah, tidak ada konversi atau grafik | Bukan kompetitor — sumber data; kurs-world "memformat ulang" data BI |
-| **Aplikasi bank (BCA, Mandiri, dll.)** | Data real dari bank tersebut, terintegrasi dengan akun | Hanya kurs bank sendiri, butuh nasabah, tidak komparatif | Bukan kompetitor langsung; sumber data potensial |
-| **JISDOR (Reuters)** | Data forex profesional Indonesia | Untuk profesional pasar, bukan konsumen umum | Tidak kompetitif di segmen yang sama |
-| **Kurs.io, kursdolar.co.id** | Pemain lokal, SEO sudah ada | UX outdated, tidak dikelola aktif, data terbatas | Kompetitor lokal yang bisa dilampaui dengan produk yang lebih baik |
-
-### Peta Persaingan
-
-```
-                    UX Tinggi
-                        |
-         [Wise]         |         [kurs-world -- target]
-                        |
-Fokus Transfer ---------+-------- Fokus Informasi
-                        |
-   [Bank Apps]          |     [xe.com] [kursdolar.co.id]
-                        |
-                    UX Rendah
-```
-
-### Peluang Pasar
-
-- **Long-tail SEO:** Keyword seperti "kurs dollar hari ini di BCA", "konversi EUR ke IDR", "histori kurs rupiah 2025" memiliki volume pencarian tinggi namun competition yang bisa dilawan dengan konten berkualitas.
-- **Developer market yang underserved:** Tidak ada API kurs lokal (IDR-focused) yang gratis, handal, dan well-documented. Alternatif saat ini adalah global API (openexchangerates.org, currencylayer.com) yang tidak memiliki data kurs bank komersial Indonesia.
-- **Referral dari komunitas:** Komunitas freelancer digital (Fastwork, Sribulancer, komunitas freelancer di Discord/Telegram) aktif mencari referensi kurs. Word-of-mouth sangat efektif di segmen ini.
+### 7.2 Kepatuhan Privasi Data (UU PDP No. 27/2022)
+- Zero data tracking untuk penggunaan publik tanpa login.
+- Izin eksplisit (*opt-in consent*) untuk fitur Rate Alert push/email dengan mekanisme *one-click unsubscribe*.
 
 ---
 
-## 8. Regulatory & Compliance Considerations
+## 8. Business Risks & Mitigation
 
-## 8. Regulatory & Compliance Considerations
-
-### 8.1 Status Regulasi: Media / Platform Agregasi Informasi Publik (Non-Fintech)
-
-kurs-world adalah platform **informasi publik dan agregasi data nilai tukar**, **BUKAN entitas fintech, bukan Penyelenggara Jasa Pembayaran (PJP), bukan pedagang valas (PBFX), dan bukan penasihat keuangan**.
-
-- **Tidak Ada Perizinan OJK / Bank Indonesia Khusus Transaksi**: Karena platform tidak memegang dana pengguna (*no fund custody*), tidak mengeksekusi transfer uang (*no payment processing*), dan tidak memfasilitasi pertukaran valas fisik/digital secara langsung, platform ini sepenuhnya berada di luar yurisdiksi perizinan transaksi fintech OJK/BI.
-- **Kewajiban Disclaimer Publik**: Menampilkan disclaimer yang jelas dan tegas di web UI dan respon API:
-  > *"Data kurs yang ditampilkan di kurs-world diperoleh dari sumber publik untuk tujuan informasi dan referensi umum semata. Data ini bukan merupakan penawaran mengikat, saran investasi, atau instruksi transaksi. kurs-world tidak memfasilitasi transaksi jual-beli valuta asing."*
-
-### 8.2 UU Perlindungan Data Pribadi (UU PDP No. 27 Tahun 2022)
-
-- Platform mematuhi prinsip *data minimization* (zero-login untuk fitur utama).
-- Data email untuk Rate Alert memerlukan *explicit consent* dan fitur *one-click unsubscribe*.
-- Kebijakan privasi (*Privacy Policy*) yang transparan dan mudah diakses.
-
-### 8.3 Atribusi Sumber Data Publik
-
-- Menampilkan atribusi nama provider secara jelas (Bank Indonesia, ECB, BCA, Mandiri, dll.) pada setiap entri kurs.
-- Menggunakan timeout ketat (5 detik) dan caching lokal/KV untuk menghindari request flood ke server publik provider.
-
----
-
-## 9. Business Risks & Mitigation
-
-| # | Risiko | Dampak | Probabilitas | Strategi Mitigasi |
+| # | Risiko Bisnis | Dampak | Probabilitas | Rencana Mitigasi |
 |---|---|---|---|---|
-| BR-1 | **Perubahan format / pemblokiran scraping bank** | Sedang | Sedang | Multi-source redundancy; fallback ke Bank Indonesia & ECB API publik |
-| BR-2 | **Kompetisi SEO dari search engine** | Sedang | Sedang | Fokus pada komparasi bank spesifik, query lokal, dan performa Core Web Vitals tinggi |
-| BR-3 | **Salah persepsi publik menganggap platform adalah fintech** | Rendah | Rendah | Disclaimer tegas di antarmuka & dokumentasi API |
-| BR-4 | **Data anomali dari provider** | Tinggi | Rendah | Auto-quarantine table & validasi batas logis spread |
-| BR-5 | **Lonjakan request API** | Rendah | Sedang | Edge KV rate limiting otomatis (sliding window) |
-
----
-
-## 10. Cost Efficiency & Long-Term Sustainability
-
-### 10.1 Struktur Biaya Serverless Edge (Cloudflare Stack)
-
-| Komponen | Provider / Tier | Estimasi Biaya / Bulan |
-|---|---|---|
-| **Edge Compute & Routing** | Cloudflare Workers (Free / Workers Paid) | $0 – $5 (Rp 0 – Rp 80.000) |
-| **Relational Database** | Cloudflare D1 (5M reads/day, 100k writes/day free) | $0 (Free Tier) |
-| **Global Cache & Limiter** | Cloudflare KV (100k reads/day free) | $0 (Free Tier) |
-| **Frontend Web Hosting** | Cloudflare Pages (Unlimited bandwidth) | $0 (Free Tier) |
-| **Domain & DNS** | Cloudflare Registrar | ~$10 / tahun (~Rp 13.000/bulan) |
-| **Total Biaya Operasional** | **Serverless Edge Stack** | **< Rp 100.000 / bulan** |
-
-### 10.2 Nilai Strategis Non-Finansial
-
-1. **Moat Kecepatan & Aksesibilitas**: Akses secepat kilat (<50ms) di seluruh dunia tanpa biaya server mahal.
-2. **Komunitas Developer & Open Source**: Menjadi standar de-facto API kurs mata uang di Indonesia.
-3. **Data Agregasi Historis**: Membangun dataset histori pergerakan kurs antar bank yang komprehensif di Indonesia.
+| **BR-1** | Scraping situs perbankan diblokir | Sedang | Sedang | Redundansi multi-sumber; fallback otomatis ke Bank Indonesia & ECB API; request timeout 5s |
+| **BR-2** | Rendering peta lambat pada perangkat low-end | Sedang | Sedang | Gunakan TopoJSON terkompresi (<80KB) dengan SVG rendering berbasis hardware acceleration di Svelte 5 |
+| **BR-3** | Salah paham publik menganggap platform adalah fintech | Rendah | Rendah | Penegasan status informasi publik di header, footer, dan dokumentasi API |
+| **BR-4** | Fluktuasi anomali data perbankan | Tinggi | Rendah | Sistem validasi spread logis & tabel karantina data anomali sebelum dipublikasikan |
+| **BR-5** | Lonjakan request liar ke API | Rendah | Sedang | Sliding window rate limiting otomatis via Cloudflare KV |

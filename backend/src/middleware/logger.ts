@@ -7,7 +7,7 @@ import { logger } from '../logger/index.ts';
  * tracks execution time, and writes a structured JSON log on response or error.
  */
 export const loggerMiddleware = () =>
-  new Elysia({ name: 'logger-middleware' })
+  new Elysia({ name: 'logger-middleware', aot: false })
     .derive({ as: 'global' }, ({ request, set }) => {
       const requestId =
         request.headers.get('x-request-id') ||
