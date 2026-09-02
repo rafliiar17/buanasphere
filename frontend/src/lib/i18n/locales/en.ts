@@ -48,6 +48,16 @@ export const enTranslations = {
     timeAgoDays: '{days}d ago',
   },
 
+  // Global App Splash Screen
+  splash: {
+    welcome: 'Welcome to Kurs.World',
+    tagline: 'Global FX Rates for 195+ Countries vs Indonesian Rupiah (IDR)',
+    edgeConnecting: 'Connecting to Cloudflare Workers Edge Network (<50ms)...',
+    ratesLoading: 'Loading 195+ World FX Exchange Rates...',
+    uiPreparing: 'Preparing Interactive UI & 3D Globe...',
+    edgeBadge: 'Edge Execution <50ms · KV Cache SWR',
+  },
+
   // Navbar
   navbar: {
     disclaimerStrip: 'Public exchange rate data · 100% free · Non-fintech · No registration required',

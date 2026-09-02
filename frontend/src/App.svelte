@@ -19,10 +19,12 @@
   import GoogleRateChart from '$lib/features/chart/GoogleRateChart.svelte';
   import CurrencyComparisonMatrix from '$lib/features/matrix/CurrencyComparisonMatrix.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
+  import GlobalAppSplashScreen from '$lib/components/GlobalAppSplashScreen.svelte';
   import { apiClient } from '$lib/api/client';
   import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
 
   let currentLang = $state<SupportedLocale>(getLocale());
+  let isAppInitialLoading = $state(true);
   let activeView = $state<'map' | 'chart' | 'matrix' | 'converter' | 'cards'>('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
@@ -37,7 +39,13 @@
     const unsub = subscribeLocale((loc) => {
       currentLang = loc;
     });
-    return unsub;
+    const timer = setTimeout(() => {
+      isAppInitialLoading = false;
+    }, 900);
+    return () => {
+      unsub();
+      clearTimeout(timer);
+    };
   });
 
   const viewOptions = $derived.by(() => {
@@ -97,6 +105,9 @@
 <!-- Shell: 100vh Full Viewport Application (Map-First) -->
 <div class="h-screen w-screen overflow-hidden flex flex-col bg-[var(--bg)] text-[var(--ink)] select-none">
   
+  <!-- Global App Initial Loading Splash Screen -->
+  <GlobalAppSplashScreen isReady={!isAppInitialLoading} />
+
   <!-- Minimalist Top Navigation Header -->
   <Navbar />
 
