@@ -1,0 +1,12 @@
+node_modules/
+**/node_modules/
+.wrangler/
+**/.wrangler/
+dist/
+**/dist/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+.svelte-kit/
