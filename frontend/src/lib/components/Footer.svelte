@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ExternalLink } from 'lucide-svelte';
   import { MOCK_PROVIDERS } from '$lib/api/client';
+  import { t } from '$lib/i18n';
 </script>
 
 <footer style="
@@ -15,7 +16,7 @@
     <!-- Provider attribution grid -->
     <div style="margin-bottom:28px;">
       <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:12px;">
-        Sumber Data Resmi
+        {t('footer.dataAttribution')}
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         {#each MOCK_PROVIDERS as prov}
@@ -48,9 +49,9 @@
     <div style="border-top:1px solid var(--bg-rule);padding-top:20px;margin-bottom:16px;">
       <!-- Disclaimer -->
       <p style="font-size:11px;color:var(--ink-4);line-height:1.65;max-width:720px;">
-        <strong style="color:var(--ink-3);">Informasi Dulu, Transaksi Belakangan.</strong>
-        Kurs World adalah platform agregator informasi kurs valas publik independen — bukan bank, bukan pialang, dan tidak memfasilitasi transaksi valas secara langsung.
-        Seluruh nilai kurs diambil langsung dari publikasi resmi masing-masing penyedia data dan dapat berubah sewaktu-waktu.
+        <strong style="color:var(--ink-3);">{t('footer.missionTitle')}:</strong>
+        {t('footer.dataAttributionDesc')}
+        {t('footer.disclaimer')}
       </p>
     </div>
 
@@ -60,10 +61,8 @@
       padding-top:16px;border-top:1px solid var(--bg-rule);
       font-size:10px;color:var(--ink-4);
     ">
-      <span>© {new Date().getFullYear()} Kurs World. Open Information Platform.</span>
+      <span>{t('footer.copyright')}</span>
       <span>Edge Execution &lt;50ms · Cloudflare Workers · KV Cache SWR 15m</span>
     </div>
   </div>
 </footer>
-
-

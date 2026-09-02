@@ -1,19 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { 
-    TrendingUp, 
-    TrendingDown, 
-    Sparkles, 
-    Flame, 
-    Activity, 
-    ChevronRight,
-    Coins,
-    Globe2
-  } from 'lucide-svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
   import { apiClient, SUPPORTED_CURRENCIES } from '$lib/api/client';
   import type { RateItem } from '$lib/api/types';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
+  import { t } from '$lib/i18n';
 
   interface Props {
     onSelectCurrency?: (currencyCode: string) => void;
@@ -24,7 +14,6 @@
 
   let liveRates = $state<RateItem[]>([]);
   let isLoading = $state(true);
-  let activeCategory = $state<'all' | 'gainers' | 'losers' | 'popular'>('all');
 
   const POPULAR_CODES = ['USD', 'EUR', 'SGD', 'JPY', 'MYR', 'CNY', 'SAR', 'AUD', 'GBP'];
 
@@ -32,11 +21,6 @@
   function getCurrencyFlag(code: string): string {
     const found = SUPPORTED_CURRENCIES.find(c => c.code === code);
     return found?.flag || '🌐';
-  }
-
-  function getCurrencyName(code: string): string {
-    const found = SUPPORTED_CURRENCIES.find(c => c.code === code);
-    return found?.name || code;
   }
 
   onMount(async () => {
@@ -101,7 +85,7 @@
     <!-- Header row: label + live dot -->
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
       <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);">
-        Pergerakan 24 Jam vs IDR
+        {t('ticker.marketStatus')}
       </span>
       <span class="live-dot"></span>
     </div>
@@ -112,7 +96,7 @@
       <!-- Gainers -->
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
         <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--pos);white-space:nowrap;">
-          ↑ Menguat
+          ↑ {t('map.strengthening')}
         </span>
         {#each topGainers as item}
           <button
@@ -128,7 +112,7 @@
               transition:all 120ms;
               white-space:nowrap;
             "
-            title={`Fokus ${item.targetCurrency}`}
+            title={`${item.targetCurrency}`}
             onmouseenter={(e) => (e.currentTarget.style.borderColor = 'var(--pos)')}
             onmouseleave={(e) => (e.currentTarget.style.borderColor = 'var(--pos-rule)')}
           >
@@ -145,7 +129,7 @@
       <!-- Losers -->
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
         <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--signal);white-space:nowrap;">
-          ↓ Melemah
+          ↓ {t('map.weakening')}
         </span>
         {#each topLosers as item}
           <button
@@ -161,7 +145,7 @@
               transition:all 120ms;
               white-space:nowrap;
             "
-            title={`Fokus ${item.targetCurrency}`}
+            title={`${item.targetCurrency}`}
             onmouseenter={(e) => (e.currentTarget.style.borderColor = 'var(--signal)')}
             onmouseleave={(e) => (e.currentTarget.style.borderColor = 'var(--signal-rule)')}
           >
@@ -178,7 +162,7 @@
       <!-- Popular: scrolling rate ticker chips -->
       <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0;">
         <span style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);white-space:nowrap;flex-shrink:0;">
-          Populer
+          {t('ticker.popularCurrencies')}
         </span>
         {#each popularRates as item}
           {@const changeVal = item.change24h ?? 0}

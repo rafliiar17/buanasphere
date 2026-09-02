@@ -1,22 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { 
-    Share2, 
     Copy, 
     Check, 
     Sparkles, 
     ArrowUpRight, 
-    ArrowDownRight,
-    QrCode,
-    Globe
+    ArrowDownRight
   } from 'lucide-svelte';
-  import Card from '$lib/components/ui/Card.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
   import CardSkeleton from '$lib/components/skeletons/CardSkeleton.svelte';
   import { apiClient, SUPPORTED_CURRENCIES } from '$lib/api/client';
   import type { RateItem } from '$lib/api/types';
   import { formatRupiah, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
+  import { t } from '$lib/i18n';
 
   let rates = $state<RateItem[]>([]);
   let isLoading = $state(true);
@@ -70,10 +67,10 @@
     <div>
       <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
         <Sparkles class="w-5 h-5 text-indigo-400" />
-        Shareable Rate Card
+        {t('cards.title')}
       </h3>
       <p class="text-xs text-slate-400">
-        Ringkasan kurs valas terpopuler siap dibagikan ke media sosial / WhatsApp
+        {t('cards.subtitle')}
       </p>
     </div>
 
@@ -84,10 +81,10 @@
     >
       {#if isCopied}
         <Check class="w-4 h-4 text-emerald-400" />
-        <span class="text-emerald-400 font-semibold">Tersalin ke Clipboard!</span>
+        <span class="text-emerald-400 font-semibold">{t('cards.copied')}</span>
       {:else}
         <Copy class="w-4 h-4" />
-        <span>Salin Ringkasan</span>
+        <span>{t('cards.copyButton')}</span>
       {/if}
     </Button>
   </div>
@@ -127,13 +124,13 @@
 
           <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-800/80 text-xs">
             <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/50">
-              <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Beli (Bank Beli)</span>
+              <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">{t('cards.buyLabel')}</span>
               <div class="text-sm font-bold text-emerald-400 mt-0.5">
                 {formatRupiah(item.buyRate)}
               </div>
             </div>
             <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/50">
-              <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Jual (Bank Jual)</span>
+              <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">{t('cards.sellLabel')}</span>
               <div class="text-sm font-bold text-indigo-400 mt-0.5">
                 {formatRupiah(item.sellRate)}
               </div>

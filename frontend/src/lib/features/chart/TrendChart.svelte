@@ -95,49 +95,51 @@
   });
 </script>
 
-<Card class="space-y-5">
-  <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+<!-- Trend Chart: editorial time-series panel -->
+<div style="display:flex;flex-direction:column;gap:20px;">
+
+  <!-- Section header -->
+  <div style="border-bottom:2px solid var(--ink);padding-bottom:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;">
     <div>
-      <div class="flex items-center gap-2">
-        <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-          <ChartIcon class="w-5 h-5 text-indigo-400" />
-          Grafik Tren Pergerakan Kurs
-        </h3>
-        <Badge variant={isPositiveChange ? 'destructive' : 'success'} size="sm">
-          {selectedCurrency}/IDR
-        </Badge>
-      </div>
-      <p class="text-xs text-slate-400 mt-0.5">
-        Histori nilai tukar tengah (Middle Rate) berdasarkan data Bank Sentral
+      <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">
+        Histori Nilai Tukar Tengah (Middle Rate)
       </p>
+      <h2 style="font-size:20px;font-weight:700;color:var(--ink);margin:0;">
+        Tren Pergerakan Kurs — {selectedCurrency}/IDR
+      </h2>
     </div>
 
-    <!-- Range & Currency Selectors -->
-    <div class="flex flex-wrap items-center gap-2">
-      <!-- Currency select -->
+    <!-- Controls: currency + range -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <select
         bind:value={selectedCurrency}
         onchange={() => handleCurrencyChange(selectedCurrency)}
-        class="bg-slate-950 border border-slate-800 text-xs font-semibold text-slate-200 rounded-xl px-3 py-1.5 focus:border-indigo-500 outline-none cursor-pointer"
+        class="field"
+        style="width:auto;padding:5px 10px;font-size:12px;"
       >
         {#each SUPPORTED_CURRENCIES.filter(c => c.code !== 'IDR') as curr}
           <option value={curr.code}>{curr.flag} {curr.code}</option>
         {/each}
       </select>
 
-      <!-- Timeframe range pills -->
-      <div class="flex items-center p-1 bg-slate-950 rounded-xl border border-slate-800">
+      <!-- Range underline tabs -->
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--bg-rule);">
         {#each ranges as r}
-          {@const isActive = selectedRange === r.id}
           <button
             type="button"
-            class={`text-xs px-2.5 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
-              isActive ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
-            }`}
             onclick={() => handleRangeChange(r.id)}
+            style="
+              position:relative;padding:6px 12px;
+              font-size:12px;font-weight:{selectedRange === r.id ? '700' : '500'};
+              color:{selectedRange === r.id ? 'var(--ink)' : 'var(--ink-3)'};
+              background:none;border:none;cursor:pointer;
+              transition:color 120ms;
+            "
           >
             {r.label}
+            {#if selectedRange === r.id}
+              <span style="position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);"></span>
+            {/if}
           </button>
         {/each}
       </div>
@@ -145,72 +147,75 @@
   </div>
 
   {#if isLoading}
-    <CardSkeleton type="chart" />
+    <!-- Chart skeleton -->
+    <div style="border:1px solid var(--bg-rule);border-radius:var(--radius);padding:16px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+        {#each [1,2,3,4] as _}
+          <div style="padding:12px;border:1px solid var(--bg-rule);border-radius:var(--radius-sm);">
+            <div style="height:9px;width:70px;border-radius:2px;margin-bottom:8px;" class="animate-shimmer"></div>
+            <div style="height:16px;width:100px;border-radius:2px;" class="animate-shimmer"></div>
+          </div>
+        {/each}
+      </div>
+      <div style="height:200px;border-radius:2px;" class="animate-shimmer"></div>
+    </div>
   {:else if trendData}
-    <!-- Summary Metrics -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[11px] text-slate-400 font-medium">Kurs Terkini</span>
-        <div class="text-base font-bold text-slate-100 mt-0.5">
-          {formatRupiah(trendData.summary.current)}
-        </div>
+
+    <!-- KPI strip: 4 cells, hairline ruled -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border:1px solid var(--bg-rule);border-radius:var(--radius);">
+      <div style="padding:12px 16px;border-right:1px solid var(--bg-rule);">
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">Kurs Terkini</p>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;">{formatRupiah(trendData.summary.current)}</p>
       </div>
-      <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[11px] text-slate-400 font-medium">Perubahan ({selectedRange})</span>
-        <div class={`text-base font-bold mt-0.5 flex items-center gap-1 ${isPositiveChange ? 'text-rose-400' : 'text-emerald-400'}`}>
-          {#if isPositiveChange}
-            <ArrowUpRight class="w-4 h-4" />
-          {:else}
-            <ArrowDownRight class="w-4 h-4" />
-          {/if}
-          <span>{formatPercent(trendData.summary.changePeriodPercent)}</span>
-        </div>
+      <div style="padding:12px 16px;border-right:1px solid var(--bg-rule);">
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">Perubahan {selectedRange}</p>
+        <p style="font-size:15px;font-weight:700;margin:0;font-variant-numeric:tabular-nums;color:{isPositiveChange ? 'var(--signal)' : 'var(--pos)'};">
+          {isPositiveChange ? '↑' : '↓'} {formatPercent(trendData.summary.changePeriodPercent)}
+        </p>
       </div>
-      <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[11px] text-slate-400 font-medium">Tertinggi Periode</span>
-        <div class="text-base font-bold text-slate-200 mt-0.5">
-          {formatRupiah(trendData.summary.max)}
-        </div>
+      <div style="padding:12px 16px;border-right:1px solid var(--bg-rule);">
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">Tertinggi</p>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;">{formatRupiah(trendData.summary.max)}</p>
       </div>
-      <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-        <span class="text-[11px] text-slate-400 font-medium">Terendah Periode</span>
-        <div class="text-base font-bold text-slate-200 mt-0.5">
-          {formatRupiah(trendData.summary.min)}
-        </div>
+      <div style="padding:12px 16px;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">Terendah</p>
+        <p style="font-size:15px;font-weight:700;color:var(--ink);margin:0;font-variant-numeric:tabular-nums;">{formatRupiah(trendData.summary.min)}</p>
       </div>
     </div>
 
-    <!-- SVG Area Chart -->
-    <div class="relative w-full overflow-hidden rounded-xl bg-slate-950/80 border border-slate-800 p-2">
+    <!-- SVG chart on warm paper -->
+    <div style="position:relative;width:100%;border:1px solid var(--bg-rule);border-radius:var(--radius);overflow:hidden;background:var(--bg-raised);padding:8px 4px;">
       <!-- Tooltip -->
       {#if hoveredPoint && hoveredPos}
-        <div 
-          class="absolute z-10 pointer-events-none transform -translate-x-1/2 -translate-y-full mb-2 bg-slate-900/95 border border-indigo-500/40 backdrop-blur-md rounded-xl p-2.5 shadow-xl text-xs"
-          style={`left: ${hoveredPos.x}px; top: ${hoveredPos.y}px;`}
+        <div
+          style="
+            position:absolute;z-index:10;pointer-events:none;
+            left:{hoveredPos.x}px;top:{hoveredPos.y}px;
+            transform:translateX(-50%) translateY(calc(-100% - 8px));
+            background:var(--ink);color:var(--accent-fg);
+            border-radius:var(--radius-sm);padding:8px 12px;
+            font-size:11px;white-space:nowrap;
+            box-shadow:0 4px 16px rgba(26,18,9,0.2);
+          "
         >
-          <div class="text-slate-400 font-medium">{hoveredPoint.date}</div>
-          <div class="text-sm font-bold text-emerald-400 mt-0.5">
-            {formatRupiah(hoveredPoint.middleRate)}
-          </div>
-          <div class="text-[10px] text-slate-500 mt-0.5 flex gap-2">
+          <div style="color:rgba(255,255,255,0.6);margin-bottom:2px;">{hoveredPoint.date}</div>
+          <div style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;">{formatRupiah(hoveredPoint.middleRate)}</div>
+          <div style="color:rgba(255,255,255,0.5);margin-top:2px;display:flex;gap:10px;">
             <span>Beli: {formatRupiah(hoveredPoint.buyRate, { showFraction: false })}</span>
             <span>Jual: {formatRupiah(hoveredPoint.sellRate, { showFraction: false })}</span>
           </div>
         </div>
       {/if}
 
-      <svg
-        viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`}
-        class="w-full h-56 sm:h-64 overflow-visible"
-      >
+      <svg viewBox={`0 0 ${svgDimensions.width} ${svgDimensions.height}`} style="width:100%;height:224px;overflow:visible;">
         <defs>
           <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0" />
+            <stop offset="0%" stop-color={isPositiveChange ? '#C41E3A' : '#1B5E20'} stop-opacity="0.15" />
+            <stop offset="100%" stop-color={isPositiveChange ? '#C41E3A' : '#1B5E20'} stop-opacity="0.0" />
           </linearGradient>
         </defs>
 
-        <!-- Horizontal Grid Lines -->
+        <!-- Grid lines -->
         {#each [0.2, 0.4, 0.6, 0.8] as ratio}
           {@const yVal = svgDimensions.padding + ratio * (svgDimensions.height - svgDimensions.padding * 2)}
           <line
@@ -218,39 +223,38 @@
             y1={yVal}
             x2={svgDimensions.width - svgDimensions.padding}
             y2={yVal}
-            stroke="#334155"
+            stroke="var(--bg-rule)"
             stroke-dasharray="4 4"
             stroke-width="1"
-            opacity="0.4"
           />
         {/each}
 
-        <!-- Gradient Area Fill -->
+        <!-- Area fill -->
         {#if areaD}
           <path d={areaD} fill="url(#chartGradient)" />
         {/if}
 
-        <!-- Trend Line -->
+        <!-- Trend line -->
         {#if pathD}
           <path
             d={pathD}
             fill="none"
-            stroke="#818cf8"
-            stroke-width="2.5"
+            stroke={isPositiveChange ? 'var(--signal)' : 'var(--pos)'}
+            stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         {/if}
 
-        <!-- Interactive Points -->
+        <!-- Interactive points -->
         {#each chartPoints as cp}
           <circle
             cx={cp.x}
             cy={cp.y}
-            r="4"
+            r="3"
             role="graphics-symbol"
             aria-label="{cp.point.date}: {cp.point.middleRate}"
-            class="fill-indigo-500 stroke-slate-900 stroke-2 hover:r-6 hover:fill-white transition-all cursor-pointer"
+            style="fill:{isPositiveChange ? 'var(--signal)' : 'var(--pos)'};stroke:var(--bg-raised);stroke-width:2;cursor:pointer;"
             onmouseenter={(e) => {
               const rect = (e.currentTarget as SVGCircleElement).getBoundingClientRect();
               const parentRect = (e.currentTarget as SVGCircleElement).closest('svg')?.parentElement?.getBoundingClientRect();
@@ -271,4 +275,4 @@
       </svg>
     </div>
   {/if}
-</Card>
+</div>

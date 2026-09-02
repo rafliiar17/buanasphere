@@ -39,6 +39,7 @@
   import { apiClient, SUPPORTED_CURRENCIES } from '$lib/api/client';
   import type { RateItem, RateMatrixResponse } from '$lib/api/types';
   import { formatRupiah, formatPercent, formatDateTimeIndo, formatCurrency } from '$lib/formatters/currency';
+  import { t } from '$lib/i18n';
   import { 
     type MetricType, 
     type RegionId, 
@@ -559,7 +560,7 @@
             bind:value={searchQuery}
             onfocus={() => (isSearchDropdownOpen = true)}
             oninput={() => (isSearchDropdownOpen = true)}
-            placeholder="🔍 Cari negara atau mata uang (cth: USD, Jepang, Euro, Won)..."
+            placeholder={t('map.searchPlaceholder')}
             class="w-full bg-slate-950/90 border border-slate-800 hover:border-slate-700 focus:border-emerald-500 rounded-2xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 outline-none transition shadow-inner focus:ring-2 focus:ring-emerald-500/20"
           />
           {#if searchQuery}
@@ -577,8 +578,8 @@
         {#if isSearchDropdownOpen && searchResults.length > 0}
           <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-xl max-h-72 overflow-y-auto divide-y divide-slate-800/80 scrollbar-thin">
             <div class="px-3.5 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-950/60 flex items-center justify-between">
-              <span>Hasil Pencarian ({searchResults.length})</span>
-              <span class="text-[10px] text-emerald-400 font-normal">Klik untuk inspeksi</span>
+              <span>{t('common.search')} ({searchResults.length})</span>
+              <span class="text-[10px] text-emerald-400 font-normal">{t('map.inspectCountry')}</span>
             </div>
             {#each searchResults as item}
               <button
@@ -636,7 +637,7 @@
     <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
       <span class="text-slate-400 font-semibold shrink-0 flex items-center gap-1.5">
         <Layers class="w-3.5 h-3.5 text-indigo-400" />
-        <span>Pilihan Cepat:</span>
+        <span>{t('map.quickSelection')}</span>
       </span>
       {#each filteredQuickList as curr}
         {@const isSelected = selectedCurrencyCode === curr.currencyCode}
@@ -663,7 +664,7 @@
       <!-- Top floating info status badge -->
       <div class="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/85 border border-slate-700/60 text-[11px] font-medium text-slate-300 backdrop-blur-md shadow-lg">
         <Info class="w-3.5 h-3.5 text-cyan-400" />
-        <span>Mode: <strong class="text-emerald-400">{activeMetric === 'rate' ? 'Kurs Nominal (IDR)' : 'Tren 24 Jam (%)'}</strong></span>
+        <span>{t('map.modeLabel')} <strong class="text-emerald-400">{activeMetric === 'rate' ? t('map.modeRate') : t('map.modeChange')}</strong></span>
       </div>
 
       <!-- Bottom Floating Inspector Trigger Pill -->
@@ -682,7 +683,7 @@
           onclick={() => (isInspectorOpen = true)}
           class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow cursor-pointer"
         >
-          <span>Inspeksi Negara</span>
+          <span>{t('map.inspectCountry')}</span>
           <ChevronRight class="w-3.5 h-3.5" />
         </button>
       </div>
@@ -704,7 +705,7 @@
     <div
       role="button"
       tabindex="0"
-      aria-label="Tutup Country Inspector"
+      aria-label={t('common.close')}
       onclick={handleCloseInspector}
       onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCloseInspector(); }}
       class="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300"
@@ -712,7 +713,7 @@
 
     <!-- Slide-Over Drawer Panel -->
     <aside
-      aria-label="Detail Negara & Komparasi Bank"
+      aria-label={t('map.countryInspector')}
       class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md md:max-w-lg lg:max-w-xl bg-gradient-to-b from-slate-900/98 via-slate-950/98 to-slate-950 border-l border-emerald-500/30 shadow-2xl backdrop-blur-2xl p-5 sm:p-7 overflow-y-auto transform transition-transform duration-300 flex flex-col justify-between space-y-6"
     >
       <!-- Top Decorative Accent -->
@@ -746,7 +747,7 @@
             type="button"
             onclick={handleCloseInspector}
             class="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
-            title="Tutup Panel Inspeksi (Esc)"
+            title={t('common.close')}
           >
             <X class="w-5 h-5" />
           </button>
@@ -756,7 +757,7 @@
         <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-slate-950/80 border border-slate-800/90">
           <div class="flex items-center gap-2">
             <Activity class="w-4 h-4 text-emerald-400" />
-            <span class="text-xs font-semibold text-slate-300">Status Valas 24 Jam:</span>
+            <span class="text-xs font-semibold text-slate-300">{t('map.status24h')}</span>
           </div>
           <div class={`px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 border ${
             isPositive 
@@ -768,7 +769,7 @@
             {:else}
               <TrendingDown class="w-3.5 h-3.5" />
             {/if}
-            <span>{isPositive ? 'Menguat' : 'Melemah'} ({formatPercent(curr.change24h)})</span>
+            <span>{isPositive ? t('map.strengthening') : t('map.weakening')} ({formatPercent(curr.change24h)})</span>
           </div>
         </div>
 
@@ -777,43 +778,43 @@
           <!-- Kurs Tengah (Mid) -->
           <div class="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-emerald-500/30 space-y-1 shadow-lg">
             <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Kurs Tengah (Mid)</span>
+              <span>{t('map.midRate')}</span>
               <Coins class="w-3.5 h-3.5 text-emerald-400" />
             </div>
             <div class="text-lg sm:text-xl font-black text-emerald-400">
               {formatRupiah(curr.middleRate, { showFraction: true })}
             </div>
-            <span class="text-[10px] text-slate-500 block">1 {curr.currencyCode} ke Rupiah</span>
+            <span class="text-[10px] text-slate-500 block">{t('map.midRateDesc', { currency: curr.currencyCode })}</span>
           </div>
 
           <!-- Spread Margin -->
           <div class="p-3.5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 space-y-1 shadow-lg">
             <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              <span>Selisih Spread</span>
+              <span>{t('map.spread')}</span>
               <BarChart3 class="w-3.5 h-3.5 text-cyan-400" />
             </div>
             <div class="text-lg sm:text-xl font-black text-cyan-300">
               {formatRupiah(curr.spread, { showFraction: true })}
             </div>
-            <span class="text-[10px] text-slate-500 block">Margin: {curr.spreadPercent.toFixed(2)}%</span>
+            <span class="text-[10px] text-slate-500 block">{t('map.margin', { percent: curr.spreadPercent.toFixed(2) })}</span>
           </div>
 
           <!-- Kurs Beli (Bank Beli dari Anda) -->
           <div class="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800/90 space-y-1">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Kurs Beli (Buy)</span>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('map.buyRate')}</span>
             <div class="text-sm sm:text-base font-bold text-slate-200">
               {formatRupiah(curr.buyRate, { showFraction: true })}
             </div>
-            <span class="text-[10px] text-slate-500 block">Bank beli dari Anda</span>
+            <span class="text-[10px] text-slate-500 block">{t('map.buyRateDesc')}</span>
           </div>
 
           <!-- Kurs Jual (Bank Jual ke Anda) -->
           <div class="p-3.5 rounded-2xl bg-slate-950/90 border border-slate-800/90 space-y-1">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Kurs Jual (Sell)</span>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">{t('map.sellRate')}</span>
             <div class="text-sm sm:text-base font-bold text-slate-200">
               {formatRupiah(curr.sellRate, { showFraction: true })}
             </div>
-            <span class="text-[10px] text-slate-500 block">Bank jual ke Anda</span>
+            <span class="text-[10px] text-slate-500 block">{t('map.sellRateDesc')}</span>
           </div>
         </div>
 
@@ -822,7 +823,7 @@
           <div class="flex items-center justify-between">
             <span class="text-xs sm:text-sm font-bold text-slate-100 flex items-center gap-2">
               <Calculator class="w-4 h-4 text-emerald-400" />
-              Kalkulator Konversi Kilat
+              {t('map.quickConvertTitle')}
             </span>
             <button
               type="button"
@@ -830,7 +831,7 @@
               class="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 px-2.5 py-1 rounded-xl bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 transition cursor-pointer"
             >
               <ArrowRightLeft class="w-3.5 h-3.5" />
-              <span>Tukar Arah</span>
+              <span>{t('map.switchDirection')}</span>
             </button>
           </div>
 
@@ -843,7 +844,7 @@
                 step="any"
                 bind:value={convertAmount}
                 class="w-full bg-slate-900 border border-slate-700/80 focus:border-emerald-500 rounded-xl px-3.5 py-2 text-sm sm:text-base text-white font-bold outline-none shadow-inner"
-                placeholder="Masukkan nominal..."
+                placeholder={t('map.convertAmountPlaceholder')}
               />
               <span class="absolute right-3.5 top-2 text-xs font-bold text-slate-400">
                 {convertDirection === 'foreign_to_idr' ? curr.currencyCode : 'IDR'}
@@ -869,7 +870,7 @@
 
             <!-- Instant Calculated Result Banner -->
             <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-center space-y-0.5">
-              <span class="text-[10px] text-slate-400 uppercase font-semibold">Hasil Estimasi Nilai Tukar</span>
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">{t('map.estimatedResult')}</span>
               <div class="text-xl sm:text-2xl font-black text-emerald-300">
                 {calculatedConvertResult.formatted}
               </div>
@@ -882,9 +883,9 @@
           <div class="flex items-center justify-between px-1">
             <span class="text-xs sm:text-sm font-bold text-slate-100 flex items-center gap-2">
               <LineChart class="w-4 h-4 text-indigo-400" />
-              Grafik Tren Valas ({curr.currencyCode}/IDR)
+              {t('map.chartTrendTitle', { currency: curr.currencyCode })}
             </span>
-            <span class="text-[10px] text-emerald-400 font-mono">Google-Style Crosshair</span>
+            <span class="text-[10px] text-emerald-400 font-mono">{t('map.googleCrosshair')}</span>
           </div>
 
           <GoogleRateChart
@@ -904,7 +905,7 @@
           class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold shadow-xl shadow-emerald-950/70 cursor-pointer"
         >
           <ArrowRightLeft class="w-4 h-4" />
-          <span>Buka di Kalkulator Konversi Lengkap</span>
+          <span>{t('map.openFullConverter')}</span>
         </Button>
       </div>
     </aside>

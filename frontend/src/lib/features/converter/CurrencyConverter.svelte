@@ -1,12 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { ArrowRightLeft, TrendingUp, Landmark, ShieldCheck, Sparkles, AlertCircle } from 'lucide-svelte';
-  import Card from '$lib/components/ui/Card.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
+  import { ArrowRightLeft } from 'lucide-svelte';
   import { apiClient, SUPPORTED_CURRENCIES, MOCK_PROVIDERS } from '$lib/api/client';
-  import type { ConversionResult, ProviderInfo } from '$lib/api/types';
-  import { formatRupiah, formatCurrency, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
+  import type { ConversionResult } from '$lib/api/types';
+  import { formatRupiah, formatCurrency } from '$lib/formatters/currency';
+  import { t } from '$lib/i18n';
 
   // Component Props
   interface Props {
@@ -77,33 +75,26 @@
   });
 </script>
 
-<Card class="relative overflow-hidden border-indigo-500/20 bg-gradient-to-b from-slate-900/90 to-slate-950/90">
-  <!-- Top decorative accent -->
-  <div class="absolute -top-24 -right-24 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Currency Converter: editorial calculator panel -->
+<div style="display:flex;flex-direction:column;gap:20px;" class={className}>
 
-  <!-- Header -->
-  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-4 mb-5">
+  <!-- Section header -->
+  <div style="border-bottom:2px solid var(--ink);padding-bottom:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
     <div>
-      <div class="flex items-center gap-2">
-        <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-          <Sparkles class="w-5 h-5 text-indigo-400" />
-          Multi-Source Converter
-        </h2>
-        <Badge variant="success" size="sm">Real-Time</Badge>
-      </div>
-      <p class="text-xs text-slate-400 mt-0.5">
-        Bandingkan hasil konversi nyata di berbagai bank & money changer secara instan
+      <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">
+        {t('converter.badge')}
+      </p>
+      <h2 style="font-size:20px;font-weight:700;color:var(--ink);margin:0;">
+        {t('converter.title')}
+      </h2>
+      <p style="font-size:12px;color:var(--ink-3);margin-top:4px;">
+        {t('converter.subtitle')}
       </p>
     </div>
-
-    <!-- Provider Selection Pill -->
-    <div class="flex items-center gap-2">
-      <span class="text-xs text-slate-400 font-medium">Sumber Kurs:</span>
-      <select
-        bind:value={selectedProvider}
-        onchange={performConversion}
-        class="bg-slate-950 border border-slate-700/80 text-xs font-semibold text-indigo-300 rounded-xl px-3 py-1.5 focus:border-indigo-500 outline-none cursor-pointer"
-      >
+    <!-- Provider selector -->
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-4);">{t('converter.sourceLabel')}</span>
+      <select bind:value={selectedProvider} onchange={performConversion} class="field" style="width:auto;padding:5px 10px;font-size:12px;">
         {#each MOCK_PROVIDERS as prov}
           <option value={prov.id}>{prov.shortName}</option>
         {/each}
@@ -111,61 +102,71 @@
     </div>
   </div>
 
-  <!-- Conversion Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-    <!-- From Input -->
-    <div class="lg:col-span-5 space-y-2">
-      <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
-        <span>Jumlah ({fromCurrency})</span>
-        <span class="text-slate-500">{fromInfo.name}</span>
-      </div>
-      <div class="relative flex items-center rounded-2xl bg-slate-950/90 border border-slate-800 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all p-2">
+  <!-- Conversion input row -->
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end;">
+
+    <!-- From -->
+    <div>
+      <label for="converter-amount-input" style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px;">
+        {t('converter.amountLabel', { currency: fromCurrency })}
+      </label>
+      <div style="display:flex;border:1px solid var(--bg-rule);border-radius:var(--radius);overflow:hidden;background:var(--bg-raised);">
         <input
+          id="converter-amount-input"
           type="number"
           min="0"
           step="any"
           bind:value={amount}
           oninput={performConversion}
-          placeholder="0.00"
-          class="w-full bg-transparent text-xl font-bold text-slate-100 px-3 outline-none"
+          placeholder="0"
+          style="
+            flex:1;
+            border:none;
+            outline:none;
+            padding:10px 12px;
+            font-size:20px;
+            font-weight:700;
+            color:var(--ink);
+            background:transparent;
+            font-variant-numeric:tabular-nums;
+            min-width:0;
+          "
         />
-        <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 shrink-0">
-          <span class="text-lg">{fromInfo.flag}</span>
-          <select
-            bind:value={fromCurrency}
-            onchange={performConversion}
-            class="bg-transparent text-sm font-bold text-slate-200 outline-none cursor-pointer"
-          >
+        <div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-left:1px solid var(--bg-rule);background:var(--bg-subtle);">
+          <span style="font-size:16px;">{fromInfo.flag}</span>
+          <select aria-label={t('converter.amountLabel', { currency: fromCurrency })} bind:value={fromCurrency} onchange={performConversion}
+            style="border:none;outline:none;background:transparent;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;">
             {#each SUPPORTED_CURRENCIES as curr}
-              <option value={curr.code} class="bg-slate-900 text-slate-100">{curr.code}</option>
+              <option value={curr.code}>{curr.code}</option>
             {/each}
           </select>
         </div>
       </div>
+      <p style="font-size:11px;color:var(--ink-4);margin-top:4px;">{fromInfo.name}</p>
     </div>
 
-    <!-- Swap Button -->
-    <div class="lg:col-span-2 flex justify-center py-2 lg:py-0">
+    <!-- Swap -->
+    <div style="padding-bottom:24px;">
       <button
         type="button"
         onclick={swapCurrencies}
-        aria-label="Tukar Posisi Mata Uang"
-        class="h-11 w-11 rounded-2xl bg-slate-800/80 hover:bg-indigo-600 text-slate-300 hover:text-white border border-slate-700/80 hover:border-indigo-500 flex items-center justify-center transition-all duration-200 shadow-md active:scale-95 cursor-pointer"
+        aria-label={t('converter.swapButton')}
+        class="btn btn-ghost"
+        style="padding:9px;border-radius:50%;"
       >
-        <ArrowRightLeft class="w-5 h-5" />
+        <ArrowRightLeft style="width:16px;height:16px;" />
       </button>
     </div>
 
-    <!-- To Output -->
-    <div class="lg:col-span-5 space-y-2">
-      <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
-        <span>Hasil Konversi ({toCurrency})</span>
-        <span class="text-slate-500">{toInfo.name}</span>
-      </div>
-      <div class="relative flex items-center rounded-2xl bg-slate-950/90 border border-slate-800 p-2">
-        <div class="w-full px-3 text-xl font-extrabold text-emerald-400 truncate">
+    <!-- To -->
+    <div>
+      <span style="display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px;">
+        {t('converter.resultLabel', { currency: toCurrency })}
+      </span>
+      <div style="display:flex;border:1px solid var(--bg-rule);border-radius:var(--radius);overflow:hidden;background:var(--bg-subtle);">
+        <div style="flex:1;padding:10px 12px;font-size:20px;font-weight:700;color:var(--pos);font-variant-numeric:tabular-nums;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
           {#if isLoading}
-            <div class="h-7 w-36 rounded-md animate-shimmer"></div>
+            <div style="height:28px;width:140px;border-radius:2px;" class="animate-shimmer"></div>
           {:else if conversionResult}
             {#if toCurrency === 'IDR'}
               {formatRupiah(conversionResult.resultAmount)}
@@ -173,82 +174,80 @@
               {formatCurrency(conversionResult.resultAmount, toCurrency)}
             {/if}
           {:else}
-            0.00
+            —
           {/if}
         </div>
-        <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 shrink-0">
-          <span class="text-lg">{toInfo.flag}</span>
-          <select
-            bind:value={toCurrency}
-            onchange={performConversion}
-            class="bg-transparent text-sm font-bold text-slate-200 outline-none cursor-pointer"
-          >
+        <div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-left:1px solid var(--bg-rule);background:var(--bg-raised);">
+          <span style="font-size:16px;">{toInfo.flag}</span>
+          <select aria-label={t('converter.resultLabel', { currency: toCurrency })} bind:value={toCurrency} onchange={performConversion}
+            style="border:none;outline:none;background:transparent;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;">
             {#each SUPPORTED_CURRENCIES as curr}
-              <option value={curr.code} class="bg-slate-900 text-slate-100">{curr.code}</option>
+              <option value={curr.code}>{curr.code}</option>
             {/each}
           </select>
         </div>
       </div>
+      <p style="font-size:11px;color:var(--ink-4);margin-top:4px;">{toInfo.name}</p>
     </div>
   </div>
 
-  <!-- Quick Presets -->
-  <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-slate-800/60">
-    <span class="text-xs text-slate-500 font-medium">Pilihan Cepat:</span>
+  <!-- Quick presets -->
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid var(--bg-rule);padding-top:12px;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);">{t('converter.quickNominal')}</span>
     {#if fromCurrency === 'IDR'}
       {#each [1000000, 5000000, 10000000, 50000000] as preset}
-        <button
-          type="button"
-          class="text-xs px-2.5 py-1 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-300 font-medium transition cursor-pointer"
-          onclick={() => setPresetAmount(preset)}
-        >
+        <button type="button" class="btn btn-ghost btn-sm" onclick={() => setPresetAmount(preset)}>
           {formatRupiah(preset, { showFraction: false })}
         </button>
       {/each}
     {:else}
       {#each [100, 500, 1000, 5000] as preset}
-        <button
-          type="button"
-          class="text-xs px-2.5 py-1 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-300 font-medium transition cursor-pointer"
-          onclick={() => setPresetAmount(preset)}
-        >
+        <button type="button" class="btn btn-ghost btn-sm" onclick={() => setPresetAmount(preset)}>
           {fromInfo.symbol}{preset.toLocaleString()}
         </button>
       {/each}
     {/if}
   </div>
 
-  <!-- Multi-Provider Comparison Cards -->
-  {#if conversionResult && conversionResult.comparisons && conversionResult.comparisons.length > 0}
-    <div class="mt-6 pt-4 border-t border-slate-800">
-      <div class="flex items-center justify-between mb-3">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-          <Landmark class="w-3.5 h-3.5 text-indigo-400" />
-          Komparasi Penerimaan di Berbagai Provider
-        </h4>
-        <span class="text-[11px] text-slate-500">
-          Kurs Acuan: 1 {fromCurrency} = {toCurrency === 'IDR' ? formatRupiah(conversionResult.rateUsed) : formatCurrency(conversionResult.rateUsed, toCurrency)}
+  <!-- Multi-provider comparison table -->
+  {#if conversionResult?.comparisons && conversionResult.comparisons.length > 0}
+    <div style="border-top:2px solid var(--ink);padding-top:20px;">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin:0;">
+          {t('converter.comparisonTitle')}
+        </p>
+        <span style="font-size:11px;color:var(--ink-4);font-variant-numeric:tabular-nums;">
+          {t('converter.referenceRate', { from: fromCurrency, to: toCurrency === 'IDR' ? formatRupiah(conversionResult.rateUsed) : formatCurrency(conversionResult.rateUsed, toCurrency) })}
         </span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div style="border:1px solid var(--bg-rule);border-radius:var(--radius);overflow:hidden;">
         {#each conversionResult.comparisons as comp, i}
           {@const isBest = i === 0}
-          <div class={`p-3.5 rounded-xl border transition-all ${isBest ? 'bg-indigo-950/30 border-indigo-500/40 ring-1 ring-indigo-500/20' : 'bg-slate-950/60 border-slate-800/80'}`}>
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-semibold text-slate-300">{comp.providerName}</span>
+          <div style="
+            display:flex;align-items:center;justify-content:space-between;
+            padding:12px 16px;
+            border-bottom:1px solid var(--bg-rule);
+            background:{isBest ? 'var(--pos-bg)' : 'var(--bg-raised)'};
+          ">
+            <div style="display:flex;align-items:center;gap:10px;">
               {#if isBest}
-                <Badge variant="success" size="sm">Nilai Terbaik</Badge>
-              {/if}
-            </div>
-            <div class="text-base font-bold text-slate-100">
-              {toCurrency === 'IDR' ? formatRupiah(comp.resultAmount, { showFraction: false }) : formatCurrency(comp.resultAmount, toCurrency)}
-            </div>
-            <div class="text-[11px] mt-1 text-slate-400 flex items-center justify-between">
-              {#if isBest}
-                <span class="text-emerald-400 font-medium">Rekomendasi Utama</span>
+                <span style="font-size:10px;font-weight:700;color:var(--pos);text-transform:uppercase;letter-spacing:0.06em;padding:2px 6px;border:1px solid var(--pos-rule);border-radius:3px;">
+                  {t('converter.best')}
+                </span>
               {:else}
-                <span class="text-slate-500">Selisih: {comp.diffWithBest > 0 ? `+${formatRupiah(comp.diffWithBest, { showFraction: false })}` : `${formatRupiah(comp.diffWithBest, { showFraction: false })}`}</span>
+                <span style="font-size:10px;color:var(--ink-4);font-variant-numeric:tabular-nums;">#{i+1}</span>
+              {/if}
+              <span style="font-size:13px;font-weight:600;color:var(--ink);">{comp.providerName}</span>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:{isBest ? 'var(--pos)' : 'var(--ink)'};">
+                {toCurrency === 'IDR' ? formatRupiah(comp.resultAmount, { showFraction: false }) : formatCurrency(comp.resultAmount, toCurrency)}
+              </div>
+              {#if !isBest && comp.diffWithBest}
+                <div style="font-size:11px;color:var(--signal);font-variant-numeric:tabular-nums;">
+                  {comp.diffWithBest > 0 ? '+' : ''}{formatRupiah(comp.diffWithBest, { showFraction: false })}
+                </div>
               {/if}
             </div>
           </div>
@@ -256,4 +255,4 @@
       </div>
     </div>
   {/if}
-</Card>
+</div>

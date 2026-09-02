@@ -28,6 +28,7 @@
   import type { RateItem, CurrencyInfo } from '$lib/api/types';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
   import { COUNTRY_CURRENCY_MAP, REGION_FILTERS, type RegionId } from '../map/map-constants';
+  import { t } from '$lib/i18n';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -309,13 +310,13 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px;">
-          Tabel Komparasi Valas Global
+          {t('matrix.titleBadge')}
         </p>
         <h2 style="font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-0.02em;margin:0;">
-          Perbandingan Nilai Tukar Mata Uang Dunia
+          {t('matrix.title')}
         </h2>
         <p style="font-size:13px;color:var(--ink-3);margin-top:6px;max-width:600px;line-height:1.55;">
-          Perbandingan komprehensif performa nilai tukar valas global terhadap Rupiah (IDR) dengan fluktuasi multi-periode (24h, 1W, 1M, 1Y), rentang 52 minggu, dan mini sparkline tren.
+          {t('matrix.description')}
         </p>
       </div>
 
@@ -324,14 +325,14 @@
         {#if topGainer}
           <div class="pill-pos" style="padding:4px 10px;font-size:12px;">
             <TrendingUp style="width:13px;height:13px;" />
-            <span>Top Gainer: <strong>{topGainer.flag} {topGainer.currencyCode}</strong> +{topGainer.change24h.toFixed(2)}%</span>
+            <span>{t('matrix.topGainer')} <strong>{topGainer.flag} {topGainer.currencyCode}</strong> +{topGainer.change24h.toFixed(2)}%</span>
           </div>
         {/if}
 
         {#if topLoser}
           <div class="pill-neg" style="padding:4px 10px;font-size:12px;">
             <TrendingDown style="width:13px;height:13px;" />
-            <span>Top Loser: <strong>{topLoser.flag} {topLoser.currencyCode}</strong> {topLoser.change24h.toFixed(2)}%</span>
+            <span>{t('matrix.topLoser')} <strong>{topLoser.flag} {topLoser.currencyCode}</strong> {topLoser.change24h.toFixed(2)}%</span>
           </div>
         {/if}
 
@@ -343,7 +344,7 @@
           style="display:flex;align-items:center;gap:6px;"
         >
           <RefreshCw style="width:13px;height:13px;" class={isLoading ? 'animate-spin' : ''} />
-          <span>Segarkan</span>
+          <span>{t('common.refresh')}</span>
         </button>
       </div>
     </div>
@@ -358,7 +359,7 @@
             type="text"
             bind:value={searchQuery}
             oninput={() => (currentPage = 1)}
-            placeholder="Cari valas atau negara (USD, Euro, Yen, Singapore)..."
+            placeholder={t('matrix.searchPlaceholder')}
             class="field"
             style="padding-left:32px;font-size:12px;"
           />
@@ -385,7 +386,7 @@
               border: 1px solid {selectedCategory === 'all' ? 'var(--accent)' : 'var(--bg-rule)'};
             "
           >
-            Semua Valas ({currencyRows.length})
+            {t('matrix.allCurrencies', { count: currencyRows.length })}
           </button>
 
           <button
@@ -398,7 +399,7 @@
               border: 1px solid {selectedCategory === 'popular' ? 'var(--accent)' : 'var(--bg-rule)'};
             "
           >
-            Populer di Indonesia
+            {t('matrix.popularIndonesia')}
           </button>
 
           <button
@@ -411,7 +412,7 @@
               border: 1px solid {selectedCategory === 'major' ? 'var(--accent)' : 'var(--bg-rule)'};
             "
           >
-            G10 / Valas Utama
+            {t('matrix.majorG10')}
           </button>
 
           <button
@@ -424,14 +425,14 @@
               border: 1px solid {selectedCategory === 'asean' ? 'var(--accent)' : 'var(--bg-rule)'};
             "
           >
-            ASEAN 🌴
+            {t('matrix.aseanCategory')}
           </button>
         </div>
 
         <!-- Sorting Selector -->
         <div style="display:flex;align-items:center;gap:6px;">
           <label for="matrix-sort-select" style="font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.06em;">
-            Urutkan:
+            {t('matrix.sortBy')}
           </label>
           <select
             id="matrix-sort-select"
@@ -439,13 +440,13 @@
             class="field"
             style="font-size:12px;padding:5px 10px;width:auto;cursor:pointer;"
           >
-            <option value="change24h_desc">🔥 Paling Menguat 24 Jam</option>
-            <option value="change24h_asc">📉 Paling Melemah 24 Jam</option>
-            <option value="change30d_desc">📈 Paling Menguat 1 Bulan</option>
-            <option value="rate_desc">💎 Nilai Tukar Tertinggi</option>
-            <option value="rate_asc">🪙 Nilai Tukar Terendah</option>
-            <option value="name_asc">🔤 Nama Negara (A-Z)</option>
-            <option value="code_asc">🏷️ Kode Valas (A-Z)</option>
+            <option value="change24h_desc">{t('matrix.sorts.change24h_desc')}</option>
+            <option value="change24h_asc">{t('matrix.sorts.change24h_asc')}</option>
+            <option value="change30d_desc">{t('matrix.sorts.change30d_desc')}</option>
+            <option value="rate_desc">{t('matrix.sorts.rate_desc')}</option>
+            <option value="rate_asc">{t('matrix.sorts.rate_asc')}</option>
+            <option value="name_asc">{t('matrix.sorts.name_asc')}</option>
+            <option value="code_asc">{t('matrix.sorts.code_asc')}</option>
           </select>
         </div>
       </div>
@@ -453,7 +454,7 @@
       <!-- Region Filters Ribbon -->
       <div style="display:flex;align-items:center;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;">
         <span style="font-size:11px;font-weight:600;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0;">
-          Kawasan:
+          {t('matrix.regionLabel')}
         </span>
         <button
           type="button"
@@ -467,7 +468,7 @@
             border: 1px solid {selectedRegion === 'all' ? 'var(--ink)' : 'var(--bg-rule)'};
           "
         >
-          🌏 Semua
+          {t('map.allRegions')}
         </button>
         {#each REGION_FILTERS.filter(r => r.id !== 'all') as reg}
           {@const isActive = selectedRegion === reg.id}
@@ -497,16 +498,16 @@
   {:else if filteredAndSortedRows.length === 0}
     <div style="padding:48px 24px;text-align:center;background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);margin-top:16px;">
       <Coins style="width:36px;height:36px;color:var(--ink-4);margin:0 auto 12px;" />
-      <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:0 0 6px;">Tidak ada mata uang yang cocok</h3>
+      <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:0 0 6px;">{t('matrix.noMatchTitle')}</h3>
       <p style="font-size:13px;color:var(--ink-3);max-width:400px;margin:0 auto 16px;">
-        Coba ubah kata kunci pencarian atau reset filter kawasan untuk melihat daftar lengkap mata uang dunia.
+        {t('matrix.noMatchDesc')}
       </p>
       <button
         type="button"
         class="btn btn-ghost btn-sm"
         onclick={() => { searchQuery = ''; selectedRegion = 'all'; selectedCategory = 'all'; }}
       >
-        Reset Semua Filter
+        {t('matrix.resetFilters')}
       </button>
     </div>
   {:else}
@@ -515,15 +516,15 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Mata Uang & Negara</th>
-              <th class="right">Kurs Tengah (Rp)</th>
-              <th class="right">24 Jam (%)</th>
-              <th class="right hidden md-table-cell">1 Minggu (%)</th>
-              <th class="right hidden lg-table-cell">1 Bulan (%)</th>
-              <th class="right hidden xl-table-cell">1 Tahun (%)</th>
-              <th class="hidden sm-table-cell" style="min-width:160px;">Rentang 52 Minggu</th>
-              <th class="hidden md-table-cell" style="text-align:center;">Tren 7H</th>
-              <th style="text-align:center;">Aksi</th>
+              <th>{t('matrix.table.currencyCountry')}</th>
+              <th class="right">{t('matrix.table.midRate')}</th>
+              <th class="right">{t('matrix.table.change24h')}</th>
+              <th class="right hidden md-table-cell">{t('matrix.table.change1w')}</th>
+              <th class="right hidden lg-table-cell">{t('matrix.table.change1m')}</th>
+              <th class="right hidden xl-table-cell">{t('matrix.table.change1y')}</th>
+              <th class="hidden sm-table-cell" style="min-width:160px;">{t('matrix.table.range52w')}</th>
+              <th class="hidden md-table-cell" style="text-align:center;">{t('matrix.table.trend7d')}</th>
+              <th style="text-align:center;">{t('matrix.table.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -566,7 +567,7 @@
                     {formatRupiah(row.middleRate, { showFraction: true })}
                   </div>
                   <div style="font-size:10px;color:var(--ink-4);font-variant-numeric:tabular-nums;">
-                    Beli: {formatRupiah(row.buyRate, { showFraction: false, withPrefix: false })} | Jual: {formatRupiah(row.sellRate, { showFraction: false, withPrefix: false })}
+                    {t('matrix.table.buyPrefix')} {formatRupiah(row.buyRate, { showFraction: false, withPrefix: false })} | {t('matrix.table.sellPrefix')} {formatRupiah(row.sellRate, { showFraction: false, withPrefix: false })}
                   </div>
                 </td>
 
@@ -659,7 +660,7 @@
                       onclick={() => handleActionClick(row.currencyCode, 'chart')}
                       class="btn btn-ghost btn-sm"
                       style="padding:4px 8px;"
-                      title="Buka Grafik Google-Style"
+                      title={t('matrix.table.openChart')}
                     >
                       <ChartIcon style="width:13px;height:13px;" />
                     </button>
@@ -668,7 +669,7 @@
                       onclick={() => handleActionClick(row.currencyCode, 'convert')}
                       class="btn btn-ghost btn-sm"
                       style="padding:4px 8px;"
-                      title="Konversi Valas"
+                      title={t('matrix.table.convertCurrency')}
                     >
                       <ArrowRightLeft style="width:13px;height:13px;" />
                     </button>
@@ -683,7 +684,11 @@
       <!-- PAGINATION BAR -->
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--bg-subtle);border-top:1px solid var(--bg-rule);font-size:12px;color:var(--ink-4);flex-wrap:wrap;">
         <div>
-          Menampilkan <strong style="color:var(--ink);">{(currentPage - 1) * itemsPerPage + 1}</strong> - <strong style="color:var(--ink);">{Math.min(currentPage * itemsPerPage, filteredAndSortedRows.length)}</strong> dari <strong style="color:var(--ink);">{filteredAndSortedRows.length}</strong> mata uang dunia
+          {t('matrix.pagination', {
+            from: (currentPage - 1) * itemsPerPage + 1,
+            to: Math.min(currentPage * itemsPerPage, filteredAndSortedRows.length),
+            total: filteredAndSortedRows.length
+          })}
         </div>
 
         {#if totalPages > 1}
@@ -695,7 +700,7 @@
               class="btn btn-ghost btn-sm"
               style="padding:3px 8px;font-size:11px;"
             >
-              Sebelumnya
+              {t('matrix.prev')}
             </button>
 
             {#each Array.from({ length: totalPages }, (_, i) => i + 1) as pageNum}
@@ -728,7 +733,7 @@
               class="btn btn-ghost btn-sm"
               style="padding:3px 8px;font-size:11px;"
             >
-              Selanjutnya
+              {t('matrix.next')}
             </button>
           </div>
         {/if}

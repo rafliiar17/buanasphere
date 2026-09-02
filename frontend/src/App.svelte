@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Bell, X, Check, TrendingUp, ArrowUpRight } from 'lucide-svelte';
+  import { Bell, X, Check } from 'lucide-svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import WorldRateMap from '$lib/features/map/WorldRateMap.svelte';
@@ -10,7 +10,9 @@
   import CurrencyComparisonMatrix from '$lib/features/matrix/CurrencyComparisonMatrix.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
   import { apiClient } from '$lib/api/client';
+  import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
 
+  let currentLang = $state<SupportedLocale>(getLocale());
   let activeTab = $state('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
@@ -21,13 +23,20 @@
   let isAlertSubmitting = $state(false);
   let alertMessage = $state<string | null>(null);
 
-  const mainTabs = [
-    { id: 'map',       label: '🗺️ Peta Kurs Dunia' },
-    { id: 'chart',     label: '📈 Grafik & Analisis Tren' },
-    { id: 'matrix',    label: '📊 Perbandingan Kurs Valas Dunia' },
-    { id: 'converter', label: '💱 Kalkulator Konversi' },
-    { id: 'cards',     label: '🃏 Rate Cards' },
-  ];
+  onMount(() => {
+    const unsub = subscribeLocale((loc) => {
+      currentLang = loc;
+    });
+    return unsub;
+  });
+
+  const mainTabs = $derived([
+    { id: 'map',       label: t('tabs.map') },
+    { id: 'chart',     label: t('tabs.chart') },
+    { id: 'matrix',    label: t('tabs.matrix') },
+    { id: 'converter', label: t('tabs.converter') },
+    { id: 'cards',     label: t('tabs.cards') },
+  ]);
 
   function handleMapCurrencySelect(currencyCode: string) {
     converterFromCurrency = currencyCode;
@@ -63,7 +72,7 @@
         condition: alertCondition,
         targetRate: Number(alertTargetRate),
       });
-      alertMessage = res.message;
+      alertMessage = res.message || t('alert.successMessage');
       setTimeout(() => {
         alertMessage = null;
         isAlertModalOpen = false;
@@ -83,11 +92,6 @@
   <main style="flex:1;max-width:1280px;width:100%;margin:0 auto;padding:0 24px 64px;">
 
     <!-- ── Masthead ──────────────────────────────────────────────────────── -->
-    <!--
-      This is the thesis: a data-journalism masthead, not a hero banner.
-      It reads like the front page of Bisnis Indonesia. Large ink serif figure
-      on the left, operational meta on the right. No glow, no gradient.
-    -->
     <div style="
       padding: 32px 0 24px;
       border-bottom: 2px solid var(--ink);
@@ -100,7 +104,7 @@
       <!-- Left: editorial headline -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:6px;">
-          Pasar Valuta Asing Global — Terhadap Rupiah (IDR)
+          {t('masthead.badge')}
         </p>
         <h1 style="
           font-family: var(--font-serif);
@@ -112,11 +116,11 @@
           letter-spacing: -0.01em;
           margin: 0;
         ">
-          Jelajahi Kurs Valas Dunia,<br>
-          <span style="font-style:normal;font-weight:700;color:var(--ink);">195+ Negara Terhadap Rupiah</span>
+          {t('masthead.titleItalic')}<br>
+          <span style="font-style:normal;font-weight:700;color:var(--ink);">{t('masthead.titleBold')}</span>
         </h1>
         <p style="margin-top:10px;font-size:13px;color:var(--ink-3);max-width:580px;line-height:1.55;">
-          Data nilai tukar resmi dan tren interaktif 195+ mata uang dunia terhadap Indonesian Rupiah (IDR) — grafik multi-timeframe ala Google Finance, pergerakan harian real-time, dan tanpa markup komersial.
+          {t('masthead.description')}
         </p>
       </div>
 
@@ -128,9 +132,9 @@
           style="display:flex;align-items:center;gap:6px;"
         >
           <Bell style="width:13px;height:13px;" />
-          Pasang Rate Alert
+          {t('masthead.ctaAlert')}
         </button>
-        <span style="font-size:10px;color:var(--ink-4);">Notifikasi email gratis saat target tercapai</span>
+        <span style="font-size:10px;color:var(--ink-4);">{t('masthead.ctaAlertSubtext')}</span>
       </div>
     </div>
 
@@ -188,30 +192,30 @@
       <!-- Col 1 -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
-          Cakupan 195+ Negara Dunia
+          {t('footerStrip.col1Title')}
         </p>
         <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
-          Eksplorasi nilai tukar seluruh mata uang fiat resmi global terpetakan ke wilayah geografis dunia. Klik negara mana pun untuk melihat kurs live dan grafik tren.
+          {t('footerStrip.col1Desc')}
         </p>
       </div>
 
       <!-- Col 2 -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
-          Latensi Edge Sub-50ms
+          {t('footerStrip.col2Title')}
         </p>
         <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
-          Didukung Cloudflare Workers & edge cache SWR 15 menit. Data nilai tukar terdistribusi global dari titik edge terdekat dengan latensi minimal.
+          {t('footerStrip.col2Desc')}
         </p>
       </div>
 
       <!-- Col 3 -->
       <div>
         <p style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bg-rule);">
-          Grafik ala Google Finance
+          {t('footerStrip.col3Title')}
         </p>
         <p style="font-size:13px;color:var(--ink-3);line-height:1.6;">
-          Visualisasi kurva multi-timeframe (1H, 5H, 1B, 6B, 1T, 5T, Maks) dengan pelacakan kursor crosshair interaktif dan metrik pasar real-time.
+          {t('footerStrip.col3Desc')}
         </p>
       </div>
     </div>
@@ -249,7 +253,7 @@
         <!-- Close -->
         <button
           type="button"
-          aria-label="Tutup Dialog"
+          aria-label={t('common.close')}
           onclick={() => (isAlertModalOpen = false)}
           style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--ink-4);padding:4px;border-radius:4px;transition:color 120ms;"
           onmouseenter={(e) => (e.currentTarget.style.color = 'var(--ink)')}
@@ -262,10 +266,12 @@
         <div style="margin-bottom:20px;border-bottom:1px solid var(--bg-rule);padding-bottom:16px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
             <Bell style="width:14px;height:14px;color:var(--signal);" />
-            <h3 id="alert-modal-title" style="font-size:15px;font-weight:700;color:var(--ink);margin:0;">Pasang Rate Alert</h3>
+            <h3 id="alert-modal-title" style="font-size:15px;font-weight:700;color:var(--ink);margin:0;">
+              {t('alert.modalTitle')}
+            </h3>
           </div>
           <p style="font-size:12px;color:var(--ink-3);margin:0;">
-            Notifikasi email gratis saat nilai tukar mencapai target Anda.
+            {t('alert.modalSubtitle')}
           </p>
         </div>
 
@@ -280,16 +286,16 @@
             <!-- Email -->
             <div>
               <label for="alert-email-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
-                Alamat Email
+                {t('alert.emailLabel')}
               </label>
-              <input id="alert-email-input" type="email" required placeholder="nama@email.com" bind:value={alertEmail} class="field" />
+              <input id="alert-email-input" type="email" required placeholder={t('alert.emailPlaceholder')} bind:value={alertEmail} class="field" />
             </div>
 
             <!-- Currency + Condition -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div>
                 <label for="alert-currency-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
-                  Mata Uang
+                  {t('alert.currencyLabel')}
                 </label>
                 <select id="alert-currency-select" bind:value={alertCurrency} class="field">
                   <option value="USD">🇺🇸 USD</option>
@@ -306,11 +312,11 @@
 
               <div>
                 <label for="alert-condition-select" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
-                  Kondisi
+                  {t('alert.conditionLabel')}
                 </label>
                 <select id="alert-condition-select" bind:value={alertCondition} class="field">
-                  <option value="below">Kurang dari (≤)</option>
-                  <option value="above">Lebih dari (≥)</option>
+                  <option value="below">{t('alert.conditionBelow')}</option>
+                  <option value="above">{t('alert.conditionAbove')}</option>
                 </select>
               </div>
             </div>
@@ -318,13 +324,13 @@
             <!-- Target rate -->
             <div>
               <label for="alert-target-rate-input" style="display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em;">
-                Target Nilai Tukar (IDR)
+                {t('alert.targetRateLabel')}
               </label>
-              <input id="alert-target-rate-input" type="number" required step="any" placeholder="16200" bind:value={alertTargetRate} class="field" />
+              <input id="alert-target-rate-input" type="number" required step="any" placeholder={t('alert.targetRatePlaceholder')} bind:value={alertTargetRate} class="field" />
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%;margin-top:4px;" disabled={isAlertSubmitting}>
-              {isAlertSubmitting ? 'Mendaftarkan...' : 'Aktifkan Alert Sekarang'}
+              {isAlertSubmitting ? t('alert.submittingButton') : t('alert.submitButton')}
             </button>
           </form>
         {/if}

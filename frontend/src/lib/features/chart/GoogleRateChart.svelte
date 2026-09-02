@@ -18,6 +18,7 @@
   import { apiClient, SUPPORTED_CURRENCIES, BASE_RATES_IDR } from '$lib/api/client';
   import type { CurrencyInfo } from '$lib/api/types';
   import { formatRupiah, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
+  import { t, formatDateLocale } from '$lib/i18n';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -90,15 +91,15 @@
   let chartContainerRef = $state<HTMLDivElement | null>(null);
 
   // Time Range Selector Pills (Google Finance Style IDR/ID naming)
-  const rangeOptions: Array<{ id: TimeRange; label: string; fullLabel: string }> = [
-    { id: '1D', label: '1H', fullLabel: '1 Hari' },
-    { id: '5D', label: '5H', fullLabel: '5 Hari' },
-    { id: '1M', label: '1B', fullLabel: '1 Bulan' },
-    { id: '6M', label: '6B', fullLabel: '6 Bulan' },
-    { id: '1Y', label: '1T', fullLabel: '1 Tahun' },
-    { id: '5Y', label: '5T', fullLabel: '5 Tahun' },
-    { id: 'MAX', label: 'Maks', fullLabel: 'Semua Periode' },
-  ];
+  const rangeOptions = $derived<Array<{ id: TimeRange; label: string; fullLabel: string }>>([
+    { id: '1D', label: t('chart.ranges.1D.label'), fullLabel: t('chart.ranges.1D.fullLabel') },
+    { id: '5D', label: t('chart.ranges.5D.label'), fullLabel: t('chart.ranges.5D.fullLabel') },
+    { id: '1M', label: t('chart.ranges.1M.label'), fullLabel: t('chart.ranges.1M.fullLabel') },
+    { id: '6M', label: t('chart.ranges.6M.label'), fullLabel: t('chart.ranges.6M.fullLabel') },
+    { id: '1Y', label: t('chart.ranges.1Y.label'), fullLabel: t('chart.ranges.1Y.fullLabel') },
+    { id: '5Y', label: t('chart.ranges.5Y.label'), fullLabel: t('chart.ranges.5Y.fullLabel') },
+    { id: 'MAX', label: t('chart.ranges.MAX.label'), fullLabel: t('chart.ranges.MAX.fullLabel') },
+  ]);
 
   // Currency meta
   const activeCurrency = $derived.by<CurrencyInfo>(() => {
@@ -505,7 +506,9 @@
 
         <!-- Subtitle & Timestamp -->
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-4);margin-top:4px;flex-wrap:wrap;">
-          <span style="font-family:var(--font-mono);font-weight:500;color:var(--ink-2);">1 {activeCurrency.code} = {formatRupiah(activeDisplayRate, { showFraction: true })}</span>
+          <span style="font-family:var(--font-mono);font-weight:500;color:var(--ink-2);">
+            {t('chart.currencyPairLabel', { currencyCode: activeCurrency.code, rate: formatRupiah(activeDisplayRate, { showFraction: true }) })}
+          </span>
           <span>•</span>
           <span>{activeTimestampLabel}</span>
         </div>
@@ -521,13 +524,13 @@
               <span>{formatRupiah(activeDisplayChange.amount, { showFraction: true, withPrefix: false })} ({activeDisplayChange.percent}%)</span>
             {/if}
             <span style="font-size:10px;font-weight:normal;opacity:0.75;margin-left:4px;">
-              {isHovered ? 'dari Titik Awal' : rangeLabelText}
+              {isHovered ? t('chart.fromStartPoint') : rangeLabelText}
             </span>
           </div>
 
           {#if isHovered}
             <span style="font-size:11px;color:var(--accent);font-weight:600;">
-              ● Mode Inspeksi Kursor
+              {t('chart.inspectionMode')}
             </span>
           {/if}
         </div>
@@ -578,7 +581,7 @@
 
       <div style="display:none;align-items:center;gap:6px;font-size:11px;color:var(--ink-4);" class="sm-flex">
         <span class="live-dot"></span>
-        <span>Crosshair Interaktif</span>
+        <span>{t('chart.interactiveCrosshair')}</span>
       </div>
     </div>
   </div>
@@ -637,8 +640,8 @@
             {formatRupiah(hoveredPoint.rate, { showFraction: true })}
           </div>
           <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);margin-top:4px;font-variant-numeric:tabular-nums;">
-            <span>Beli: {formatRupiah(hoveredPoint.buyRate, { showFraction: false, withPrefix: false })}</span>
-            <span>Jual: {formatRupiah(hoveredPoint.sellRate, { showFraction: false, withPrefix: false })}</span>
+            <span>{t('matrix.table.buyPrefix')} {formatRupiah(hoveredPoint.buyRate, { showFraction: false, withPrefix: false })}</span>
+            <span>{t('matrix.table.sellPrefix')} {formatRupiah(hoveredPoint.sellRate, { showFraction: false, withPrefix: false })}</span>
           </div>
         </div>
       {/if}
@@ -689,7 +692,7 @@
               font-family="var(--font-mono)"
               fill="var(--ink-4)"
             >
-              Buka: {formatRupiah(summary.open, { showFraction: false })}
+              {t('chart.open')}: {formatRupiah(summary.open, { showFraction: false })}
             </text>
           </g>
         {/if}
@@ -757,45 +760,53 @@
     <!-- Harga Buka (Open) -->
     <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
       <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
-        Harga Buka (Open)
+        {t('chart.open')}
       </span>
       <div style="font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.open, { showFraction: true })}
       </div>
-      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Awal {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">
+        {t('chart.periodStart', { period: rangeLabelText })}
+      </span>
     </div>
 
     <!-- Tertinggi (High) -->
     <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
       <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
-        Tertinggi (High)
+        {t('chart.high')}
       </span>
       <div style="font-size:15px;font-weight:700;color:var(--pos);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.high, { showFraction: true })}
       </div>
-      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Puncak {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">
+        {t('chart.periodPeak', { period: rangeLabelText })}
+      </span>
     </div>
 
     <!-- Terendah (Low) -->
     <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
       <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
-        Terendah (Low)
+        {t('chart.low')}
       </span>
       <div style="font-size:15px;font-weight:700;color:var(--signal);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.low, { showFraction: true })}
       </div>
-      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Dasar {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">
+        {t('chart.periodBase', { period: rangeLabelText })}
+      </span>
     </div>
 
     <!-- Rata-rata (Avg) -->
     <div style="background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:12px;">
       <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);display:block;margin-bottom:4px;">
-        Rata-rata (Avg)
+        {t('chart.avg')}
       </span>
       <div style="font-size:15px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;">
         {formatRupiah(summary.avg, { showFraction: true })}
       </div>
-      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">Mean {rangeLabelText}</span>
+      <span style="font-size:10px;color:var(--ink-4);display:block;margin-top:2px;">
+        {t('chart.periodMean', { period: rangeLabelText })}
+      </span>
     </div>
   </div>
 </div>
