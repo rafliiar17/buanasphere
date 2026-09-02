@@ -108,7 +108,7 @@ flowchart LR
 ```
 
 ### Rincian Teknologi:
-- **Runtime & Package Manager**: [Bun](https://bun.sh) (v1.4+)
+- **Runtime & Package Manager**: [Bun](https://bun.sh) **v1.4+ (Mandatory / Wajib)** — Penggunaan Node.js, npm, yarn, dan pnpm dilarang keras.
 - **Backend API Framework**: [Elysia.js](https://elysiajs.com) (TypeScript on Cloudflare Workers)
 - **Database & ORM**: [Cloudflare D1](https://developers.cloudflare.com/d1/) + [Drizzle ORM](https://orm.drizzle.team/)
 - **Edge Cache**: [Cloudflare KV](https://developers.cloudflare.com/kv/) (Stale-While-Revalidate TTL 15m)
@@ -150,15 +150,19 @@ kurs-world/
 │   └── package.json
 │
 ├── docs/                           # Dokumentasi terstruktur
-│   ├── adr/                        # Architecture Decision Records (0001-0020)
+│   ├── adr/                        # Architecture Decision Records (0001-0022)
 │   ├── specs/                      # PRD & Technical Specifications
 │   ├── guides/                     # Setup & deployment guides
 │   ├── reports/                    # Quality verification & audit reports
 │   └── brief/                      # Project Executive Brief
 │
+├── scripts/                        # Runtime guard & automation scripts
+│   └── ensure-bun.ts               # Strict Bun v1.4+ runtime validator
+│
 ├── AGENTS.md                       # Panduan baku AI Agent & SDLC
 ├── ARCHITECTURE.md                 # Arsitektur sistem & aliran data
 ├── CONTEXT.md                      # Ubiquitous domain language
+├── bunfig.toml                     # Konfigurasi Bun runtime & package manager
 ├── package.json                    # Root workspace package.json
 └── README.md                       # Dokumentasi utama (file ini)
 ```
@@ -167,9 +171,17 @@ kurs-world/
 
 ## 🚀 Panduan Memulai (Getting Started)
 
-### Prasyarat:
-- [Bun](https://bun.sh) (v1.4 atau lebih baru)
-- Node.js v20+ (opsional, untuk toolchains eksternal)
+### Prasyarat Mutlak (Mandatory):
+- ⚡ **[Bun](https://bun.sh) (v1.4 atau lebih baru) — WAJIB**:
+  ```bash
+  # Instalasi Bun:
+  curl -fsSL https://bun.sh/install | bash
+
+  # Verifikasi versi Bun:
+  bun --version # Wajib >= 1.4.0
+  ```
+  > ⚠️ **Catatan Penting**: Repositori ini memiliki *preinstall guard* otomatis. Eksekusi menggunakan `node`, `npm`, `yarn`, atau `pnpm` akan langsung dihentikan dengan pesan error fatal.
+
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) (v3+)
 
 ### 1. Kloning Repositori

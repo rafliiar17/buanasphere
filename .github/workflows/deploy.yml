@@ -18,10 +18,13 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: ⚡ Setup Bun Runtime
+      - name: ⚡ Setup Bun Runtime (v1.4+)
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+
+      - name: 🔍 Verify Strict Bun Runtime (v1.4+)
+        run: bun ./scripts/ensure-bun.ts
 
       - name: 📦 Install Dependencies
         run: bun install --frozen-lockfile
@@ -50,7 +53,7 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: ⚡ Setup Bun Runtime
+      - name: ⚡ Setup Bun Runtime (v1.4+)
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
@@ -75,7 +78,7 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: ⚡ Setup Bun Runtime
+      - name: ⚡ Setup Bun Runtime (v1.4+)
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest

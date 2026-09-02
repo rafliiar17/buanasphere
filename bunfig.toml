@@ -1,0 +1,8 @@
+# Bun Runtime Configuration (Kurs World)
+[install]
+exact = true
+lockfile = true
+
+[test]
+preload = []
+coverageThreshold = 0.8

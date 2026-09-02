@@ -5,6 +5,7 @@ export interface Env {
   DB?: D1Database;
   KURS_CACHE?: KVNamespace;
   ENVIRONMENT?: string;
+  ADMIN_SECRET?: string;
 }
 
 export function getDb(env?: Env) {
