@@ -127,7 +127,7 @@
 
     currencyMap.forEach(meta => {
       const live = liveRates.find(r => r.targetCurrency === meta.code);
-      const base = BASE_RATES_IDR[meta.code] || { buy: 16220, sell: 16280, mid: 16250, change: 0.12 };
+      const base = BASE_RATES_IDR[meta.code] || { buy: 17730, sell: 17790, mid: 17765, change: 0.12 };
       
       const middleRate = live?.middleRate ?? base.mid;
       const buyRate = live?.buyRate ?? base.buy;

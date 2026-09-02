@@ -93,7 +93,7 @@ export const COUNTRY_CURRENCY_MAP: Array<{
 }> = COUNTRY_CURRENCY_LIST.map((entry) => {
   const regId = getRegionId(entry.region, entry.iso3);
   const regLabel = getRegionLabel(regId);
-  const baseRate = BASE_RATES_IDR[entry.currencyCode] || { buy: 16220, sell: 16280, mid: 16250, change: 0 };
+  const baseRate = BASE_RATES_IDR[entry.currencyCode] || { buy: 17730, sell: 17790, mid: 17765, change: 0 };
   
   return {
     iso3: entry.iso3,

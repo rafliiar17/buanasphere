@@ -114,7 +114,7 @@
 
   // Generator for smooth & realistic time-series points based on baseline & range
   function generateRealisticTimeSeries(currencyCode: string, range: TimeRange): { points: ChartPoint[]; summary: ChartSummary } {
-    const base = BASE_RATES_IDR[currencyCode.toUpperCase()] || { buy: 16220, sell: 16280, mid: 16250, change: 0.15 };
+    const base = BASE_RATES_IDR[currencyCode.toUpperCase()] || { buy: 17730, sell: 17790, mid: 17765, change: 0.15 };
     const baseRate = base.mid;
     const now = new Date();
     

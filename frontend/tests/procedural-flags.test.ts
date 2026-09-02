@@ -1,12 +1,16 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { 
   FLAG_PATTERNS, 
   getFlagPattern, 
   computeFeatureBounds,
   createProceduralFlagMaterial,
+  disposeProceduralFlagCache,
 } from '../src/lib/features/map/procedural-flags';
 
 describe('Procedural Flag Vexillological Engine Unit Tests (TDD)', () => {
+  beforeEach(() => {
+    disposeProceduralFlagCache();
+  });
   describe('Country Pattern Archetype Mapping', () => {
     it('maps France (FRA) to vertical-tricolor with Blue, White, Red', () => {
       const p = getFlagPattern('FRA');
@@ -74,6 +78,7 @@ describe('Procedural Flag Vexillological Engine Unit Tests (TDD)', () => {
 
   describe('Procedural WebGL ShaderMaterial Generation', () => {
     it('creates valid ShaderMaterial with calculated bounds for France', () => {
+      disposeProceduralFlagCache();
       const mockFranceFeature = {
         properties: { ISO_A3: 'FRA', NAME: 'France' },
         geometry: {
