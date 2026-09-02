@@ -73,17 +73,34 @@
   let liveRates = $state<RateItem[]>([]);
   let bankMatrix = $state<RateMatrixResponse | null>(null);
   let isMatrixLoading = $state(false);
+  let hoveredIso3 = $state<string | null>(null);
 
   // Quick Convert Mini State
   let convertAmount = $state<number>(100);
   let convertDirection = $state<'foreign_to_idr' | 'idr_to_foreign'>('foreign_to_idr');
 
   let currentTheme = $state<Theme>(getTheme());
-  let plotContainer = $state<HTMLDivElement | null>(null);
+  let globeContainer = $state<HTMLDivElement | null>(null);
+  let flatMapContainer = $state<HTMLDivElement | null>(null);
   let searchInputRef = $state<HTMLInputElement | null>(null);
   let searchContainerRef = $state<HTMLDivElement | null>(null);
+
+  let globeInstance: any = null;
   let plotlyModule: any = null;
+  let GlobeModule: any = null;
+  let geoJsonFeatures: any[] = [];
   let resizeObserver: ResizeObserver | null = null;
+
+  // Helper to extract ISO3 from geojson feature
+  function getFeatureIso3(feat: any): string {
+    if (!feat || !feat.properties) return '';
+    const p = feat.properties;
+    const code = p.ISO_A3 || p.ADM0_A3 || p.SOV_A3 || p.adm0_a3 || p.iso_a3 || '';
+    if (code === '-99' || !code) {
+      return p.ADM0_A3 || p.SOV_A3 || p.GU_A3 || p.BRK_A3 || '';
+    }
+    return code;
+  }
 
   // Derived country map records combining API live rates & fallback
   const mapData = $derived.by<MapCountryData[]>(() => {
@@ -140,7 +157,6 @@
         list = list.filter(d => d.regionId === activeRegion);
       }
     }
-    // Deduplicate currency codes for pills
     const seen = new Set<string>();
     return list.filter(d => {
       if (seen.has(d.currencyCode)) return false;
@@ -175,6 +191,81 @@
     }
   });
 
+  // Color generator for 3D Globe polygons
+  function getPolygonColor(feat: any): string {
+    const isDark = currentTheme === 'dark';
+    const iso3 = getFeatureIso3(feat);
+    const country = mapData.find(d => d.iso3 === iso3);
+    const isSelected = selectedCountryIso3 === iso3;
+    const isHovered = hoveredIso3 === iso3;
+
+    if (isSelected) {
+      return '#38bdf8'; // Bright sky blue glowing highlight
+    }
+    if (isHovered) {
+      return '#34d399'; // Bright emerald hover
+    }
+
+    if (!country) {
+      return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
+    }
+
+    if (activeMetric === 'rate') {
+      // Scale by middleRate (IDR)
+      const r = country.middleRate;
+      if (r > 20000) return isDark ? 'rgba(99, 102, 241, 0.75)' : 'rgba(79, 70, 229, 0.75)'; // Indigo
+      if (r > 14000) return isDark ? 'rgba(59, 130, 246, 0.75)' : 'rgba(37, 99, 235, 0.75)'; // Blue
+      if (r > 10000) return isDark ? 'rgba(6, 182, 212, 0.75)' : 'rgba(8, 145, 178, 0.75)'; // Cyan
+      if (r > 2000)  return isDark ? 'rgba(16, 185, 129, 0.75)' : 'rgba(5, 150, 105, 0.75)'; // Emerald
+      if (r > 500)   return isDark ? 'rgba(20, 184, 166, 0.7)' : 'rgba(13, 148, 136, 0.7)'; // Teal
+      return isDark ? 'rgba(15, 118, 110, 0.65)' : 'rgba(45, 212, 191, 0.65)';
+    } else {
+      // Scale by change24h (%)
+      const chg = country.change24h;
+      if (chg > 0.25) return isDark ? 'rgba(16, 185, 129, 0.85)' : 'rgba(5, 150, 105, 0.85)';
+      if (chg > 0.05) return isDark ? 'rgba(52, 211, 153, 0.75)' : 'rgba(16, 185, 129, 0.75)';
+      if (chg < -0.25) return isDark ? 'rgba(239, 68, 68, 0.85)' : 'rgba(220, 38, 38, 0.85)';
+      if (chg < -0.05) return isDark ? 'rgba(248, 113, 113, 0.75)' : 'rgba(239, 68, 68, 0.75)';
+      return isDark ? 'rgba(51, 65, 85, 0.65)' : 'rgba(203, 213, 225, 0.75)';
+    }
+  }
+
+  function getTooltipHtml(feat: any): string {
+    const isDark = currentTheme === 'dark';
+    const iso3 = getFeatureIso3(feat);
+    const country = mapData.find(d => d.iso3 === iso3);
+    const name = country?.countryName || feat.properties?.NAME || feat.properties?.ADMIN || iso3;
+    const flag = country?.flag || '🌐';
+    const code = country?.currencyCode || '';
+    const currName = country?.currencyName || '';
+    const midFormatted = country ? formatRupiah(country.middleRate) : '-';
+    const buyFormatted = country ? formatRupiah(country.buyRate) : '-';
+    const sellFormatted = country ? formatRupiah(country.sellRate) : '-';
+    const chgFormatted = country ? formatPercent(country.change24h) : '0.00%';
+    const chgColor = country && country.change24h >= 0 ? '#10b981' : '#ef4444';
+
+    return `
+      <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.94)' : 'rgba(255, 255, 255, 0.96)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-family: Inter, sans-serif; pointer-events: none; min-width: 200px;">
+        <div style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'}; margin-bottom: 2px;">
+          ${flag} ${name} ${code ? `<span style="font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; margin-left: 4px;">${code}</span>` : ''}
+        </div>
+        ${currName ? `<div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#475569'}; margin-bottom: 6px;">${currName}</div>` : ''}
+        <div style="font-size: 12px; font-weight: 700; color: #10b981; margin-bottom: 2px;">
+          Kurs Tengah: ${midFormatted}
+        </div>
+        <div style="font-size: 11px; color: ${isDark ? '#cbd5e1' : '#334155'}; margin-bottom: 2px;">
+          Beli: ${buyFormatted} | Jual: ${sellFormatted}
+        </div>
+        <div style="font-size: 11px; font-weight: 700; color: ${chgColor};">
+          24 Jam: ${chgFormatted}
+        </div>
+        <div style="font-size: 10px; color: #0284c7; margin-top: 4px; font-weight: 600;">
+          👉 Klik untuk detail & grafik
+        </div>
+      </div>
+    `;
+  }
+
   // Fetch bank matrix quotes for inspector
   async function loadBankMatrixForSelectedCurrency(code: string) {
     if (!code || code === 'IDR') {
@@ -191,29 +282,123 @@
     }
   }
 
-  // Load initial map data & Plotly
-  async function loadDataAndRenderMap() {
+  // Load GeoJSON and dependencies
+  async function loadDataAndInit() {
     isLoading = true;
     try {
-      const [rates, plotly] = await Promise.all([
+      const [rates, geoRes, globePkg, plotlyPkg] = await Promise.all([
         apiClient.getLiveRates('IDR'),
+        fetch('/data/world-countries.geojson').then(r => r.json()),
+        import('globe.gl'),
         import('plotly.js-dist-min'),
       ]);
+
       liveRates = rates;
-      plotlyModule = plotly.default || plotly;
+      geoJsonFeatures = geoRes?.features || [];
+      GlobeModule = globePkg.default || globePkg;
+      plotlyModule = plotlyPkg.default || plotlyPkg;
     } catch (err) {
-      console.error('Error loading map dependencies:', err);
+      console.error('Error loading 3D Globe dependencies:', err);
     } finally {
       isLoading = false;
       setTimeout(() => {
-        renderPlotlyMap();
+        if (projectionMode === 'globe') {
+          initGlobeGl();
+        } else {
+          initPlotlyFlat();
+        }
         loadBankMatrixForSelectedCurrency(selectedCurrencyCode);
-      }, 50);
+      }, 60);
     }
   }
 
-  function renderPlotlyMap() {
-    if (!plotContainer || !plotlyModule) return;
+  // Initialize True WebGL 3D Globe (Google Earth Style with OrbitControls)
+  function initGlobeGl() {
+    if (!globeContainer || !GlobeModule || geoJsonFeatures.length === 0) return;
+
+    // Purge previous instance if any
+    if (globeInstance) {
+      try {
+        if (globeContainer.firstChild) {
+          globeContainer.innerHTML = '';
+        }
+      } catch {}
+    }
+
+    const isDark = currentTheme === 'dark';
+    const width = globeContainer.clientWidth || window.innerWidth;
+    const height = globeContainer.clientHeight || window.innerHeight;
+
+    globeInstance = GlobeModule()(globeContainer)
+      .width(width)
+      .height(height)
+      .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
+      .showAtmosphere(true)
+      .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
+      .atmosphereAltitude(0.22)
+      .polygonsData(geoJsonFeatures)
+      .polygonGeoJsonGeometry((d: any) => d.geometry)
+      .polygonCapColor((d: any) => getPolygonColor(d))
+      .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
+      .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
+      .polygonAltitude((d: any) => {
+        const iso3 = getFeatureIso3(d);
+        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
+        return 0.008;
+      })
+      .polygonLabel((d: any) => getTooltipHtml(d))
+      .onPolygonHover((hoverD: any) => {
+        hoveredIso3 = hoverD ? getFeatureIso3(hoverD) : null;
+        if (globeInstance) {
+          globeInstance.polygonAltitude((d: any) => {
+            const iso3 = getFeatureIso3(d);
+            if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
+            return 0.008;
+          });
+          globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
+        }
+      })
+      .onPolygonClick((clickD: any) => {
+        if (!clickD) return;
+        const iso3 = getFeatureIso3(clickD);
+        const country = mapData.find(d => d.iso3 === iso3);
+        if (country) {
+          handleSelectFromSearch(country);
+        }
+      });
+
+    // Configure smooth Google Earth 3D camera controls
+    const controls = globeInstance.controls();
+    if (controls) {
+      controls.autoRotate = false;
+      controls.autoRotateSpeed = 0.5;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.minDistance = 105;
+      controls.maxDistance = 550;
+    }
+
+    // Default initial viewpoint (Centered near Indonesia / Asia-Pacific)
+    globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 800);
+  }
+
+  function updateGlobeVisuals() {
+    if (!globeInstance) return;
+    const isDark = currentTheme === 'dark';
+    globeInstance
+      .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
+      .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
+      .polygonCapColor((d: any) => getPolygonColor(d))
+      .polygonAltitude((d: any) => {
+        const iso3 = getFeatureIso3(d);
+        if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.05;
+        return 0.008;
+      });
+  }
+
+  // Initialize Flat 2D Map with Plotly
+  function initPlotlyFlat() {
+    if (!flatMapContainer || !plotlyModule) return;
 
     const isDark = currentTheme === 'dark';
     const dataList = mapData;
@@ -233,28 +418,26 @@
       changeColor: d.change24h >= 0 ? '#10b981' : '#ef4444',
     }));
 
-    // Color Scales
+    const isRateMetric = activeMetric === 'rate';
+    const regionObj = REGION_FILTERS.find(r => r.id === activeRegion) || REGION_FILTERS[0];
+
     const rateColorScale: Array<[number, string]> = [
-      [0.0, isDark ? '#042f2e' : '#ccfbf1'],   // teal
-      [0.15, isDark ? '#065f46' : '#99f6e4'],  // emerald
-      [0.35, isDark ? '#0d9488' : '#2dd4bf'],  // teal
-      [0.60, isDark ? '#06b6d4' : '#06b6d4'],  // cyan
-      [0.85, isDark ? '#3b82f6' : '#2563eb'],  // blue
-      [1.0, isDark ? '#6366f1' : '#4f46e5'],   // indigo
+      [0.0, isDark ? '#042f2e' : '#ccfbf1'],
+      [0.15, isDark ? '#065f46' : '#99f6e4'],
+      [0.35, isDark ? '#0d9488' : '#2dd4bf'],
+      [0.60, isDark ? '#06b6d4' : '#06b6d4'],
+      [0.85, isDark ? '#3b82f6' : '#2563eb'],
+      [1.0, isDark ? '#6366f1' : '#4f46e5'],
     ];
 
     const changeColorScale: Array<[number, string]> = [
-      [0.0, '#ef4444'],   // bright red (melemah)
-      [0.35, isDark ? '#991b1b' : '#f87171'],  // red
-      [0.48, isDark ? '#1e293b' : '#e2e8f0'],  // neutral
-      [0.52, isDark ? '#1e293b' : '#e2e8f0'],  // neutral
-      [0.65, isDark ? '#065f46' : '#34d399'],  // emerald
-      [1.0, '#10b981'],   // bright emerald (menguat)
+      [0.0, '#ef4444'],
+      [0.35, isDark ? '#991b1b' : '#f87171'],
+      [0.48, isDark ? '#1e293b' : '#e2e8f0'],
+      [0.52, isDark ? '#1e293b' : '#e2e8f0'],
+      [0.65, isDark ? '#065f46' : '#34d399'],
+      [1.0, '#10b981'],
     ];
-
-    const isGlobe = projectionMode === 'globe';
-    const isRateMetric = activeMetric === 'rate';
-    const regionObj = REGION_FILTERS.find(r => r.id === activeRegion) || REGION_FILTERS[0];
 
     const labelCurrency = t('common.currency');
     const labelMid = t('common.mid');
@@ -305,57 +488,31 @@
       },
     };
 
-    const geoConfig = isGlobe ? {
-      projection: {
-        type: 'orthographic' as const,
-        scale: regionObj.id === 'all' ? 1.0 : (regionObj.zoom ? Math.min(regionObj.zoom * 0.95, 3.2) : 1.2),
-        rotation: {
-          lon: regionObj.lon ?? 110,
-          lat: regionObj.lat ?? 10,
-          roll: 0,
-        },
-      },
-      showcoastlines: true,
-      coastlinecolor: isDark ? '#334155' : '#94a3b8',
-      coastlinewidth: 0.8,
-      showland: true,
-      landcolor: isDark ? '#111827' : '#f1f5f9',
-      showocean: true,
-      oceancolor: isDark ? '#0b0f19' : '#faf8f3',
-      showlakes: true,
-      lakecolor: isDark ? '#0b0f19' : '#faf8f3',
-      showcountries: true,
-      countrycolor: isDark ? '#1e293b' : '#cbd5e1',
-      countrywidth: 0.8,
-      showframe: false,
-      bgcolor: 'rgba(0,0,0,0)',
-    } : {
-      projection: {
-        type: 'natural earth' as const,
-        scale: regionObj.zoom,
-      },
-      center: {
-        lon: regionObj.lon,
-        lat: regionObj.lat,
-      },
-      showcoastlines: true,
-      coastlinecolor: isDark ? '#334155' : '#94a3b8',
-      coastlinewidth: 0.8,
-      showland: true,
-      landcolor: isDark ? '#111827' : '#f1f5f9',
-      showocean: true,
-      oceancolor: isDark ? '#0b0f19' : '#faf8f3',
-      showlakes: true,
-      lakecolor: isDark ? '#0b0f19' : '#faf8f3',
-      showcountries: true,
-      countrycolor: isDark ? '#1e293b' : '#cbd5e1',
-      countrywidth: 0.8,
-      showframe: false,
-      bgcolor: 'rgba(0,0,0,0)',
-    };
-
     const layout = {
-      geo: geoConfig,
+      geo: {
+        projection: {
+          type: 'natural earth' as const,
+          scale: regionObj.zoom,
+        },
+        center: {
+          lon: regionObj.lon,
+          lat: regionObj.lat,
+        },
+        showcoastlines: true,
+        coastlinecolor: isDark ? '#334155' : '#94a3b8',
+        coastlinewidth: 0.8,
+        showland: true,
+        landcolor: isDark ? '#111827' : '#f1f5f9',
+        showocean: true,
+        oceancolor: isDark ? '#0b0f19' : '#faf8f3',
+        showlakes: true,
+        lakecolor: isDark ? '#0b0f19' : '#faf8f3',
+        showcountries: true,
+        countrycolor: isDark ? '#1e293b' : '#cbd5e1',
+        countrywidth: 0.8,
+        showframe: false,
+        bgcolor: 'rgba(0,0,0,0)',
+      },
       paper_bgcolor: 'rgba(0,0,0,0)',
       plot_bgcolor: 'rgba(0,0,0,0)',
       margin: { t: 0, b: 0, l: 0, r: 0 },
@@ -372,10 +529,10 @@
       scrollZoom: true,
     };
 
-    plotlyModule.react(plotContainer, [trace], layout, config).then(() => {
-      if (plotContainer && (plotContainer as any).on) {
-        (plotContainer as any).removeAllListeners?.('plotly_click');
-        (plotContainer as any).on('plotly_click', (data: any) => {
+    plotlyModule.react(flatMapContainer, [trace], layout, config).then(() => {
+      if (flatMapContainer && (flatMapContainer as any).on) {
+        (flatMapContainer as any).removeAllListeners?.('plotly_click');
+        (flatMapContainer as any).on('plotly_click', (data: any) => {
           if (data && data.points && data.points.length > 0) {
             const point = data.points[0];
             const custom = point.customdata;
@@ -407,24 +564,46 @@
   function toggleProjection(mode: 'globe' | 'flat') {
     if (projectionMode === mode) return;
     projectionMode = mode;
-    renderPlotlyMap();
+    setTimeout(() => {
+      if (mode === 'globe') {
+        initGlobeGl();
+      } else {
+        initPlotlyFlat();
+      }
+    }, 50);
   }
 
   function toggleMetric(metric: MetricType) {
     if (activeMetric === metric) return;
     activeMetric = metric;
-    renderPlotlyMap();
+    if (projectionMode === 'globe') {
+      updateGlobeVisuals();
+    } else {
+      initPlotlyFlat();
+    }
   }
 
   function handleRegionSelect(regionId: RegionId) {
     activeRegion = regionId;
-    renderPlotlyMap();
+    const regionObj = REGION_FILTERS.find(r => r.id === regionId);
+    if (!regionObj) return;
+
+    if (projectionMode === 'globe' && globeInstance) {
+      const altitude = regionId === 'all' ? 2.2 : (regionObj.zoom ? Math.max(0.6, 2.5 / regionObj.zoom) : 1.5);
+      globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+    } else {
+      initPlotlyFlat();
+    }
   }
 
   function handleResetView() {
     activeRegion = 'all';
     searchQuery = '';
-    renderPlotlyMap();
+    if (projectionMode === 'globe' && globeInstance) {
+      globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 1000);
+    } else {
+      initPlotlyFlat();
+    }
   }
 
   function handleSelectFromSearch(item: MapCountryData) {
@@ -433,11 +612,17 @@
     searchQuery = item.countryName;
     isSearchDropdownOpen = false;
     isInspectorOpen = true;
-    
-    // If country belongs to a specific region, focus the map
-    if (item.regionId && item.regionId !== 'all') {
+
+    // Fly in 3D to country on globe
+    if (projectionMode === 'globe' && globeInstance) {
+      const regionObj = REGION_FILTERS.find(r => r.id === item.regionId);
+      const lat = regionObj?.lat ?? 10;
+      const lon = regionObj?.lon ?? 110;
+      globeInstance.pointOfView({ lat, lng: lon, altitude: 1.2 }, 1200);
+      updateGlobeVisuals();
+    } else if (item.regionId && item.regionId !== 'all') {
       activeRegion = item.regionId;
-      renderPlotlyMap();
+      initPlotlyFlat();
     }
 
     loadBankMatrixForSelectedCurrency(item.currencyCode);
@@ -481,7 +666,7 @@
   }
 
   onMount(() => {
-    loadDataAndRenderMap();
+    loadDataAndInit();
 
     const handleClickOutside = (e: MouseEvent) => {
       if (searchContainerRef && !searchContainerRef.contains(e.target as Node)) {
@@ -496,28 +681,24 @@
       }
     };
 
-    if (plotContainer) {
-      resizeObserver = new ResizeObserver(() => {
-        if (plotlyModule && plotContainer) {
-          plotlyModule.Plots?.resize(plotContainer);
-        }
-      });
-      resizeObserver.observe(plotContainer);
-    }
-
     const handleWindowResize = () => {
-      if (plotlyModule && plotContainer) {
-        plotlyModule.Plots?.resize(plotContainer);
+      if (projectionMode === 'globe' && globeInstance && globeContainer) {
+        globeInstance.width(globeContainer.clientWidth).height(globeContainer.clientHeight);
+      } else if (plotlyModule && flatMapContainer) {
+        plotlyModule.Plots?.resize(flatMapContainer);
       }
     };
+
     window.addEventListener('resize', handleWindowResize);
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('click', handleClickOutside);
 
     const unsubTheme = subscribeTheme((th) => {
       currentTheme = th;
-      if (plotContainer && plotlyModule) {
-        renderPlotlyMap();
+      if (projectionMode === 'globe') {
+        updateGlobeVisuals();
+      } else if (flatMapContainer && plotlyModule) {
+        initPlotlyFlat();
       }
     });
 
@@ -534,9 +715,14 @@
       resizeObserver.disconnect();
       resizeObserver = null;
     }
-    if (plotContainer && plotlyModule) {
+    if (flatMapContainer && plotlyModule) {
       try {
-        plotlyModule.purge(plotContainer);
+        plotlyModule.purge(flatMapContainer);
+      } catch {}
+    }
+    if (globeInstance) {
+      try {
+        globeInstance._destructor?.();
       } catch {}
     }
   });
@@ -548,12 +734,21 @@
   <!-- Full-Screen 100vh Map-First Terminal Container -->
   <div class={`relative w-full h-full min-h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)] ${className}`}>
 
-    <!-- 100% Full-Viewport Plotly Choropleth World Map Canvas -->
-    <div
-      bind:this={plotContainer}
-      class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-      style="z-index: 1;"
-    ></div>
+    <!-- 1. True WebGL 3D Google Earth-Style Globe Canvas (No polygon/viewport clipping!) -->
+    {#if projectionMode === 'globe'}
+      <div
+        bind:this={globeContainer}
+        class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+        style="z-index: 1;"
+      ></div>
+    {:else}
+      <!-- 2. Plotly 100% Full-Viewport 2D Flat Map Canvas -->
+      <div
+        bind:this={flatMapContainer}
+        class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+        style="z-index: 1;"
+      ></div>
+    {/if}
 
     <!-- ── Top-Left Floating Live Status Pill ──────────────────────────────── -->
     <div class="absolute top-4 left-4 z-10 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[var(--bg-raised)]/85 border border-[var(--bg-rule)] text-xs font-semibold text-[var(--ink)] backdrop-blur-xl shadow-xl">
@@ -563,7 +758,7 @@
           <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
         </span>
         <span class="font-bold tracking-tight">Kurs.World</span>
-        <span class="text-[10px] text-[var(--ink-4)] font-normal">• {projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'} (195+ Valas)</span>
+        <span class="text-[10px] text-[var(--ink-4)] font-normal">• {projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} (195+ Valas)</span>
       </div>
     </div>
 
@@ -687,7 +882,7 @@
             {/if}
           </div>
 
-          <!-- 2. Projection Switcher (Globe 3D vs Peta Datar) -->
+          <!-- 2. Projection Switcher (Globe 3D WebGL vs Peta Datar) -->
           <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
             <button
               type="button"
@@ -762,7 +957,7 @@
             {/each}
           </div>
 
-          <!-- 4. Quick Mini Converter Box -->
+          <!-- 5. Quick Mini Converter Box -->
           <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2">
             <div class="flex items-center justify-between text-[11px] text-[var(--ink-4)] font-semibold">
               <span class="flex items-center gap-1 text-[var(--ink)]">

@@ -12,9 +12,11 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "globe.gl": "^2.46.2",
     "lucide-svelte": "^0.475.0",
     "plotly.js-dist-min": "^4.0.0",
-    "tailwind-merge": "^3.0.1"
+    "tailwind-merge": "^3.0.1",
+    "three": "0.160.0"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
