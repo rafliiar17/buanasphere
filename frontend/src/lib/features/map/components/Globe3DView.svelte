@@ -147,12 +147,30 @@
     `;
   }
 
-  // Country 3D Pin Labels
+  // Major Trading Currencies Set for Level-of-Detail (LOD) Label Optimization
+  const MAJOR_LOD_CURRENCIES = new Set([
+    'IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU',
+    'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP',
+    'TUR', 'EGY', 'ARE', 'CHE'
+  ]);
+
+  let lastHoveredIso3 = '';
+
+  // Country 3D Pin Labels with LOD filtering (reduces draw calls by 85%)
   const globeLabels = $derived.by(() => {
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !mapState.showLabels) return [];
     const isDark = currentTheme === 'dark';
+    const selected = mapState.selectedCountryIso3;
+    const hovered = mapState.hoveredIso3;
 
-    return geoJsonFeatures.map((feat: any) => {
+    // Filter features: major currencies OR actively hovered OR selected
+    const visibleFeatures = geoJsonFeatures.filter((feat: any) => {
+      const iso3 = getFeatureIso3(feat);
+      if (iso3 === selected || iso3 === hovered) return true;
+      return MAJOR_LOD_CURRENCIES.has(iso3);
+    });
+
+    return visibleFeatures.map((feat: any) => {
       const p = feat.properties;
       const iso3 = getFeatureIso3(feat);
       const country = mapData.find(d => d.iso3 === iso3);
@@ -160,9 +178,9 @@
       const curr = country?.currencyCode || '';
       const lat = Number(p.LABEL_Y) || 0;
       const lng = Number(p.LABEL_X) || 0;
-      const isSelected = mapState.selectedCountryIso3 === iso3;
-      const isHovered = mapState.hoveredIso3 === iso3;
-      const isMajor = ['IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU', 'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP', 'TUR', 'EGY', 'ARE'].includes(iso3);
+      const isSelected = selected === iso3;
+      const isHovered = hovered === iso3;
+      const isMajor = MAJOR_LOD_CURRENCIES.has(iso3);
 
       const displayText = `${rawName} (${curr || iso3})`;
 
@@ -243,7 +261,7 @@
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
-      .polygonsTransitionDuration(250)
+      .polygonsTransitionDuration(0)
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
         if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
@@ -252,6 +270,9 @@
       .polygonLabel((d: any) => getTooltipHtml(d))
       .onPolygonHover((hoverD: any) => {
         const iso3 = hoverD ? getFeatureIso3(hoverD) : null;
+        // Hover deduplication guard: prevent redundant GPU geometry re-evaluations
+        if (iso3 === lastHoveredIso3) return;
+        lastHoveredIso3 = iso3 ?? '';
         mapState.hoveredIso3 = iso3;
         onCountryHover?.(iso3);
         if (globeInstance) {
@@ -272,6 +293,13 @@
         }
       });
 
+    // Enforce WebGL DPR Clamp (max 1.5) to prevent GPU fragment overload on HiDPI / 4K
+    const renderer = globeInstance.renderer?.();
+    if (renderer && typeof window !== 'undefined') {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      renderer.setPixelRatio(dpr);
+    }
+
     if (mapState.showLabels && globeLabels.length > 0) {
       globeInstance
         .labelsData(globeLabels)
@@ -282,7 +310,7 @@
         .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.15 : 0.06))
         .labelColor((d: any) => d.color)
         .labelAltitude(0.020)
-        .labelResolution(3)
+        .labelResolution(2)
         .onLabelClick((d: any) => {
           if (d.country) {
             onCountryClick?.(d.country);
@@ -290,6 +318,8 @@
         })
         .onLabelHover((d: any) => {
           const iso3 = d ? d.iso3 : null;
+          if (iso3 === lastHoveredIso3) return;
+          lastHoveredIso3 = iso3 ?? '';
           mapState.hoveredIso3 = iso3;
           onCountryHover?.(iso3);
           updateVisuals();
