@@ -142,7 +142,7 @@ describe('ApiClient & Mock Fallback Unit Tests', () => {
       setMockFetch(() => Promise.reject(new Error('Connection error')));
 
       const client = new ApiClient();
-      const result = await client.convertCurrency('IDR', 'USD', 16_280_000, 'bca');
+      const result = await client.convertCurrency('IDR', 'USD', 17_790_000, 'bca');
 
       expect(result.from).toBe('IDR');
       expect(result.to).toBe('USD');
