@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import { Loader2 } from 'lucide-svelte';
   import type { MapStateStore } from '../mapState';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
@@ -37,6 +38,18 @@
   let GlobeModule: any = null;
   let resizeObserver: ResizeObserver | null = null;
   let isInitialized = $state(false);
+
+  // Holographic Lazy-Loading & Transition State (ADR 0032)
+  let isSwitchingMetric = $state(false);
+  let transitionLabel = $state('Mengalibrasi Tampilan Globe...');
+  let previousMetric = $state<string>('');
+
+  function getTransitionMessage(metric: string): string {
+    if (metric === 'flag') return '🎨 Memuat & Memetakan Tekstur Bendera 195+ Negara...';
+    if (metric === 'rate') return '🪙 Mengalibrasi Shader Spot Rate Rupiah...';
+    if (metric === 'change') return '📈 Mengalibrasi Indikator Performa 24 Jam...';
+    return '⚡ Memperbarui Tampilan Globe...';
+  }
 
   // ISO-3 to ISO-2 Fallback Mapping for FlagCDN
   const ISO3_TO_ISO2_MAP: Record<string, string> = {
@@ -381,11 +394,13 @@
   export function updateVisuals() {
     if (!globeInstance) return;
     const isDark = currentTheme === 'dark';
+    const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
+
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
       .polygonCapMaterial((d: any) => {
-        if (geoStore.activeAppId !== 'fx-rates' || mapState.activeMetric !== 'flag') return null;
+        if (!isFlag) return null;
         return createProceduralFlagMaterial(d, isDark);
       })
       .polygonCapColor((d: any) => getPolygonColor(d))
@@ -398,7 +413,7 @@
         }
         return 0.008;
       })
-      .polygonsData([...geoJsonFeatures])
+      .polygonsData(geoJsonFeatures.map(f => ({ ...f })))
       .labelsData(mapState.showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
       .labelColor((d: any) => d.color)
@@ -426,6 +441,7 @@
     const isDark = currentTheme === 'dark';
     const width = globeContainer.clientWidth || window.innerWidth;
     const height = globeContainer.clientHeight || window.innerHeight;
+    const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
 
     globeInstance = GlobeModule()(globeContainer)
       .width(width)
@@ -437,7 +453,7 @@
       .polygonsData(geoJsonFeatures)
       .polygonGeoJsonGeometry((d: any) => d.geometry)
       .polygonCapMaterial((d: any) => {
-        if (mapState.activeMetric !== 'flag') return null;
+        if (!isFlag) return null;
         return createProceduralFlagMaterial(d, isDark);
       })
       .polygonCapColor((d: any) => getPolygonColor(d))
@@ -537,7 +553,7 @@
     }
   }
 
-  // React to reactive state changes
+  // React to reactive state changes with non-blocking lazy-loading transition
   $effect(() => {
     if (!isInitialized || !globeInstance) return;
     // Track dependencies
@@ -546,11 +562,29 @@
     const _flightFilter = geoStore.flightCorridorFilter;
     const _passportFilter = geoStore.passportVisaFilter;
     const _theme = currentTheme;
-    const _metric = mapState.activeMetric;
+    const currentMetric = mapState.activeMetric;
     const _labels = mapState.showLabels;
     const _selected = mapState.selectedCountryIso3;
     const _hovered = mapState.hoveredIso3;
-    updateVisuals();
+
+    if (previousMetric && previousMetric !== currentMetric) {
+      isSwitchingMetric = true;
+      transitionLabel = getTransitionMessage(currentMetric);
+      previousMetric = currentMetric;
+
+      // Allow browser to render loading HUD first, then update WebGL materials
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          updateVisuals();
+          setTimeout(() => {
+            isSwitchingMetric = false;
+          }, 180);
+        }, 20);
+      });
+    } else {
+      previousMetric = currentMetric;
+      updateVisuals();
+    }
   });
 
   // React to region changes
@@ -604,8 +638,20 @@
   });
 </script>
 
-<div
-  bind:this={globeContainer}
-  class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-  style="z-index: 1;"
-></div>
+<div class="relative w-full h-full min-h-[500px] overflow-hidden select-none">
+  <div
+    bind:this={globeContainer}
+    class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+    style="z-index: 1;"
+  ></div>
+
+  <!-- Holographic Metric Transition / Lazy-Loading HUD -->
+  {#if isSwitchingMetric}
+    <div
+      class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-slate-900/90 border border-cyan-500/40 text-cyan-300 text-xs font-semibold backdrop-blur-xl shadow-2xl shadow-cyan-500/10 animate-in fade-in zoom-in-95 duration-200"
+    >
+      <Loader2 class="w-4 h-4 animate-spin text-cyan-400" />
+      <span>{transitionLabel}</span>
+    </div>
+  {/if}
+</div>
