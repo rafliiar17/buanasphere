@@ -20,11 +20,15 @@
   import CurrencyComparisonMatrix from '$lib/features/matrix/CurrencyComparisonMatrix.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
   import GlobalAppSplashScreen from '$lib/components/GlobalAppSplashScreen.svelte';
+  import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { apiClient } from '$lib/api/client';
   import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
 
   let currentLang = $state<SupportedLocale>(getLocale());
   let isAppInitialLoading = $state(true);
+
+  const activeApp = $derived(geoStore.activeApp);
   let activeView = $state<'map' | 'chart' | 'matrix' | 'converter' | 'cards'>('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
@@ -101,6 +105,10 @@
     }
   }
 </script>
+
+<svelte:head>
+  <title>{activeApp.name} — {activeApp.tagline} | globe.arafz.id</title>
+</svelte:head>
 
 <!-- Shell: 100vh Full Viewport Application (Map-First) -->
 <div class="h-screen w-screen overflow-hidden flex flex-col bg-[var(--bg)] text-[var(--ink)] select-none">

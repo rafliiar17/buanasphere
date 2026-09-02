@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { Globe, ShieldCheck, Zap, Server, Activity } from 'lucide-svelte';
   import { t } from '$lib/i18n';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
 
   interface Props {
     isReady: boolean;
@@ -12,6 +13,34 @@
 
   let activeStep = $state(1);
   let isMounted = $state(true);
+
+  const activeApp = $derived(geoStore.activeApp);
+
+  const brandParts = $derived.by(() => {
+    switch (activeApp.id) {
+      case 'world-time':
+        return { main: 'Time', sub: '.World' };
+      case 'remittance-flow':
+        return { main: 'Flow', sub: '.Corridors' };
+      case 'passport-power':
+        return { main: 'Passport', sub: '.World' };
+      default:
+        return { main: 'Kurs', sub: '.World' };
+    }
+  });
+
+  const step2Text = $derived.by(() => {
+    switch (activeApp.id) {
+      case 'world-time':
+        return 'Memuat Zona Waktu & Jam Digital 195+ Negara...';
+      case 'remittance-flow':
+        return 'Memuat Rute Koridor Remitansi 3D ke Jakarta...';
+      case 'passport-power':
+        return 'Memuat Indeks Kekuatan Paspor & Bebas Visa...';
+      default:
+        return t('splash.ratesLoading');
+    }
+  });
 
   onMount(() => {
     const step1Timer = setTimeout(() => { activeStep = 2; }, 350);
@@ -53,17 +82,17 @@
       <div class="flex flex-col items-center space-y-2">
         <div class="flex items-baseline gap-1">
           <span class="text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--ink)] font-sans">
-            Kurs
+            {brandParts.main}
           </span>
           <span class="text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--signal)] font-sans">
-            .World
+            {brandParts.sub}
           </span>
           <span class="ml-2 text-[10px] font-bold tracking-widest uppercase text-[var(--ink-4)] px-2 py-0.5 border border-[var(--bg-rule)] rounded-md">
             {t('common.beta')}
           </span>
         </div>
         <p class="text-xs sm:text-sm text-[var(--ink-3)] font-medium max-w-sm">
-          {t('splash.tagline')}
+          {activeApp.tagline}
         </p>
       </div>
 
@@ -104,14 +133,14 @@
           {/if}
         </div>
 
-        <!-- Step 2: 195+ World FX Rates -->
+        <!-- Step 2: Dynamic Micro-App Dataset Loading -->
         <div class="flex items-center gap-3 text-xs font-medium transition-all duration-300">
           {#if activeStep >= 2}
             <div class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center text-[10px] font-bold">✓</div>
-            <span class="text-emerald-400 font-semibold">{t('splash.ratesLoading')}</span>
+            <span class="text-emerald-400 font-semibold">{step2Text}</span>
           {:else}
             <div class="w-4 h-4 rounded-full bg-slate-800 text-slate-500 flex items-center justify-center text-[10px] animate-pulse">2</div>
-            <span class="text-[var(--ink-4)]">{t('splash.ratesLoading')}</span>
+            <span class="text-[var(--ink-4)]">{step2Text}</span>
           {/if}
         </div>
 

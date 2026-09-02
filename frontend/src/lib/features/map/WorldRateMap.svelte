@@ -19,6 +19,7 @@
   import MapControlsToolbar from './components/MapControlsToolbar.svelte';
   import CountryInspectorDrawer from './components/CountryInspectorDrawer.svelte';
   import GlobeEntranceLoader from './components/GlobeEntranceLoader.svelte';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
 
   interface Props {
     onSelectCurrency?: (currencyCode: string) => void;
@@ -26,6 +27,8 @@
   }
 
   let { onSelectCurrency, class: className = '' }: Props = $props();
+
+  const activeApp = $derived(geoStore.activeApp);
 
   // Reactive Map State Store with deep reactivity
   const mapState = $state(createMapState());
@@ -208,7 +211,7 @@
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
-          <span class="font-bold tracking-tight">Kurs.World</span>
+          <span class="font-bold tracking-tight">{activeApp.name}</span>
           <span class="text-[10px] text-[var(--ink-4)] font-normal">
             • {mapState.projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} 
             {#if mapState.activeMetric === 'flag'}
