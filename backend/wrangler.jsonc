@@ -18,9 +18,6 @@
       "id": "ecbd16282ee1400fb8913e7356c829b1"
     }
   ],
-  "triggers": {
-    "crons": ["*/15 * * * *"]
-  },
   "routes": [
     {
       "pattern": "api.kurs.arafz.id",

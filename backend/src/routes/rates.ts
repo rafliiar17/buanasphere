@@ -208,5 +208,31 @@ export const ratesRoutes = (env?: Env) => {
           tags: ['Rates'],
         },
       }
+    )
+    .post(
+      '/refresh',
+      async ({ set }) => {
+        try {
+          const result = await aggregator.ingestAll();
+          return {
+            success: true,
+            message: 'Rates successfully refreshed on-demand from provider',
+            data: result,
+          };
+        } catch (error) {
+          set.status = 500;
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to execute on-demand refresh',
+          };
+        }
+      },
+      {
+        detail: {
+          summary: 'Trigger on-demand rate ingestion (manual/webhook)',
+          description: 'Refreshes rates directly from upstream provider and updates KV and D1 database.',
+          tags: ['Rates'],
+        },
+      }
     );
 };
