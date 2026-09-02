@@ -12,12 +12,15 @@ import {
   type FlightCorridorFilterType,
   type PassportVisaFilterType,
   type NatureFilterType,
-  isCountryMatchingTimeFilter,
-  isCountryMatchingFlightFilter,
-  isCountryMatchingPassportFilter,
-  isCountryMatchingNatureFilter,
   isCountryMatchingAppFilter,
 } from './filterEngine';
+
+if (typeof (globalThis as any).$state === 'undefined') {
+  (globalThis as any).$state = (val: any) => val;
+}
+if (typeof (globalThis as any).$derived === 'undefined') {
+  (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+}
 
 // Auto-register all built-in apps
 geoRegistry.register(fxRatesApp);
@@ -33,7 +36,7 @@ export function createGeoStore() {
 
   let activeAppId = $state(initialAppId);
   let activeMetricId = $state('rate');
-  let selectedIso3 = $state('USA');
+  let selectedIso3 = $state('IDN');
   let hoveredIso3 = $state<string | null>(null);
   let projectionMode = $state<'globe' | 'flat'>('globe');
   let isLauncherOpen = $state(false);
@@ -53,13 +56,6 @@ export function createGeoStore() {
 
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);
-
-  const activeApp = $derived(geoRegistry.getApp(activeAppId) ?? fxRatesApp);
-  const currentAppData = $derived(appDataCache[activeAppId] ?? {});
-
-  const selectedCountry = $derived(
-    EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === selectedIso3) ?? EXTENDED_COUNTRIES_DATA[0]
-  );
 
   async function loadDataForApp(app: GeoAppPlugin) {
     if (appDataCache[app.id]) return;
@@ -128,8 +124,29 @@ export function createGeoStore() {
     isInspectorOpen = false;
   }
 
+  function openInspector(iso3?: string) {
+    if (iso3) selectCountry(iso3);
+    isInspectorOpen = true;
+  }
+
   function toggleLauncher() {
     isLauncherOpen = !isLauncherOpen;
+  }
+
+  function toggleLabels() {
+    showLabels = !showLabels;
+  }
+
+  function setShowLabels(val: boolean) {
+    showLabels = val;
+  }
+
+  function setRegion(region: string) {
+    activeRegion = region;
+  }
+
+  function setSearchQuery(q: string) {
+    searchQuery = q;
   }
 
   function setTimeFilter(filter: TimeFilterType) {
@@ -160,10 +177,10 @@ export function createGeoStore() {
 
   return {
     get activeAppId() { return activeAppId; },
-    get activeApp() { return activeApp; },
+    get activeApp() { return geoRegistry.getApp(activeAppId) ?? fxRatesApp; },
     get activeMetricId() { return activeMetricId; },
     get selectedIso3() { return selectedIso3; },
-    get selectedCountry() { return selectedCountry; },
+    get selectedCountry() { return EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === selectedIso3) ?? EXTENDED_COUNTRIES_DATA[0]; },
     get hoveredIso3() { return hoveredIso3; },
     set hoveredIso3(val) { hoveredIso3 = val; },
     get projectionMode() { return projectionMode; },
@@ -187,14 +204,19 @@ export function createGeoStore() {
     set natureFilter(val) { natureFilter = val; },
     get performanceMode() { return performanceMode; },
     set performanceMode(val) { performanceMode = val; },
-    get currentAppData() { return currentAppData; },
+    get currentAppData() { return appDataCache[activeAppId] ?? {}; },
     get isLoadingData() { return isLoadingData; },
     switchApp,
     setMetric,
     setProjection,
     selectCountry,
     closeInspector,
+    openInspector,
     toggleLauncher,
+    toggleLabels,
+    setShowLabels,
+    setRegion,
+    setSearchQuery,
     setTimeFilter,
     setFlightCorridorFilter,
     setPassportVisaFilter,

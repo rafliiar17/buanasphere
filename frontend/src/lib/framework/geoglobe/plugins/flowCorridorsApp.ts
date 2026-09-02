@@ -1,5 +1,6 @@
 import type { CountrySpatialMetadata, GeoAppPlugin, GeoArc, InspectorWidget } from '../types';
 import { generateGreatCircleArc } from '../geoMath';
+import { FLIGHT_CORRIDOR_REGIONS, type FlightCorridorFilterType } from '../filterEngine';
 
 export interface RemittanceCorridorData {
   annualVolumeMillionUsd: number;
@@ -8,21 +9,23 @@ export interface RemittanceCorridorData {
   isOriginToIndonesia: boolean;
 }
 
-const REMITTANCE_HUBS: Record<
+export const REMITTANCE_HUBS: Record<
   string,
-  { volumeM: number; workers: number; fee: number; color: string }
+  { volumeM: number; workers: number; fee: number; color: string; lat: number; lng: number }
 > = {
-  SAU: { volumeM: 3200, workers: 950000, fee: 3.2, color: '#10b981' },
-  MYS: { volumeM: 2800, workers: 1400000, fee: 2.5, color: '#06b6d4' },
-  TWN: { volumeM: 1900, workers: 320000, fee: 2.8, color: '#3b82f6' },
-  HKG: { volumeM: 1600, workers: 170000, fee: 2.1, color: '#8b5cf6' },
-  SGP: { volumeM: 1500, workers: 140000, fee: 1.8, color: '#ec4899' },
-  JPN: { volumeM: 1100, workers: 85000, fee: 3.5, color: '#f59e0b' },
-  USA: { volumeM: 950, workers: 65000, fee: 3.8, color: '#6366f1' },
-  KOR: { volumeM: 800, workers: 55000, fee: 3.1, color: '#14b8a6' },
-  ARE: { volumeM: 750, workers: 60000, fee: 3.3, color: '#eab308' },
-  AUS: { volumeM: 620, workers: 45000, fee: 2.9, color: '#f97316' },
+  SAU: { volumeM: 3200, workers: 950000, fee: 3.2, color: '#10b981', lat: 24.71, lng: 46.67 },
+  MYS: { volumeM: 2800, workers: 1400000, fee: 2.5, color: '#06b6d4', lat: 3.13, lng: 101.68 },
+  TWN: { volumeM: 1900, workers: 320000, fee: 2.8, color: '#3b82f6', lat: 25.03, lng: 121.56 },
+  HKG: { volumeM: 1600, workers: 170000, fee: 2.1, color: '#8b5cf6', lat: 22.31, lng: 114.16 },
+  SGP: { volumeM: 1500, workers: 140000, fee: 1.8, color: '#ec4899', lat: 1.35, lng: 103.81 },
+  JPN: { volumeM: 1100, workers: 85000, fee: 3.5, color: '#f59e0b', lat: 35.67, lng: 139.65 },
+  USA: { volumeM: 950, workers: 65000, fee: 3.8, color: '#6366f1', lat: 38.90, lng: -77.03 },
+  KOR: { volumeM: 800, workers: 55000, fee: 3.1, color: '#14b8a6', lat: 37.56, lng: 126.97 },
+  ARE: { volumeM: 750, workers: 60000, fee: 3.3, color: '#eab308', lat: 24.45, lng: 54.37 },
+  AUS: { volumeM: 620, workers: 45000, fee: 2.9, color: '#f97316', lat: -35.28, lng: 149.13 },
 };
+
+const REMITTANCE_HUBS_SET = new Set(Object.keys(REMITTANCE_HUBS));
 
 export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
   id: 'remittance-flow',
@@ -84,34 +87,101 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
     return dataMap;
   },
 
-  getArcData: (selectedCountry: CountrySpatialMetadata, allData: Record<string, RemittanceCorridorData>): GeoArc[] => {
+  getPolygonColor: (country: CountrySpatialMetadata, _data: any, _activeMetric: string, theme: 'dark' | 'light'): string => {
+    const isDark = theme === 'dark';
+    const iso3 = country.iso3;
+    if (iso3 === 'IDN') return 'rgba(56, 189, 248, 0.95)';
+    if (REMITTANCE_HUBS_SET.has(iso3)) return 'rgba(16, 185, 129, 0.85)';
+    return isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.6)';
+  },
+
+  getTooltipHtml: (country: CountrySpatialMetadata, _data: any, _activeMetric: string, theme: 'dark' | 'light'): string => {
+    const isDark = theme === 'dark';
+    const iso3 = country.iso3;
+    const name = country.countryName;
+    const isHub = REMITTANCE_HUBS_SET.has(iso3);
+    const hub = REMITTANCE_HUBS[iso3];
+
+    return `
+      <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 16px;">${country.flagEmoji}</span>
+            <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 700; color: ${isHub ? '#10b981' : '#64748b'};">
+            ${isHub ? '✈️ Koridor Aktif' : 'Non-Hub'}
+          </span>
+        </div>
+        <div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#64748b'}; margin-bottom: 4px;">
+          Rute: ${country.capital || name} ➔ Jakarta
+        </div>
+        ${isHub ? `
+          <div style="font-size: 11px; color: #10b981; font-weight: 700; margin-bottom: 2px;">
+            Volume: $${hub.volumeM} Juta USD / Thn
+          </div>
+        ` : ''}
+        <div style="font-size: 10px; color: #38bdf8; font-weight: 600;">
+          👉 Klik untuk rincian arus remitansi 3D
+        </div>
+      </div>
+    `;
+  },
+
+  getPinLabel: (country: CountrySpatialMetadata): { text: string; shortText: string } => {
+    const isHub = REMITTANCE_HUBS_SET.has(country.iso3);
+    return {
+      text: isHub ? `✈️ ${country.countryName}` : country.countryName,
+      shortText: country.iso3,
+    };
+  },
+
+  getArcData: (selectedCountry: CountrySpatialMetadata, _allData: Record<string, RemittanceCorridorData>): GeoArc[] => {
     const destination = {
       lat: selectedCountry.lat,
       lng: selectedCountry.lng,
-      label: `${selectedCountry.capital} (${selectedCountry.countryName})`,
+      label: selectedCountry.countryName,
     };
     const arcs: GeoArc[] = [];
-
     for (const [iso3, hub] of Object.entries(REMITTANCE_HUBS)) {
       if (iso3 === selectedCountry.iso3) continue;
-      const origin = { lat: 0, lng: 0 };
-      if (iso3 === 'SAU') { origin.lat = 24.71; origin.lng = 46.67; }
-      else if (iso3 === 'MYS') { origin.lat = 3.13; origin.lng = 101.68; }
-      else if (iso3 === 'TWN') { origin.lat = 25.03; origin.lng = 121.56; }
-      else if (iso3 === 'HKG') { origin.lat = 22.31; origin.lng = 114.16; }
-      else if (iso3 === 'SGP') { origin.lat = 1.35; origin.lng = 103.81; }
-      else if (iso3 === 'JPN') { origin.lat = 35.67; origin.lng = 139.65; }
-      else if (iso3 === 'USA') { origin.lat = 38.90; origin.lng = -77.03; }
-      else if (iso3 === 'KOR') { origin.lat = 37.56; origin.lng = 126.97; }
-      else if (iso3 === 'ARE') { origin.lat = 24.45; origin.lng = 54.37; }
-      else if (iso3 === 'AUS') { origin.lat = -35.28; origin.lng = 149.13; }
-
       const arc = generateGreatCircleArc(
-        { lat: origin.lat, lng: origin.lng, label: iso3 },
+        { lat: hub.lat, lng: hub.lng, label: iso3 },
         destination,
         {
           color: [hub.color, '#10b981'],
-          altitude: 0.3 + (hub.volumeM / 3200) * 0.25,
+          altitude: 0.25 + (hub.volumeM / 3200) * 0.20,
+          stroke: 1.5 + (hub.volumeM / 3200) * 1.5,
+          dashLength: 0.4,
+          dashGap: 0.2,
+          dashAnimateTime: 2500,
+          label: `${iso3} ➔ ${selectedCountry.countryName} ($${hub.volumeM}M USD)`,
+        }
+      );
+      arcs.push(arc);
+    }
+    return arcs;
+  },
+
+  getArcs: (_data: any, activeFilter: string = 'all'): GeoArc[] => {
+    const destination = {
+      lat: -6.2,
+      lng: 106.81,
+      label: 'Jakarta (Indonesia)',
+    };
+    const arcs: GeoArc[] = [];
+    const validIsoList = FLIGHT_CORRIDOR_REGIONS[activeFilter as FlightCorridorFilterType] || FLIGHT_CORRIDOR_REGIONS.all;
+
+    for (const [iso3, hub] of Object.entries(REMITTANCE_HUBS)) {
+      if (iso3 === 'IDN') continue;
+      if (!validIsoList.includes(iso3)) continue;
+
+      const arc = generateGreatCircleArc(
+        { lat: hub.lat, lng: hub.lng, label: iso3 },
+        destination,
+        {
+          color: [hub.color, '#10b981'],
+          altitude: 0.25 + (hub.volumeM / 3200) * 0.20,
           stroke: 1.5 + (hub.volumeM / 3200) * 1.5,
           dashLength: 0.4,
           dashGap: 0.2,
@@ -125,13 +195,13 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
     return arcs;
   },
 
-  renderInspector: (country: CountrySpatialMetadata, data: RemittanceCorridorData): InspectorWidget => {
+  renderInspector: (country: CountrySpatialMetadata, data: RemittanceCorridorData | undefined): InspectorWidget => {
     const isHub = data?.isOriginToIndonesia ?? false;
 
     return {
       title: `${country.flagEmoji} ${country.countryName}`,
       type: 'corridors',
-      primaryValue: isHub ? `$${data.annualVolumeMillionUsd} Juta USD/Tahun` : 'Koridor Sekunder',
+      primaryValue: isHub ? `$${data?.annualVolumeMillionUsd} Juta USD/Tahun` : 'Koridor Sekunder',
       subtitle: isHub ? `Rute Remitansi Utama ➔ Jakarta, Indonesia` : `Estimasi Pengiriman Dana Non-Utama`,
       badge: {
         text: isHub ? '✈️ Koridor Aktif 3D' : 'Non-Koridor',
@@ -139,9 +209,9 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
       },
       statsGrid: isHub
         ? [
-            { label: 'Volume Remitansi', value: `$${data.annualVolumeMillionUsd} Juta USD` },
-            { label: 'Estimasi Pekerja Migran', value: `${data.migrantWorkersCount.toLocaleString()} Jiwa` },
-            { label: 'Rata-rata Biaya Transfer', value: `${data.averageTransferFeePercent}%` },
+            { label: 'Volume Remitansi', value: `$${data?.annualVolumeMillionUsd} Juta USD` },
+            { label: 'Estimasi Pekerja Migran', value: `${data?.migrantWorkersCount.toLocaleString()} Jiwa` },
+            { label: 'Rata-rata Biaya Transfer', value: `${data?.averageTransferFeePercent}%` },
             { label: 'Tujuan Transfer', value: 'Indonesia (IDR)' },
           ]
         : [

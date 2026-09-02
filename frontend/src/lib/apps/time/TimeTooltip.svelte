@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { CountrySpatialMetadata } from '$lib/framework/geoglobe/types';
-  import { calculateLocalTime, isDaylight, formatUtcOffset } from '$lib/framework/geoglobe/geoMath';
-  import { Clock, Sun, Moon, Building2 } from 'lucide-svelte';
+  import { calculateLocalTime, getDiurnalPhase, formatUtcOffset } from '$lib/framework/geoglobe/geoMath';
+  import { Clock, Building2 } from 'lucide-svelte';
 
   interface Props {
     country: CountrySpatialMetadata;
@@ -11,12 +11,12 @@
 
   const now = new Date();
   const localTime = $derived(calculateLocalTime(now, country.utcOffset));
-  const isDay = $derived(isDaylight(localTime.hours));
+  const phase = $derived(getDiurnalPhase(localTime.hours, localTime.minutes));
   const isWorking = $derived(localTime.hours >= 9 && localTime.hours < 17);
   const diffWib = $derived(country.utcOffset - 7);
 
   const diffStr = $derived.by(() => {
-    if (diffWib === 0) return 'Sama dengan WIB (Jakarta)';
+    if (diffWib === 0) return 'Waktu Acuan Lokal (WIB Jakarta)';
     if (diffWib > 0) return `+${diffWib} Jam lebih cepat dari Jakarta`;
     return `${Math.abs(diffWib)} Jam lebih lambat dari Jakarta`;
   });
@@ -49,16 +49,14 @@
       </span>
     </div>
 
-    <!-- Daylight Status & Office Hours -->
+    <!-- 8-Phase Diurnal Status & Office Hours -->
     <div class="grid grid-cols-2 gap-1.5 pt-0.5">
-      <div class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-semibold border {isDay ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30'}">
-        {#if isDay}
-          <Sun class="w-3 h-3 text-amber-400" />
-          <span>Siang Hari</span>
-        {:else}
-          <Moon class="w-3 h-3 text-indigo-400" />
-          <span>Malam Hari</span>
-        {/if}
+      <div 
+        class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-bold text-white shadow-sm"
+        style="background: {phase.colorRgba};"
+      >
+        <span>{phase.emoji}</span>
+        <span>{phase.label}</span>
       </div>
 
       <div class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-[10px] font-semibold border {isWorking ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' : 'bg-slate-800/80 text-slate-400 border-slate-700'}">

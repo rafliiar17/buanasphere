@@ -1,5 +1,5 @@
 /**
- * Kurs World — GeoGlobe Spatial Core Types & Framework Interfaces.
+ * Kurs World — GeoGlobe Spatial Core Types & Framework Interfaces (ADR 0035).
  */
 
 export interface CountrySpatialMetadata {
@@ -78,5 +78,11 @@ export interface GeoAppPlugin<TData = any> {
   dataLoader: (countries: CountrySpatialMetadata[]) => Promise<Record<string, TData>>;
   getArcData?: (selectedCountry: CountrySpatialMetadata, allData: Record<string, TData>) => GeoArc[];
   getRingData?: (selectedCountry: CountrySpatialMetadata, allData: Record<string, TData>) => GeoRing[];
-  renderInspector?: (country: CountrySpatialMetadata, data: TData, allData: Record<string, TData>) => InspectorWidget;
+  getPolygonColor?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
+  getTooltipHtml?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
+  getPinLabel?: (country: CountrySpatialMetadata, data: TData, activeMetric: string) => { text: string; shortText?: string; size?: number; color?: string };
+  getArcs?: (data: Record<string, TData>, activeFilter: string) => GeoArc[];
+  renderInspector?: (country: CountrySpatialMetadata, data: TData, allData?: Record<string, TData>) => InspectorWidget;
+  ControlsComponent?: any;
+  BottomDockComponent?: any;
 }

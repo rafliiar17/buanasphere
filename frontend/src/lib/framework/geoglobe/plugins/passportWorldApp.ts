@@ -7,7 +7,10 @@ export interface PassportData {
   visaRequirementForIndonesian: 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required';
 }
 
-const PASSPORT_SCORES: Record<string, { visaFree: number; rank: number; indoRequirement: 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required' }> = {
+export const PASSPORT_SCORES: Record<
+  string,
+  { visaFree: number; rank: number; indoRequirement: 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required' }
+> = {
   SGP: { visaFree: 195, rank: 1, indoRequirement: 'Visa Free' },
   JPN: { visaFree: 194, rank: 2, indoRequirement: 'Visa Free' },
   DEU: { visaFree: 193, rank: 3, indoRequirement: 'Visa Required' },
@@ -87,7 +90,50 @@ export const passportWorldApp: GeoAppPlugin<PassportData> = {
     return dataMap;
   },
 
-  renderInspector: (country: CountrySpatialMetadata, data: PassportData): InspectorWidget => {
+  getPolygonColor: (country: CountrySpatialMetadata, data: any, _activeMetric: string, _theme: 'dark' | 'light'): string => {
+    const pScore = data?.visaFreeCount ?? PASSPORT_SCORES[country.iso3]?.visaFree ?? 75;
+    if (pScore >= 180) return 'rgba(16, 185, 129, 0.85)';
+    if (pScore >= 120) return 'rgba(6, 182, 212, 0.80)';
+    if (pScore >= 70) return 'rgba(245, 158, 11, 0.80)';
+    return 'rgba(244, 63, 94, 0.80)';
+  },
+
+  getTooltipHtml: (country: CountrySpatialMetadata, data: any, _activeMetric: string, theme: 'dark' | 'light'): string => {
+    const isDark = theme === 'dark';
+    const name = country.countryName;
+    const pScore = data?.visaFreeCount ?? PASSPORT_SCORES[country.iso3]?.visaFree ?? 75;
+    const rank = data?.globalRank ?? PASSPORT_SCORES[country.iso3]?.rank ?? 70;
+    const req = data?.visaRequirementForIndonesian ?? PASSPORT_SCORES[country.iso3]?.indoRequirement ?? 'Visa Required';
+    const reqColor = req === 'Visa Free' ? '#10b981' : (req === 'Visa on Arrival' || req === 'eVisa' ? '#f59e0b' : '#f43f5e');
+
+    return `
+      <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 16px;">${country.flagEmoji}</span>
+            <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 700; color: #10b981; font-family: monospace;">Rank #${rank}</span>
+        </div>
+        <div style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'}; margin-bottom: 4px;">
+          Akses Bebas: ${pScore} Destinasi
+        </div>
+        <div style="font-size: 11px; font-weight: 700; color: ${reqColor};">
+          Bagi WNI: ${req}
+        </div>
+      </div>
+    `;
+  },
+
+  getPinLabel: (country: CountrySpatialMetadata, data: any): { text: string; shortText: string } => {
+    const pScore = data?.visaFreeCount ?? PASSPORT_SCORES[country.iso3]?.visaFree ?? 75;
+    return {
+      text: `${country.countryName} (${pScore} Destinasi)`,
+      shortText: `${pScore}`,
+    };
+  },
+
+  renderInspector: (country: CountrySpatialMetadata, data: PassportData | undefined): InspectorWidget => {
     return {
       title: `${country.flagEmoji} ${country.countryName}`,
       type: 'passport',
