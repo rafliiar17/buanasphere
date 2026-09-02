@@ -1,19 +1,9 @@
-// Runtime polyfill for Svelte 5 Runes in test environments (e.g. Bun test)
-if (typeof (globalThis as any).$state === 'undefined') {
-  (globalThis as any).$state = <T>(v: T): T => v;
-}
-if (typeof (globalThis as any).$derived === 'undefined') {
-  const derivedFn: any = <T>(v: T): T => v;
-  derivedFn.by = <T>(fn: () => T): T => fn();
-  (globalThis as any).$derived = derivedFn;
-}
-
 import { describe, it, expect } from 'bun:test';
 import { 
   createMapState, 
   REGION_FILTERS, 
   METRIC_OPTIONS 
-} from '../src/lib/features/map/mapState.svelte';
+} from '../src/lib/features/map/mapState';
 import { COUNTRY_CURRENCY_MAP } from '../src/lib/features/map/map-constants';
 
 describe('Modular Map Architecture & State Store Unit Tests (SDLC)', () => {

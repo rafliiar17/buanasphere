@@ -11,7 +11,7 @@
     type RegionId, 
     COUNTRY_CURRENCY_MAP 
   } from './map-constants';
-  import { createMapState } from './mapState.svelte';
+  import { createMapState } from './mapState';
 
   // Sub-components decomposition (ADR 0017)
   import Globe3DView from './components/Globe3DView.svelte';
@@ -27,8 +27,8 @@
 
   let { onSelectCurrency, class: className = '' }: Props = $props();
 
-  // Reactive Map State Store
-  const mapState = createMapState();
+  // Reactive Map State Store with deep reactivity
+  const mapState = $state(createMapState());
 
   let liveRates = $state<RateItem[]>([]);
   let geoJsonFeatures = $state<any[]>([]);

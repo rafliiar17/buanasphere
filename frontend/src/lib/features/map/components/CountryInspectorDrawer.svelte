@@ -16,7 +16,7 @@
   import { t, formatDateTimeLocale, getLocalizedCountryName, getLocalizedCurrencyName, getLocalizedRegion } from '$lib/i18n';
   import { formatRupiah, formatPercent, formatCurrency } from '$lib/formatters/currency';
   import type { MapCountryData } from '../map-constants';
-  import type { MapStateStore } from '../mapState.svelte';
+  import type { MapStateStore } from '../mapState';
   import type { RateMatrixResponse } from '$lib/api/types';
   import GoogleRateChart from '../../chart/GoogleRateChart.svelte';
 

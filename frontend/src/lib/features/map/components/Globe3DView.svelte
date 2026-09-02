@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import type { MapStateStore } from '../mapState.svelte';
+  import type { MapStateStore } from '../mapState';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
   import { getCountryFlagColor } from '../country-flag-colors';

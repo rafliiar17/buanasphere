@@ -1,6 +1,6 @@
 /**
- * Kurs World — World Map State Management (Svelte 5 Runes)
- * Reactive state store, control actions, and domain constants for 3D Globe and 2D Flat Choropleth Maps.
+ * Kurs World — World Map State Management
+ * Standard TypeScript class and domain constants for 3D Globe and 2D Flat Choropleth Maps.
  */
 
 import {
@@ -48,24 +48,24 @@ export interface MapStateConfig {
 }
 
 /**
- * Reactive Map State Class (Svelte 5 Runes)
+ * Standard Map State Class
  */
 export class MapState {
-  projectionMode = $state<'globe' | 'flat'>('globe');
-  activeMetric = $state<MetricType>('rate');
-  activeRegion = $state<string>('all');
-  selectedCurrencyCode = $state<string>('USD');
-  selectedCountryIso3 = $state<string>('USA');
-  hoveredIso3 = $state<string | null>(null);
-  searchQuery = $state<string>('');
-  isSearchDropdownOpen = $state<boolean>(false);
-  isInspectorOpen = $state<boolean>(false);
-  showLabels = $state<boolean>(true);
-  convertAmount = $state<number>(100);
-  convertDirection = $state<'foreign_to_idr' | 'idr_to_foreign'>('foreign_to_idr');
-  isControlsCollapsed = $state<boolean>(false);
-  isRegionDropdownOpen = $state<boolean>(false);
-  highlightedIndex = $state<number>(0);
+  projectionMode: 'globe' | 'flat' = 'globe';
+  activeMetric: MetricType = 'rate';
+  activeRegion: string = 'all';
+  selectedCurrencyCode: string = 'USD';
+  selectedCountryIso3: string = 'USA';
+  hoveredIso3: string | null = null;
+  searchQuery: string = '';
+  isSearchDropdownOpen: boolean = false;
+  isInspectorOpen: boolean = false;
+  showLabels: boolean = true;
+  convertAmount: number = 100;
+  convertDirection: 'foreign_to_idr' | 'idr_to_foreign' = 'foreign_to_idr';
+  isControlsCollapsed: boolean = false;
+  isRegionDropdownOpen: boolean = false;
+  highlightedIndex: number = 0;
 
   constructor(initial?: Partial<MapStateConfig>) {
     if (initial) {
@@ -203,7 +203,7 @@ export class MapState {
 export type MapStateStore = MapState;
 
 /**
- * Factory function to instantiate a reactive MapState
+ * Factory function to instantiate a MapState
  */
 export function createMapState(initial?: Partial<MapStateConfig>): MapState {
   return new MapState(initial);

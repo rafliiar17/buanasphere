@@ -24,7 +24,7 @@
     type RegionId, 
     REGION_FILTERS 
   } from '../map-constants';
-  import type { MapStateStore } from '../mapState.svelte';
+  import type { MapStateStore } from '../mapState';
 
   interface Props {
     mapState: MapStateStore;

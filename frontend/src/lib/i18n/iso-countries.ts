@@ -1,5 +1,5 @@
 import type { SupportedLocale } from './types';
-import { localeState } from './state.svelte';
+import { localeState } from './state';
 
 export const ISO3_TO_ISO2: Record<string, string> = {
   // Asia
