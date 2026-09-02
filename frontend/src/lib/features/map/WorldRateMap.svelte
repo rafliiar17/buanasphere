@@ -335,8 +335,8 @@
         <div style="font-size: 11px; font-weight: 700; color: ${chgColor};">
           24 Jam: ${chgFormatted}
         </div>
-        <div style="font-size: 10px; color: #0284c7; margin-top: 4px; font-weight: 600;">
-          👉 Klik untuk detail & grafik
+        <div style="font-size: 10px; color: #38bdf8; margin-top: 4px; font-weight: 600;">
+          👉 Klik untuk pilih • Klik 2x untuk split view
         </div>
       </div>
     `;
@@ -449,7 +449,7 @@
         const iso3 = getFeatureIso3(clickD);
         const country = mapData.find(d => d.iso3 === iso3);
         if (country) {
-          handleSelectFromSearch(country);
+          handleCountryClick(country);
         }
       });
 
@@ -467,7 +467,7 @@
         .labelResolution(2)
         .onLabelClick((d: any) => {
           if (d.country) {
-            handleSelectFromSearch(d.country);
+            handleCountryClick(d.country);
           }
         })
         .onLabelHover((d: any) => {
@@ -669,11 +669,10 @@
             const point = data.points[0];
             const custom = point.customdata;
             if (custom) {
-              selectedCurrencyCode = custom.code;
-              selectedCountryIso3 = custom.iso3;
-              isInspectorOpen = true;
-              loadBankMatrixForSelectedCurrency(custom.code);
-              onSelectCurrency?.(custom.code);
+              const country = mapData.find(d => d.iso3 === custom.iso3);
+              if (country) {
+                handleCountryClick(country);
+              }
             }
           }
         });
@@ -681,16 +680,79 @@
     });
   }
 
-  function handleOpenInspector(code: string, iso3: string) {
-    selectedCurrencyCode = code;
-    selectedCountryIso3 = iso3;
+  let lastClickTime = 0;
+  let lastClickedIso3 = '';
+
+  function handleCountryClick(country: MapCountryData, isExplicitInspect = false) {
+    const now = Date.now();
+    const isDoubleClick = (now - lastClickTime < 350) && (lastClickedIso3 === country.iso3);
+    lastClickTime = now;
+    lastClickedIso3 = country.iso3;
+
+    selectedCurrencyCode = country.currencyCode;
+    selectedCountryIso3 = country.iso3;
+    searchQuery = country.countryName;
+    isSearchDropdownOpen = false;
+
+    // Fly in 3D to country on globe
+    if (projectionMode === 'globe' && globeInstance) {
+      const regionObj = REGION_FILTERS.find(r => r.id === country.regionId);
+      const lat = regionObj?.lat ?? 10;
+      const lon = regionObj?.lon ?? 110;
+      globeInstance.pointOfView({ lat, lng: lon, altitude: 1.3 }, 1000);
+      updateGlobeVisuals();
+    } else if (country.regionId && country.regionId !== 'all') {
+      activeRegion = country.regionId;
+      initPlotlyFlat();
+    }
+
+    loadBankMatrixForSelectedCurrency(country.currencyCode);
+    onSelectCurrency?.(country.currencyCode);
+
+    // If double click, explicit inspect button, or inspector was already open -> open docked inspector split view
+    if (isDoubleClick || isExplicitInspect || isInspectorOpen) {
+      openInspector();
+    }
+  }
+
+  function openInspector() {
     isInspectorOpen = true;
-    loadBankMatrixForSelectedCurrency(code);
-    onSelectCurrency?.(code);
+    triggerCanvasResize();
   }
 
   function handleCloseInspector() {
     isInspectorOpen = false;
+    triggerCanvasResize();
+  }
+
+  function triggerCanvasResize() {
+    requestAnimationFrame(() => {
+      if (projectionMode === 'globe' && globeInstance && globeContainer) {
+        globeInstance.width(globeContainer.clientWidth).height(globeContainer.clientHeight);
+      } else if (plotlyModule && flatMapContainer) {
+        plotlyModule.Plots?.resize(flatMapContainer);
+      }
+    });
+    setTimeout(() => {
+      if (projectionMode === 'globe' && globeInstance && globeContainer) {
+        globeInstance.width(globeContainer.clientWidth).height(globeContainer.clientHeight);
+      } else if (plotlyModule && flatMapContainer) {
+        plotlyModule.Plots?.resize(flatMapContainer);
+      }
+    }, 320);
+  }
+
+  function handleOpenInspector(code: string, iso3: string) {
+    selectedCurrencyCode = code;
+    selectedCountryIso3 = iso3;
+    const country = mapData.find(d => d.iso3 === iso3 || d.currencyCode === code);
+    if (country) {
+      handleCountryClick(country, true);
+    } else {
+      openInspector();
+      loadBankMatrixForSelectedCurrency(code);
+      onSelectCurrency?.(code);
+    }
   }
 
   function toggleProjection(mode: 'globe' | 'flat') {
@@ -739,26 +801,7 @@
   }
 
   function handleSelectFromSearch(item: MapCountryData) {
-    selectedCurrencyCode = item.currencyCode;
-    selectedCountryIso3 = item.iso3;
-    searchQuery = item.countryName;
-    isSearchDropdownOpen = false;
-    isInspectorOpen = true;
-
-    // Fly in 3D to country on globe
-    if (projectionMode === 'globe' && globeInstance) {
-      const regionObj = REGION_FILTERS.find(r => r.id === item.regionId);
-      const lat = regionObj?.lat ?? 10;
-      const lon = regionObj?.lon ?? 110;
-      globeInstance.pointOfView({ lat, lng: lon, altitude: 1.2 }, 1200);
-      updateGlobeVisuals();
-    } else if (item.regionId && item.regionId !== 'all') {
-      activeRegion = item.regionId;
-      initPlotlyFlat();
-    }
-
-    loadBankMatrixForSelectedCurrency(item.currencyCode);
-    onSelectCurrency?.(item.currencyCode);
+    handleCountryClick(item, true);
   }
 
   function handleSearchKeyDown(e: KeyboardEvent) {
@@ -863,360 +906,362 @@
 {#if isLoading}
   <MapSkeleton class={className} />
 {:else}
-  <!-- Full-Screen 100vh Map-First Terminal Container -->
-  <div class={`relative w-full h-full min-h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)] ${className}`}>
+  <!-- Split-Screen Side-by-Side Main Container (Kiri: Globe / Peta, Kanan: Docked Inspector Panel) -->
+  <div class={`relative w-full h-[calc(100vh-52px)] overflow-hidden bg-[var(--bg)] flex flex-col md:flex-row ${className}`}>
 
-    <!-- 1. True WebGL 3D Google Earth-Style Globe Canvas (No polygon/viewport clipping!) -->
-    {#if projectionMode === 'globe'}
-      <div
-        bind:this={globeContainer}
-        class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-        style="z-index: 1;"
-      ></div>
-    {:else}
-      <!-- 2. Plotly 100% Full-Viewport 2D Flat Map Canvas -->
-      <div
-        bind:this={flatMapContainer}
-        class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-        style="z-index: 1;"
-      ></div>
-    {/if}
+    <!-- ── Left Column: Globe 3D / Flat Map Section (Always 100% visible & interactive, no blocking backdrop!) ── -->
+    <div class="flex-1 h-full min-w-0 relative overflow-hidden transition-all duration-300 ease-out">
+      
+      <!-- 1. True WebGL 3D Google Earth-Style Globe Canvas -->
+      {#if projectionMode === 'globe'}
+        <div
+          bind:this={globeContainer}
+          class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+          style="z-index: 1;"
+        ></div>
+      {:else}
+        <!-- 2. Plotly 100% Full-Viewport 2D Flat Map Canvas -->
+        <div
+          bind:this={flatMapContainer}
+          class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
+          style="z-index: 1;"
+        ></div>
+      {/if}
 
-    <!-- ── Top-Left Floating Live Status Pill ──────────────────────────────── -->
-    <div class="absolute top-4 left-4 z-10 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[var(--bg-raised)]/85 border border-[var(--bg-rule)] text-xs font-semibold text-[var(--ink)] backdrop-blur-xl shadow-xl">
-      <div class="flex items-center gap-2">
-        <span class="relative flex h-2.5 w-2.5">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-        </span>
-        <span class="font-bold tracking-tight">Kurs.World</span>
-        <span class="text-[10px] text-[var(--ink-4)] font-normal">
-          • {projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} 
-          {#if activeMetric === 'flag'}
-            • 🏁 Mode Bendera
-          {/if}
-        </span>
-      </div>
-    </div>
-
-    <!-- ── Top-Right Floating Controls Card ("Inputan di Kanan Atas") ─────── -->
-    <div
-      class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[390px] max-w-sm bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
-      style="color: var(--ink);"
-    >
-      <!-- Panel Header & Collapse Toggle -->
-      <div class="flex items-center justify-between pb-3 border-b border-[var(--bg-rule)]">
+      <!-- Top-Left Floating Live Status Pill -->
+      <div class="absolute top-4 left-4 z-10 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[var(--bg-raised)]/85 border border-[var(--bg-rule)] text-xs font-semibold text-[var(--ink)] backdrop-blur-xl shadow-xl">
         <div class="flex items-center gap-2">
-          <SlidersHorizontal class="w-4 h-4 text-sky-400" />
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">{t('map.countryInspector')}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <button
-            type="button"
-            onclick={handleResetView}
-            class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition text-[11px] font-semibold flex items-center gap-1 cursor-pointer"
-            title="Reset Zoom & Center"
-          >
-            <RotateCcw class="w-3.5 h-3.5" />
-          </button>
-          <button
-            type="button"
-            onclick={() => (isControlsCollapsed = !isControlsCollapsed)}
-            class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
-            aria-label="Toggle Panel"
-          >
-            {#if isControlsCollapsed}
-              <ChevronDown class="w-4 h-4" />
-            {:else}
-              <ChevronUp class="w-4 h-4" />
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="font-bold tracking-tight">Kurs.World</span>
+          <span class="text-[10px] text-[var(--ink-4)] font-normal">
+            • {projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} 
+            {#if activeMetric === 'flag'}
+              • 🏁 Mode Bendera
             {/if}
-          </button>
+          </span>
+          {#if isInspectorOpen}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30">
+              Split View ⇄
+            </span>
+          {/if}
         </div>
       </div>
 
-      {#if !isControlsCollapsed}
-        <div class="mt-3.5 space-y-3.5">
-          <!-- 1. Search Autocomplete Bar with Live Filtering -->
-          <div class="relative" bind:this={searchContainerRef}>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--ink-4)]">
-                <Search class="w-3.5 h-3.5" />
+      <!-- Top-Right Floating Controls Card ("Inputan di Kanan Atas") -->
+      <div
+        class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[390px] max-w-sm bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
+        style="color: var(--ink);"
+      >
+        <!-- Panel Header & Collapse Toggle -->
+        <div class="flex items-center justify-between pb-3 border-b border-[var(--bg-rule)]">
+          <div class="flex items-center gap-2">
+            <SlidersHorizontal class="w-4 h-4 text-sky-400" />
+            <span class="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">{t('map.countryInspector')}</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button
+              type="button"
+              onclick={handleResetView}
+              class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition text-[11px] font-semibold flex items-center gap-1 cursor-pointer"
+              title="Reset Zoom & Center"
+            >
+              <RotateCcw class="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onclick={() => (isControlsCollapsed = !isControlsCollapsed)}
+              class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
+              aria-label="Toggle Panel"
+            >
+              {#if isControlsCollapsed}
+                <ChevronDown class="w-4 h-4" />
+              {:else}
+                <ChevronUp class="w-4 h-4" />
+              {/if}
+            </button>
+          </div>
+        </div>
+
+        {#if !isControlsCollapsed}
+          <div class="mt-3.5 space-y-3.5">
+            <!-- 1. Search Autocomplete Bar with Live Filtering -->
+            <div class="relative" bind:this={searchContainerRef}>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--ink-4)]">
+                  <Search class="w-3.5 h-3.5" />
+                </div>
+                <input
+                  bind:this={searchInputRef}
+                  type="text"
+                  bind:value={searchQuery}
+                  oninput={(e) => {
+                    searchQuery = (e.target as HTMLInputElement).value;
+                    isSearchDropdownOpen = true;
+                    highlightedIndex = 0;
+                  }}
+                  onfocus={() => {
+                    isSearchDropdownOpen = true;
+                  }}
+                  onkeydown={handleSearchKeyDown}
+                  placeholder={t('map.searchPlaceholder')}
+                  class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-8 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner font-medium"
+                />
+                {#if searchQuery}
+                  <button
+                    type="button"
+                    onclick={() => { searchQuery = ''; searchInputRef?.focus(); }}
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--ink-4)] hover:text-[var(--ink)] cursor-pointer"
+                  >
+                    <X class="w-3.5 h-3.5" />
+                  </button>
+                {/if}
               </div>
-              <input
-                bind:this={searchInputRef}
-                type="text"
-                bind:value={searchQuery}
-                oninput={(e) => {
-                  searchQuery = (e.target as HTMLInputElement).value;
-                  isSearchDropdownOpen = true;
-                  highlightedIndex = 0;
-                }}
-                onfocus={() => {
-                  isSearchDropdownOpen = true;
-                }}
-                onkeydown={handleSearchKeyDown}
-                placeholder={t('map.searchPlaceholder')}
-                class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-8 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner font-medium"
-              />
-              {#if searchQuery}
+
+              <!-- Autocomplete Suggestions Dropdown -->
+              {#if isSearchDropdownOpen}
+                <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-64 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
+                  {#if searchResults.length > 0}
+                    <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)] flex items-center justify-between">
+                      <span>{searchQuery ? `${searchResults.length} Negara Ditemukan` : 'Rekomendasi Negara'}</span>
+                      <span class="text-[9px] text-sky-400 font-normal">Tekan Enter ↵</span>
+                    </div>
+                    {#each searchResults as item, index}
+                      {@const isHighlighted = highlightedIndex === index}
+                      <button
+                        type="button"
+                        onclick={() => handleSelectFromSearch(item)}
+                        class={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2.5 transition cursor-pointer group ${
+                          isHighlighted ? 'bg-sky-500/20 text-sky-200' : 'hover:bg-[var(--bg-subtle)]'
+                        }`}
+                      >
+                        <div class="flex items-center gap-2.5 min-w-0">
+                          <span class="text-xl shrink-0">{item.flag}</span>
+                          <div class="truncate">
+                            <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
+                              <span>{item.countryName}</span>
+                              <span class="text-[9px] font-semibold px-1 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--ink-3)]">{item.currencyCode}</span>
+                            </div>
+                            <div class="text-[10px] text-[var(--ink-4)] truncate">
+                              {item.currencyName} • {item.regionLabel}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                          <div class="text-xs font-bold text-emerald-400 font-mono">
+                            {formatRupiah(item.middleRate, { showFraction: true })}
+                          </div>
+                          <div class={`text-[10px] font-semibold ${item.change24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {formatPercent(item.change24h)}
+                          </div>
+                        </div>
+                      </button>
+                    {/each}
+                  {:else}
+                    <div class="px-4 py-5 text-center text-xs text-[var(--ink-4)]">
+                      <Search class="w-5 h-5 mx-auto mb-1.5 opacity-40 text-sky-400" />
+                      <p class="font-bold text-[var(--ink)]">Tidak ada negara ditemukan</p>
+                      <p class="text-[11px] mt-0.5">Tidak ada hasil untuk "{searchQuery}"</p>
+                    </div>
+                  {/if}
+                </div>
+              {/if}
+            </div>
+
+            <!-- 2. Projection Switcher (Globe 3D WebGL vs Peta Datar) -->
+            <div class="space-y-1.5">
+              <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
                 <button
                   type="button"
-                  onclick={() => { searchQuery = ''; searchInputRef?.focus(); }}
-                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--ink-4)] hover:text-[var(--ink)] cursor-pointer"
+                  onclick={() => toggleProjection('globe')}
+                  class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    projectionMode === 'globe'
+                      ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
+                      : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+                  }`}
                 >
-                  <X class="w-3.5 h-3.5" />
+                  <Globe class="w-3.5 h-3.5" />
+                  <span>{t('map.projectionGlobe')}</span>
+                </button>
+                <button
+                  type="button"
+                  onclick={() => toggleProjection('flat')}
+                  class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    projectionMode === 'flat'
+                      ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
+                      : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  <Compass class="w-3.5 h-3.5" />
+                  <span>{t('map.projectionFlat')}</span>
+                </button>
+              </div>
+
+              {#if projectionMode === 'globe'}
+                <button
+                  type="button"
+                  onclick={() => {
+                    showLabels = !showLabels;
+                    updateGlobeVisuals();
+                  }}
+                  class={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
+                    showLabels
+                      ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                      : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  <span class="flex items-center gap-1.5">
+                    <MapPin class="w-3.5 h-3.5 text-emerald-400" />
+                    <span>{t('map.showLabels')}</span>
+                  </span>
+                  <span class={`text-[10px] px-2 py-0.5 rounded-md font-extrabold ${showLabels ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'bg-[var(--bg-raised)] text-[var(--ink-4)]'}`}>
+                    {showLabels ? 'AKTIF' : 'NONAKTIF'}
+                  </span>
                 </button>
               {/if}
             </div>
 
-            <!-- Autocomplete Suggestions Dropdown -->
-            {#if isSearchDropdownOpen}
-              <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-64 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
-                {#if searchResults.length > 0}
-                  <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)] flex items-center justify-between">
-                    <span>{searchQuery ? `${searchResults.length} Negara Ditemukan` : 'Rekomendasi Negara'}</span>
-                    <span class="text-[9px] text-sky-400 font-normal">Tekan Enter ↵</span>
-                  </div>
-                  {#each searchResults as item, index}
-                    {@const isHighlighted = highlightedIndex === index}
-                    <button
-                      type="button"
-                      onclick={() => handleSelectFromSearch(item)}
-                      class={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2.5 transition cursor-pointer group ${
-                        isHighlighted ? 'bg-sky-500/20 text-sky-200' : 'hover:bg-[var(--bg-subtle)]'
-                      }`}
-                    >
-                      <div class="flex items-center gap-2.5 min-w-0">
-                        <span class="text-xl shrink-0">{item.flag}</span>
-                        <div class="truncate">
-                          <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
-                            <span>{item.countryName}</span>
-                            <span class="text-[9px] font-semibold px-1 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--ink-3)]">{item.currencyCode}</span>
-                          </div>
-                          <div class="text-[10px] text-[var(--ink-4)] truncate">
-                            {item.currencyName} • {item.regionLabel}
-                          </div>
-                        </div>
-                      </div>
-                      <div class="text-right shrink-0">
-                        <div class="text-xs font-bold text-emerald-400 font-mono">
-                          {formatRupiah(item.middleRate, { showFraction: true })}
-                        </div>
-                        <div class={`text-[10px] font-semibold ${item.change24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                          {formatPercent(item.change24h)}
-                        </div>
-                      </div>
-                    </button>
-                  {/each}
-                {:else}
-                  <div class="px-4 py-5 text-center text-xs text-[var(--ink-4)]">
-                    <Search class="w-5 h-5 mx-auto mb-1.5 opacity-40 text-sky-400" />
-                    <p class="font-bold text-[var(--ink)]">Tidak ada negara ditemukan</p>
-                    <p class="text-[11px] mt-0.5">Tidak ada hasil untuk "{searchQuery}"</p>
-                  </div>
-                {/if}
-              </div>
-            {/if}
-          </div>
-
-          <!-- 2. Projection & Labels Switcher -->
-          <div class="space-y-1.5">
-            <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+            <!-- 3. Metric Switcher Toggle -->
+            <div class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
               <button
                 type="button"
-                onclick={() => toggleProjection('globe')}
-                class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                  projectionMode === 'globe'
-                    ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
-                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-                }`}
-              >
-                <Globe class="w-3.5 h-3.5" />
-                <span>{t('map.projectionGlobe')}</span>
-              </button>
-              <button
-                type="button"
-                onclick={() => toggleProjection('flat')}
-                class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                  projectionMode === 'flat'
+                onclick={() => toggleMetric('rate')}
+                class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                  activeMetric === 'rate'
                     ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
                     : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
                 }`}
               >
-                <Compass class="w-3.5 h-3.5" />
-                <span>{t('map.projectionFlat')}</span>
+                <Coins class="w-3.5 h-3.5" />
+                <span>{t('map.modeRate')}</span>
               </button>
-            </div>
-
-            {#if projectionMode === 'globe'}
               <button
                 type="button"
-                onclick={() => {
-                  showLabels = !showLabels;
-                  updateGlobeVisuals();
-                }}
-                class={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
-                  showLabels
-                    ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                    : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
+                onclick={() => toggleMetric('change')}
+                class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                  activeMetric === 'change'
+                    ? 'bg-indigo-500 text-white shadow-md font-extrabold'
+                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
                 }`}
               >
-                <span class="flex items-center gap-1.5">
-                  <MapPin class="w-3.5 h-3.5 text-emerald-400" />
-                  <span>{t('map.showLabels')}</span>
-                </span>
-                <span class={`text-[10px] px-2 py-0.5 rounded-md font-extrabold ${showLabels ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'bg-[var(--bg-raised)] text-[var(--ink-4)]'}`}>
-                  {showLabels ? 'AKTIF' : 'NONAKTIF'}
-                </span>
+                <TrendingUp class="w-3.5 h-3.5" />
+                <span>{t('map.modeChange')}</span>
               </button>
-            {/if}
-          </div>
-
-          <!-- 3. Metric Switcher Toggle (3 Modes: Kurs IDR | Tren 24h | Bendera Penuh) -->
-          <div class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
-            <button
-              type="button"
-              onclick={() => toggleMetric('rate')}
-              class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
-                activeMetric === 'rate'
-                  ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
-                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-              }`}
-            >
-              <Coins class="w-3.5 h-3.5 shrink-0" />
-              <span class="truncate">{t('map.modeRate')}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => toggleMetric('change')}
-              class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
-                activeMetric === 'change'
-                  ? 'bg-indigo-500 text-white shadow-md font-extrabold'
-                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-              }`}
-            >
-              <TrendingUp class="w-3.5 h-3.5 shrink-0" />
-              <span class="truncate">{t('map.modeChange')}</span>
-            </button>
-            <button
-              type="button"
-              onclick={() => toggleMetric('flag')}
-              class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
-                activeMetric === 'flag'
-                  ? 'bg-amber-400 text-slate-950 shadow-md font-extrabold'
-                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-              }`}
-            >
-              <Flag class="w-3.5 h-3.5 shrink-0" />
-              <span class="truncate">{t('map.modeFlag')}</span>
-            </button>
-          </div>
-
-          <!-- 4. Region Filter Selector (Scrollable Chips) -->
-          <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
-            {#each REGION_FILTERS as reg}
-              {@const isActive = activeRegion === reg.id}
               <button
                 type="button"
-                onclick={() => handleRegionSelect(reg.id)}
-                class={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition shrink-0 cursor-pointer border ${
-                  isActive
-                    ? 'bg-sky-500/20 border-sky-500/60 text-sky-300 ring-1 ring-sky-500/40'
-                    : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
+                onclick={() => toggleMetric('flag')}
+                class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                  activeMetric === 'flag'
+                    ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
+                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
                 }`}
               >
-                <span>{reg.emoji}</span>
-                <span>{reg.label}</span>
+                <span>🏁</span>
+                <span>Bendera</span>
               </button>
-            {/each}
-          </div>
+            </div>
 
-          <!-- 5. Quick Mini Converter Box -->
-          <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2">
-            <div class="flex items-center justify-between text-[11px] text-[var(--ink-4)] font-semibold">
-              <span class="flex items-center gap-1 text-[var(--ink)]">
-                <Calculator class="w-3.5 h-3.5 text-emerald-400" />
-                <span>{t('converter.title')}</span>
-              </span>
+            <!-- 4. Region Filter Selector (Scrollable Chips) -->
+            <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
+              {#each REGION_FILTERS as reg}
+                {@const isActive = activeRegion === reg.id}
+                <button
+                  type="button"
+                  onclick={() => handleRegionSelect(reg.id)}
+                  class={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition shrink-0 cursor-pointer border ${
+                    isActive
+                      ? 'bg-sky-500/20 border-sky-500/60 text-sky-300 ring-1 ring-sky-500/40'
+                      : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  <span>{reg.emoji}</span>
+                  <span>{reg.label}</span>
+                </button>
+              {/each}
+            </div>
+
+            <!-- 5. Quick Mini Converter Box -->
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-[var(--ink-4)] font-semibold">
+                <span class="flex items-center gap-1 text-[var(--ink)]">
+                  <Calculator class="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{t('converter.title')}</span>
+                </span>
+                <button
+                  type="button"
+                  onclick={toggleConvertDirection}
+                  class="hover:text-sky-400 flex items-center gap-1 transition cursor-pointer"
+                >
+                  <ArrowRightLeft class="w-3 h-3" />
+                  <span>{convertDirection === 'foreign_to_idr' ? `${selectedCountry.currencyCode} ➔ IDR` : `IDR ➔ ${selectedCountry.currencyCode}`}</span>
+                </button>
+              </div>
+
+              <!-- Input & Live Result Row -->
+              <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                  <input
+                    type="number"
+                    bind:value={convertAmount}
+                    min="1"
+                    step="any"
+                    class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-lg px-2.5 py-1.5 text-xs font-bold text-[var(--ink)] outline-none focus:border-sky-500 font-mono"
+                  />
+                  <span class="absolute right-2 top-1.5 text-[10px] text-[var(--ink-4)] font-bold">
+                    {convertDirection === 'foreign_to_idr' ? selectedCountry.currencyCode : 'IDR'}
+                  </span>
+                </div>
+                <div class="flex-1 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs font-bold text-emerald-400 text-right truncate font-mono">
+                  {calculatedConvertResult.formatted}
+                </div>
+              </div>
+
+              <!-- Inspect Selected Country Action Button -->
               <button
                 type="button"
-                onclick={toggleConvertDirection}
-                class="hover:text-sky-400 flex items-center gap-1 transition cursor-pointer"
+                onclick={() => openInspector()}
+                class="w-full py-2 rounded-lg bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <ArrowRightLeft class="w-3 h-3" />
-                <span>{convertDirection === 'foreign_to_idr' ? `${selectedCountry.currencyCode} ➔ IDR` : `IDR ➔ ${selectedCountry.currencyCode}`}</span>
+                <span>{selectedCountry.flag} {t('map.inspectCountry')}: {selectedCountry.countryName}</span>
+                <ChevronRight class="w-3.5 h-3.5" />
               </button>
             </div>
-
-            <!-- Input & Live Result Row -->
-            <div class="flex items-center gap-2">
-              <div class="relative flex-1">
-                <input
-                  type="number"
-                  bind:value={convertAmount}
-                  min="1"
-                  step="any"
-                  class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-lg px-2.5 py-1.5 text-xs font-bold text-[var(--ink)] outline-none focus:border-sky-500 font-mono"
-                />
-                <span class="absolute right-2 top-1.5 text-[10px] text-[var(--ink-4)] font-bold">
-                  {convertDirection === 'foreign_to_idr' ? selectedCountry.currencyCode : 'IDR'}
-                </span>
-              </div>
-              <div class="flex-1 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-xs font-bold text-emerald-400 text-right truncate font-mono">
-                {calculatedConvertResult.formatted}
-              </div>
-            </div>
-
-            <!-- Inspect Selected Country Action Button -->
-            <button
-              type="button"
-              onclick={() => (isInspectorOpen = true)}
-              class="w-full py-2 rounded-lg bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <span>{selectedCountry.flag} {t('map.inspectCountry')}: {selectedCountry.countryName}</span>
-              <ChevronRight class="w-3.5 h-3.5" />
-            </button>
           </div>
-        </div>
-      {/if}
+        {/if}
+      </div>
+
     </div>
 
-    <!-- ── Interactive Slide-Over Country Inspector Drawer ────────────────── -->
+    <!-- ── Right Column: Docked Inspector Sidebar (Side-by-side split screen, no blocking backdrop!) ── -->
     {#if isInspectorOpen && selectedCountry}
       {@const curr = selectedCountry}
       {@const isPositive = curr.change24h >= 0}
 
-      <!-- Backdrop -->
-      <div
-        role="button"
-        tabindex="0"
-        aria-label={t('common.close')}
-        onclick={handleCloseInspector}
-        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCloseInspector(); }}
-        class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
-      ></div>
-
-      <!-- Slide-Over Drawer Panel -->
       <aside
         aria-label={t('map.countryInspector')}
-        class="fixed inset-y-0 right-0 z-50 w-full sm:max-w-md md:max-w-lg bg-[var(--bg-raised)] border-l border-[var(--bg-rule)] shadow-2xl backdrop-blur-2xl p-5 sm:p-6 overflow-y-auto transform transition-transform duration-300 flex flex-col justify-between space-y-5"
+        class="w-full md:w-[440px] lg:w-[480px] xl:w-[520px] h-[55vh] md:h-full shrink-0 border-t md:border-t-0 md:border-l border-[var(--bg-rule)] bg-[var(--bg-raised)]/98 backdrop-blur-2xl shadow-2xl flex flex-col justify-between p-5 md:p-6 overflow-y-auto z-30 transition-all duration-300 ease-out"
         style="color: var(--ink);"
       >
-        <div class="space-y-5">
-          <!-- Inspector Header -->
-          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-4">
+        <div class="space-y-4">
+          <!-- 1. Inspector Header -->
+          <div class="flex items-start justify-between gap-3 border-b border-[var(--bg-rule)] pb-3.5">
             <div class="flex items-center gap-3">
-              <span class="text-4xl">{curr.flag}</span>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="text-xl font-bold text-[var(--ink)]">
+              <span class="text-4xl shrink-0 drop-shadow-md">{curr.flag}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-lg md:text-xl font-bold text-[var(--ink)] truncate">
                     {curr.countryName}
                   </h3>
-                  <span class="text-xs font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                  <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-400 border border-sky-500/30">
                     {curr.currencyCode}
                   </span>
+                  <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--ink-4)]">
+                    {curr.iso3}
+                  </span>
                 </div>
-                <p class="text-xs text-[var(--ink-4)] mt-0.5">
+                <p class="text-xs text-[var(--ink-4)] mt-0.5 truncate">
                   {curr.currencyName} • {curr.regionLabel}
                 </p>
               </div>
@@ -1225,43 +1270,47 @@
             <button
               type="button"
               onclick={handleCloseInspector}
-              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
+              class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer shrink-0"
               aria-label={t('common.close')}
+              title="Tutup Split View"
             >
               <X class="w-5 h-5" />
             </button>
           </div>
 
-          <!-- Key Rate Statistics Grid -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+          <!-- 2. Key Live Rates Grid (Mid, Buy, Sell, Spread, 24h Trend) -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.midRate')}</span>
-              <div class="text-base font-extrabold text-emerald-400 mt-0.5 font-mono">
+              <div class="text-sm md:text-base font-extrabold text-emerald-400 mt-1 font-mono">
                 {formatRupiah(curr.middleRate, { showFraction: true })}
               </div>
             </div>
 
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] flex flex-col justify-between">
               <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('matrix.table.change24h')}</span>
-              <div class={`text-base font-extrabold mt-0.5 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <div class={`text-sm md:text-base font-extrabold mt-1 flex items-center gap-1 font-mono ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {#if isPositive}
-                  <TrendingUp class="w-4 h-4" />
+                  <TrendingUp class="w-4 h-4 shrink-0" />
                 {:else}
-                  <TrendingDown class="w-4 h-4" />
+                  <TrendingDown class="w-4 h-4 shrink-0" />
                 {/if}
                 <span>{formatPercent(curr.change24h)}</span>
               </div>
             </div>
 
-            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1">
-              <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
-              <div class="text-base font-bold text-sky-400 mt-0.5 font-mono">
-                {formatRupiah(curr.spread)}
+            <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1 flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
+                <span class="text-[9px] text-[var(--ink-4)]">{formatPercent(curr.spreadPercent)}</span>
+              </div>
+              <div class="text-sm md:text-base font-bold text-sky-400 mt-1 font-mono">
+                {formatRupiah(curr.spread, { showFraction: true })}
               </div>
             </div>
           </div>
 
-          <!-- Google Finance-Style Trend Chart Mini -->
+          <!-- 3. Google Finance-Style Trend Chart Mini -->
           <div class="border border-[var(--bg-rule)] rounded-2xl bg-[var(--bg-subtle)] p-3">
             <GoogleRateChart
               initialCurrency={curr.currencyCode}
@@ -1269,14 +1318,17 @@
             />
           </div>
 
-          <!-- Quick Converter in Inspector -->
-          <div class="p-4 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-3">
+          <!-- 4. Quick Mini Converter Inside Drawer -->
+          <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2.5">
             <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
-              <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
+              <span class="flex items-center gap-1.5">
+                <Calculator class="w-3.5 h-3.5 text-emerald-400" />
+                <span>{t('converter.title')} ({curr.currencyCode} ↔ IDR)</span>
+              </span>
               <button
                 type="button"
                 onclick={toggleConvertDirection}
-                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] cursor-pointer"
+                class="text-sky-400 hover:text-sky-300 flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
               >
                 <ArrowRightLeft class="w-3 h-3" />
                 <span>{convertDirection === 'foreign_to_idr' ? `${curr.currencyCode} ➔ IDR` : `IDR ➔ ${curr.currencyCode}`}</span>
@@ -1288,20 +1340,20 @@
                 type="number"
                 bind:value={convertAmount}
                 min="1"
-                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
+                class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl px-3 py-2 text-xs md:text-sm font-bold text-[var(--ink)] font-mono outline-none focus:border-sky-500"
               />
-              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
+              <div class="px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs md:text-sm font-bold text-emerald-400 flex items-center justify-end font-mono truncate">
                 {calculatedConvertResult.formatted}
               </div>
             </div>
 
             <!-- Preset Nominals -->
-            <div class="flex items-center gap-1.5 flex-wrap pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
               {#each PRESET_AMOUNTS as preset}
                 <button
                   type="button"
                   onclick={() => setPresetAmount(preset)}
-                  class={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition border cursor-pointer ${
+                  class={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition border cursor-pointer ${
                     convertAmount === preset
                       ? 'bg-sky-500 text-slate-950 border-sky-400'
                       : 'bg-[var(--bg-raised)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
@@ -1312,15 +1364,72 @@
               {/each}
             </div>
           </div>
+
+          <!-- 5. Bank Comparison Matrix (If Quotes Available) -->
+          {#if isMatrixLoading}
+            <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2 animate-pulse">
+              <div class="h-4 bg-[var(--bg-rule)] rounded w-1/3"></div>
+              <div class="h-12 bg-[var(--bg-rule)] rounded-xl"></div>
+            </div>
+          {:else if bankMatrix && bankMatrix.rows && bankMatrix.rows.length > 0}
+            <div class="p-3.5 rounded-2xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2.5">
+              <div class="flex items-center justify-between text-xs font-bold text-[var(--ink)]">
+                <span class="flex items-center gap-1.5">
+                  <Building2 class="w-3.5 h-3.5 text-sky-400" />
+                  <span>{t('map.bankComparison')}</span>
+                </span>
+                <span class="text-[10px] text-[var(--ink-4)] font-normal">
+                  {bankMatrix.rows.length} Bank
+                </span>
+              </div>
+
+              <div class="divide-y divide-[var(--bg-rule)] text-[11px]">
+                {#each bankMatrix.rows.slice(0, 4) as item}
+                  <div class="py-2 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                      <div class="font-bold text-[var(--ink)] truncate flex items-center gap-1.5">
+                        <span>{item.providerName}</span>
+                        {#if item.isBestBuy}
+                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
+                            {t('map.bestBuy')}
+                          </span>
+                        {/if}
+                        {#if item.isBestSell}
+                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 font-bold">
+                            {t('map.bestSell')}
+                          </span>
+                        {/if}
+                      </div>
+                      <div class="text-[10px] text-[var(--ink-4)]">
+                        Spread: {formatRupiah(item.spread)}
+                      </div>
+                    </div>
+                    <div class="text-right shrink-0 font-mono">
+                      <div class="text-xs font-bold text-emerald-400">
+                        {formatRupiah(item.buyRate, { showFraction: true })}
+                      </div>
+                      <div class="text-[10px] text-[var(--ink-4)]">
+                        Jual: {formatRupiah(item.sellRate, { showFraction: true })}
+                      </div>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
+
         </div>
 
-        <!-- Drawer Footer -->
-        <div class="pt-4 border-t border-[var(--bg-rule)] flex items-center justify-between text-xs text-[var(--ink-4)]">
-          <span>🕒 {formatDateTimeIndo(new Date())}</span>
+        <!-- 6. Drawer Footer & Actions -->
+        <div class="pt-3 border-t border-[var(--bg-rule)] flex items-center justify-between gap-2 text-xs text-[var(--ink-4)]">
+          <div class="flex items-center gap-1.5 truncate">
+            <Clock class="w-3.5 h-3.5 shrink-0" />
+            <span class="truncate">{formatDateTimeIndo(new Date())}</span>
+          </div>
           <button
             type="button"
             onclick={handleCloseInspector}
-            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer"
+            class="px-4 py-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink)] font-bold transition cursor-pointer shrink-0"
           >
             {t('common.close')}
           </button>

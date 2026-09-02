@@ -158,7 +158,7 @@ describe('Country Inspector Drawer & Floating Panel Unit Tests', () => {
       // Third click on different country (e.g. USA) within 200ms -> should not be double click on JPN
       const thirdClickTime = 1400;
       const thirdIso3 = 'USA';
-      const isDiffCountryDoubleClick = (thirdClickTime - secondClickTime < 350) && (secondIso3 === thirdIso3);
+      const isDiffCountryDoubleClick = (thirdClickTime - secondClickTime < 350) && ((secondIso3 as string) === (thirdIso3 as string));
       expect(isDiffCountryDoubleClick).toBeFalse();
 
       // Fourth click after 500ms on same country -> should not be double click (exceeded timeout)
