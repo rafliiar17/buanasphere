@@ -19,8 +19,19 @@ export class ConverterService {
   ): Promise<ConversionResult> {
     const startTime = performance.now();
 
-    if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    if (
+      typeof amount !== 'number' ||
+      !Number.isFinite(amount) ||
+      isNaN(amount) ||
+      amount <= 0
+    ) {
       const errorMsg = 'Amount must be a strictly positive number';
+      this.log.warn({ amount, from, to, rateType }, errorMsg);
+      throw new Error(errorMsg);
+    }
+
+    if (amount > 1e15) {
+      const errorMsg = 'Amount exceeds maximum allowable threshold of 1e15';
       this.log.warn({ amount, from, to, rateType }, errorMsg);
       throw new Error(errorMsg);
     }
@@ -72,6 +83,8 @@ export class ConverterService {
 
         const chosenRate =
           rateType === 'mid' ? r.midRate : rateType === 'sell' ? r.sellRate : r.buyRate;
+        if (!Number.isFinite(chosenRate) || chosenRate <= 0) continue;
+
         const converted = Math.round(amount * chosenRate * 100) / 100;
 
         comparisons.push({
@@ -98,6 +111,8 @@ export class ConverterService {
         // When buying foreign currency with IDR, the cost is the bank's sellRate
         const chosenRate =
           rateType === 'mid' ? r.midRate : rateType === 'buy' ? r.buyRate : r.sellRate;
+        if (!Number.isFinite(chosenRate) || chosenRate <= 0) continue;
+
         const converted = Math.round((amount / chosenRate) * 10000) / 10000;
 
         comparisons.push({
@@ -127,6 +142,15 @@ export class ConverterService {
 
         const fromIdrRate = rateType === 'mid' ? fr.midRate : fr.buyRate;
         const toIdrRate = rateType === 'mid' ? tr.midRate : tr.sellRate;
+        if (
+          !Number.isFinite(fromIdrRate) ||
+          fromIdrRate <= 0 ||
+          !Number.isFinite(toIdrRate) ||
+          toIdrRate <= 0
+        ) {
+          continue;
+        }
+
         const crossRate = Math.round((fromIdrRate / toIdrRate) * 1000000) / 1000000;
         const converted = Math.round(amount * crossRate * 10000) / 10000;
 

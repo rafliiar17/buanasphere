@@ -156,37 +156,37 @@ describe('Rates API Integration Tests (Elysia)', () => {
   it('GET /api/v1/rates/history should support all Google Finance timeframes (5D, 1M, 6M, 1Y, 5Y, MAX)', async () => {
     // 5D -> 40 points
     const res5D = await app.handle(new Request('http://localhost/api/v1/rates/history?currency=EUR&timeframe=5D'));
-    const body5D = (await res5D.json()) as any;
+    const body5D = (await res5D.json()) as { success: boolean; data: { points: unknown[] } };
     expect(body5D.success).toBe(true);
     expect(body5D.data.points.length).toBe(40);
 
     // 1M -> 30 points
     const res1M = await app.handle(new Request('http://localhost/api/v1/rates/history?currency=JPY&timeframe=1M'));
-    const body1M = (await res1M.json()) as any;
+    const body1M = (await res1M.json()) as { success: boolean; data: { points: unknown[] } };
     expect(body1M.success).toBe(true);
     expect(body1M.data.points.length).toBe(30);
 
     // 6M -> 26 points
     const res6M = await app.handle(new Request('http://localhost/api/v1/rates/history?currency=GBP&timeframe=6M'));
-    const body6M = (await res6M.json()) as any;
+    const body6M = (await res6M.json()) as { success: boolean; data: { points: unknown[] } };
     expect(body6M.success).toBe(true);
     expect(body6M.data.points.length).toBe(26);
 
     // 1Y -> 52 points
     const res1Y = await app.handle(new Request('http://localhost/api/v1/rates/history?currency=SGD&timeframe=1Y'));
-    const body1Y = (await res1Y.json()) as any;
+    const body1Y = (await res1Y.json()) as { success: boolean; data: { points: unknown[] } };
     expect(body1Y.success).toBe(true);
     expect(body1Y.data.points.length).toBe(52);
 
     // 5Y -> 60 points
     const res5Y = await app.handle(new Request('http://localhost/api/v1/rates/history?currency=AUD&timeframe=5Y'));
-    const body5Y = (await res5Y.json()) as any;
+    const body5Y = (await res5Y.json()) as { success: boolean; data: { points: unknown[] } };
     expect(body5Y.success).toBe(true);
     expect(body5Y.data.points.length).toBe(60);
 
     // MAX -> 120 points
     const resMAX = await app.handle(new Request('http://localhost/api/v1/rates/history?currency=MYR&timeframe=MAX'));
-    const bodyMAX = (await resMAX.json()) as any;
+    const bodyMAX = (await resMAX.json()) as { success: boolean; data: { points: unknown[] } };
     expect(bodyMAX.success).toBe(true);
     expect(bodyMAX.data.points.length).toBe(120);
   });

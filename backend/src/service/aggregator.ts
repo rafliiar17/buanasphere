@@ -195,6 +195,9 @@ export class AggregatorService {
   private static memoryCache: Rate[] = [];
   private static memoryCacheTimestamp = 0;
 
+  // Single-flight in-flight promise lock to prevent cache stampedes (SEC-05)
+  private static inFlightIngestion: Promise<IngestionResult> | null = null;
+
   constructor(options?: AggregatorOptions) {
     this.providers = options?.providers ?? createAllProviders();
     this.env = options?.env;
@@ -224,8 +227,29 @@ export class AggregatorService {
 
   /**
    * Execute scheduled or on-demand ingestion across all registered providers.
+   * Uses single-flight deduplication to avoid cache stampede (SEC-05).
    */
   async ingestAll(): Promise<IngestionResult> {
+    if (AggregatorService.inFlightIngestion) {
+      this.log.info('Ingestion already in-flight: deduplicating concurrent ingestAll() call');
+      return AggregatorService.inFlightIngestion;
+    }
+
+    AggregatorService.inFlightIngestion = (async () => {
+      try {
+        return await this.executeIngestAll();
+      } finally {
+        AggregatorService.inFlightIngestion = null;
+      }
+    })();
+
+    return AggregatorService.inFlightIngestion;
+  }
+
+  /**
+   * Internal ingestion worker execution.
+   */
+  private async executeIngestAll(): Promise<IngestionResult> {
     const cycleStartTime = performance.now();
     const startTimeIso = new Date().toISOString();
     const errors: string[] = [];
@@ -478,14 +502,6 @@ export class AggregatorService {
 
   /**
    * Retrieve high-resolution historical series points ala Google Finance.
-   * Timeframe resolutions:
-   * - 1D: 24 points (hourly)
-   * - 5D: 40 points (every 3 hours)
-   * - 1M: 30 points (daily)
-   * - 6M: 26 points (weekly)
-   * - 1Y: 52 points (weekly)
-   * - 5Y: 60 points (monthly)
-   * - MAX: 120 points
    */
   async getHistoricalSeries(
     currency: string = 'USD',

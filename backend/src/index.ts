@@ -1,10 +1,11 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
 import { ratesRoutes } from './routes/rates.ts';
 import { convertRoutes } from './routes/convert.ts';
 import { historyRoutes } from './routes/history.ts';
 import { loggerMiddleware } from './middleware/logger.ts';
+import { rateLimiterMiddleware } from './middleware/rate-limiter.ts';
 import { AggregatorService } from './service/aggregator.ts';
 import { logger } from './logger/index.ts';
 import type { Env } from './db/index.ts';
@@ -12,6 +13,15 @@ import type { Env } from './db/index.ts';
 export function createApp(env?: Env) {
   const app = new Elysia({ aot: false })
     .use(loggerMiddleware())
+    // Security defense-in-depth headers middleware (SEC-08)
+    .onRequest(({ set }) => {
+      set.headers['X-Content-Type-Options'] = 'nosniff';
+      set.headers['X-Frame-Options'] = 'DENY';
+      set.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin';
+      set.headers['Permissions-Policy'] = 'geolocation=(), camera=(), microphone=()';
+    })
+    // Active sliding-window rate limiter middleware (SEC-01)
+    .use(rateLimiterMiddleware({ kv: env?.KURS_CACHE }))
     .use(
       cors({
         origin: '*',
@@ -38,13 +48,6 @@ export function createApp(env?: Env) {
         },
       })
     )
-    // Rate-limiting and standard headers middleware
-    .onRequest(({ set }) => {
-      set.headers['X-RateLimit-Limit'] = '100';
-      set.headers['X-RateLimit-Remaining'] = '99';
-      set.headers['X-RateLimit-Reset'] = String(Math.floor(Date.now() / 1000) + 60);
-      set.headers['X-Content-Type-Options'] = 'nosniff';
-    })
     .get(
       '/',
       () => ({
@@ -156,13 +159,34 @@ export function createApp(env?: Env) {
     .post(
       '/api/v1/alerts',
       async ({ body }) => {
-        const payload = body as any;
+        const payload = body;
         return {
           success: true,
-          message: `Notifikasi berhasil didaftarkan untuk ${payload?.email || 'user'}. Anda akan menerima email saat kurs mencapai target.`,
+          message: `Notifikasi berhasil didaftarkan untuk ${payload.email}. Anda akan menerima email saat kurs mencapai target.`,
+          data: {
+            email: payload.email,
+            baseCurrency: payload.baseCurrency.toUpperCase(),
+            targetCurrency: (payload.targetCurrency ?? 'IDR').toUpperCase(),
+            targetRate: payload.targetRate,
+            condition: payload.condition ?? 'above',
+          },
         };
       },
       {
+        body: t.Object({
+          email: t.String({ format: 'email', description: 'User notification email address' }),
+          baseCurrency: t.String({ minLength: 3, maxLength: 5, description: 'Base currency e.g. USD' }),
+          targetCurrency: t.Optional(
+            t.String({ minLength: 3, maxLength: 5, default: 'IDR', description: 'Target currency e.g. IDR' })
+          ),
+          targetRate: t.Number({ minimum: 0.000001, description: 'Target exchange rate threshold' }),
+          condition: t.Optional(
+            t.Union([t.Literal('above'), t.Literal('below'), t.Literal('exact')], {
+              default: 'above',
+              description: 'Alert trigger condition',
+            })
+          ),
+        }),
         detail: {
           summary: 'Register rate alert',
           tags: ['General'],
