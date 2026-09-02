@@ -1,0 +1,45 @@
+name: 🧪 CI — Pull Request & Quality Gates
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+      - feat/*
+      - fix/*
+      - refactor/*
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gates:
+    name: 🧪 Quality Gates & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Setup Bun Runtime (v1.4+)
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 🔍 Verify Strict Bun Runtime (v1.4+)
+        run: bun ./scripts/ensure-bun.ts
+
+      - name: 📦 Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🔍 Type Checking & Diagnostics (Svelte & TypeScript)
+        run: bun run check
+
+      - name: 🧪 Execute Test Suites (Bun Test / TDD)
+        run: bun test
+
+      - name: 🏗️ Production Build Verification
+        run: bun run build

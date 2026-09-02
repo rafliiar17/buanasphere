@@ -4,6 +4,10 @@
   "private": true,
   "description": "Kurs World Edge API and Ingestion Worker on Elysia.js & Cloudflare Workers",
   "type": "module",
+  "packageManager": "bun@1.4.0",
+  "engines": {
+    "bun": ">=1.4.0"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "build": "tsc --noEmit",

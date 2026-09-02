@@ -4,12 +4,19 @@
   "private": true,
   "description": "Real-time multi-source currency exchange rate aggregator and public developer API",
   "type": "module",
+  "packageManager": "bun@1.4.0",
+  "engines": {
+    "bun": ">=1.4.0",
+    "node": "DO_NOT_USE_NODE"
+  },
   "workspaces": [
     "backend",
     "frontend"
   ],
   "scripts": {
-    "dev": "bun x concurrently -k -n \"BE,FE\" -c \"blue.bold,green.bold\" \"bun run dev:be\" \"bun run dev:fe\"",
+    "preinstall": "bun ./scripts/ensure-bun.ts",
+    "check:runtime": "bun ./scripts/ensure-bun.ts",
+    "dev": "bun ./scripts/ensure-bun.ts && bun x concurrently -k -n \"BE,FE\" -c \"blue.bold,green.bold\" \"bun run dev:be\" \"bun run dev:fe\"",
     "dev:be": "cd backend && bun run dev",
     "dev:fe": "cd frontend && bun run dev",
     "test": "bun test backend && bun test frontend",
