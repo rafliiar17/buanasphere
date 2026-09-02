@@ -1,7 +1,8 @@
 /**
  * Authentic Synchronous Canvas Flag Texture & Vexillological Engine.
  * Generates and maps official high-resolution sovereign flag textures directly to 3D country polygons
- * with ZERO asynchronous loading delays, ZERO network requests, and ZERO black screen risk.
+ * with synchronous in-memory base rendering (Frame 0, zero black screen) and automatic high-resolution
+ * official image overlay (Frame 1+).
  */
 
 import * as THREE from 'three';
@@ -21,6 +22,7 @@ export type FlagPatternType =
   | 'canton-stripes'
   | 'diamond-emblem'
   | 'diagonal-stripe'
+  | 'blue-ensign'
   | 'solid-emblem';
 
 export interface FlagPatternDefinition {
@@ -84,7 +86,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   SYR: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Suriah
   IRQ: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#18181b'] }, // Irak
   IRN: { type: 'horizontal-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Iran
-  ISR: { type: 'horizontal-tricolor', colors: ['#ffffff', '#1d4ed8', '#ffffff'] }, // Israel
+  ISR: { type: 'horizontal-tricolor', colors: ['#ffffff', '#0038b8', '#ffffff'] }, // Israel (White with Blue Stripes & Magen David)
   PSE: { type: 'horizontal-tricolor', colors: ['#18181b', '#ffffff', '#15803d'] }, // Palestina
   TUR: { type: 'circle-disc', colors: ['#dc2626', '#ffffff'] }, // Turki
 
@@ -110,8 +112,8 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   CHE: { type: 'cross', colors: ['#dc2626', '#ffffff'] }, // Swiss
   ESP: { type: 'horizontal-tricolor', colors: ['#dc2626', '#eab308', '#dc2626'] }, // Spanyol
   PRT: { type: 'vertical-bicolor', colors: ['#15803d', '#dc2626'] }, // Portugal
-  GRC: { type: 'canton-stripes', colors: ['#1d4ed8', '#ffffff', '#1d4ed8'] }, // Yunani
-  GBR: { type: 'cross', colors: ['#1e3a8a', '#dc2626'] }, // UK
+  GRC: { type: 'canton-stripes', colors: ['#1d4ed8', '#ffffff', '#1d4ed8'] }, // Yunani (9 Stripes with Cross Canton)
+  GBR: { type: 'cross', colors: ['#00247d', '#cf142b', '#ffffff'] }, // UK (Union Jack)
   CZE: { type: 'horizontal-bicolor', colors: ['#ffffff', '#dc2626'] }, // Ceko
   SVK: { type: 'horizontal-tricolor', colors: ['#ffffff', '#1d4ed8', '#dc2626'] }, // Slowakia
   SVN: { type: 'horizontal-tricolor', colors: ['#ffffff', '#1d4ed8', '#dc2626'] }, // Slovenia
@@ -137,8 +139,8 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   XKX: { type: 'circle-disc', colors: ['#1d4ed8', '#eab308'] }, // Kosovo
 
   // AMERIKA
-  USA: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Amerika Serikat
-  CAN: { type: 'vertical-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Kanada
+  USA: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Amerika Serikat (Stars and Stripes)
+  CAN: { type: 'vertical-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Kanada (Red, White with Maple Leaf, Red)
   MEX: { type: 'vertical-tricolor', colors: ['#15803d', '#ffffff', '#dc2626'] }, // Meksiko
   CRI: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#ffffff', '#dc2626'] }, // Kosta Rika
   PAN: { type: 'cross', colors: ['#ffffff', '#1d4ed8', '#dc2626'] }, // Panama
@@ -157,7 +159,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   SUR: { type: 'horizontal-tricolor', colors: ['#15803d', '#dc2626', '#15803d'] }, // Suriname
   HTI: { type: 'horizontal-bicolor', colors: ['#1d4ed8', '#dc2626'] }, // Haiti
   PRI: { type: 'canton-stripes', colors: ['#1d4ed8', '#dc2626', '#ffffff'] }, // Puerto Riko
-  BRA: { type: 'diamond-emblem', colors: ['#15803d', '#eab308', '#1e40af'] }, // Brasil
+  BRA: { type: 'diamond-emblem', colors: ['#15803d', '#eab308', '#1e40af'] }, // Brasil (Green, Yellow Diamond, Blue Globe)
   ARG: { type: 'horizontal-tricolor', colors: ['#0284c7', '#ffffff', '#0284c7'] }, // Argentina
   COL: { type: 'horizontal-tricolor', colors: ['#eab308', '#1d4ed8', '#dc2626'] }, // Kolombia
   VEN: { type: 'horizontal-tricolor', colors: ['#eab308', '#1d4ed8', '#dc2626'] }, // Venezuela
@@ -221,10 +223,10 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   SOM: { type: 'circle-disc', colors: ['#0284c7', '#ffffff'] }, // Somalia
 
   // OCEANIA
-  AUS: { type: 'canton-stripes', colors: ['#1e3a8a', '#ffffff', '#1e3a8a'] }, // Australia
-  NZL: { type: 'canton-stripes', colors: ['#1e3a8a', '#dc2626', '#ffffff'] }, // Selandia Baru
+  AUS: { type: 'blue-ensign', colors: ['#00247d', '#ffffff', '#cf142b'] }, // Australia (Blue Ensign with Union Jack & Southern Cross)
+  NZL: { type: 'blue-ensign', colors: ['#00247d', '#cf142b', '#ffffff'] }, // Selandia Baru (Blue Ensign with 4 Red Stars)
   PNG: { type: 'diagonal-stripe', colors: ['#dc2626', '#18181b', '#eab308'] }, // Papua Nugini
-  FJI: { type: 'canton-stripes', colors: ['#0284c7', '#ffffff'] }, // Fiji
+  FJI: { type: 'blue-ensign', colors: ['#68bfe5', '#ffffff', '#cf142b'] }, // Fiji
   SLB: { type: 'diagonal-stripe', colors: ['#1d4ed8', '#15803d', '#eab308'] }, // Solomon
   VUT: { type: 'horizontal-bicolor', colors: ['#dc2626', '#15803d'] }, // Vanuatu
   WSM: { type: 'canton-stripes', colors: ['#1d4ed8', '#dc2626', '#ffffff'] }, // Samoa
@@ -234,7 +236,7 @@ export const FLAG_PATTERNS: Record<string, FlagPatternDefinition> = {
   MHL: { type: 'diagonal-stripe', colors: ['#1d4ed8', '#ea580c', '#ffffff'] }, // Marshall
   NRU: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#eab308', '#1d4ed8'] }, // Nauru
   PLW: { type: 'circle-disc', colors: ['#0284c7', '#eab308'] }, // Palau
-  TUV: { type: 'canton-stripes', colors: ['#0284c7', '#eab308'] }, // Tuvalu
+  TUV: { type: 'blue-ensign', colors: ['#68bfe5', '#eab308', '#ffffff'] }, // Tuvalu
   NCL: { type: 'horizontal-tricolor', colors: ['#1d4ed8', '#dc2626', '#15803d'] }, // Kaledonia Baru
   PYF: { type: 'horizontal-tricolor', colors: ['#dc2626', '#ffffff', '#dc2626'] }, // Polinesia Prancis
 };
@@ -296,7 +298,7 @@ export function computeFeatureBounds(feat: any): { minLon: number; maxLon: numbe
 /**
  * Draw synchronous 2D canvas flag graphics with authentic elements (emblems, stars, crescents, stripes).
  */
-export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCanvasElement | null {
+export function drawFlagToCanvas(iso3: string, width = 256, height = 160): HTMLCanvasElement | null {
   if (typeof document === 'undefined') return null;
 
   const canvas = document.createElement('canvas');
@@ -311,15 +313,104 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
   const c2 = pattern.colors[1] || '#ffffff';
   const c3 = pattern.colors[2] || '#dc2626';
 
-  // Specific special sovereign flag renderers
+  // 1. Australia (Blue Ensign with Union Jack canton and Southern Cross)
+  if (code === 'AUS') {
+    // Navy blue field
+    ctx.fillStyle = '#00247d';
+    ctx.fillRect(0, 0, width, height);
+
+    // Union Jack Canton (Top Left)
+    const cw = width * 0.50;
+    const ch = height * 0.50;
+    ctx.fillStyle = '#00247d';
+    ctx.fillRect(0, 0, cw, ch);
+    // White diagonals & cross
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, ch * 0.38, cw, ch * 0.24);
+    ctx.fillRect(cw * 0.38, 0, cw * 0.24, ch);
+    // Red cross
+    ctx.fillStyle = '#cf142b';
+    ctx.fillRect(0, ch * 0.42, cw, ch * 0.16);
+    ctx.fillRect(cw * 0.42, 0, cw * 0.16, ch);
+
+    // Commonwealth 7-pointed Star (Below Canton)
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(cw * 0.50, height * 0.75, height * 0.14, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Southern Cross Stars (Fly / Right half)
+    const starCoords = [
+      [width * 0.75, height * 0.20, height * 0.045], // Gamma Crucis
+      [width * 0.88, height * 0.48, height * 0.045], // Beta Crucis
+      [width * 0.75, height * 0.80, height * 0.045], // Alpha Crucis
+      [width * 0.64, height * 0.44, height * 0.045], // Delta Crucis
+      [width * 0.80, height * 0.62, height * 0.025], // Epsilon Crucis
+    ];
+    for (const [sx, sy, sr] of starCoords) {
+      ctx.beginPath();
+      ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return canvas;
+  }
+
+  // 2. Israel (White with 2 Blue stripes and Star of David)
+  if (code === 'ISR') {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+    // Blue stripes
+    ctx.fillStyle = '#0038b8';
+    ctx.fillRect(0, height * 0.12, width, height * 0.12);
+    ctx.fillRect(0, height * 0.76, width, height * 0.12);
+
+    // Magen David (Star of David) in center
+    ctx.strokeStyle = '#0038b8';
+    ctx.lineWidth = width * 0.025;
+    const cx = width / 2;
+    const cy = height / 2;
+    const r = height * 0.20;
+
+    // Upward triangle
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r);
+    ctx.lineTo(cx + r * 0.866, cy + r * 0.5);
+    ctx.lineTo(cx - r * 0.866, cy + r * 0.5);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Downward triangle
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + r);
+    ctx.lineTo(cx + r * 0.866, cy - r * 0.5);
+    ctx.lineTo(cx - r * 0.866, cy - r * 0.5);
+    ctx.closePath();
+    ctx.stroke();
+    return canvas;
+  }
+
+  // 3. Canada (Red, White with Maple Leaf, Red)
+  if (code === 'CAN') {
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(0, 0, width * 0.25, height);
+    ctx.fillRect(width * 0.75, 0, width * 0.25, height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(width * 0.25, 0, width * 0.50, height);
+    // Red Maple Leaf Silhouette in center
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+    return canvas;
+  }
+
+  // 4. Algeria (Green, White, Red crescent & star)
   if (code === 'DZA') {
-    // Algeria: Green left, White right, Red crescent & star
     ctx.fillStyle = '#15803d';
     ctx.fillRect(0, 0, width / 2, height);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(width / 2, 0, width / 2, height);
 
-    // Red Crescent
     ctx.fillStyle = '#dc2626';
     ctx.beginPath();
     ctx.arc(width / 2, height / 2, height * 0.28, 0, Math.PI * 2);
@@ -329,7 +420,6 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     ctx.arc(width / 2 + width * 0.04, height / 2, height * 0.22, 0, Math.PI * 2);
     ctx.fill();
 
-    // Red Star
     ctx.fillStyle = '#dc2626';
     ctx.beginPath();
     ctx.arc(width / 2 + width * 0.05, height / 2, height * 0.10, 0, Math.PI * 2);
@@ -337,8 +427,8 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     return canvas;
   }
 
+  // 5. Switzerland (Red field with centered white cross)
   if (code === 'CHE') {
-    // Switzerland: Red field with bold white cross
     ctx.fillStyle = '#dc2626';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = '#ffffff';
@@ -349,8 +439,8 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     return canvas;
   }
 
+  // 6. Portugal (Green 40%, Red 60%, Armillary sphere)
   if (code === 'PRT') {
-    // Portugal: Green 40% left, Red 60% right, Gold/Blue armillary shield
     ctx.fillStyle = '#15803d';
     ctx.fillRect(0, 0, width * 0.40, height);
     ctx.fillStyle = '#dc2626';
@@ -364,12 +454,11 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     return canvas;
   }
 
+  // 7. Brunei (Royal gold with diagonal stripes and red crest)
   if (code === 'BRN') {
-    // Brunei: Royal gold with white/black diagonal stripes and red crest
     ctx.fillStyle = '#eab308';
     ctx.fillRect(0, 0, width, height);
 
-    // White diagonal stripe
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -381,7 +470,6 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     ctx.closePath();
     ctx.fill();
 
-    // Black diagonal stripe
     ctx.fillStyle = '#18181b';
     ctx.beginPath();
     ctx.moveTo(0, height * 0.15);
@@ -391,7 +479,6 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     ctx.closePath();
     ctx.fill();
 
-    // Red Royal Crest in center
     ctx.fillStyle = '#dc2626';
     ctx.beginPath();
     ctx.arc(width / 2, height / 2, height * 0.22, 0, Math.PI * 2);
@@ -399,8 +486,8 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     return canvas;
   }
 
+  // 8. Brazil (Green, Yellow diamond, Blue celestial globe)
   if (code === 'BRA') {
-    // Brazil: Green background, Yellow diamond, Blue circle
     ctx.fillStyle = '#15803d';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = '#eab308';
@@ -418,8 +505,8 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     return canvas;
   }
 
+  // 9. USA (13 stripes & Navy Canton)
   if (code === 'USA') {
-    // USA: 13 stripes and Navy Canton
     for (let i = 0; i < 13; i++) {
       ctx.fillStyle = i % 2 === 0 ? '#dc2626' : '#ffffff';
       ctx.fillRect(0, (i * height) / 13, width, height / 13 + 1);
@@ -429,7 +516,20 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     return canvas;
   }
 
-  // Archetypal Pattern Drawing
+  // 10. UK (Union Jack)
+  if (code === 'GBR') {
+    ctx.fillStyle = '#00247d';
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, height * 0.38, width, height * 0.24);
+    ctx.fillRect(width * 0.38, 0, width * 0.24, height);
+    ctx.fillStyle = '#cf142b';
+    ctx.fillRect(0, height * 0.42, width, height * 0.16);
+    ctx.fillRect(width * 0.42, 0, width * 0.16, height);
+    return canvas;
+  }
+
+  // Archetypal Pattern Drawing for All Other Countries
   if (pattern.type === 'vertical-tricolor') {
     const w3 = width / 3;
     ctx.fillStyle = c1;
@@ -481,7 +581,6 @@ export function drawFlagToCanvas(iso3: string, width = 128, height = 80): HTMLCa
     ctx.fillStyle = c1;
     ctx.fillRect(0, 0, width * 0.45, height * 0.50);
   } else {
-    // Solid color with accent
     ctx.fillStyle = c1;
     ctx.fillRect(0, 0, width, height);
   }
@@ -493,7 +592,8 @@ const flagTexturesCache = new Map<string, THREE.CanvasTexture>();
 const proceduralMaterialsCache = new Map<string, THREE.ShaderMaterial>();
 
 /**
- * Retrieve or generate an instant synchronous CanvasTexture for a country flag.
+ * Retrieve or generate an instant synchronous CanvasTexture for a country flag,
+ * and seamlessly overlay the high-resolution official vector/raster image in the background.
  */
 export function getCountryFlagTexture(iso3: string): THREE.Texture | null {
   const code = (iso3 || '').toUpperCase();
@@ -502,11 +602,12 @@ export function getCountryFlagTexture(iso3: string): THREE.Texture | null {
   }
 
   if (typeof document === 'undefined') {
-    // In headless test environments (Bun Test)
     return new THREE.Texture();
   }
 
-  const canvas = drawFlagToCanvas(code, 128, 80);
+  const width = 256;
+  const height = 160;
+  const canvas = drawFlagToCanvas(code, width, height);
   if (!canvas) {
     return null;
   }
@@ -520,6 +621,23 @@ export function getCountryFlagTexture(iso3: string): THREE.Texture | null {
   texture.needsUpdate = true;
 
   flagTexturesCache.set(code, texture);
+
+  // Background overlay: Load official high-resolution image asset from local bundle (/flags/{iso2}.png)
+  const iso2 = (ISO_MAPPING[code] || code.slice(0, 2)).toLowerCase();
+  if (iso2 && typeof Image !== 'undefined') {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        texture.needsUpdate = true;
+      }
+    };
+    img.src = `/flags/${iso2}.png`;
+  }
+
   return texture;
 }
 
@@ -555,6 +673,7 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
   else if (pattern.type === 'diamond-emblem') patternTypeId = 8;
   else if (pattern.type === 'vertical-bicolor') patternTypeId = 9;
   else if (pattern.type === 'diagonal-stripe') patternTypeId = 10;
+  else if (pattern.type === 'blue-ensign') patternTypeId = 11;
 
   const c1 = new THREE.Color(pattern.colors[0] || '#eab308');
   const c2 = new THREE.Color(pattern.colors[1] || '#ffffff');
@@ -662,6 +781,10 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
           if (distCenter < 0.15) col = vec3(0.863, 0.149, 0.149);
           else if (abs(diag - 0.50) < 0.13) col = diag < 0.50 ? c2 : c3;
           else col = c1;
+        } else if (patternType == 11) {
+          // Blue Ensign (Australia & New Zealand)
+          if (u < 0.50 && v >= 0.50) col = c2; // Union Jack canton
+          else col = c1; // Navy blue field
         }
 
         gl_FragColor = vec4(col, 0.95);
