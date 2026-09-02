@@ -237,7 +237,13 @@ describe('Map Experience & Global Movers Unit Tests', () => {
       expect(eurResults.length).toBeGreaterThan(1); // Multiple Eurozone nations
     });
 
-    it('filters correctly by country name (Jepang, Arab Saudi, Jerman, Singapura)', () => {
+    it('filters correctly by country name (Thailand, Jepang, Arab Saudi, Jerman, Singapura)', () => {
+      const thailandResults = filterCountries('thailand');
+      expect(thailandResults.length).toBe(1);
+      expect(thailandResults[0].iso3).toBe('THA');
+      expect(thailandResults[0].currencyCode).toBe('THB');
+      expect(thailandResults[0].countryName).toBe('Thailand');
+
       const jepangResults = filterCountries('Jepang');
       expect(jepangResults.some((c) => c.iso3 === 'JPN')).toBeTrue();
 
@@ -248,7 +254,15 @@ describe('Map Experience & Global Movers Unit Tests', () => {
       expect(jermanResults.some((c) => c.iso3 === 'DEU')).toBeTrue();
     });
 
-    it('filters correctly by ISO-3 code (USA, DEU, GBR, AUS)', () => {
+    it('returns empty array when query has no matching countries', () => {
+      const nonExistent = filterCountries('xyznonexistentcountry123');
+      expect(nonExistent.length).toBe(0);
+    });
+
+    it('filters correctly by ISO-3 code (USA, DEU, GBR, AUS, THA)', () => {
+      const thaResults = filterCountries('THA');
+      expect(thaResults.some((c) => c.iso3 === 'THA')).toBeTrue();
+
       const usaResults = filterCountries('USA');
       expect(usaResults.some((c) => c.iso3 === 'USA')).toBeTrue();
 

@@ -67,6 +67,7 @@
   let isSearchDropdownOpen = $state(false);
   let isControlsCollapsed = $state(false);
   let searchQuery = $state('');
+  let highlightedIndex = $state(0);
   let isLoading = $state(true);
   let liveRates = $state<RateItem[]>([]);
   let bankMatrix = $state<RateMatrixResponse | null>(null);
@@ -112,18 +113,18 @@
     });
   });
 
-  // Autocomplete search suggestions
+  // Autocomplete search suggestions with live reactive filtering
   const searchResults = $derived.by<MapCountryData[]>(() => {
-    if (!searchQuery.trim()) {
+    const raw = searchQuery.trim().toLowerCase();
+    if (!raw) {
       return mapData.slice(0, 8);
     }
-    const q = searchQuery.toLowerCase().trim();
     return mapData.filter(d => 
-      d.countryName.toLowerCase().includes(q) ||
-      d.currencyCode.toLowerCase().includes(q) ||
-      d.currencyName.toLowerCase().includes(q) ||
-      d.iso3.toLowerCase().includes(q) ||
-      d.regionLabel.toLowerCase().includes(q)
+      d.countryName.toLowerCase().includes(raw) ||
+      d.currencyCode.toLowerCase().includes(raw) ||
+      d.currencyName.toLowerCase().includes(raw) ||
+      d.iso3.toLowerCase().includes(raw) ||
+      d.regionLabel.toLowerCase().includes(raw)
     );
   });
 
@@ -380,17 +381,53 @@
 
   function handleResetView() {
     activeRegion = 'all';
+    searchQuery = '';
     renderPlotlyMap();
   }
 
   function handleSelectFromSearch(item: MapCountryData) {
     selectedCurrencyCode = item.currencyCode;
     selectedCountryIso3 = item.iso3;
-    searchQuery = `${item.flag} ${item.countryName} (${item.currencyCode})`;
+    searchQuery = item.countryName;
     isSearchDropdownOpen = false;
     isInspectorOpen = true;
+    
+    // If country belongs to a specific region, focus the map
+    if (item.regionId && item.regionId !== 'all') {
+      activeRegion = item.regionId;
+      renderPlotlyMap();
+    }
+
     loadBankMatrixForSelectedCurrency(item.currencyCode);
     onSelectCurrency?.(item.currencyCode);
+  }
+
+  function handleSearchKeyDown(e: KeyboardEvent) {
+    if (!isSearchDropdownOpen) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        isSearchDropdownOpen = true;
+        return;
+      }
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (searchResults.length > 0) {
+        highlightedIndex = (highlightedIndex + 1) % searchResults.length;
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (searchResults.length > 0) {
+        highlightedIndex = (highlightedIndex - 1 + searchResults.length) % searchResults.length;
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (searchResults.length > 0 && searchResults[highlightedIndex]) {
+        handleSelectFromSearch(searchResults[highlightedIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      isSearchDropdownOpen = false;
+    }
   }
 
   function toggleConvertDirection() {
@@ -525,7 +562,7 @@
 
       {#if !isControlsCollapsed}
         <div class="mt-3.5 space-y-3.5">
-          <!-- 1. Search Autocomplete Bar -->
+          <!-- 1. Search Autocomplete Bar with Live Filtering -->
           <div class="relative" bind:this={searchContainerRef}>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--ink-4)]">
@@ -535,10 +572,17 @@
                 bind:this={searchInputRef}
                 type="text"
                 bind:value={searchQuery}
-                onfocus={() => (isSearchDropdownOpen = true)}
-                oninput={() => (isSearchDropdownOpen = true)}
+                oninput={(e) => {
+                  searchQuery = (e.target as HTMLInputElement).value;
+                  isSearchDropdownOpen = true;
+                  highlightedIndex = 0;
+                }}
+                onfocus={() => {
+                  isSearchDropdownOpen = true;
+                }}
+                onkeydown={handleSearchKeyDown}
                 placeholder={t('map.searchPlaceholder')}
-                class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-8 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner"
+                class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-8 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner font-medium"
               />
               {#if searchQuery}
                 <button
@@ -552,36 +596,51 @@
             </div>
 
             <!-- Autocomplete Suggestions Dropdown -->
-            {#if isSearchDropdownOpen && searchResults.length > 0}
-              <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-60 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
-                {#each searchResults as item}
-                  <button
-                    type="button"
-                    onclick={() => handleSelectFromSearch(item)}
-                    class="w-full text-left px-3 py-2.5 hover:bg-[var(--bg-subtle)] flex items-center justify-between gap-2.5 transition cursor-pointer group"
-                  >
-                    <div class="flex items-center gap-2.5 min-w-0">
-                      <span class="text-xl shrink-0">{item.flag}</span>
-                      <div class="truncate">
-                        <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
-                          <span>{item.countryName}</span>
-                          <span class="text-[9px] font-semibold px-1 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--ink-3)]">{item.currencyCode}</span>
+            {#if isSearchDropdownOpen}
+              <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-64 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
+                {#if searchResults.length > 0}
+                  <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)] flex items-center justify-between">
+                    <span>{searchQuery ? `${searchResults.length} Negara Ditemukan` : 'Rekomendasi Negara'}</span>
+                    <span class="text-[9px] text-sky-400 font-normal">Tekan Enter ↵</span>
+                  </div>
+                  {#each searchResults as item, index}
+                    {@const isHighlighted = highlightedIndex === index}
+                    <button
+                      type="button"
+                      onclick={() => handleSelectFromSearch(item)}
+                      class={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2.5 transition cursor-pointer group ${
+                        isHighlighted ? 'bg-sky-500/20 text-sky-200' : 'hover:bg-[var(--bg-subtle)]'
+                      }`}
+                    >
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="text-xl shrink-0">{item.flag}</span>
+                        <div class="truncate">
+                          <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
+                            <span>{item.countryName}</span>
+                            <span class="text-[9px] font-semibold px-1 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--ink-3)]">{item.currencyCode}</span>
+                          </div>
+                          <div class="text-[10px] text-[var(--ink-4)] truncate">
+                            {item.currencyName} • {item.regionLabel}
+                          </div>
                         </div>
-                        <div class="text-[10px] text-[var(--ink-4)] truncate">
-                          {item.currencyName}
+                      </div>
+                      <div class="text-right shrink-0">
+                        <div class="text-xs font-bold text-emerald-400 font-mono">
+                          {formatRupiah(item.middleRate, { showFraction: true })}
+                        </div>
+                        <div class={`text-[10px] font-semibold ${item.change24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          {formatPercent(item.change24h)}
                         </div>
                       </div>
-                    </div>
-                    <div class="text-right shrink-0">
-                      <div class="text-xs font-bold text-emerald-400">
-                        {formatRupiah(item.middleRate, { showFraction: true })}
-                      </div>
-                      <div class={`text-[10px] font-semibold ${item.change24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                        {formatPercent(item.change24h)}
-                      </div>
-                    </div>
-                  </button>
-                {/each}
+                    </button>
+                  {/each}
+                {:else}
+                  <div class="px-4 py-5 text-center text-xs text-[var(--ink-4)]">
+                    <Search class="w-5 h-5 mx-auto mb-1.5 opacity-40 text-sky-400" />
+                    <p class="font-bold text-[var(--ink)]">Tidak ada negara ditemukan</p>
+                    <p class="text-[11px] mt-0.5">Tidak ada hasil untuk "{searchQuery}"</p>
+                  </div>
+                {/if}
               </div>
             {/if}
           </div>
