@@ -87,6 +87,8 @@
   let flatMapContainer = $state<HTMLDivElement | null>(null);
   let searchInputRef = $state<HTMLInputElement | null>(null);
   let searchContainerRef = $state<HTMLDivElement | null>(null);
+  let regionContainerRef = $state<HTMLDivElement | null>(null);
+  let isRegionDropdownOpen = $state<boolean>(false);
 
   let globeInstance: any = null;
   let plotlyModule: any = null;
@@ -188,36 +190,64 @@
     });
   });
 
-  // Country 3D Pin Labels (Clean text without emoji sequences to avoid '??' canvas rendering bug)
+  // Country 3D Pin Labels with Compact Cartographic Scaling (Prevents crowding in dense regions like Europe)
   const globeLabels = $derived.by(() => {
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !showLabels) return [];
     const isDark = currentTheme === 'dark';
+
+    // Concise name aliases for dense clusters (e.g. Europe & Balkans)
+    const conciseNames: Record<string, string> = {
+      BIH: 'Bosnia',
+      MKD: 'Makedonia',
+      LUX: 'Luksemburg',
+      MNE: 'Montenegro',
+      MDA: 'Moldova',
+      SVN: 'Slovenia',
+      SVK: 'Slowakia',
+      CZE: 'Ceko',
+      AUT: 'Austria',
+      CHE: 'Swiss',
+      BEL: 'Belgia',
+      NLD: 'Belanda',
+      PRT: 'Portugal',
+      HRV: 'Kroasia',
+      CYP: 'Siprus',
+      ARE: 'UEA',
+      DOM: 'Dominika',
+      TTO: 'Trinidad',
+    };
 
     return geoJsonFeatures.map((feat: any) => {
       const p = feat.properties;
       const iso3 = getFeatureIso3(feat);
       const country = mapData.find(d => d.iso3 === iso3);
-      const name = country?.countryName || p.NAME || p.ADMIN || iso3;
+      const rawName = country?.countryName || p.NAME || p.ADMIN || iso3;
+      const shortName = conciseNames[iso3] || rawName;
       const curr = country?.currencyCode || '';
       const lat = Number(p.LABEL_Y) || 0;
       const lng = Number(p.LABEL_X) || 0;
       const isSelected = selectedCountryIso3 === iso3;
       const isHovered = hoveredIso3 === iso3;
-      const isMajor = ['IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU', 'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP', 'TUR', 'EGY', 'ARE', 'PHL', 'VNM'].includes(iso3);
+      const isMajor = ['IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU', 'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP', 'TUR', 'EGY', 'ARE'].includes(iso3);
+
+      // Compact display: short name by default, full name + currency code when hovered or selected
+      const displayText = isSelected || isHovered 
+        ? `${rawName} (${curr})` 
+        : shortName;
 
       return {
         iso3,
         country,
         lat,
         lng,
-        text: `${name} (${curr || iso3})`,
+        text: displayText,
         shortText: curr || iso3,
-        size: isSelected ? 1.45 : (isHovered ? 1.25 : (isMajor ? 0.95 : 0.70)),
+        size: isSelected ? 0.72 : (isHovered ? 0.58 : (isMajor ? 0.40 : 0.30)),
         color: isSelected 
           ? '#38bdf8' 
           : (isHovered 
               ? '#34d399' 
-              : (isDark ? 'rgba(241, 245, 249, 0.92)' : 'rgba(15, 23, 42, 0.92)')),
+              : (isDark ? 'rgba(241, 245, 249, 0.88)' : 'rgba(15, 23, 42, 0.88)')),
       };
     });
   });
@@ -235,6 +265,11 @@
       d.iso3.toLowerCase().includes(raw) ||
       d.regionLabel.toLowerCase().includes(raw)
     );
+  });
+
+  // Active Region Filter Object
+  const currentRegionObj = $derived.by(() => {
+    return REGION_FILTERS.find(r => r.id === activeRegion) || REGION_FILTERS[0];
   });
 
   // Selected Country details
@@ -477,10 +512,10 @@
         .labelLng((d: any) => d.lng)
         .labelText((d: any) => d.text)
         .labelSize((d: any) => d.size)
-        .labelDotRadius((d: any) => (d.iso3 === selectedCountryIso3 ? 0.35 : 0.20))
+        .labelDotRadius((d: any) => (d.iso3 === selectedCountryIso3 ? 0.15 : 0.06))
         .labelColor((d: any) => d.color)
-        .labelAltitude(0.015)
-        .labelResolution(2)
+        .labelAltitude(0.012)
+        .labelResolution(3)
         .onLabelClick((d: any) => {
           if (d.country) {
             handleSelectFromSearch(d.country);
@@ -854,12 +889,21 @@
       if (searchContainerRef && !searchContainerRef.contains(e.target as Node)) {
         isSearchDropdownOpen = false;
       }
+      if (regionContainerRef && !regionContainerRef.contains(e.target as Node)) {
+        isRegionDropdownOpen = false;
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         isSearchDropdownOpen = false;
+        isRegionDropdownOpen = false;
         isInspectorOpen = false;
+      }
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && document.activeElement !== searchInputRef)) {
+        e.preventDefault();
+        searchInputRef?.focus();
+        isSearchDropdownOpen = true;
       }
     };
 
@@ -957,16 +1001,18 @@
         </div>
       </div>
 
-      <!-- Top-Right Floating Controls Card ("Inputan di Kanan Atas") -->
+      <!-- Top-Right Floating Controls Card ("Pusat Kontrol Peta & Filter") -->
       <div
-        class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[390px] max-w-sm bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
+        class="absolute top-4 right-4 z-20 w-[92vw] sm:w-[380px] max-w-sm bg-[var(--bg-raised)]/95 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-2xl p-4 transition-all duration-200"
         style="color: var(--ink);"
       >
-        <!-- Panel Header & Collapse Toggle -->
+        <!-- 1. Panel Header & Quick Actions -->
         <div class="flex items-center justify-between pb-3 border-b border-[var(--bg-rule)]">
           <div class="flex items-center gap-2">
             <SlidersHorizontal class="w-4 h-4 text-sky-400" />
-            <span class="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">{t('map.countryInspector')}</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-[var(--ink)]">
+              {t('map.controlCenter')}
+            </span>
           </div>
           <div class="flex items-center gap-1.5">
             <button
@@ -993,8 +1039,8 @@
         </div>
 
         {#if !isControlsCollapsed}
-          <div class="mt-3.5 space-y-3.5">
-            <!-- 1. Search Autocomplete Bar with Live Filtering -->
+          <div class="mt-3.5 space-y-3">
+            <!-- 2. Search Autocomplete Bar with Shortcut Badge -->
             <div class="relative" bind:this={searchContainerRef}>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[var(--ink-4)]">
@@ -1014,17 +1060,23 @@
                   }}
                   onkeydown={handleSearchKeyDown}
                   placeholder={t('map.searchPlaceholder')}
-                  class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-8 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner font-medium"
+                  class="w-full bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-[var(--ink-4)] focus:border-sky-500 rounded-xl pl-9 pr-14 py-2 text-xs text-[var(--ink)] placeholder:text-[var(--ink-4)] outline-none transition shadow-inner font-medium"
                 />
-                {#if searchQuery}
-                  <button
-                    type="button"
-                    onclick={() => { searchQuery = ''; searchInputRef?.focus(); }}
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--ink-4)] hover:text-[var(--ink)] cursor-pointer"
-                  >
-                    <X class="w-3.5 h-3.5" />
-                  </button>
-                {/if}
+                <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center gap-1">
+                  {#if searchQuery}
+                    <button
+                      type="button"
+                      onclick={() => { searchQuery = ''; searchInputRef?.focus(); }}
+                      class="text-[var(--ink-4)] hover:text-[var(--ink)] p-0.5 cursor-pointer"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </button>
+                  {:else}
+                    <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono text-[var(--ink-4)] bg-[var(--bg-raised)] rounded border border-[var(--bg-rule)]">
+                      ⌘K
+                    </kbd>
+                  {/if}
+                </div>
               </div>
 
               <!-- Autocomplete Suggestions Dropdown -->
@@ -1032,20 +1084,20 @@
                 <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-64 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
                   {#if searchResults.length > 0}
                     <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)] flex items-center justify-between">
-                      <span>{searchQuery ? `${searchResults.length} Negara Ditemukan` : 'Rekomendasi Negara'}</span>
-                      <span class="text-[9px] text-sky-400 font-normal">Tekan Enter ↵</span>
+                      <span>{searchQuery ? `${searchResults.length} Negara Ditemukan` : 'Rekomendasi Populer'}</span>
+                      <span class="text-[9px] text-sky-400 font-normal">Pilih ↵</span>
                     </div>
                     {#each searchResults as item, index}
                       {@const isHighlighted = highlightedIndex === index}
                       <button
                         type="button"
                         onclick={() => handleSelectFromSearch(item)}
-                        class={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2.5 transition cursor-pointer group ${
+                        class={`w-full text-left px-3 py-2 flex items-center justify-between gap-2.5 transition cursor-pointer group ${
                           isHighlighted ? 'bg-sky-500/20 text-sky-200' : 'hover:bg-[var(--bg-subtle)]'
                         }`}
                       >
                         <div class="flex items-center gap-2.5 min-w-0">
-                          <span class="text-xl shrink-0">{item.flag}</span>
+                          <span class="text-lg shrink-0">{item.flag}</span>
                           <div class="truncate">
                             <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
                               <span>{item.countryName}</span>
@@ -1077,9 +1129,32 @@
               {/if}
             </div>
 
-            <!-- 2. Projection Switcher (Globe 3D WebGL vs Peta Datar) -->
+            <!-- 3. Section: Tampilan Peta & Lapisan (Projection + 3D Pin Switch) -->
             <div class="space-y-1.5">
-              <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+              <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--ink-4)]">
+                <span>{t('map.viewAndLayers')}</span>
+                {#if projectionMode === 'globe'}
+                  <button
+                    type="button"
+                    onclick={() => {
+                      showLabels = !showLabels;
+                      updateGlobeVisuals();
+                    }}
+                    class={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition border cursor-pointer ${
+                      showLabels
+                        ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                        : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
+                    }`}
+                    title="Toggle Label Nama & Kode Valas di Globe 3D"
+                  >
+                    <MapPin class="w-2.5 h-2.5" />
+                    <span>{t('map.pinLabels')}: {showLabels ? 'ON' : 'OFF'}</span>
+                  </button>
+                {/if}
+              </div>
+
+              <!-- Segmented Projection Switcher -->
+              <div class="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
                 <button
                   type="button"
                   onclick={() => toggleProjection('globe')}
@@ -1105,91 +1180,108 @@
                   <span>{t('map.projectionFlat')}</span>
                 </button>
               </div>
+            </div>
 
-              {#if projectionMode === 'globe'}
+            <!-- 4. Section: Metrik Pewarnaan Peta (Heatmap Color Mode) -->
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-4)]">
+                {t('map.colorMetric')}
+              </span>
+              <div class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
                 <button
                   type="button"
-                  onclick={() => {
-                    showLabels = !showLabels;
-                    updateGlobeVisuals();
-                  }}
-                  class={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
-                    showLabels
-                      ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                      : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
+                  onclick={() => toggleMetric('rate')}
+                  class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                    activeMetric === 'rate'
+                      ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
+                      : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
                   }`}
                 >
-                  <span class="flex items-center gap-1.5">
-                    <MapPin class="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{t('map.showLabels')}</span>
-                  </span>
-                  <span class={`text-[10px] px-2 py-0.5 rounded-md font-extrabold ${showLabels ? 'bg-emerald-500 text-slate-950 shadow-sm' : 'bg-[var(--bg-raised)] text-[var(--ink-4)]'}`}>
-                    {showLabels ? 'AKTIF' : 'NONAKTIF'}
-                  </span>
+                  <Coins class="w-3.5 h-3.5" />
+                  <span>{t('map.modeRate')}</span>
                 </button>
-              {/if}
-            </div>
-
-            <!-- 3. Metric Switcher Toggle -->
-            <div class="grid grid-cols-3 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
-              <button
-                type="button"
-                onclick={() => toggleMetric('rate')}
-                class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
-                  activeMetric === 'rate'
-                    ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
-                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-                }`}
-              >
-                <Coins class="w-3.5 h-3.5" />
-                <span>{t('map.modeRate')}</span>
-              </button>
-              <button
-                type="button"
-                onclick={() => toggleMetric('change')}
-                class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
-                  activeMetric === 'change'
-                    ? 'bg-indigo-500 text-white shadow-md font-extrabold'
-                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-                }`}
-              >
-                <TrendingUp class="w-3.5 h-3.5" />
-                <span>{t('map.modeChange')}</span>
-              </button>
-              <button
-                type="button"
-                onclick={() => toggleMetric('flag')}
-                class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
-                  activeMetric === 'flag'
-                    ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
-                    : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-                }`}
-              >
-                <span>🏁</span>
-                <span>Bendera</span>
-              </button>
-            </div>
-
-            <!-- 4. Region Filter Selector (Scrollable Chips) -->
-            <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
-              {#each REGION_FILTERS as reg}
-                {@const isActive = activeRegion === reg.id}
                 <button
                   type="button"
-                  onclick={() => handleRegionSelect(reg.id)}
-                  class={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition shrink-0 cursor-pointer border ${
-                    isActive
-                      ? 'bg-sky-500/20 border-sky-500/60 text-sky-300 ring-1 ring-sky-500/40'
-                      : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)]'
+                  onclick={() => toggleMetric('change')}
+                  class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                    activeMetric === 'change'
+                      ? 'bg-indigo-500 text-white shadow-md font-extrabold'
+                      : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
                   }`}
                 >
-                  <span>{reg.emoji}</span>
-                  <span>{reg.label}</span>
+                  <TrendingUp class="w-3.5 h-3.5" />
+                  <span>{t('map.modeChange')}</span>
                 </button>
-              {/each}
+                <button
+                  type="button"
+                  onclick={() => toggleMetric('flag')}
+                  class={`flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                    activeMetric === 'flag'
+                      ? 'bg-amber-400 text-slate-950 shadow-md font-extrabold'
+                      : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  <span>🏁</span>
+                  <span>{t('map.modeFlag').replace(' 🏁', '')}</span>
+                </button>
+              </div>
             </div>
 
-            <!-- 5. Quick Mini Converter Box -->
+            <!-- 5. Section: Filter Kawasan Dunia (Clean Dropdown Selector — Tanpa Horizontal Scrollbar!) -->
+            <div class="space-y-1.5" bind:this={regionContainerRef}>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--ink-4)]">
+                {t('map.regionFilter')}
+              </span>
+              <div class="relative">
+                <button
+                  type="button"
+                  onclick={() => (isRegionDropdownOpen = !isRegionDropdownOpen)}
+                  class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] hover:border-sky-500/60 text-xs font-bold text-[var(--ink)] transition shadow-sm cursor-pointer"
+                >
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="text-base">{currentRegionObj.emoji}</span>
+                    <span class="truncate">{currentRegionObj.label}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-[var(--ink-4)] shrink-0">
+                    <span class="text-[10px] font-normal px-1.5 py-0.5 rounded bg-[var(--bg-raised)]">
+                      {activeRegion === 'all' ? '195+ Negara' : `${currentRegionObj.iso3List?.length || 0} Negara`}
+                    </span>
+                    <ChevronDown class={`w-3.5 h-3.5 transition-transform duration-200 ${isRegionDropdownOpen ? 'rotate-180 text-sky-400' : ''}`} />
+                  </div>
+                </button>
+
+                {#if isRegionDropdownOpen}
+                  <div class="absolute bottom-full left-0 right-0 mb-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-56 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
+                    <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)]">
+                      Pilih Kawasan Fokus (Kamera Otomatis Zoom)
+                    </div>
+                    {#each REGION_FILTERS as reg}
+                      {@const isActive = activeRegion === reg.id}
+                      <button
+                        type="button"
+                        onclick={() => {
+                          handleRegionSelect(reg.id);
+                          isRegionDropdownOpen = false;
+                        }}
+                        class={`w-full text-left px-3 py-2 flex items-center justify-between gap-2 transition cursor-pointer ${
+                          isActive ? 'bg-sky-500/20 text-sky-300 font-extrabold' : 'hover:bg-[var(--bg-subtle)] text-[var(--ink)]'
+                        }`}
+                      >
+                        <div class="flex items-center gap-2 min-w-0">
+                          <span class="text-base shrink-0">{reg.emoji}</span>
+                          <span class="text-xs truncate">{reg.label}</span>
+                        </div>
+                        <span class={`text-[10px] px-1.5 py-0.5 rounded shrink-0 ${isActive ? 'bg-sky-500/30 text-sky-200' : 'bg-[var(--bg-subtle)] text-[var(--ink-4)]'}`}>
+                          {reg.id === 'all' ? '195+' : `${reg.iso3List?.length || 0} Negara`}
+                        </span>
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            </div>
+
+            <!-- 6. Section: Mini Quick Converter Box & Split CTA -->
             <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] space-y-2">
               <div class="flex items-center justify-between text-[11px] text-[var(--ink-4)] font-semibold">
                 <span class="flex items-center gap-1 text-[var(--ink)]">
