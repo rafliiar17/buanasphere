@@ -718,8 +718,8 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
 
       void main() {
         // Exact spherical coordinate extraction matching three-conic-polygon-geometry
-        // x = r * sin(phi) * cos(theta), z = r * sin(phi) * sin(theta) => theta = atan(z, x)
-        float theta = atan(vPos.z, vPos.x) * 57.29577951308232;
+        // x = r * sin(phi) * sin(theta), z = r * sin(phi) * cos(theta) => theta = atan(x, z)
+        float theta = atan(vPos.x, vPos.z) * 57.29577951308232;
         float lon = 90.0 - theta;
         if (lon > 180.0) lon -= 360.0;
         if (lon < -180.0) lon += 360.0;

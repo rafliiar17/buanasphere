@@ -1,11 +1,28 @@
 <script lang="ts">
-  import { ShieldCheck, Globe, Sun, Moon } from 'lucide-svelte';
+  import { ShieldCheck, Globe, Sun, Moon, Sparkles, ChevronDown } from 'lucide-svelte';
   import { t, getLocale, setLocale, subscribeLocale, SUPPORTED_LOCALES, type SupportedLocale } from '$lib/i18n';
   import { getTheme, toggleTheme, subscribeTheme, type Theme } from '$lib/theme';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
+  import { resolveAppIdToPath } from '$lib/framework/geoglobe/router';
   import { onMount } from 'svelte';
 
   let currentLang = $state<SupportedLocale>(getLocale());
   let currentTheme = $state<Theme>(getTheme());
+
+  const activeApp = $derived(geoStore.activeApp);
+
+  const brandParts = $derived.by(() => {
+    switch (activeApp.id) {
+      case 'world-time':
+        return { main: 'Time', sub: '.World' };
+      case 'remittance-flow':
+        return { main: 'Flow', sub: '.Corridors' };
+      case 'passport-power':
+        return { main: 'Passport', sub: '.World' };
+      default:
+        return { main: 'Kurs', sub: '.World' };
+    }
+  });
 
   onMount(() => {
     const unsubLang = subscribeLocale((l) => {
@@ -39,20 +56,35 @@
     </span>
   </div>
 
-  <div style="max-width:1536px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;">
+  <div style="max-width:2000px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;" class="max-w-8xl">
 
-    <!-- Wordmark -->
-    <a href="/" style="display:flex;align-items:baseline;gap:1px;text-decoration:none;">
-      <span style="font-size:18px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);font-family:var(--font-sans);">
-        Kurs
-      </span>
-      <span style="font-size:18px;font-weight:800;letter-spacing:-0.03em;color:var(--signal);font-family:var(--font-sans);">
-        .World
-      </span>
-      <span style="margin-left:8px;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);padding:2px 5px;border:1px solid var(--bg-rule);border-radius:3px;line-height:1.4;">
-        {t('common.beta')}
-      </span>
-    </a>
+    <!-- Left: Wordmark & App Switcher -->
+    <div style="display:flex;align-items:center;gap:16px;">
+      <!-- Wordmark -->
+      <a href={resolveAppIdToPath(activeApp.id)} style="display:flex;align-items:baseline;gap:1px;text-decoration:none;">
+        <span style="font-size:18px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);font-family:var(--font-sans);">
+          {brandParts.main}
+        </span>
+        <span style="font-size:18px;font-weight:800;letter-spacing:-0.03em;color:var(--signal);font-family:var(--font-sans);">
+          {brandParts.sub}
+        </span>
+        <span style="margin-left:8px;font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-4);padding:2px 5px;border:1px solid var(--bg-rule);border-radius:3px;line-height:1.4;">
+          {t('common.beta')}
+        </span>
+      </a>
+
+      <!-- App Switcher Trigger Button -->
+      <button
+        type="button"
+        onclick={() => geoStore.toggleLauncher()}
+        class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs transition-all shadow-sm cursor-pointer"
+        title="Pilih Aplikasi GeoGlobe"
+      >
+        <Sparkles class="w-3.5 h-3.5 text-emerald-400" />
+        <span>{activeApp.name}</span>
+        <ChevronDown class="w-3 h-3 text-emerald-400 opacity-70" />
+      </button>
+    </div>
 
     <!-- Right — Language switcher + Theme switcher + live status + API link -->
     <div style="display:flex;align-items:center;gap:10px;">

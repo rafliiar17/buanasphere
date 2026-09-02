@@ -1,5 +1,5 @@
 import type { IRateProvider, Rate, RateProviderInfo } from '../domain/rate.ts';
-import { OpenERApiProvider } from './open-er-api.ts';
+import { OpenERApiProvider, roundRate } from './open-er-api.ts';
 import { logger } from '../logger/index.ts';
 
 export interface SyntheticBankConfig {
@@ -35,9 +35,9 @@ export class SyntheticBankProvider implements IRateProvider {
 
       const rates = baselineRates.map((base) => {
         const midRate = base.midRate;
-        const buyRate = Math.round(midRate * this.config.buyMultiplier * 100) / 100;
-        const sellRate = Math.round(midRate * this.config.sellMultiplier * 100) / 100;
-        const spread = Math.round((sellRate - buyRate) * 100) / 100;
+        const buyRate = roundRate(midRate * this.config.buyMultiplier);
+        const sellRate = roundRate(midRate * this.config.sellMultiplier);
+        const spread = roundRate(sellRate - buyRate);
 
         return {
           provider: this.info.id,

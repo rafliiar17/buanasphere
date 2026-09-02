@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+
   import { ArrowRightLeft } from 'lucide-svelte';
   import { apiClient, SUPPORTED_CURRENCIES, MOCK_PROVIDERS } from '$lib/api/client';
   import type { ConversionResult } from '$lib/api/types';
@@ -70,9 +70,6 @@
     performConversion();
   }
 
-  onMount(() => {
-    performConversion();
-  });
 </script>
 
 <!-- Currency Converter: editorial calculator panel -->

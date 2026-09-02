@@ -13,18 +13,30 @@
     ArrowLeft
   } from 'lucide-svelte';
   import Navbar from '$lib/components/Navbar.svelte';
+  import GlobeLandingPage from '$lib/components/GlobeLandingPage.svelte';
   import WorldRateMap from '$lib/features/map/WorldRateMap.svelte';
-  import GlobalMoversTicker from '$lib/features/map/GlobalMoversTicker.svelte';
   import CurrencyConverter from '$lib/features/converter/CurrencyConverter.svelte';
   import GoogleRateChart from '$lib/features/chart/GoogleRateChart.svelte';
   import CurrencyComparisonMatrix from '$lib/features/matrix/CurrencyComparisonMatrix.svelte';
   import RateCard from '$lib/features/card/RateCard.svelte';
   import GlobalAppSplashScreen from '$lib/components/GlobalAppSplashScreen.svelte';
+  import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
+  import KursBottomDock from '$lib/apps/kurs/KursBottomDock.svelte';
+  import TimeBottomDock from '$lib/apps/time/TimeBottomDock.svelte';
+  import FlightBottomDock from '$lib/apps/flight/FlightBottomDock.svelte';
+  import PassportBottomDock from '$lib/apps/passport/PassportBottomDock.svelte';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
+  import { isLandingPath } from '$lib/framework/geoglobe/router';
   import { apiClient } from '$lib/api/client';
   import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
 
+  // Detect if we're on the root landing page (globe.arafz.id/)
+  const isLanding = typeof window !== 'undefined' ? isLandingPath(window.location.pathname) : false;
+
   let currentLang = $state<SupportedLocale>(getLocale());
   let isAppInitialLoading = $state(true);
+
+  const activeApp = $derived(geoStore.activeApp);
   let activeView = $state<'map' | 'chart' | 'matrix' | 'converter' | 'cards'>('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
@@ -102,6 +114,18 @@
   }
 </script>
 
+<svelte:head>
+  {#if isLanding}
+    <title>Globe — Platform Informasi Dunia Real-Time | globe.arafz.id</title>
+  {:else}
+    <title>{activeApp.name} — {activeApp.tagline} | globe.arafz.id</title>
+  {/if}
+</svelte:head>
+
+{#if isLanding}
+  <!-- Root Landing Page: Pilih Aplikasi -->
+  <GlobeLandingPage />
+{:else}
 <!-- Shell: 100vh Full Viewport Application (Map-First) -->
 <div class="h-screen w-screen overflow-hidden flex flex-col bg-[var(--bg)] text-[var(--ink)] select-none">
   
@@ -118,44 +142,21 @@
       <!-- 100% Full-Viewport Interactive World Map with Top-Right Floating Controls -->
       <WorldRateMap onSelectCurrency={handleMapCurrencySelect} class="w-full h-full" />
 
-      <!-- Floating Bottom Dock: Ticker & View Selector -->
-      <div class="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 z-20 flex flex-col sm:flex-row items-end justify-between gap-3 pointer-events-none">
-        
-        <!-- Floating Ticker Strip -->
-        <div class="pointer-events-auto bg-[var(--bg-raised)]/92 border border-[var(--bg-rule)] rounded-2xl shadow-2xl backdrop-blur-xl px-3 py-1.5 overflow-hidden max-w-xl hidden lg:block">
-          <GlobalMoversTicker onSelectCurrency={handleTickerCurrencySelect} />
-        </div>
-
-        <!-- Floating Navigation View Pills (Anchored to the very bottom) -->
-        <div class="pointer-events-auto flex items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-raised)]/95 border border-[var(--bg-rule)] shadow-2xl backdrop-blur-xl overflow-x-auto ml-auto">
-          {#each viewOptions as opt}
-            {@const isActive = activeView === opt.id}
-            {@const IconComponent = opt.icon}
-            <button
-              type="button"
-              onclick={() => (activeView = opt.id as any)}
-              class={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                isActive
-                  ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
-                  : 'text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--bg-subtle)]'
-              }`}
-            >
-              <IconComponent class="w-3.5 h-3.5" />
-              <span>{opt.label}</span>
-            </button>
-          {/each}
-
-          <button
-            type="button"
-            onclick={() => (isAlertModalOpen = true)}
-            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--signal)] border border-[var(--signal-rule)] transition cursor-pointer"
-            title={t('masthead.ctaAlert')}
-          >
-            <Bell class="w-3.5 h-3.5" />
-            <span class="hidden md:inline">{t('masthead.ctaAlert')}</span>
-          </button>
-        </div>
-      </div>
+      <!-- Floating Bottom Dock (Isolated per Micro-App) -->
+      {#if geoStore.activeAppId === 'world-time'}
+        <TimeBottomDock />
+      {:else if geoStore.activeAppId === 'remittance-flow'}
+        <FlightBottomDock />
+      {:else if geoStore.activeAppId === 'passport-power'}
+        <PassportBottomDock />
+      {:else}
+        <KursBottomDock
+          {activeView}
+          onSelectView={(v) => (activeView = v)}
+          onSelectCurrency={handleTickerCurrencySelect}
+          onOpenAlertModal={() => (isAlertModalOpen = true)}
+        />
+      {/if}
 
     {:else}
       <!-- Overlay View Modal / Slide Container for other views (Chart, Matrix, Converter, Cards) -->
@@ -315,4 +316,9 @@
     </div>
   {/if}
 
+  <!-- GeoGlobe Pluggable Micro-App Launcher Modal -->
+  <GeoAppLauncherModal />
+
 </div>
+{/if}
+
