@@ -14,6 +14,7 @@ import type { Env } from '../db/index.ts';
 import { getDb, ratesTable, rateHistoryTable, quarantineRatesTable } from '../db/index.ts';
 import { eq, and } from 'drizzle-orm';
 import { logger } from '../logger/index.ts';
+import { recordProviderFetch } from '../telemetry/index.ts';
 
 export interface AggregatorOptions {
   providers?: IRateProvider[];
@@ -264,8 +265,29 @@ export class AggregatorService {
 
     const results = await Promise.allSettled(
       this.providers.map(async (provider) => {
-        const rates = await provider.fetchLatestRates();
-        return { providerId: provider.info.id, rates };
+        const start = performance.now();
+        try {
+          const rates = await provider.fetchLatestRates();
+          const durationMs = Math.round((performance.now() - start) * 100) / 100;
+          recordProviderFetch(this.env?.ANALYTICS, {
+            provider: provider.info.id,
+            durationMs,
+            status: 'success',
+            rateCount: rates.length,
+          });
+          return { providerId: provider.info.id, rates };
+        } catch (err) {
+          const durationMs = Math.round((performance.now() - start) * 100) / 100;
+          const errorReason = err instanceof Error ? err.message : String(err);
+          recordProviderFetch(this.env?.ANALYTICS, {
+            provider: provider.info.id,
+            durationMs,
+            status: 'error',
+            rateCount: 0,
+            errorReason,
+          });
+          throw err;
+        }
       })
     );
 

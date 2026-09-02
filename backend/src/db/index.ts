@@ -4,6 +4,7 @@ import * as schema from './schema.ts';
 export interface Env {
   DB?: D1Database;
   KURS_CACHE?: KVNamespace;
+  ANALYTICS?: AnalyticsEngineDataset;
   ENVIRONMENT?: string;
   ADMIN_SECRET?: string;
 }

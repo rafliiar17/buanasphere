@@ -2,13 +2,17 @@ import type { ConversionResult, ProviderConversion } from '../domain/rate.ts';
 import { PROVIDER_REGISTRY } from '../provider/index.ts';
 import { AggregatorService } from './aggregator.ts';
 import { logger } from '../logger/index.ts';
+import type { Env } from '../db/index.ts';
+import { recordConversion } from '../telemetry/index.ts';
 
 export class ConverterService {
   private readonly aggregator: AggregatorService;
+  private readonly env?: Env;
   private readonly log = logger.child({ module: 'converter_service' });
 
-  constructor(options?: { aggregator?: AggregatorService }) {
-    this.aggregator = options?.aggregator ?? new AggregatorService();
+  constructor(options?: { aggregator?: AggregatorService; env?: Env }) {
+    this.aggregator = options?.aggregator ?? new AggregatorService({ env: options?.env });
+    this.env = options?.env;
   }
 
   async convert(
@@ -187,6 +191,17 @@ export class ConverterService {
       },
       `Converted ${amount} ${fromUpper} to ${toUpper} using ${rateType} rate (${duration_ms}ms)`
     );
+
+    if (bestOption) {
+      recordConversion(this.env?.ANALYTICS, {
+        from: fromUpper,
+        to: toUpper,
+        amount,
+        rateType,
+        durationMs: duration_ms,
+        bestProvider: bestOption.provider,
+      });
+    }
 
     return {
       amount,
