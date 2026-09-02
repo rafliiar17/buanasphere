@@ -8,14 +8,14 @@
     {
       "binding": "DB",
       "database_name": "kurs-world-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "60645050-408c-4710-8498-e49671ab18e7",
       "migrations_dir": "drizzle"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "KURS_CACHE",
-      "id": "00000000000000000000000000000000"
+      "id": "ecbd16282ee1400fb8913e7356c829b1"
     }
   ],
   "triggers": {
