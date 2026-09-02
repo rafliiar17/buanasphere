@@ -59,7 +59,7 @@
     <div class="absolute top-4 left-4 h-7 w-44 rounded-xl animate-shimmer"></div>
 
     <!-- Shimmering geographic silhouette blocks representing continents -->
-    <div class="w-full max-w-5xl h-full flex flex-col justify-between py-10 opacity-60">
+    <div class="w-full max-w-8xl h-full flex flex-col justify-between py-10 opacity-60">
       <!-- Northern Hemisphere (Americas, Europe, Asia) -->
       <div class="flex justify-around items-center gap-12 px-6">
         <div class="space-y-3">

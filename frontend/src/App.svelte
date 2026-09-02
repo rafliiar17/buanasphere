@@ -151,7 +151,7 @@
       <div class="absolute inset-0 z-30 bg-[var(--bg)] overflow-y-auto p-4 sm:p-8 flex flex-col space-y-6">
         
         <!-- Back to Map Floating Top Bar -->
-        <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-4 border-b border-[var(--bg-rule)] pb-4">
+        <div class="max-w-8xl w-full mx-auto flex items-center justify-between gap-4 border-b border-[var(--bg-rule)] pb-4">
           <button
             type="button"
             onclick={() => (activeView = 'map')}
@@ -183,7 +183,7 @@
         </div>
 
         <!-- Render View Content -->
-        <div class="max-w-6xl w-full mx-auto pb-12">
+        <div class="max-w-8xl w-full mx-auto pb-12">
           {#if activeView === 'chart'}
             <GoogleRateChart
               initialCurrency={converterFromCurrency}
