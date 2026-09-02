@@ -200,7 +200,7 @@
           <input
             bind:this={searchInputRef}
             type="text"
-            bind:value={mapState.searchQuery}
+            value={mapState.searchQuery}
             oninput={(e) => {
               mapState.searchQuery = (e.target as HTMLInputElement).value;
               mapState.isSearchDropdownOpen = true;
@@ -451,7 +451,10 @@
           <div class="relative flex-1">
             <input
               type="number"
-              bind:value={mapState.convertAmount}
+              value={mapState.convertAmount}
+              oninput={(e) => {
+                mapState.convertAmount = Number((e.target as HTMLInputElement).value) || 0;
+              }}
               min="1"
               step="any"
               class="w-full bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-lg px-2.5 py-1.5 text-xs font-bold text-[var(--ink)] outline-none focus:border-sky-500 font-mono"
