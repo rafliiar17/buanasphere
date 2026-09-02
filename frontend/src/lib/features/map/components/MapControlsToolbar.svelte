@@ -16,7 +16,7 @@
     X,
     ArrowRightLeft
   } from 'lucide-svelte';
-  import { t, getLocalizedRegion } from '$lib/i18n';
+  import { t, getLocalizedRegion, getLocalizedCountryName, getLocalizedCurrencyName } from '$lib/i18n';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
   import { 
     type MapCountryData, 
@@ -251,11 +251,11 @@
                     <span class="text-lg shrink-0">{item.flag}</span>
                     <div class="truncate">
                       <div class="text-xs font-bold text-[var(--ink)] group-hover:text-sky-400 transition flex items-center gap-1.5">
-                        <span>{item.countryName}</span>
+                        <span>{getLocalizedCountryName(item.iso3, item.countryName)}</span>
                         <span class="text-[9px] font-semibold px-1 py-0.2 rounded bg-[var(--bg-subtle)] text-[var(--ink-3)]">{item.currencyCode}</span>
                       </div>
                       <div class="text-[10px] text-[var(--ink-4)] truncate">
-                        {item.currencyName} • {item.regionLabel}
+                        {getLocalizedCurrencyName(item.currencyCode, item.currencyName)} • {getLocalizedRegion(item.regionId)}
                       </div>
                     </div>
                   </div>
@@ -471,7 +471,7 @@
           onclick={onOpenInspector}
           class="w-full py-2 rounded-lg bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
         >
-          <span>{selectedCountry.flag} {t('map.inspectCountry')}: {selectedCountry.countryName}</span>
+          <span>{selectedCountry.flag} {t('map.inspectCountry')}: {getLocalizedCountryName(selectedCountry.iso3, selectedCountry.countryName)}</span>
           <ChevronRight class="w-3.5 h-3.5" />
         </button>
       </div>
