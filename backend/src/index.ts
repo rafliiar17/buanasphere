@@ -12,6 +12,25 @@ import { logger } from './logger/index.ts';
 import { recordApiRequest } from './telemetry/index.ts';
 import type { Env } from './db/index.ts';
 
+/**
+ * Validates CORS origin against production and development allowlists (ADR 0028).
+ */
+export function isAllowedCorsOrigin(origin: string): boolean {
+  if (!origin) return true;
+  try {
+    const url = new URL(origin);
+    const host = url.hostname.toLowerCase();
+    if (host === 'localhost' || host === '127.0.0.1') return true;
+    if (host === 'globe.arafz.id' || host.endsWith('.globe.arafz.id')) return true;
+    if (host === 'kurs.arafz.id' || host.endsWith('.kurs.arafz.id')) return true;
+    if (host === 'api-globe.arafz.id' || host.endsWith('.api-globe.arafz.id')) return true;
+    if (host === 'kurs-world-frontend.pages.dev' || host.endsWith('.kurs-world-frontend.pages.dev')) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export function createApp(env?: Env) {
   const app = new Elysia({ aot: false })
     .use(loggerMiddleware())
@@ -26,9 +45,13 @@ export function createApp(env?: Env) {
     .use(rateLimiterMiddleware({ kv: env?.KURS_CACHE }))
     .use(
       cors({
-        origin: '*',
+        origin: (request) => {
+          const origin = request.headers.get('origin');
+          if (!origin) return true;
+          return isAllowedCorsOrigin(origin);
+        },
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Request-ID'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Admin-Key', 'X-Request-ID'],
       })
     )
     .use(

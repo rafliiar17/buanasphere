@@ -46,7 +46,7 @@ jobs:
           retention-days: 1
 
   deploy-cloudflare-pages:
-    name: 🌐 Deploy Frontend to Cloudflare Pages (kurs.arafz.id)
+    name: 🌐 Deploy Frontend to Cloudflare Pages (globe.arafz.id)
     needs: [test-and-build]
     runs-on: ubuntu-latest
     steps:
@@ -71,7 +71,7 @@ jobs:
           bun x wrangler pages deploy frontend/dist --project-name=kurs-world-frontend --commit-dirty=true
 
   deploy-cloudflare-workers:
-    name: ⚡ Deploy Backend API to Cloudflare Workers (kurs-world-api)
+    name: ⚡ Deploy Backend API to Cloudflare Workers (api-globe.arafz.id)
     needs: [test-and-build]
     runs-on: ubuntu-latest
     steps:

@@ -112,9 +112,9 @@ export class ConverterService {
           type: 'commercial_bank',
         };
 
-        // When buying foreign currency with IDR, the cost is the bank's sellRate
+        // When buying foreign currency with IDR, the customer pays the bank's sellRate
         const chosenRate =
-          rateType === 'mid' ? r.midRate : rateType === 'buy' ? r.buyRate : r.sellRate;
+          rateType === 'mid' ? r.midRate : r.sellRate;
         if (!Number.isFinite(chosenRate) || chosenRate <= 0) continue;
 
         const converted = Math.round((amount / chosenRate) * 10000) / 10000;
