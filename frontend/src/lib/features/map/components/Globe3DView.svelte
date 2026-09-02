@@ -415,13 +415,15 @@
     const isDark = currentTheme === 'dark';
     const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
 
+    if (!isFlag) {
+      globeInstance.polygonCapMaterial(null);
+    } else {
+      globeInstance.polygonCapMaterial((d: any) => createProceduralFlagMaterial(d, isDark));
+    }
+
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .polygonCapMaterial((d: any) => {
-        if (!isFlag) return null;
-        return createProceduralFlagMaterial(d, isDark);
-      })
       .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
