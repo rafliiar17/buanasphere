@@ -14,16 +14,6 @@ import {
 } from './map-constants';
 import type { RateItem } from '../../api/types';
 
-// Runtime polyfill for Svelte 5 Runes in test environments (e.g. Bun test)
-if (typeof (globalThis as any).$state === 'undefined') {
-  (globalThis as any).$state = <T>(v: T): T => v;
-}
-if (typeof (globalThis as any).$derived === 'undefined') {
-  const derivedFn: any = <T>(v: T): T => v;
-  derivedFn.by = <T>(fn: () => T): T => fn();
-  (globalThis as any).$derived = derivedFn;
-}
-
 export interface MetricOption {
   id: MetricType;
   label: string;
@@ -218,18 +208,3 @@ export type MapStateStore = MapState;
 export function createMapState(initial?: Partial<MapStateConfig>): MapState {
   return new MapState(initial);
 }
-
-// Global default singleton state instance for easy direct import
-export const defaultMapState = createMapState();
-
-// Direct helper functions bound to defaultMapState for convenience
-export const setProjection = (mode: 'globe' | 'flat') => defaultMapState.setProjection(mode);
-export const setMetric = (metric: MetricType) => defaultMapState.setMetric(metric);
-export const setRegion = (region: string) => defaultMapState.setRegion(region);
-export const selectCountry = (iso3: string, currencyCode?: string) => defaultMapState.selectCountry(iso3, currencyCode);
-export const setSearchQuery = (query: string) => defaultMapState.setSearchQuery(query);
-export const openInspector = (iso3?: string, currencyCode?: string) => defaultMapState.openInspector(iso3, currencyCode);
-export const closeInspector = () => defaultMapState.closeInspector();
-export const getSearchResults = (query: string, dataList: any[] = COUNTRY_CURRENCY_MAP) => {
-  return defaultMapState.getSearchResults(query, dataList);
-};

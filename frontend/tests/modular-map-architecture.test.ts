@@ -1,3 +1,13 @@
+// Runtime polyfill for Svelte 5 Runes in test environments (e.g. Bun test)
+if (typeof (globalThis as any).$state === 'undefined') {
+  (globalThis as any).$state = <T>(v: T): T => v;
+}
+if (typeof (globalThis as any).$derived === 'undefined') {
+  const derivedFn: any = <T>(v: T): T => v;
+  derivedFn.by = <T>(fn: () => T): T => fn();
+  (globalThis as any).$derived = derivedFn;
+}
+
 import { describe, it, expect } from 'bun:test';
 import { 
   createMapState, 
