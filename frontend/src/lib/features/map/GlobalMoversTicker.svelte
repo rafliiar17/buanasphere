@@ -137,7 +137,7 @@
           type="button"
           onclick={() => handleCurrencyClick(item.targetCurrency)}
           class="inline-flex items-center gap-1 px-2 py-0.5 border border-[var(--bg-rule)] bg-[var(--bg-raised)] rounded-md hover:bg-[var(--bg-subtle)] hover:border-[var(--ink-ghost)] transition cursor-pointer text-xs font-semibold whitespace-nowrap"
-          title={`Kurs ${item.targetCurrency}/IDR`}
+          title={t('ticker.rateTitle', { currency: item.targetCurrency })}
         >
           <span class="text-[11px]">{getCurrencyFlag(item.targetCurrency)}</span>
           <span class="font-bold text-[var(--ink)]">{item.targetCurrency}</span>

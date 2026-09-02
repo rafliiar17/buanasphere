@@ -40,13 +40,16 @@
     return unsub;
   });
 
-  const viewOptions = $derived([
-    { id: 'map',       label: t('tabs.map'),       icon: Globe },
-    { id: 'chart',     label: t('tabs.chart'),     icon: LineChart },
-    { id: 'matrix',    label: t('tabs.matrix'),    icon: TableProperties },
-    { id: 'converter', label: t('tabs.converter'), icon: Calculator },
-    { id: 'cards',     label: t('tabs.cards'),     icon: Sparkles },
-  ]);
+  const viewOptions = $derived.by(() => {
+    const _loc = currentLang;
+    return [
+      { id: 'map',       label: t('tabs.map', undefined, _loc),       icon: Globe },
+      { id: 'chart',     label: t('tabs.chart', undefined, _loc),     icon: LineChart },
+      { id: 'matrix',    label: t('tabs.matrix', undefined, _loc),    icon: TableProperties },
+      { id: 'converter', label: t('tabs.converter', undefined, _loc), icon: Calculator },
+      { id: 'cards',     label: t('tabs.cards', undefined, _loc),     icon: Sparkles },
+    ];
+  });
 
   function handleMapCurrencySelect(currencyCode: string) {
     converterFromCurrency = currencyCode;
@@ -155,7 +158,7 @@
             class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-raised)] border border-[var(--bg-rule)] hover:border-sky-500 text-xs font-bold text-[var(--ink)] shadow-md transition cursor-pointer"
           >
             <ArrowLeft class="w-4 h-4 text-sky-400" />
-            <span>{t('common.back')} {t('tabs.map')}</span>
+            <span>{t('common.backToMap')}</span>
           </button>
 
           <!-- Quick Tab Switcher -->

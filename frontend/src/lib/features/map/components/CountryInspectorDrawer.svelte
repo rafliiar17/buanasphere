@@ -13,8 +13,8 @@
     ShieldCheck,
     Layers
   } from 'lucide-svelte';
-  import { t } from '$lib/i18n';
-  import { formatRupiah, formatPercent, formatDateTimeIndo, formatCurrency } from '$lib/formatters/currency';
+  import { t, formatDateTimeLocale } from '$lib/i18n';
+  import { formatRupiah, formatPercent, formatCurrency } from '$lib/formatters/currency';
   import type { MapCountryData } from '../map-constants';
   import type { MapStateStore } from '../mapState.svelte';
   import type { RateMatrixResponse } from '$lib/api/types';
@@ -132,7 +132,7 @@
             {#if !flagImgError && iso2Code}
               <img
                 src={flagSrc}
-                alt={`Bendera ${curr.countryName}`}
+                alt={t('map.flagAlt', { country: curr.countryName })}
                 class="w-full h-full object-cover"
                 onerror={() => (flagImgError = true)}
               />
@@ -163,7 +163,7 @@
           onclick={onClose}
           class="p-2 rounded-xl bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer shrink-0"
           aria-label={t('common.close')}
-          title="Tutup Panel Inspector"
+          title={t('map.closeInspector')}
         >
           <X class="w-5 h-5" />
         </button>
@@ -192,7 +192,7 @@
 
         <div class="p-3 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)] col-span-2 sm:col-span-1 flex flex-col justify-between">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">Spread</span>
+            <span class="text-[10px] uppercase font-bold text-[var(--ink-4)]">{t('map.spread')}</span>
             <span class="text-[9px] text-[var(--ink-4)]">{formatPercent(curr.spreadPercent)}</span>
           </div>
           <div class="text-sm md:text-base font-bold text-sky-400 mt-1 font-mono truncate">
@@ -286,7 +286,7 @@
               <span>{t('map.bankComparison')}</span>
             </span>
             <span class="text-[10px] text-[var(--ink-4)] font-normal">
-              {bankMatrix.rows.length} Bank
+              {t('map.bankCount', { count: bankMatrix.rows.length })}
             </span>
           </div>
 
@@ -308,7 +308,7 @@
                     {/if}
                   </div>
                   <div class="text-[10px] text-[var(--ink-4)]">
-                    Spread: {formatRupiah(item.spread, { showFraction: true })}
+                    {t('map.spread')}: {formatRupiah(item.spread, { showFraction: true })}
                   </div>
                 </div>
                 <div class="text-right shrink-0 font-mono">
@@ -316,7 +316,7 @@
                     {formatRupiah(item.buyRate, { showFraction: true })}
                   </div>
                   <div class="text-[10px] text-[var(--ink-4)]">
-                    Jual: {formatRupiah(item.sellRate, { showFraction: true })}
+                    {t('matrix.table.sellPrefix')} {formatRupiah(item.sellRate, { showFraction: true })}
                   </div>
                 </div>
               </div>
@@ -337,7 +337,7 @@
         class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 via-indigo-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white text-xs font-bold transition shadow-lg flex items-center justify-center gap-2 cursor-pointer text-center"
       >
         <Sparkles class="w-4 h-4 text-amber-300" />
-        <span>Buka Kalkulator Multi-Bank Lengkap ({curr.currencyCode})</span>
+        <span>{t('map.openFullConverterBtn', { currency: curr.currencyCode })}</span>
         <ArrowUpRight class="w-4 h-4" />
       </a>
     </div>
@@ -346,7 +346,7 @@
     <div class="pt-3 border-t border-[var(--bg-rule)] flex items-center justify-between gap-2 text-xs text-[var(--ink-4)]">
       <div class="flex items-center gap-1.5 truncate">
         <Clock class="w-3.5 h-3.5 shrink-0" />
-        <span class="truncate">{formatDateTimeIndo(new Date())}</span>
+        <span class="truncate">{formatDateTimeLocale(new Date())}</span>
       </div>
       <button
         type="button"

@@ -62,7 +62,7 @@
       font-size:10px;color:var(--ink-4);
     ">
       <span>{t('footer.copyright')}</span>
-      <span>Edge Execution &lt;50ms · Cloudflare Workers · KV Cache SWR 15m</span>
+      <span>{t('footer.edgeInfo')}</span>
     </div>
   </div>
 </footer>

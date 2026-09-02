@@ -25,13 +25,13 @@ describe('i18n Translation & Localization System', () => {
   it('should translate English keys when locale is switched to en', () => {
     setLocale('en');
     expect(getLocale()).toBe('en');
-    expect(t('tabs.map')).toBe('🗺️ World FX Map');
-    expect(t('tabs.chart')).toBe('📈 Charts & Trend Analysis');
-    expect(t('tabs.matrix')).toBe('📊 World Currency Comparison');
-    expect(t('navbar.disclaimerStrip')).toContain('Public FX rate information');
+    expect(t('tabs.map')).toBe('🗺️ World Rate Map');
+    expect(t('tabs.chart')).toBe('📈 Trends & Charts');
+    expect(t('tabs.matrix')).toBe('📊 World FX Matrix');
+    expect(t('navbar.disclaimerStrip')).toContain('Public exchange rate data');
     expect(t('chart.high')).toBe('Highest (High)');
     expect(t('chart.low')).toBe('Lowest (Low)');
-    expect(t('matrix.table.midRate')).toBe('Mid Rate (IDR)');
+    expect(t('matrix.table.midRate')).toBe('Middle Rate (Rp)');
   });
 
   it('should interpolate parameters correctly in both languages', () => {

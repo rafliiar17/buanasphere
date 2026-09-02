@@ -16,7 +16,7 @@
     X,
     ArrowRightLeft
   } from 'lucide-svelte';
-  import { t } from '$lib/i18n';
+  import { t, getLocalizedRegion } from '$lib/i18n';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
   import { 
     type MapCountryData, 
@@ -170,7 +170,7 @@
         type="button"
         onclick={onResetView}
         class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition text-[11px] font-semibold flex items-center gap-1 cursor-pointer"
-        title="Reset Zoom & Center"
+        title={t('map.resetZoom')}
       >
         <RotateCcw class="w-3.5 h-3.5" />
       </button>
@@ -178,7 +178,7 @@
         type="button"
         onclick={() => (mapState.isControlsCollapsed = !mapState.isControlsCollapsed)}
         class="p-1.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-rule)] text-[var(--ink-3)] hover:text-[var(--ink)] transition cursor-pointer"
-        aria-label="Toggle Panel"
+        aria-label={t('map.togglePanel')}
       >
         {#if mapState.isControlsCollapsed}
           <ChevronDown class="w-4 h-4" />
@@ -235,8 +235,8 @@
           <div class="absolute top-full left-0 right-0 mt-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-64 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
             {#if searchResults.length > 0}
               <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)] flex items-center justify-between">
-                <span>{mapState.searchQuery ? `${searchResults.length} Negara Ditemukan` : 'Rekomendasi Populer'}</span>
-                <span class="text-[9px] text-sky-400 font-normal">Pilih ↵</span>
+                <span>{mapState.searchQuery ? t('map.countriesFound', { count: searchResults.length }) : t('map.popularRecommendations')}</span>
+                <span class="text-[9px] text-sky-400 font-normal">{t('map.selectKey')}</span>
               </div>
               {#each searchResults as item, index}
                 {@const isHighlighted = mapState.highlightedIndex === index}
@@ -272,8 +272,8 @@
             {:else}
               <div class="px-4 py-5 text-center text-xs text-[var(--ink-4)]">
                 <Search class="w-5 h-5 mx-auto mb-1.5 opacity-40 text-sky-400" />
-                <p class="font-bold text-[var(--ink)]">Tidak ada negara ditemukan</p>
-                <p class="text-[11px] mt-0.5">Tidak ada hasil untuk "{mapState.searchQuery}"</p>
+                <p class="font-bold text-[var(--ink)]">{t('map.noCountriesFound')}</p>
+                <p class="text-[11px] mt-0.5">{t('map.noResultsFor', { query: mapState.searchQuery })}</p>
               </div>
             {/if}
           </div>
@@ -293,7 +293,7 @@
                   ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
                   : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
               }`}
-              title="Toggle Label Nama & Kode Valas di Globe 3D"
+              title={t('map.togglePinLabels')}
             >
               <MapPin class="w-2.5 h-2.5" />
               <span>{t('map.pinLabels')}: {mapState.showLabels ? 'ON' : 'OFF'}</span>
@@ -388,11 +388,11 @@
           >
             <div class="flex items-center gap-2 min-w-0">
               <span class="text-base">{currentRegionObj.emoji}</span>
-              <span class="truncate">{currentRegionObj.label}</span>
+              <span class="truncate">{getLocalizedRegion(currentRegionObj.id)}</span>
             </div>
             <div class="flex items-center gap-1.5 text-[var(--ink-4)] shrink-0">
               <span class="text-[10px] font-normal px-1.5 py-0.5 rounded bg-[var(--bg-raised)]">
-                {mapState.activeRegion === 'all' ? '195+ Negara' : `${currentRegionObj.iso3List?.length || 0} Negara`}
+                {mapState.activeRegion === 'all' ? t('map.countryCount', { count: '195+' }) : t('map.countryCount', { count: currentRegionObj.iso3List?.length || 0 })}
               </span>
               <ChevronDown class={`w-3.5 h-3.5 transition-transform duration-200 ${mapState.isRegionDropdownOpen ? 'rotate-180 text-sky-400' : ''}`} />
             </div>
@@ -401,7 +401,7 @@
           {#if mapState.isRegionDropdownOpen}
             <div class="absolute bottom-full left-0 right-0 mb-2 z-50 bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-xl shadow-2xl backdrop-blur-2xl max-h-56 overflow-y-auto divide-y divide-[var(--bg-rule)] scrollbar-thin">
               <div class="px-3 py-1.5 text-[10px] font-bold text-[var(--ink-4)] uppercase tracking-wider bg-[var(--bg-subtle)]">
-                Pilih Kawasan Fokus (Kamera Otomatis Zoom)
+                {t('map.selectFocusRegion')}
               </div>
               {#each REGION_FILTERS as reg}
                 {@const isActive = mapState.activeRegion === reg.id}
@@ -417,10 +417,10 @@
                 >
                   <div class="flex items-center gap-2 min-w-0">
                     <span class="text-base shrink-0">{reg.emoji}</span>
-                    <span class="text-xs truncate">{reg.label}</span>
+                    <span class="text-xs truncate">{getLocalizedRegion(reg.id)}</span>
                   </div>
                   <span class={`text-[10px] px-1.5 py-0.5 rounded shrink-0 ${isActive ? 'bg-sky-500/30 text-sky-200' : 'bg-[var(--bg-subtle)] text-[var(--ink-4)]'}`}>
-                    {reg.id === 'all' ? '195+' : `${reg.iso3List?.length || 0} Negara`}
+                    {reg.id === 'all' ? '195+' : t('map.countryCount', { count: reg.iso3List?.length || 0 })}
                   </span>
                 </button>
               {/each}
