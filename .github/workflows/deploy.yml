@@ -86,6 +86,7 @@ jobs:
       - name: 🗄️ Apply Cloudflare D1 Remote Migrations
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         working-directory: backend
         run: |
           bun x wrangler d1 migrations apply DB --remote
@@ -93,6 +94,7 @@ jobs:
       - name: 🚀 Deploy Elysia API Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         working-directory: backend
         run: |
           bun x wrangler deploy
