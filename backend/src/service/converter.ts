@@ -1,9 +1,11 @@
 import type { ConversionResult, ProviderConversion } from '../domain/rate.ts';
 import { PROVIDER_REGISTRY } from '../provider/index.ts';
 import { AggregatorService } from './aggregator.ts';
+import { logger } from '../logger/index.ts';
 
 export class ConverterService {
   private readonly aggregator: AggregatorService;
+  private readonly log = logger.child({ module: 'converter_service' });
 
   constructor(options?: { aggregator?: AggregatorService }) {
     this.aggregator = options?.aggregator ?? new AggregatorService();
@@ -15,16 +17,22 @@ export class ConverterService {
     to = 'IDR',
     rateType: 'buy' | 'sell' | 'mid' = 'buy'
   ): Promise<ConversionResult> {
+    const startTime = performance.now();
+
     if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
-      throw new Error('Amount must be a strictly positive number');
+      const errorMsg = 'Amount must be a strictly positive number';
+      this.log.warn({ amount, from, to, rateType }, errorMsg);
+      throw new Error(errorMsg);
     }
 
     const fromUpper = from.toUpperCase();
     const toUpper = to.toUpperCase();
+    const currency_pair = `${fromUpper}/${toUpper}`;
     const timestamp = new Date().toISOString();
 
     // Identity conversion
     if (fromUpper === toUpper) {
+      this.log.debug({ amount, currency_pair }, 'Identity conversion (same currency)');
       return {
         amount,
         fromCurrency: fromUpper,
@@ -141,6 +149,20 @@ export class ConverterService {
         curr.convertedAmount > best.convertedAmount ? curr : best
       );
     }
+
+    const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;
+    this.log.info(
+      {
+        currency_pair,
+        amount,
+        rateType,
+        duration_ms,
+        comparisonsCount: comparisons.length,
+        bestProvider: bestOption?.provider,
+        bestConvertedAmount: bestOption?.convertedAmount,
+      },
+      `Converted ${amount} ${fromUpper} to ${toUpper} using ${rateType} rate (${duration_ms}ms)`
+    );
 
     return {
       amount,

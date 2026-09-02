@@ -105,7 +105,23 @@ const BASE_RATES_IDR: Record<string, { buy: number; sell: number; mid: number; c
 };
 
 export class ApiClient {
-  private baseUrl = '/api/v1';
+  private baseUrl: string;
+
+  constructor(baseUrl?: string) {
+    if (baseUrl) {
+      this.baseUrl = baseUrl;
+    } else if (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) {
+      this.baseUrl = (import.meta as any).env.VITE_API_URL;
+    } else if (typeof process !== 'undefined' && process.env?.VITE_API_URL) {
+      this.baseUrl = process.env.VITE_API_URL;
+    } else {
+      this.baseUrl = '/api/v1';
+    }
+  }
+
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
 
   private async fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const res = await fetch(`${this.baseUrl}${endpoint}`, {

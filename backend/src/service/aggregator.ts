@@ -5,10 +5,11 @@ import type {
   QuarantineRateRecord,
   Rate,
 } from '../domain/rate.ts';
-import { createAllProviders, PROVIDER_REGISTRY } from '../provider/index.ts';
+import { createAllProviders } from '../provider/index.ts';
 import type { Env } from '../db/index.ts';
 import { getDb, ratesTable, rateHistoryTable, quarantineRatesTable } from '../db/index.ts';
-import { eq, and, desc, gte } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { logger } from '../logger/index.ts';
 
 export interface AggregatorOptions {
   providers?: IRateProvider[];
@@ -30,6 +31,8 @@ const CACHE_TTL_SECONDS = 900; // 15 minutes
 export class AggregatorService {
   private readonly providers: IRateProvider[];
   private readonly env?: Env;
+  private readonly log = logger.child({ module: 'aggregator_service' });
+
   // In-memory fallback cache when KV is not bound
   private static memoryCache: Rate[] = [];
   private static memoryCacheTimestamp = 0;
@@ -65,11 +68,17 @@ export class AggregatorService {
    * Execute scheduled or on-demand ingestion across all registered providers.
    */
   async ingestAll(): Promise<IngestionResult> {
-    const startTime = new Date().toISOString();
+    const cycleStartTime = performance.now();
+    const startTimeIso = new Date().toISOString();
     const errors: string[] = [];
     const validRates: Rate[] = [];
     const quarantinedRates: QuarantineRateRecord[] = [];
     let successfulProviders = 0;
+
+    this.log.info(
+      { totalProviders: this.providers.length },
+      'Starting currency rate aggregation cycle across all providers'
+    );
 
     const results = await Promise.allSettled(
       this.providers.map(async (provider) => {
@@ -86,6 +95,18 @@ export class AggregatorService {
           if (validation.valid) {
             validRates.push(rate);
           } else {
+            const currency_pair = `${rate.baseCurrency}/${rate.quoteCurrency}`;
+            this.log.warn(
+              {
+                provider: rate.provider,
+                currency_pair,
+                buyRate: rate.buyRate,
+                sellRate: rate.sellRate,
+                reason: validation.reason,
+              },
+              `Exchange rate anomaly detected: ${validation.reason} - placing in quarantine`
+            );
+
             quarantinedRates.push({
               provider: rate.provider,
               baseCurrency: rate.baseCurrency,
@@ -94,12 +115,14 @@ export class AggregatorService {
               sellRate: rate.sellRate,
               reason: validation.reason ?? 'Unknown validation failure',
               rawPayload: JSON.stringify(rate),
-              createdAt: startTime,
+              createdAt: startTimeIso,
             });
           }
         }
       } else {
-        errors.push(res.reason instanceof Error ? res.reason.message : String(res.reason));
+        const errorMsg = res.reason instanceof Error ? res.reason.message : String(res.reason);
+        errors.push(errorMsg);
+        this.log.error({ error: errorMsg }, `Provider failed during aggregation: ${errorMsg}`);
       }
     }
 
@@ -109,8 +132,21 @@ export class AggregatorService {
       await this.persistRatesToDb(validRates, quarantinedRates);
     }
 
+    const duration_ms = Math.round((performance.now() - cycleStartTime) * 100) / 100;
+    this.log.info(
+      {
+        duration_ms,
+        totalProviders: this.providers.length,
+        successfulProviders,
+        ratesIngested: validRates.length,
+        quarantinedCount: quarantinedRates.length,
+        errorCount: errors.length,
+      },
+      `Currency rate aggregation cycle finished in ${duration_ms}ms (ingested ${validRates.length} rates, quarantined ${quarantinedRates.length})`
+    );
+
     return {
-      timestamp: startTime,
+      timestamp: startTimeIso,
       totalProviders: this.providers.length,
       successfulProviders,
       ratesIngested: validRates.length,
@@ -131,8 +167,15 @@ export class AggregatorService {
         await this.env.KURS_CACHE.put(CACHE_KEY_LATEST_RATES, JSON.stringify(rates), {
           expirationTtl: CACHE_TTL_SECONDS,
         });
+        this.log.debug(
+          { key: CACHE_KEY_LATEST_RATES, count: rates.length },
+          'Latest rates successfully cached in Cloudflare KV'
+        );
       } catch (err) {
-        console.error('Failed to write to KV cache:', err);
+        this.log.error(
+          { error: err instanceof Error ? err.message : String(err) },
+          'Failed to write rates to Cloudflare KV cache'
+        );
       }
     }
   }
@@ -206,8 +249,16 @@ export class AggregatorService {
           createdAt: q.createdAt,
         });
       }
+
+      this.log.debug(
+        { persistedRates: rates.length, persistedQuarantine: quarantined.length },
+        'Successfully persisted rates to D1 database'
+      );
     } catch (err) {
-      console.error('Failed to persist rates to D1:', err);
+      this.log.error(
+        { error: err instanceof Error ? err.message : String(err) },
+        'Failed to persist rates to D1 database'
+      );
     }
   }
 
@@ -223,6 +274,7 @@ export class AggregatorService {
 
     // If cache is empty, trigger a fast fresh ingestion
     if (allRates.length === 0) {
+      this.log.info('Cache miss: triggering fresh rate ingestion');
       await this.ingestAll();
       allRates = await this.readRatesFromCache();
     }
@@ -252,10 +304,14 @@ export class AggregatorService {
       try {
         const cached = await this.env.KURS_CACHE.get(CACHE_KEY_LATEST_RATES, 'json');
         if (Array.isArray(cached) && cached.length > 0) {
+          this.log.debug({ key: CACHE_KEY_LATEST_RATES }, 'KV cache hit for latest rates');
           return cached as Rate[];
         }
       } catch (err) {
-        console.error('Failed to read from KV cache, falling back to memory cache:', err);
+        this.log.warn(
+          { error: err instanceof Error ? err.message : String(err) },
+          'Failed reading from KV cache, using memory fallback'
+        );
       }
     }
 
@@ -274,7 +330,13 @@ export class AggregatorService {
     const days = options.days ?? 7;
     const baseUpper = options.base.toUpperCase();
     const quoteUpper = options.quote.toUpperCase();
+    const currency_pair = `${baseUpper}/${quoteUpper}`;
     const db = getDb(this.env);
+
+    this.log.debug(
+      { currency_pair, days, provider: options.provider },
+      'Fetching historical rate series'
+    );
 
     let points: HistoricalRatePoint[] = [];
 
@@ -283,7 +345,6 @@ export class AggregatorService {
       const whereConditions = [
         eq(rateHistoryTable.baseCurrency, baseUpper),
         eq(rateHistoryTable.quoteCurrency, quoteUpper),
-        gte(rateHistoryTable.timestamp, cutoffDate),
       ];
 
       if (options.provider) {
@@ -296,19 +357,23 @@ export class AggregatorService {
         .where(and(...whereConditions))
         .orderBy(rateHistoryTable.timestamp);
 
-      points = rows.map((r) => ({
-        date: r.timestamp,
-        buyRate: r.buyRate,
-        sellRate: r.sellRate,
-        midRate: r.midRate,
-        provider: r.provider,
-      }));
+      points = rows
+        .filter((r) => r.timestamp >= cutoffDate)
+        .map((r) => ({
+          date: r.timestamp,
+          buyRate: r.buyRate,
+          sellRate: r.sellRate,
+          midRate: r.midRate,
+          provider: r.provider,
+        }));
     }
 
     // If no DB data or insufficient points, generate simulated realistic historical curve based on latest rate
     if (points.length === 0) {
       const latestRates = await this.getLatestRates({ base: baseUpper, quote: quoteUpper });
-      const targetRate = latestRates.find((r) => !options.provider || r.provider === options.provider.toLowerCase()) ?? latestRates[0];
+      const targetRate =
+        latestRates.find((r) => !options.provider || r.provider === options.provider.toLowerCase()) ??
+        latestRates[0];
       const baseMid = targetRate ? targetRate.midRate : 15850;
 
       const now = Date.now();
@@ -321,7 +386,7 @@ export class AggregatorService {
         const sell = Math.round(mid * 1.006 * 100) / 100;
 
         points.push({
-          date: d.toISOString().split('T')[0],
+          date: d.toISOString().split('T')[0] ?? d.toISOString(),
           buyRate: buy,
           sellRate: sell,
           midRate: mid,

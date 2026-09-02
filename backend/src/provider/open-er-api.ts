@@ -1,4 +1,5 @@
 import type { IRateProvider, Rate, RateProviderInfo } from '../domain/rate.ts';
+import { logger } from '../logger/index.ts';
 
 export interface OpenERApiResponse {
   result: string;
@@ -38,6 +39,7 @@ export class OpenERApiProvider implements IRateProvider {
   public readonly info: RateProviderInfo = OPEN_ER_API_INFO;
   private readonly baseUrl: string;
   private readonly customFetch?: typeof fetch;
+  private readonly log = logger.child({ provider: this.info.id });
 
   constructor(options?: { baseUrl?: string; customFetch?: typeof fetch }) {
     this.baseUrl = options?.baseUrl ?? 'https://open.er-api.com/v6/latest/USD';
@@ -45,6 +47,9 @@ export class OpenERApiProvider implements IRateProvider {
   }
 
   async fetchLatestRates(): Promise<Rate[]> {
+    const startTime = performance.now();
+    this.log.debug({ sourceUrl: this.baseUrl }, 'Starting exchange rate fetch from OpenERApi');
+
     const fetchFn = this.customFetch ?? fetch;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -61,18 +66,27 @@ export class OpenERApiProvider implements IRateProvider {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(`OpenERApi HTTP error: ${response.status} ${response.statusText}`);
+        const errorMsg = `OpenERApi HTTP error: ${response.status} ${response.statusText}`;
+        const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;
+        this.log.error({ duration_ms, status: response.status, error: errorMsg }, errorMsg);
+        throw new Error(errorMsg);
       }
 
       const data = (await response.json()) as OpenERApiResponse;
 
       if (data.result !== 'success' || !data.rates || typeof data.rates !== 'object') {
-        throw new Error(`Invalid OpenERApi response payload: ${JSON.stringify(data)}`);
+        const errorMsg = `Invalid OpenERApi response payload: ${JSON.stringify(data)}`;
+        const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;
+        this.log.error({ duration_ms, error: errorMsg }, errorMsg);
+        throw new Error(errorMsg);
       }
 
       const idrRate = data.rates['IDR'];
       if (!idrRate || idrRate <= 0) {
-        throw new Error(`IDR rate missing or invalid in OpenERApi response`);
+        const errorMsg = 'IDR rate missing or invalid in OpenERApi response';
+        const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;
+        this.log.error({ duration_ms, error: errorMsg }, errorMsg);
+        throw new Error(errorMsg);
       }
 
       const retrievedAt = new Date().toISOString();
@@ -104,12 +118,29 @@ export class OpenERApiProvider implements IRateProvider {
         });
       }
 
+      const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;
+      this.log.info(
+        {
+          duration_ms,
+          parsedRatesCount: rates.length,
+          baseCode: data.base_code,
+        },
+        `Successfully fetched and parsed ${rates.length} rates from OpenERApi (${duration_ms}ms)`
+      );
+
       return rates;
     } catch (error) {
       clearTimeout(timeoutId);
+      const duration_ms = Math.round((performance.now() - startTime) * 100) / 100;
       if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('OpenERApi request timed out after 5000ms');
+        const timeoutMsg = 'OpenERApi request timed out after 5000ms';
+        this.log.error({ duration_ms, error: timeoutMsg }, timeoutMsg);
+        throw new Error(timeoutMsg);
       }
+      this.log.error(
+        { duration_ms, error: error instanceof Error ? error.message : String(error) },
+        `Failed fetching rates from OpenERApi: ${error instanceof Error ? error.message : String(error)}`
+      );
       throw error;
     }
   }

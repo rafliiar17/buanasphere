@@ -16,11 +16,16 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "types": [
-      "@types/bun"
-    ]
+      "@types/bun",
+      "@cloudflare/workers-types"
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "references": [
-    { "path": "./backend" },
-    { "path": "./frontend" }
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "drizzle.config.ts"
   ]
 }

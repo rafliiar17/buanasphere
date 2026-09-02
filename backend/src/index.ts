@@ -4,16 +4,19 @@ import { swagger } from '@elysiajs/swagger';
 import { ratesRoutes } from './routes/rates.ts';
 import { convertRoutes } from './routes/convert.ts';
 import { historyRoutes } from './routes/history.ts';
+import { loggerMiddleware } from './middleware/logger.ts';
 import { AggregatorService } from './service/aggregator.ts';
+import { logger } from './logger/index.ts';
 import type { Env } from './db/index.ts';
 
 export function createApp(env?: Env) {
   const app = new Elysia()
+    .use(loggerMiddleware())
     .use(
       cors({
         origin: '*',
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Request-ID'],
       })
     )
     .use(
@@ -80,7 +83,7 @@ export function createApp(env?: Env) {
   return app;
 }
 
-export const app = createApp();
+export type App = ReturnType<typeof createApp>;
 
 export default {
   fetch(request: Request, env: Env, ctx: ExecutionContext) {
@@ -88,7 +91,10 @@ export default {
     return workerApp.fetch(request);
   },
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-    console.log(`[Cron Trigger] Ingesting latest exchange rates at ${new Date().toISOString()}`);
+    logger.info(
+      { scheduledTime: event.scheduledTime, cron: event.cron },
+      `[Cron Trigger] Ingesting latest exchange rates at ${new Date().toISOString()}`
+    );
     const aggregator = new AggregatorService({ env });
     ctx.waitUntil(aggregator.ingestAll());
   },

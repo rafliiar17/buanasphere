@@ -4,25 +4,19 @@
   "private": true,
   "description": "Real-time multi-source currency exchange rate aggregator and public developer API",
   "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "test": "bun test",
-    "check": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
-  },
-  "dependencies": {
-    "@elysiajs/cors": "^1.2.0",
-    "@elysiajs/swagger": "^1.2.0",
-    "drizzle-orm": "^0.38.4",
-    "elysia": "^1.2.10"
+    "dev": "bun x concurrently -k -n \"BE,FE\" -c \"blue.bold,green.bold\" \"bun run dev:be\" \"bun run dev:fe\"",
+    "dev:be": "cd backend && bun run dev",
+    "dev:fe": "cd frontend && bun run dev",
+    "test": "bun test backend && bun test frontend",
+    "build": "(cd backend && bun run build 2>/dev/null || true) && (cd frontend && bun run build)",
+    "check": "(cd backend && (bun run check 2>/dev/null || tsc --noEmit)) && (cd frontend && bun run check)"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250214.0",
-    "@types/bun": "^1.2.2",
-    "drizzle-kit": "^0.30.4",
-    "typescript": "^5.7.3",
-    "wrangler": "^3.109.2"
+    "concurrently": "^9.1.2"
   }
 }
