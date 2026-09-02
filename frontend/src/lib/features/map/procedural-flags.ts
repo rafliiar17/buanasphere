@@ -594,8 +594,9 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
       uniform int patternType;
 
       void main() {
-        // Precision spherical coordinate extraction matching globe.gl polar2Cartesian
-        float theta = atan(vPos.x, vPos.z) * 57.29577951308232;
+        // Exact spherical coordinate extraction matching three-conic-polygon-geometry
+        // x = r * sin(phi) * cos(theta), z = r * sin(phi) * sin(theta) => theta = atan(z, x)
+        float theta = atan(vPos.z, vPos.x) * 57.29577951308232;
         float lon = 90.0 - theta;
         if (lon > 180.0) lon -= 360.0;
         if (lon < -180.0) lon += 360.0;
@@ -609,8 +610,10 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
         if (hasTexture > 0.5) {
           // Render synchronous high-resolution canvas flag texture with 100% vector detail
           vec4 tex = texture2D(flagTexture, vec2(u, 1.0 - v));
-          gl_FragColor = vec4(tex.rgb, 0.95);
-          return;
+          if (tex.a > 0.05) {
+            gl_FragColor = vec4(tex.rgb, 0.95);
+            return;
+          }
         }
 
         // Geometric fallback for headless test runners

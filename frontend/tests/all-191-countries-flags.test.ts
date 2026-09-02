@@ -18,13 +18,15 @@ function simulateShaderSample(
   const phi = (90 - lat) * Math.PI / 180;
   const theta = (90 - lng) * Math.PI / 180;
   const r = 100;
+  // Exact three-conic-polygon-geometry polar2Cartesian:
+  // x = r * sin(phi) * cos(theta), y = r * cos(phi), z = r * sin(phi) * sin(theta)
   const vPos = {
-    x: r * Math.sin(phi) * Math.sin(theta),
+    x: r * Math.sin(phi) * Math.cos(theta),
     y: r * Math.cos(phi),
-    z: r * Math.sin(phi) * Math.cos(theta)
+    z: r * Math.sin(phi) * Math.sin(theta)
   };
 
-  const thetaRecovered = Math.atan2(vPos.x, vPos.z) * (180 / Math.PI);
+  const thetaRecovered = Math.atan2(vPos.z, vPos.x) * (180 / Math.PI);
   let lonRecovered = 90.0 - thetaRecovered;
   while (lonRecovered > 180.0) lonRecovered -= 360.0;
   while (lonRecovered < -180.0) lonRecovered += 360.0;
