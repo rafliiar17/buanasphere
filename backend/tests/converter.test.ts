@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'bun:test';
-import { AggregatorService } from '../src/service/aggregator.ts';
+import { describe, expect, it, beforeEach } from 'bun:test';
+import { AggregatorService, clearMemoryCache } from '../src/service/aggregator.ts';
 import { ConverterService } from '../src/service/converter.ts';
 import { ComparatorService } from '../src/service/comparator.ts';
 import type { IRateProvider, Rate } from '../src/domain/rate.ts';
@@ -16,6 +16,11 @@ class MockProvider implements IRateProvider {
 }
 
 describe('ConverterService & ComparatorService', () => {
+  beforeEach(() => {
+    // Clear static memory cache to prevent bleed between test files
+    clearMemoryCache();
+  });
+
   const mockBcaRates: Rate[] = [
     {
       provider: 'bca',
