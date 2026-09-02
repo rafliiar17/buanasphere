@@ -27,6 +27,7 @@ export const idTranslations = {
     share: 'Bagikan',
     download: 'Unduh',
     back: 'Kembali',
+    backToMap: 'Kembali ke Peta Kurs Dunia',
     all: 'Semua',
     search: 'Cari',
     clear: 'Hapus',
@@ -79,6 +80,7 @@ export const idTranslations = {
     topLosers: 'Top Pelemah vs IDR',
     popularCurrencies: 'Valas Populer',
     marketStatus: 'Pasar Global Aktif',
+    rateTitle: 'Kurs {currency}/IDR',
   },
 
   // World Rate Map
@@ -131,6 +133,30 @@ export const idTranslations = {
     bestSell: 'Jual Terbaik',
     openFullMatrix: 'Buka di Matrix Lengkap 📊',
     viewFullChart: 'Buka di Halaman Grafik 📈',
+    flagAlt: 'Bendera {country}',
+    closeInspector: 'Tutup Panel Inspector',
+    bankCount: '{count} Bank',
+    openFullConverterBtn: 'Buka Kalkulator Multi-Bank Lengkap ({currency})',
+    resetZoom: 'Reset Zoom & Pusat Peta',
+    togglePanel: 'Buka/Tutup Panel Kontrol',
+    countriesFound: '{count} Negara Ditemukan',
+    popularRecommendations: 'Rekomendasi Populer',
+    selectKey: 'Pilih ↵',
+    noCountriesFound: 'Tidak ada negara ditemukan',
+    noResultsFor: 'Tidak ada hasil untuk "{query}"',
+    togglePinLabels: 'Toggle Label Nama & Kode Valas di Globe 3D',
+    selectFocusRegion: 'Pilih Kawasan Fokus (Kamera Otomatis Zoom)',
+    countryCount: '{count} Negara',
+    regions: {
+      all: 'Semua Kawasan',
+      asean: 'ASEAN',
+      eastAsia: 'Asia Timur',
+      europe: 'Eropa',
+      americas: 'Amerika',
+      middleEast: 'Timur Tengah',
+      africa: 'Afrika',
+      oceania: 'Oceania',
+    },
   },
 
   // Google-Style Chart
@@ -148,6 +174,7 @@ export const idTranslations = {
     periodPeak: 'Puncak {period}',
     periodBase: 'Dasar {period}',
     periodMean: 'Mean {period}',
+    interactiveChartAria: 'Area Interaktif Grafik Nilai Tukar',
     ranges: {
       '1D': { label: '1H', fullLabel: '1 Hari' },
       '5D': { label: '5H', fullLabel: '5 Hari' },
@@ -185,6 +212,8 @@ export const idTranslations = {
     table: {
       currencyCountry: 'Mata Uang & Negara',
       midRate: 'Kurs Tengah (Rp)',
+      buyRate: 'Kurs Beli (Buy)',
+      sellRate: 'Kurs Jual (Sell)',
       change24h: '24 Jam (%)',
       change1w: '1 Minggu (%)',
       change1m: '1 Bulan (%)',
@@ -196,6 +225,7 @@ export const idTranslations = {
       sellPrefix: 'Jual:',
       openChart: 'Buka Grafik Google-Style',
       convertCurrency: 'Konversi Valas',
+      position52w: 'Posisi: {percent}%',
     },
     noMatchTitle: 'Tidak ada mata uang yang cocok',
     noMatchDesc: 'Coba ubah kata kunci pencarian atau reset filter kawasan untuk melihat daftar lengkap mata uang dunia.',
@@ -260,6 +290,12 @@ export const idTranslations = {
     copyLink: 'Salin Tautan Kartu',
     marketOverview: 'Ringkasan Pasar Valuta Asing',
     ratesAsOf: 'Kurs per tanggal {date}',
+    shareTitle: '📊 *KURS WORLD — Update Kurs Valas Hari Ini*',
+    shareSource: 'Sumber: Multi-Bank Indonesia',
+    shareBuy: 'Beli',
+    shareSell: 'Jual',
+    shareChange: '24 Jam',
+    shareFooter: '🔗 Cek perbandingan lengkap: https://kurs.world\n100% Gratis • Non-Fintech',
   },
 
   // Editorial Footer Strip
@@ -281,5 +317,6 @@ export const idTranslations = {
     dataAttributionDesc: 'Data nilai tukar bersumber dari Bank Indonesia (JISDOR), Open Exchange Rates API, dan referensi pasar valuta asing global. Platform ini murni merupakan media penyedia informasi publik non-fintech dan bukan merupakan entitas penyedia jasa keuangan atau transaksi valas.',
     disclaimer: 'Informasi yang disajikan ditujukan untuk tujuan edukasi dan referensi umum semata. Kurs aktual di money changer atau perbankan dapat berbeda sesuai biaya dan kebijakan masing-masing institusi.',
     copyright: '© 2026 Kurs World. Public Open Data Initiative.',
+    edgeInfo: 'Edge Execution <50ms · Cloudflare Workers · KV Cache SWR 15m',
   },
 };

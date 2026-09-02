@@ -118,3 +118,37 @@ export function formatDateLocale(dateInput: string | number | Date, options?: In
     return '-';
   }
 }
+
+export function formatTimeLocale(dateInput: string | number | Date, options?: Intl.DateTimeFormatOptions): string {
+  try {
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return '-';
+    const locale = currentLocaleState === 'en' ? 'en-US' : 'id-ID';
+    return d.toLocaleTimeString(locale, options || { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return '-';
+  }
+}
+
+export function formatDateTimeLocale(dateInput: string | number | Date): string {
+  try {
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return '-';
+    const locale = currentLocaleState === 'en' ? 'en-US' : 'id-ID';
+    const dateStr = d.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+    const timeStr = d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+    return `${dateStr}, ${timeStr}`;
+  } catch {
+    return '-';
+  }
+}
+
+/**
+ * Get localized region label based on active locale
+ */
+export function getLocalizedRegion(regionId: string, targetLocale?: SupportedLocale): string {
+  const key = `map.regions.${regionId}`;
+  const translated = t(key, undefined, targetLocale);
+  if (translated !== key) return translated;
+  return regionId;
+}

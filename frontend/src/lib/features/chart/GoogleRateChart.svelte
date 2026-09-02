@@ -17,8 +17,8 @@
   import CardSkeleton from '$lib/components/skeletons/CardSkeleton.svelte';
   import { apiClient, SUPPORTED_CURRENCIES, BASE_RATES_IDR } from '$lib/api/client';
   import type { CurrencyInfo } from '$lib/api/types';
-  import { formatRupiah, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
-  import { t, formatDateLocale } from '$lib/i18n';
+  import { formatRupiah, formatPercent } from '$lib/formatters/currency';
+  import { t, formatDateLocale, formatDateTimeLocale } from '$lib/i18n';
 
   // Component Props (Svelte 5 Runes)
   interface Props {
@@ -414,7 +414,7 @@
       return hoveredPoint.dateTimeLabel;
     }
     const now = new Date();
-    return `${now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}, ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} UTC • Penafian`;
+    return `${formatDateTimeLocale(now)} UTC • ${t('common.disclaimer')}`;
   });
 
   // Range Label text for badge
@@ -593,7 +593,7 @@
     <div
       bind:this={chartContainerRef}
       role="region"
-      aria-label="Area Interaktif Grafik Nilai Tukar"
+      aria-label={t('chart.interactiveChartAria')}
       onpointermove={handlePointerMove}
       onpointerleave={handlePointerLeave}
       style="

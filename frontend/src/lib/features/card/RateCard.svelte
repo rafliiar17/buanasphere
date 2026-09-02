@@ -8,8 +8,8 @@
   } from 'lucide-svelte';
   import { apiClient, SUPPORTED_CURRENCIES } from '$lib/api/client';
   import type { RateItem } from '$lib/api/types';
-  import { formatRupiah, formatPercent, formatDateTimeIndo } from '$lib/formatters/currency';
-  import { t } from '$lib/i18n';
+  import { formatRupiah, formatPercent } from '$lib/formatters/currency';
+  import { t, formatDateTimeLocale } from '$lib/i18n';
 
   let rates = $state<RateItem[]>([]);
   let isLoading = $state(true);
@@ -32,18 +32,18 @@
 
   function copySummary() {
     if (rates.length === 0) return;
-    const now = formatDateTimeIndo(new Date());
-    let text = `📊 *KURS WORLD — Update Kurs Valas Hari Ini*\n🕒 ${now}\nSumber: Multi-Bank Indonesia\n\n`;
+    const now = formatDateTimeLocale(new Date());
+    let text = `${t('cards.shareTitle')}\n🕒 ${now}\n${t('cards.shareSource')}\n\n`;
 
     rates.slice(0, 6).forEach(r => {
       const flag = getCurrencyFlag(r.targetCurrency);
       text += `${flag} *${r.targetCurrency}/IDR*\n`;
-      text += `  • Beli : ${formatRupiah(r.buyRate)}\n`;
-      text += `  • Jual : ${formatRupiah(r.sellRate)}\n`;
-      text += `  • 24h  : ${formatPercent(r.change24h || 0)}\n\n`;
+      text += `  • ${t('cards.shareBuy')} : ${formatRupiah(r.buyRate)}\n`;
+      text += `  • ${t('cards.shareSell')} : ${formatRupiah(r.sellRate)}\n`;
+      text += `  • ${t('cards.shareChange')}  : ${formatPercent(r.change24h || 0)}\n\n`;
     });
 
-    text += `🔗 Cek perbandingan lengkap: https://kurs.world\n100% Gratis • Non-Fintech`;
+    text += `${t('cards.shareFooter')}`;
 
     navigator.clipboard.writeText(text);
     isCopied = true;
