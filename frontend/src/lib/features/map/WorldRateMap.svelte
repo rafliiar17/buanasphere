@@ -298,8 +298,35 @@
       if (chg < -0.05) return isDark ? 'rgba(248, 113, 113, 0.75)' : 'rgba(239, 68, 68, 0.75)';
       return isDark ? 'rgba(51, 65, 85, 0.65)' : 'rgba(203, 213, 225, 0.75)';
     } else {
-      // In Flag mode: default neutral background behind texture
-      return isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(241, 245, 249, 0.95)';
+      // In Flag / Political mode: distinct sovereign country colors
+      const palette = isDark ? [
+        'rgba(225, 29, 72, 0.80)',   // Rose
+        'rgba(37, 99, 235, 0.80)',   // Royal Blue
+        'rgba(5, 150, 105, 0.80)',   // Emerald
+        'rgba(217, 119, 6, 0.80)',   // Amber
+        'rgba(147, 51, 234, 0.80)',  // Purple
+        'rgba(6, 182, 212, 0.80)',   // Cyan
+        'rgba(234, 88, 12, 0.80)',   // Orange
+        'rgba(13, 148, 136, 0.80)',  // Teal
+        'rgba(79, 70, 229, 0.80)',   // Indigo
+        'rgba(22, 163, 74, 0.80)',   // Green
+      ] : [
+        'rgba(244, 63, 94, 0.75)',   // Rose
+        'rgba(59, 130, 246, 0.75)',  // Blue
+        'rgba(16, 185, 129, 0.75)',  // Emerald
+        'rgba(245, 158, 11, 0.75)',  // Amber
+        'rgba(168, 85, 247, 0.75)',  // Purple
+        'rgba(14, 165, 233, 0.75)',  // Sky
+        'rgba(249, 115, 22, 0.75)',  // Orange
+        'rgba(20, 184, 166, 0.75)',  // Teal
+        'rgba(99, 102, 241, 0.75)',  // Indigo
+        'rgba(34, 197, 94, 0.75)',   // Green
+      ];
+      let hash = 0;
+      for (let i = 0; i < iso3.length; i++) {
+        hash = (hash * 31 + iso3.charCodeAt(i)) & 0xffffffff;
+      }
+      return palette[Math.abs(hash) % palette.length];
     }
   }
 
@@ -413,16 +440,7 @@
       .atmosphereAltitude(0.22)
       .polygonsData(geoJsonFeatures)
       .polygonGeoJsonGeometry((d: any) => d.geometry)
-      .polygonCapMaterial((d: any) => {
-        if (activeMetric !== 'flag') return null;
-        const iso2 = getFeatureIso2(d);
-        if (!iso2) return null;
-        return getFlagMaterial(iso2);
-      })
-      .polygonCapColor((d: any) => {
-        if (activeMetric === 'flag') return 'rgba(30, 41, 59, 0.9)';
-        return getPolygonColor(d);
-      })
+      .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
       .polygonAltitude((d: any) => {
@@ -439,9 +457,7 @@
             if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
             return 0.008;
           });
-          if (activeMetric !== 'flag') {
-            globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
-          }
+          globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
         }
       })
       .onPolygonClick((clickD: any) => {
@@ -449,7 +465,7 @@
         const iso3 = getFeatureIso3(clickD);
         const country = mapData.find(d => d.iso3 === iso3);
         if (country) {
-          handleCountryClick(country);
+          handleSelectFromSearch(country);
         }
       });
 
@@ -467,7 +483,7 @@
         .labelResolution(2)
         .onLabelClick((d: any) => {
           if (d.country) {
-            handleCountryClick(d.country);
+            handleSelectFromSearch(d.country);
           }
         })
         .onLabelHover((d: any) => {
@@ -497,16 +513,7 @@
     globeInstance
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .polygonCapMaterial((d: any) => {
-        if (activeMetric !== 'flag') return null;
-        const iso2 = getFeatureIso2(d);
-        if (!iso2) return null;
-        return getFlagMaterial(iso2);
-      })
-      .polygonCapColor((d: any) => {
-        if (activeMetric === 'flag') return 'rgba(30, 41, 59, 0.9)';
-        return getPolygonColor(d);
-      })
+      .polygonCapColor((d: any) => getPolygonColor(d))
       .polygonAltitude((d: any) => {
         const iso3 = getFeatureIso3(d);
         if (selectedCountryIso3 === iso3 || hoveredIso3 === iso3) return 0.055;
