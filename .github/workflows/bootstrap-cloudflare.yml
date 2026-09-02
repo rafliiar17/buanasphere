@@ -1,0 +1,54 @@
+name: ⚡ Bootstrap Cloudflare Resources (D1, KV, Pages)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bootstrap:
+    name: 🏗️ Provision Cloudflare Resources
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 📦 Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🌐 Provision Cloudflare Pages Project
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "Creating Cloudflare Pages project 'kurs-world-frontend'..."
+          bun x wrangler pages project create kurs-world-frontend --production-branch main || echo "Pages project already exists or created"
+
+      - name: 🗄️ Provision Cloudflare D1 Database
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "Creating D1 Database 'kurs-world-db'..."
+          bun x wrangler d1 create kurs-world-db || echo "D1 Database already exists or created"
+
+      - name: ⚡ Provision Cloudflare KV Namespace
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "Creating KV Namespace 'KURS_CACHE'..."
+          bun x wrangler kv namespace create KURS_CACHE || echo "KV Namespace already exists or created"
+
+      - name: 📋 Inspect Provisioned Resources
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "=== Cloudflare D1 Databases ==="
+          bun x wrangler d1 list --json
+          echo "=== Cloudflare KV Namespaces ==="
+          bun x wrangler kv namespace list
