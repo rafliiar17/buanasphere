@@ -48,6 +48,16 @@ export const idTranslations = {
     timeAgoDays: '{days} hari lalu',
   },
 
+  // Global App Splash Screen
+  splash: {
+    welcome: 'Selamat Datang di Kurs.World',
+    tagline: 'Pasar Valuta Asing Global 195+ Negara Terhadap Rupiah (IDR)',
+    edgeConnecting: 'Menghubungkan ke Cloudflare Workers Edge Network (<50ms)...',
+    ratesLoading: 'Memuat Nilai Tukar 195+ Valuta Asing Dunia...',
+    uiPreparing: 'Menyiapkan Antarmuka Interaktif & Peta 3D...',
+    edgeBadge: 'Edge Execution <50ms · KV Cache SWR',
+  },
+
   // Navbar
   navbar: {
     disclaimerStrip: 'Informasi kurs publik · 100% gratis · Non-fintech · Tanpa registrasi wajib',

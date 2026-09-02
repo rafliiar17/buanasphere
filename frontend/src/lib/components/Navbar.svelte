@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { ShieldCheck, Globe, Sun, Moon } from 'lucide-svelte';
+  import { ShieldCheck, Globe, Sun, Moon, Sparkles } from 'lucide-svelte';
   import { t, getLocale, setLocale, subscribeLocale, SUPPORTED_LOCALES, type SupportedLocale } from '$lib/i18n';
   import { getTheme, toggleTheme, subscribeTheme, type Theme } from '$lib/theme';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { onMount } from 'svelte';
 
   let currentLang = $state<SupportedLocale>(getLocale());
@@ -54,8 +55,34 @@
       </span>
     </a>
 
-    <!-- Right — Language switcher + Theme switcher + live status + API link -->
+    <!-- Right — GeoGlobe App Suite Launcher + Language switcher + Theme switcher + live status + API link -->
     <div style="display:flex;align-items:center;gap:10px;">
+
+      <!-- GeoGlobe App Launcher Trigger Button -->
+      <button
+        type="button"
+        onclick={() => (geoStore.isLauncherOpen = true)}
+        style="
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 10px;
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: var(--radius);
+          color: #10b981;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 150ms;
+        "
+        onmouseenter={(e) => { e.currentTarget.style.background = 'rgba(16, 185, 129, 0.2)'; }}
+        onmouseleave={(e) => { e.currentTarget.style.background = 'rgba(16, 185, 129, 0.1)'; }}
+        title="Buka Menu GeoGlobe App Suite"
+      >
+        <Sparkles style="width:13px;height:13px;" />
+        <span style="display:none;" class="sm-flex">{geoStore.activeApp.name}</span>
+      </button>
 
       <!-- Language Selector Toggle -->
       <div style="display:flex;align-items:center;background:var(--bg-subtle);border:1px solid var(--bg-rule);border-radius:var(--radius);padding:2px;">
