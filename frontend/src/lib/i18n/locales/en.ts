@@ -84,6 +84,9 @@ export const enTranslations = {
   // World Rate Map
   map: {
     searchPlaceholder: 'Search country, currency, or ISO-3 code (e.g. Japan, USD, JPN, EUR)...',
+    projectionMode: 'Projection:',
+    projectionGlobe: '3D Globe 🌍',
+    projectionFlat: 'Flat Map 🗺️',
     modeRate: 'Nominal Rate (IDR)',
     modeChange: '24h Trend (%)',
     modeLabel: 'Mode:',

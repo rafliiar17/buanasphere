@@ -59,6 +59,7 @@
   let { onSelectCurrency, class: className = '' }: Props = $props();
 
   // Svelte 5 States
+  let projectionMode = $state<'globe' | 'flat'>('globe');
   let activeMetric = $state<MetricType>('rate');
   let activeRegion = $state<RegionId>('all');
   let selectedCurrencyCode = $state<string>('USD');
@@ -251,6 +252,7 @@
       [1.0, '#10b981'],   // bright emerald (menguat)
     ];
 
+    const isGlobe = projectionMode === 'globe';
     const isRateMetric = activeMetric === 'rate';
     const regionObj = REGION_FILTERS.find(r => r.id === activeRegion) || REGION_FILTERS[0];
 
@@ -303,31 +305,57 @@
       },
     };
 
-    const layout = {
-      geo: {
-        projection: {
-          type: 'natural earth' as const,
-          scale: regionObj.zoom,
+    const geoConfig = isGlobe ? {
+      projection: {
+        type: 'orthographic' as const,
+        scale: regionObj.id === 'all' ? 1.0 : (regionObj.zoom ? Math.min(regionObj.zoom * 0.95, 3.2) : 1.2),
+        rotation: {
+          lon: regionObj.lon ?? 110,
+          lat: regionObj.lat ?? 10,
+          roll: 0,
         },
-        center: {
-          lon: regionObj.lon,
-          lat: regionObj.lat,
-        },
-        showcoastlines: true,
-        coastlinecolor: isDark ? '#475569' : '#94a3b8',
-        coastlinewidth: 0.9,
-        showland: true,
-        landcolor: isDark ? '#0f172a' : '#f8fafc',
-        showocean: true,
-        oceancolor: isDark ? '#080d1a' : '#e2e8f0',
-        showlakes: true,
-        lakecolor: isDark ? '#080d1a' : '#e2e8f0',
-        showcountries: true,
-        countrycolor: isDark ? '#1e293b' : '#cbd5e1',
-        countrywidth: 0.8,
-        showframe: false,
-        bgcolor: 'rgba(0,0,0,0)',
       },
+      showcoastlines: true,
+      coastlinecolor: isDark ? '#475569' : '#94a3b8',
+      coastlinewidth: 0.9,
+      showland: true,
+      landcolor: isDark ? '#0f172a' : '#f8fafc',
+      showocean: true,
+      oceancolor: isDark ? '#050a14' : '#e0f2fe',
+      showlakes: true,
+      lakecolor: isDark ? '#050a14' : '#e0f2fe',
+      showcountries: true,
+      countrycolor: isDark ? '#1e293b' : '#cbd5e1',
+      countrywidth: 0.8,
+      showframe: false,
+      bgcolor: 'rgba(0,0,0,0)',
+    } : {
+      projection: {
+        type: 'natural earth' as const,
+        scale: regionObj.zoom,
+      },
+      center: {
+        lon: regionObj.lon,
+        lat: regionObj.lat,
+      },
+      showcoastlines: true,
+      coastlinecolor: isDark ? '#475569' : '#94a3b8',
+      coastlinewidth: 0.9,
+      showland: true,
+      landcolor: isDark ? '#0f172a' : '#f8fafc',
+      showocean: true,
+      oceancolor: isDark ? '#080d1a' : '#e2e8f0',
+      showlakes: true,
+      lakecolor: isDark ? '#080d1a' : '#e2e8f0',
+      showcountries: true,
+      countrycolor: isDark ? '#1e293b' : '#cbd5e1',
+      countrywidth: 0.8,
+      showframe: false,
+      bgcolor: 'rgba(0,0,0,0)',
+    };
+
+    const layout = {
+      geo: geoConfig,
       paper_bgcolor: 'rgba(0,0,0,0)',
       plot_bgcolor: 'rgba(0,0,0,0)',
       margin: { t: 0, b: 0, l: 0, r: 0 },
@@ -374,6 +402,12 @@
 
   function handleCloseInspector() {
     isInspectorOpen = false;
+  }
+
+  function toggleProjection(mode: 'globe' | 'flat') {
+    if (projectionMode === mode) return;
+    projectionMode = mode;
+    renderPlotlyMap();
   }
 
   function toggleMetric(metric: MetricType) {
@@ -529,7 +563,7 @@
           <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
         </span>
         <span class="font-bold tracking-tight">Kurs.World</span>
-        <span class="text-[10px] text-[var(--ink-4)] font-normal">• 195+ {t('map.quickSelection')}</span>
+        <span class="text-[10px] text-[var(--ink-4)] font-normal">• {projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'} (195+ Valas)</span>
       </div>
     </div>
 
@@ -653,7 +687,35 @@
             {/if}
           </div>
 
-          <!-- 2. Metric Switcher Toggle -->
+          <!-- 2. Projection Switcher (Globe 3D vs Peta Datar) -->
+          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
+            <button
+              type="button"
+              onclick={() => toggleProjection('globe')}
+              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                projectionMode === 'globe'
+                  ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
+                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+              }`}
+            >
+              <Globe class="w-3.5 h-3.5" />
+              <span>{t('map.projectionGlobe')}</span>
+            </button>
+            <button
+              type="button"
+              onclick={() => toggleProjection('flat')}
+              class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                projectionMode === 'flat'
+                  ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
+                  : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+              }`}
+            >
+              <Compass class="w-3.5 h-3.5" />
+              <span>{t('map.projectionFlat')}</span>
+            </button>
+          </div>
+
+          <!-- 3. Metric Switcher Toggle -->
           <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
             <button
               type="button"
@@ -681,7 +743,7 @@
             </button>
           </div>
 
-          <!-- 3. Region Filter Selector (Scrollable Chips) -->
+          <!-- 4. Region Filter Selector (Scrollable Chips) -->
           <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-thin">
             {#each REGION_FILTERS as reg}
               {@const isActive = activeRegion === reg.id}

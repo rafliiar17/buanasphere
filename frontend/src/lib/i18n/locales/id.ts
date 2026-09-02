@@ -84,6 +84,9 @@ export const idTranslations = {
   // World Rate Map
   map: {
     searchPlaceholder: 'Cari negara, mata uang, atau kode ISO-3 (misal: Jepang, USD, JPN, EUR)...',
+    projectionMode: 'Proyeksi:',
+    projectionGlobe: 'Globe 3D 🌍',
+    projectionFlat: 'Peta Datar 🗺️',
     modeRate: 'Kurs Nominal (IDR)',
     modeChange: 'Tren 24 Jam (%)',
     modeLabel: 'Mode:',
