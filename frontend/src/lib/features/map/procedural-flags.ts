@@ -855,3 +855,23 @@ export function createProceduralFlagMaterial(feat: any, isDark: boolean = true):
   proceduralMaterialsCache.set(key, mat);
   return mat;
 }
+
+/**
+ * Release all cached CanvasTextures and ShaderMaterials from GPU memory.
+ */
+export function disposeProceduralFlagCache(): void {
+  for (const mat of proceduralMaterialsCache.values()) {
+    try {
+      mat.dispose();
+    } catch {}
+  }
+  proceduralMaterialsCache.clear();
+
+  for (const tex of flagTexturesCache.values()) {
+    try {
+      tex.dispose();
+    } catch {}
+  }
+  flagTexturesCache.clear();
+}
+
