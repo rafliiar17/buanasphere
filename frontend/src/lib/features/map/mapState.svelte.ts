@@ -75,7 +75,7 @@ export class MapState {
   isSearchDropdownOpen: boolean = $state(false);
   isInspectorOpen: boolean = $state(false);
   showLabels: boolean = $state(true);
-  convertAmount: number = $state(100);
+  convertAmount: number = $state(1);
   convertDirection: 'foreign_to_idr' | 'idr_to_foreign' = $state('foreign_to_idr');
   isControlsCollapsed: boolean = $state(false);
   isRegionDropdownOpen: boolean = $state(false);
@@ -145,7 +145,17 @@ export class MapState {
   };
 
   toggleConvertDirection = () => {
-    this.convertDirection = this.convertDirection === 'foreign_to_idr' ? 'idr_to_foreign' : 'foreign_to_idr';
+    if (this.convertDirection === 'foreign_to_idr') {
+      this.convertDirection = 'idr_to_foreign';
+      if (this.convertAmount <= 1000) {
+        this.convertAmount = 100000;
+      }
+    } else {
+      this.convertDirection = 'foreign_to_idr';
+      if (this.convertAmount >= 10000) {
+        this.convertAmount = 1;
+      }
+    }
   };
 
   setConvertAmount = (amount: number) => {

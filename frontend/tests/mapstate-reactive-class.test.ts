@@ -59,7 +59,7 @@ describe('MapState Svelte 5 Reactive Class (ADR-0034 / TDD)', () => {
     it('uses $state() rune on numeric and string state properties', () => {
       expect(src).toContain("selectedCurrencyCode: string = $state('USD')");
       expect(src).toContain("selectedCountryIso3: string = $state('USA')");
-      expect(src).toContain('convertAmount: number = $state(100)');
+      expect(src).toContain('convertAmount: number = $state(1)');
       expect(src).toContain("activeRegion: string = $state('all')");
     });
 
