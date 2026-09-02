@@ -135,26 +135,51 @@ Selalu buat branch baru dari `main` sebelum memulai task:
 
 ---
 
-## 5. SDLC Workflow (6 Tahap Baku)
+## 5. SDLC Workflow (`/plan` ➔ `/to-spec` ➔ `/tdd` ➔ `implement` ➔ `check hasil/plan`)
+
+Seluruh pengembangan fitur, perbaikan bug, atau refactor di **kurs-world** wajib mengikuti pipeline 5 tahap berurutan berikut:
 
 ```mermaid
 graph LR
-    S0[Tahap 0: Brief & Requirement] --> S1[Tahap 1: Tech Spec & ADR]
-    S1 --> S2[Tahap 2: Branch Creation]
-    S2 --> S3[Tahap 3: TDD Cycle Red-Green-Refactor]
-    S3 --> S4[Tahap 4: Review, Lint & Audit]
-    S4 --> S5[Tahap 5: PR & Verification]
+    P1["1. /plan<br/>Analisis & Rencana"] --> P2["2. /to-spec<br/>Spec, ADR & Branch"]
+    P2 --> P3["3. /tdd<br/>TDD Red Cycle"]
+    P3 --> P4["4. implement<br/>Green & Refactor"]
+    P4 --> P5["5. check hasil/plan<br/>Audit & Walkthrough"]
 ```
 
-1. **Tahap 0 — Analisis Kebutuhan**: Baca [docs/brief/BRIEF.md](file:///home/archy/Projects/kurs-world/docs/brief/BRIEF.md), [CONTEXT.md](file:///home/archy/Projects/kurs-world/CONTEXT.md), dan [docs/specs/PRD.md](file:///home/archy/Projects/kurs-world/docs/specs/PRD.md).
-2. **Tahap 1 — Spesifikasi Teknis & ADR**: Tulis ADR di [docs/adr/](file:///home/archy/Projects/kurs-world/docs/adr/) untuk setiap keputusan arsitektur baru.
-3. **Tahap 2 — Buat Branch**: Buat branch sesuai konvensi di atas.
-4. **Tahap 3 — TDD (Test-Driven Development)**:
-   * **Red**: Tulis unit test (Vitest/Bun test) yang mendefinisikan behavior yang diharapkan (test gagal dulu).
-   * **Green**: Tulis kode implementasi Elysia / Svelte minimal hingga test lulus.
-   * **Refactor**: Bersihkan kode, optimasi performa, pastikan readability terjaga.
-5. **Tahap 4 — Quality & Security Audit**: Jalankan linter (`bun run lint`), type-check (`bun run check`), security audit (`bun run audit:fix`), dan pastikan tidak ada secret hardcoded.
-6. **Tahap 5 — PR & Review**: Ajukan Pull Request dengan ringkasan lengkap, bukti test, dan breaking change notes.
+### 📋 Rincian 5 Tahap Baku:
+
+1. **Tahap 1 — `/plan` (Requirement Analysis & Implementation Plan)**:
+   * Pahami problem statement, user requirements, dan filosofi project.
+   * Telusuri codebase, dependency, dan arsitektur yang relevan.
+   * Buat artifact `implementation_plan.md` dengan metadata `RequestFeedback: true` dan `UserFacing: true`.
+   * **Wajib**: Dapatkan persetujuan/feedback eksplisit dari user sebelum membuat perubahan kode aplikasi.
+
+2. **Tahap 2 — `/to-spec` (Spesifikasi Teknis, ADR & Branch Creation)**:
+   * Dokumentasikan keputusan arsitektur baru ke dalam ADR di [`docs/adr/000X-xxx.md`](file:///home/archy/Projects/kurs-world/docs/adr/) dan/atau Technical Spec di [`docs/specs/`](file:///home/archy/Projects/kurs-world/docs/specs/).
+   * Tentukan schema domain, entity types, API contract, error scenarios, dan data invariants.
+   * Buat branch baru dari `main` sesuai konvensi (`feat/...`, `fix/...`, `refactor/...`). Pastikan working tree bersih sebelum membuat branch.
+
+3. **Tahap 3 — `/tdd` (Test-Driven Development — Red Cycle)**:
+   * Tulis unit test atau API integration test terlebih dahulu di [`tests/`](file:///home/archy/Projects/kurs-world/frontend/tests/) menggunakan Vitest / Bun Test.
+   * Definisikan test cases yang mencakup: valid inputs, edge cases (micro-rates, division by zero, missing fields), dan boundary conditions.
+   * Eksekusi test (`rtk bun test`) dan pastikan test berada dalam kondisi gagal (*Red State*) atau memvalidasi kontrak baru sebelum implementasi.
+   * Gunakan commit sementara bertanda `wip: test(...)` jika iterasi membutuhkan checkpoint.
+
+4. **Tahap 4 — `implement` (Green Cycle & Refactor)**:
+   * Tulis implementasi kode minimal pada Elysia routes/services/providers atau Svelte 5 components hingga seluruh unit test berhasil lulus (*Green State*).
+   * Refactor: Bersihkan boilerplate, hilangkan duplikasi kode, pastikan implementasi mengikuti standar UI/UX (shadcn-svelte, shimmer skeleton, CSS tokens).
+   * Pastikan tidak ada floating promises, memory leaks, atau unhandled exceptions.
+
+5. **Tahap 5 — `check hasil/plan` (Quality Gates, Audit & Walkthrough)**:
+   * Jalankan seluruh automated verification gates:
+     * `rtk bun run check` (Svelte & TypeScript diagnostics — wajib 0 errors, 0 warnings).
+     * `rtk bun test` (Seluruh test suite wajib 100% lulus).
+     * `rtk bun run build` (Production bundle build wajib berhasil).
+     * Security & secrets audit (Pastikan tidak ada hardcoded credentials atau SSRF vulnerabilities).
+   * Buat atau perbarui Walkthrough artifact (`walkthrough.md`) yang merangkum hasil kerja, ringkasan pengujian, dan visual diff.
+   * Lakukan commit final dengan Conventional Commits (`feat: ...`, `fix: ...`).
+
 
 ---
 
