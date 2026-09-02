@@ -48,6 +48,9 @@ export function createGeoStore() {
   let passportVisaFilter = $state<PassportVisaFilterType>('all');
   let natureFilter = $state<NatureFilterType>('all');
 
+  // Performance Profile (ADR 0035 - Laptop GPU & WebGL Optimization)
+  let performanceMode = $state<'turbo' | 'quality'>('turbo');
+
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);
 
@@ -182,6 +185,8 @@ export function createGeoStore() {
     set passportVisaFilter(val) { passportVisaFilter = val; },
     get natureFilter() { return natureFilter; },
     set natureFilter(val) { natureFilter = val; },
+    get performanceMode() { return performanceMode; },
+    set performanceMode(val) { performanceMode = val; },
     get currentAppData() { return currentAppData; },
     get isLoadingData() { return isLoadingData; },
     switchApp,
@@ -194,6 +199,8 @@ export function createGeoStore() {
     setFlightCorridorFilter,
     setPassportVisaFilter,
     setNatureFilter,
+    setPerformanceMode: (mode: 'turbo' | 'quality') => { performanceMode = mode; },
+    togglePerformanceMode: () => { performanceMode = performanceMode === 'turbo' ? 'quality' : 'turbo'; },
     isCountryMatched,
     allApps: geoRegistry.getAllApps(),
     countries: EXTENDED_COUNTRIES_DATA,

@@ -1,62 +1,131 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// Major currencies list for LOD
-export const MAJOR_LOD_ISO3 = new Set([
-  'IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU',
-  'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP',
-  'TUR', 'EGY', 'ARE', 'CHE'
-]);
+/**
+ * Helper to compute optimal DPR based on performance mode
+ */
+export function getOptimalDpr(mode: 'turbo' | 'quality', systemDpr: number = 1.0): number {
+  if (mode === 'turbo') return 1.0;
+  return Math.min(systemDpr || 1.0, 1.35);
+}
 
-export function filterLODLabels(
-  allFeatures: { properties: { ISO_A3?: string; NAME?: string; LABEL_X?: number; LABEL_Y?: number } }[],
-  selectedIso3: string | null,
-  hoveredIso3: string | null
+/**
+ * LOD label filter based on camera altitude
+ */
+export function filterLabelsByLod(
+  labels: Array<{ iso3: string; text: string; size: number }>,
+  cameraAltitude: number,
+  selectedIso3: string,
+  hoveredIso3: string | null,
+  majorIso3List: Set<string>
 ) {
-  return allFeatures.filter((feat) => {
-    const iso3 = (feat.properties?.ISO_A3 || '').toUpperCase();
-    if (iso3 === selectedIso3 || iso3 === hoveredIso3) return true;
-    return MAJOR_LOD_ISO3.has(iso3);
-  });
+  if (cameraAltitude > 1.8) {
+    // Distant view: show only selected, hovered, and top major countries
+    return labels.filter(l => l.iso3 === selectedIso3 || l.iso3 === hoveredIso3 || majorIso3List.has(l.iso3));
+  }
+  return labels;
 }
 
-export function clampDpr(dpr: number, maxDpr: number = 1.5): number {
-  return Math.min(Math.max(1, dpr || 1), maxDpr);
-}
+const GEOSTORE_PATH = path.resolve(__dirname, '../src/lib/framework/geoglobe/geoStore.svelte.ts');
+const MAPSTATE_PATH = path.resolve(__dirname, '../src/lib/features/map/mapState.svelte.ts');
+const GLOBEVIEW_PATH = path.resolve(__dirname, '../src/lib/features/map/components/Globe3DView.svelte');
 
-describe('Globe 3D Performance & Level-of-Detail Optimization (ADR-0014)', () => {
-  const mockFeatures = Array.from({ length: 195 }, (_, i) => ({
-    properties: {
-      ISO_A3: i === 0 ? 'IDN' : i === 1 ? 'USA' : i === 2 ? 'JPN' : i === 3 ? 'TCD' : i === 4 ? 'ISL' : `C${i.toString().padStart(2, '0')}`,
-      NAME: `Country ${i}`,
-      LABEL_X: 100 + i * 0.1,
-      LABEL_Y: 10 + i * 0.1,
-    },
-  }));
+describe('3D Globe GPU & Laptop Performance Suite (ADR 0035 / TDD)', () => {
 
-  it('should reduce 3D label count from 195 to ~24 major countries by default (85%+ reduction)', () => {
-    const defaultLabels = filterLODLabels(mockFeatures, null, null);
-    
-    // Only major currencies are in the label array
-    expect(defaultLabels.length).toBe(3); // from the mock data having IDN, USA, JPN matching
-    expect(defaultLabels.length).toBeLessThan(mockFeatures.length);
+  describe('1. Performance Mode State Management (geoStore & mapState)', () => {
+    it('declares performanceMode state in geoStore.svelte.ts defaulting to "turbo"', () => {
+      const geoStoreSrc = fs.readFileSync(GEOSTORE_PATH, 'utf-8');
+      expect(geoStoreSrc).toContain("let performanceMode = $state<'turbo' | 'quality'>('turbo')");
+      expect(geoStoreSrc).toContain('get performanceMode()');
+      expect(geoStoreSrc).toContain('setPerformanceMode');
+      expect(geoStoreSrc).toContain('togglePerformanceMode');
+    });
+
+    it('declares performanceMode in MapState with "turbo" default and toggle method', () => {
+      const mapStateSrc = fs.readFileSync(MAPSTATE_PATH, 'utf-8');
+      expect(mapStateSrc).toContain("performanceMode: 'turbo' | 'quality' = $state('turbo')");
+      expect(mapStateSrc).toContain('setPerformanceMode');
+      expect(mapStateSrc).toContain('togglePerformanceMode');
+    });
   });
 
-  it('should dynamically include non-major country when hovered or selected', () => {
-    // Hovering Chad (TCD - not in major set)
-    const hoveredLabels = filterLODLabels(mockFeatures, null, 'TCD');
-    const hasTcd = hoveredLabels.some((l) => l.properties.ISO_A3 === 'TCD');
-    expect(hasTcd).toBe(true);
+  describe('2. Adaptive DPR Clamping (getOptimalDpr)', () => {
+    it('clamps DPR to 1.0 in "turbo" mode regardless of system Retina/HiDPI scale', () => {
+      expect(getOptimalDpr('turbo', 2.0)).toBe(1.0);
+      expect(getOptimalDpr('turbo', 3.0)).toBe(1.0);
+      expect(getOptimalDpr('turbo', 1.5)).toBe(1.0);
+      expect(getOptimalDpr('turbo', 1.0)).toBe(1.0);
+    });
 
-    // Selecting Iceland (ISL - not in major set)
-    const selectedLabels = filterLODLabels(mockFeatures, 'ISL', null);
-    const hasIsl = selectedLabels.some((l) => l.properties.ISO_A3 === 'ISL');
-    expect(hasIsl).toBe(true);
+    it('allows crisp scaling clamped to max 1.35 in "quality" mode', () => {
+      expect(getOptimalDpr('quality', 1.0)).toBe(1.0);
+      expect(getOptimalDpr('quality', 1.25)).toBe(1.25);
+      expect(getOptimalDpr('quality', 2.0)).toBe(1.35);
+      expect(getOptimalDpr('quality', 3.0)).toBe(1.35);
+    });
   });
 
-  it('should clamp device pixel ratio to max 1.5 to prevent GPU fragment overload on HiDPI/4K', () => {
-    expect(clampDpr(1.0)).toBe(1.0);
-    expect(clampDpr(2.0)).toBe(1.5);
-    expect(clampDpr(3.0)).toBe(1.5);
-    expect(clampDpr(0.5)).toBe(1.0);
+  describe('3. Level-of-Detail (LOD) Camera Distance Pruning', () => {
+    const sampleLabels = [
+      { iso3: 'USA', text: 'USA (USD)', size: 0.5 },
+      { iso3: 'IDN', text: 'Indonesia (IDR)', size: 0.5 },
+      { iso3: 'SGP', text: 'Singapore (SGD)', size: 0.4 },
+      { iso3: 'VAT', text: 'Vatican (EUR)', size: 0.2 },
+      { iso3: 'MCO', text: 'Monaco (EUR)', size: 0.2 },
+    ];
+    const majors = new Set(['USA', 'IDN', 'SGP']);
+
+    it('prunes micro-country labels when camera altitude is high (>1.8)', () => {
+      const visible = filterLabelsByLod(sampleLabels, 2.2, 'IDN', null, majors);
+      const isoList = visible.map(v => v.iso3);
+      expect(isoList).toContain('IDN');
+      expect(isoList).toContain('USA');
+      expect(isoList).toContain('SGP');
+      expect(isoList).not.toContain('VAT');
+      expect(isoList).not.toContain('MCO');
+    });
+
+    it('always preserves actively selected or hovered country label even in distant LOD', () => {
+      const visible = filterLabelsByLod(sampleLabels, 2.5, 'VAT', 'MCO', majors);
+      const isoList = visible.map(v => v.iso3);
+      expect(isoList).toContain('VAT');
+      expect(isoList).toContain('MCO');
+    });
+
+    it('renders full label set when zoomed in close (<=1.8)', () => {
+      const visible = filterLabelsByLod(sampleLabels, 1.2, 'IDN', null, majors);
+      expect(visible.length).toBe(sampleLabels.length);
+    });
+  });
+
+  describe('4. Static Geometry Invariant in Globe3DView.svelte', () => {
+    it('ensures updateVisuals does NOT re-invoke polygonsData to prevent Earcut CPU re-tessellation', () => {
+      const content = fs.readFileSync(GLOBEVIEW_PATH, 'utf-8');
+
+      // Extract the updateVisuals function body
+      const updateVisualsMatch = content.match(/function updateVisuals\(\)[\s\S]*?\{([\s\S]*?)\n  \}/);
+      expect(updateVisualsMatch).toBeTruthy();
+      
+      const body = updateVisualsMatch![1];
+      // updateVisuals must NOT call .polygonsData(
+      expect(body.includes('.polygonsData(')).toBe(false);
+    });
+
+    it('verifies that initGlobe initializes polygonsData once', () => {
+      const content = fs.readFileSync(GLOBEVIEW_PATH, 'utf-8');
+
+      const initGlobeMatch = content.match(/async function initGlobe\(\)[\s\S]*?\{([\s\S]*?)\n  \}/);
+      expect(initGlobeMatch).toBeTruthy();
+
+      const body = initGlobeMatch![1];
+      expect(body.includes('.polygonsData(')).toBe(true);
+    });
+
+    it('verifies that Globe3DView applies adaptive DPR based on performance mode', () => {
+      const content = fs.readFileSync(GLOBEVIEW_PATH, 'utf-8');
+      expect(content).toContain('performanceMode');
+      expect(content).toContain('setPixelRatio');
+    });
   });
 });

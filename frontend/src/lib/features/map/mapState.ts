@@ -66,9 +66,11 @@ export class MapState {
   isControlsCollapsed: boolean = false;
   isRegionDropdownOpen: boolean = false;
   highlightedIndex: number = 0;
+  performanceMode: 'turbo' | 'quality' = 'turbo';
 
-  constructor(initial?: Partial<MapStateConfig>) {
+  constructor(initial?: Partial<MapStateConfig & { performanceMode?: 'turbo' | 'quality' }>) {
     if (initial) {
+      if (initial.performanceMode !== undefined) this.performanceMode = initial.performanceMode;
       if (initial.projectionMode !== undefined) this.projectionMode = initial.projectionMode;
       if (initial.activeMetric !== undefined) this.activeMetric = initial.activeMetric;
       if (initial.activeRegion !== undefined) this.activeRegion = initial.activeRegion;
@@ -159,6 +161,14 @@ export class MapState {
 
   toggleRegionDropdown = (open?: boolean) => {
     this.isRegionDropdownOpen = open !== undefined ? open : !this.isRegionDropdownOpen;
+  };
+
+  setPerformanceMode = (mode: 'turbo' | 'quality') => {
+    this.performanceMode = mode;
+  };
+
+  togglePerformanceMode = () => {
+    this.performanceMode = this.performanceMode === 'turbo' ? 'quality' : 'turbo';
   };
 
   resetView = () => {
