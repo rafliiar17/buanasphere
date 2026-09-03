@@ -75,6 +75,13 @@
     isSearchDropdownOpen = false;
     onSelectCountry?.(iso3);
   }
+
+  function handleSearchKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && searchResults.length > 0) {
+      e.preventDefault();
+      handleCountrySelect(searchResults[0].iso3);
+    }
+  }
 </script>
 
 <!-- Floating Top-Right Controls Card -->
@@ -107,6 +114,7 @@
           type="text"
           placeholder="Cari negara atau ibukota (Jakarta, Tokyo)..."
           bind:value={searchQuery}
+          onkeydown={handleSearchKeydown}
           onfocus={() => { isSearchDropdownOpen = true; }}
           class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 transition"
         />
