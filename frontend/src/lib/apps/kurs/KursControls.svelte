@@ -19,6 +19,7 @@
   import { REGION_FILTERS } from '$lib/features/map/map-constants';
   import { t } from '$lib/i18n';
   import type { createMapState } from '$lib/features/map/mapState.svelte';
+  import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
 
   interface Props {
     mapState: ReturnType<typeof createMapState>;
@@ -115,6 +116,14 @@
 
   function handleSearchSelect(country: MapCountryData) {
     onSelectCountry(country, false);
+    geoStore.travelToCountry?.(country.iso3);
+  }
+
+  function handleSearchKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && searchResults.length > 0) {
+      e.preventDefault();
+      handleSearchSelect(searchResults[0]);
+    }
   }
 
   function handleRegionSelect(regionId: RegionId) {
@@ -157,6 +166,7 @@
           type="text"
           placeholder="Cari negara, mata uang (USD, JPY)..."
           bind:value={mapState.searchQuery}
+          onkeydown={handleSearchKeydown}
           onfocus={() => { mapState.isSearchDropdownOpen = true; }}
           class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 transition"
         />
