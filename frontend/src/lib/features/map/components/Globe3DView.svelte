@@ -249,8 +249,7 @@
 
       let text = pinLabel?.text;
       if (!text) {
-        const flagPart = spatial?.flagEmoji ? `${spatial.flagEmoji} ` : '';
-        text = `${flagPart}${rawName}`;
+        text = rawName;
         if (curr && curr !== 'IDR') {
           text = `${text} (${curr})`;
         }

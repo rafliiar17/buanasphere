@@ -154,8 +154,8 @@ export const floraFaunaApp: GeoAppPlugin<FloraFaunaData> = {
   getPinLabel: (country: CountrySpatialMetadata, data: any): { text: string; shortText: string } => {
     const bio = data ?? getFloraFaunaDataForCountry(country.iso3);
     return {
-      text: `${bio.animal.emoji} ${country.countryName} (${bio.animal.commonName})`,
-      shortText: bio.animal.emoji,
+      text: `${country.countryName} (${bio.animal.commonName})`,
+      shortText: bio.animal.commonName,
     };
   },
 

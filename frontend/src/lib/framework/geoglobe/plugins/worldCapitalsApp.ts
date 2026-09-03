@@ -220,10 +220,9 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   // 6. 3D Globe Landmark Pin Labels
   getPinLabel: (country: CountrySpatialMetadata, data: WorldCapitalData) => {
     const cap = data?.capital ?? country.capital;
-    const flag = country.flagEmoji || '🏛️';
     return {
-      text: `${flag} ${cap} • ${country.countryName}`,
-      shortText: `${flag} ${cap}`,
+      text: `${cap} • ${country.countryName}`,
+      shortText: cap,
       lat: data?.capitalCoordinates?.lat,
       lng: data?.capitalCoordinates?.lng,
     };

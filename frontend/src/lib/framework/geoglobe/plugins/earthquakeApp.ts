@@ -210,15 +210,13 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     const latest = cData.recentEvents?.[0];
     if (latest) {
       return {
-        text: `⚡ ${country.countryName} (M${latest.magnitude.toFixed(1)})`,
+        text: `${country.countryName} (M${latest.magnitude.toFixed(1)})`,
         shortText: `M${latest.magnitude.toFixed(1)}`,
       };
     }
-    const tierIcon =
-      cData.seismicRiskTier === 'high' ? '🌋' : cData.seismicRiskTier === 'moderate' ? '⚠️' : '🛡️';
     return {
-      text: `${tierIcon} ${country.countryName}`,
-      shortText: tierIcon,
+      text: country.countryName,
+      shortText: country.countryName,
     };
   },
 

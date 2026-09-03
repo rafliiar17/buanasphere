@@ -30,14 +30,14 @@ describe('Dynamic High-Contrast Country Labels & Capitals Flag Mode (ADR 0050 / 
       expect(content).toContain('.labelResolution(3)');
     });
 
-    it('includes country flag emoji dynamically on globeLabels text', () => {
+    it('formats clean typography on globeLabels text without flag emoji artifacts (ADR 0067)', () => {
       const content = fs.readFileSync(globeViewPath, 'utf-8');
-      expect(content).toMatch(/spatial\.flagEmoji/);
+      expect(content).not.toContain('spatial?.flagEmoji ?');
     });
   });
 
-  describe('2. Rich Capital & Flag Pin Labels in worldCapitalsApp.ts', () => {
-    it('worldCapitalsApp getPinLabel formats text with flag emoji and capital city', async () => {
+  describe('2. Clean Capital Pin Labels in worldCapitalsApp.ts (ADR 0067)', () => {
+    it('worldCapitalsApp getPinLabel formats clean typography with capital city and country', async () => {
       const { worldCapitalsApp } = await import('../src/lib/framework/geoglobe/plugins/worldCapitalsApp');
       const mockCountry = {
         iso3: 'USA',
@@ -66,10 +66,10 @@ describe('Dynamic High-Contrast Country Labels & Capitals Flag Mode (ADR 0050 / 
       };
 
       const pinLabel = worldCapitalsApp.getPinLabel!(mockCountry, mockData as any, 'era');
-      expect(pinLabel.text).toContain('🇺🇸');
+      expect(pinLabel.text).not.toContain('🇺🇸');
       expect(pinLabel.text).toContain('Washington, D.C.');
       expect(pinLabel.text).toContain('Amerika Serikat');
-      expect(pinLabel.shortText).toContain('🇺🇸');
+      expect(pinLabel.shortText).toBe('Washington, D.C.');
     });
   });
 

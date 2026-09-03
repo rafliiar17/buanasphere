@@ -122,6 +122,33 @@ export function getGlobeLabels(options: LabelLayerOptions): LabelItem[] {
   });
 }
 
+/**
+ * Sanitizes 3D globe label text to guarantee zero unrendered glyphs ('??', '?')
+ * and strips any emojis or arbitrary decorative symbols before rendering to WebGL canvas bitmap.
+ */
+export function sanitizeLabelText(rawText: string | null | undefined): string {
+  if (!rawText) return '';
+
+  let cleaned = String(rawText);
+
+  // 1. Remove unicode emojis, regional indicator flags, pictographs, symbols
+  cleaned = cleaned
+    .replace(/\p{Extended_Pictographic}/gu, '')
+    .replace(/\p{Regional_Indicator}/gu, '')
+    .replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '')
+    .replace(/[\u{1F300}-\u{1FAFF}]/gu, '')
+    .replace(/[\u{2600}-\u{27BF}]/gu, '')
+    .replace(/[\u{FE00}-\u{FE0F}]/gu, '');
+
+  // 2. Remove broken replacement artifacts like leading/trailing '?', '??', '???'
+  cleaned = cleaned.replace(/^\?+\s*/, '').replace(/\s*\?+$/, '');
+
+  // 3. Normalize whitespace
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+
+  return cleaned;
+}
+
 export function configureLabelLayer(
   globe: any,
   labels: LabelItem[],
@@ -137,7 +164,7 @@ export function configureLabelLayer(
     .labelsData(labels || [])
     .labelLat((d: any) => d.lat)
     .labelLng((d: any) => d.lng)
-    .labelText((d: any) => d.text)
+    .labelText((d: any) => sanitizeLabelText(d.text))
     .labelSize((d: any) => d.size ?? 0.95)
     .labelDotRadius((d: any) => (d.iso3 === selectedIso3 ? 0.24 : 0.06))
     .labelColor((d: any) => d.color)

@@ -127,10 +127,9 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
   getPinLabel: (country: CountrySpatialMetadata, data: WorldTimeData | undefined, _activeMetric: string): { text: string; shortText: string } => {
     const now = new Date();
     const local = calculateLocalTime(now, country.utcOffset);
-    const phase = getDiurnalPhase(local.hours, local.minutes);
     return {
-      text: `${country.countryName} ${local.formatted} ${phase.emoji}`,
-      shortText: `${local.formatted} ${phase.emoji}`,
+      text: `${country.countryName} ${local.formatted}`,
+      shortText: `${local.formatted}`,
     };
   },
 

@@ -53,7 +53,7 @@ describe('Clean 3D Globe Typography & Complete Glyph Elimination Suite (ADR 0067
         recentEvents: [{ magnitude: 5.2, depthKm: 10, place: 'Sichuan', tsunamiWarning: false }],
         seismicRiskTier: 'high',
       };
-      const label = earthquakeApp.getPinLabel(dummyCountry, mockData, 'magnitude');
+      const label = earthquakeApp.getPinLabel!(dummyCountry, mockData, 'magnitude');
       expect(label.text).toBe('Tiongkok (M5.2)');
       expect(label.text).not.toContain('⚡');
       expect(label.text).not.toContain('?');
@@ -67,7 +67,7 @@ describe('Clean 3D Globe Typography & Complete Glyph Elimination Suite (ADR 0067
         recentEvents: [],
         seismicRiskTier: 'high',
       };
-      const label = earthquakeApp.getPinLabel(dummyCountry, mockData, 'seismic_risk');
+      const label = earthquakeApp.getPinLabel!(dummyCountry, mockData, 'seismic_risk');
       expect(label.text).toBe('Tiongkok');
       expect(label.text).not.toMatch(/[🌋⚠️🛡️?]/);
     });
@@ -78,7 +78,7 @@ describe('Clean 3D Globe Typography & Complete Glyph Elimination Suite (ADR 0067
         countryIso3: 'CHN',
         capitalCoordinates: { lat: 39.9, lng: 116.4 },
       };
-      const label = worldCapitalsApp.getPinLabel(dummyCountry, capitalData);
+      const label = worldCapitalsApp.getPinLabel!(dummyCountry, capitalData as any, 'era');
       expect(label.text).toBe('Beijing • Tiongkok');
       expect(label.text).not.toContain('🇨🇳');
       expect(label.text).not.toContain('🏛️');
@@ -87,19 +87,19 @@ describe('Clean 3D Globe Typography & Complete Glyph Elimination Suite (ADR 0067
     });
 
     it('worldTimeApp.getPinLabel returns pure text without phase emojis', () => {
-      const label = worldTimeApp.getPinLabel(dummyCountry, undefined, 'local_time');
+      const label = worldTimeApp.getPinLabel!(dummyCountry, undefined as any, 'local_time');
       expect(label.text).not.toMatch(/[☀️🌙🌅🌆?]/);
       expect(label.shortText).not.toMatch(/[☀️🌙🌅🌆?]/);
     });
 
     it('flowCorridorsApp.getPinLabel returns pure text without ✈️', () => {
-      const label = flowCorridorsApp.getPinLabel(dummyCountry);
+      const label = flowCorridorsApp.getPinLabel!(dummyCountry, {} as any, 'flow');
       expect(label.text).not.toContain('✈️');
       expect(label.text).not.toContain('?');
     });
 
     it('floraFaunaApp.getPinLabel returns pure text without animal emojis', () => {
-      const label = floraFaunaApp.getPinLabel(dummyCountry, undefined);
+      const label = floraFaunaApp.getPinLabel!(dummyCountry, undefined as any, 'biomes');
       expect(label.text).not.toMatch(/[\u{1F300}-\u{1FAFF}?]/u);
     });
   });
