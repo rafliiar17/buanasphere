@@ -50,6 +50,9 @@ export function createGeoStore() {
   let isLauncherOpen = $state(false);
   let isInspectorOpen = $state(false);
   let showLabels = $state(true);
+  let showFlags = $state(false);
+  let previousMetricBeforeFlag = 'rate';
+  let autoRotate = $state(false);
   let activeRegion = $state('all');
   let searchQuery = $state('');
 
@@ -63,6 +66,24 @@ export function createGeoStore() {
   // Performance Profile (ADR 0035 - Laptop GPU & WebGL Optimization)
   let performanceMode = $state<'turbo' | 'quality'>('quality');
   let showTimezoneLines = $state(true);
+
+  // Time-Travel Simulation State (ADR 0054)
+  let isSimulatingTime = $state(false);
+  let simulatedMinutes = $state(720); // 12:00 midday
+  let simulationAnchorZone = $state<'WIB' | 'WITA' | 'WIT' | 'LOCAL'>('WIB');
+
+  function setSimulatedMinutes(minutes: number) {
+    simulatedMinutes = Math.max(0, Math.min(1439, minutes));
+    isSimulatingTime = true;
+  }
+
+  function setSimulationAnchorZone(zone: 'WIB' | 'WITA' | 'WIT' | 'LOCAL') {
+    simulationAnchorZone = zone;
+  }
+
+  function resetTimeToLive() {
+    isSimulatingTime = false;
+  }
 
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);
@@ -120,6 +141,42 @@ export function createGeoStore() {
 
   function setMetric(metricId: string) {
     activeMetricId = metricId;
+    if (metricId !== 'flag') {
+      showFlags = false;
+    } else {
+      showFlags = true;
+    }
+  }
+
+  function toggleFlags() {
+    showFlags = !showFlags;
+    if (showFlags) {
+      if (activeMetricId !== 'flag') {
+        previousMetricBeforeFlag = activeMetricId;
+      }
+      activeMetricId = 'flag';
+    } else {
+      activeMetricId = previousMetricBeforeFlag || 'rate';
+    }
+  }
+
+  function setFlags(enabled: boolean) {
+    if (showFlags === enabled) return;
+    showFlags = enabled;
+    if (showFlags) {
+      if (activeMetricId !== 'flag') previousMetricBeforeFlag = activeMetricId;
+      activeMetricId = 'flag';
+    } else {
+      activeMetricId = previousMetricBeforeFlag || 'rate';
+    }
+  }
+
+  function toggleAutoRotate() {
+    autoRotate = !autoRotate;
+  }
+
+  function setAutoRotate(enabled: boolean) {
+    autoRotate = enabled;
   }
 
   function setProjection(mode: 'globe' | 'flat') {
@@ -216,6 +273,14 @@ export function createGeoStore() {
     set isInspectorOpen(val) { isInspectorOpen = val; },
     get showLabels() { return showLabels; },
     set showLabels(val) { showLabels = val; },
+    get showFlags() { return showFlags; },
+    set showFlags(val) { showFlags = val; },
+    toggleFlags,
+    setFlags,
+    get autoRotate() { return autoRotate; },
+    set autoRotate(val) { autoRotate = val; },
+    toggleAutoRotate,
+    setAutoRotate,
     get activeRegion() { return activeRegion; },
     set activeRegion(val) { activeRegion = val; },
     get searchQuery() { return searchQuery; },
@@ -232,6 +297,15 @@ export function createGeoStore() {
     set customFilter(val) { customFilter = val; },
     get performanceMode() { return performanceMode; },
     set performanceMode(val) { performanceMode = val; },
+    get isSimulatingTime() { return isSimulatingTime; },
+    set isSimulatingTime(val) { isSimulatingTime = val; },
+    get simulatedMinutes() { return simulatedMinutes; },
+    set simulatedMinutes(val) { simulatedMinutes = val; },
+    get simulationAnchorZone() { return simulationAnchorZone; },
+    set simulationAnchorZone(val) { simulationAnchorZone = val; },
+    setSimulatedMinutes,
+    setSimulationAnchorZone,
+    resetTimeToLive,
     get currentAppData() { return appDataCache[activeAppId] ?? {}; },
     get isLoadingData() { return isLoadingData; },
     switchApp,

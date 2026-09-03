@@ -14,6 +14,16 @@
  * File ini menggunakan ekstensi .svelte.ts agar Svelte compiler memproses runes di dalamnya.
  */
 
+// Safe polyfill for non-browser runtime (e.g. Bun test)
+if (typeof window === 'undefined') {
+  if (!('$state' in globalThis)) {
+    (globalThis as any).$state = (val: any) => val;
+  }
+  if (!('$derived' in globalThis)) {
+    (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+  }
+}
+
 import {
   REGION_FILTERS,
   type RegionFilter,
@@ -53,6 +63,8 @@ export interface MapStateConfig {
   isSearchDropdownOpen?: boolean;
   isInspectorOpen?: boolean;
   showLabels?: boolean;
+  showFlags?: boolean;
+  autoRotate?: boolean;
   convertAmount?: number;
   convertDirection?: 'foreign_to_idr' | 'idr_to_foreign';
   isControlsCollapsed?: boolean;
@@ -76,6 +88,9 @@ export class MapState {
   isSearchDropdownOpen: boolean = $state(false);
   isInspectorOpen: boolean = $state(false);
   showLabels: boolean = $state(true);
+  showFlags: boolean = $state(false);
+  autoRotate: boolean = $state(false);
+  _previousMetricBeforeFlag: MetricType = 'rate';
   convertAmount: number = $state(1);
   convertDirection: 'foreign_to_idr' | 'idr_to_foreign' = $state('foreign_to_idr');
   isControlsCollapsed: boolean = $state(false);
@@ -98,6 +113,8 @@ export class MapState {
       if (initial.isSearchDropdownOpen !== undefined) this.isSearchDropdownOpen = initial.isSearchDropdownOpen;
       if (initial.isInspectorOpen !== undefined) this.isInspectorOpen = initial.isInspectorOpen;
       if (initial.showLabels !== undefined) this.showLabels = initial.showLabels;
+      if (initial.showFlags !== undefined) this.showFlags = initial.showFlags;
+      if (initial.autoRotate !== undefined) this.autoRotate = initial.autoRotate;
       if (initial.convertAmount !== undefined) this.convertAmount = initial.convertAmount;
       if (initial.convertDirection !== undefined) this.convertDirection = initial.convertDirection;
       if (initial.isControlsCollapsed !== undefined) this.isControlsCollapsed = initial.isControlsCollapsed;
@@ -111,6 +128,36 @@ export class MapState {
 
   setMetric = (metric: MetricType) => {
     this.activeMetric = metric;
+    if (metric !== 'flag') {
+      this.showFlags = false;
+    } else {
+      this.showFlags = true;
+    }
+  };
+
+  toggleFlags = () => {
+    this.showFlags = !this.showFlags;
+    if (this.showFlags) {
+      if (this.activeMetric !== 'flag') {
+        this._previousMetricBeforeFlag = this.activeMetric;
+      }
+      this.activeMetric = 'flag';
+    } else {
+      this.activeMetric = this._previousMetricBeforeFlag ?? 'rate';
+    }
+  };
+
+  setFlags = (enabled: boolean) => {
+    if (this.showFlags === enabled) return;
+    this.toggleFlags();
+  };
+
+  toggleAutoRotate = () => {
+    this.autoRotate = !this.autoRotate;
+  };
+
+  setAutoRotate = (enabled: boolean) => {
+    this.autoRotate = enabled;
   };
 
   setRegion = (region: string) => {

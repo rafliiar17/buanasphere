@@ -274,3 +274,47 @@ export function generateGreatCircleArc(
     label: options?.label ?? `${origin.label ?? ''} ➔ ${destination.label ?? ''}`,
   };
 }
+
+/**
+ * Calculates a simulated Date from minutes of the day (0 - 1439)
+ * anchored to an Indonesian or reference timezone ('WIB', 'WITA', 'WIT', 'UTC', 'LOCAL').
+ */
+export function calculateSimulatedDateFromMinutes(
+  minutesOfDay: number,
+  anchorZone: 'WIB' | 'WITA' | 'WIT' | 'UTC' | 'LOCAL' = 'WIB',
+  localOffset: number = 7
+): Date {
+  let offsetHours = 7;
+  switch (anchorZone) {
+    case 'WIB':
+      offsetHours = 7;
+      break;
+    case 'WITA':
+      offsetHours = 8;
+      break;
+    case 'WIT':
+      offsetHours = 9;
+      break;
+    case 'UTC':
+      offsetHours = 0;
+      break;
+    case 'LOCAL':
+      offsetHours = localOffset;
+      break;
+  }
+
+  // Current calendar base date in UTC
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+  const day = now.getUTCDate();
+
+  // minutesOfDay represents local time in anchor zone.
+  // Convert local minutes to UTC minutes by subtracting offset:
+  const utcTotalMinutes = minutesOfDay - Math.round(offsetHours * 60);
+
+  const simDate = new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
+  simDate.setUTCMinutes(utcTotalMinutes);
+  return simDate;
+}
+
