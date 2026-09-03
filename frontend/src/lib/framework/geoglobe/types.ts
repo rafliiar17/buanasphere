@@ -132,7 +132,7 @@ export interface GeoAppPlugin<TData = any> {
   getRingData?: (selectedCountry: CountrySpatialMetadata, allData: Record<string, TData>) => GeoRing[];
   getPolygonColor?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light', state?: { isMatched?: boolean; isSelected?: boolean; isHovered?: boolean }) => string;
   getTooltipHtml?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
-  getPinLabel?: (country: CountrySpatialMetadata, data: TData, activeMetric: string) => { text: string; shortText?: string; size?: number; color?: string; lat?: number; lng?: number };
+  getPinLabel?: (country: CountrySpatialMetadata, data: TData, activeMetric: string) => { text: string; shortText?: string; size?: number; color?: string; lat?: number; lng?: number; dotRadius?: number };
   getCustomLabels?: (data: Record<string, TData>, activeMetric: string, theme: 'dark' | 'light', selectedIso3?: string, simulationDate?: Date, cameraAltitude?: number) => Array<{
     id: string;
     lat: number;
@@ -144,6 +144,9 @@ export interface GeoAppPlugin<TData = any> {
     iso3?: string;
     cityId?: string;
     country?: any;
+    dotRadius?: number;
+    capitalData?: any;
+    city?: any;
   }>;
   getArcs?: (data: Record<string, TData>, activeFilter: string) => GeoArc[];
   getPaths?: (data: Record<string, TData>, activeMetric: string, theme: 'dark' | 'light') => GeoPath[];

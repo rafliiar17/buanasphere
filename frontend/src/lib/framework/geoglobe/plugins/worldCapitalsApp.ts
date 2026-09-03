@@ -11,6 +11,7 @@ import {
   type WorldCapitalData, 
   getCapitalDataForCountry 
 } from '../data/worldCapitalsData';
+import { EXTENDED_COUNTRIES_DATA } from '../countrySpatialData';
 import { getCountryFlagColor } from '$lib/features/map/country-flag-colors';
 
 export type { WorldCapitalData };
@@ -220,12 +221,67 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   // 6. 3D Globe Landmark Pin Labels
   getPinLabel: (country: CountrySpatialMetadata, data: WorldCapitalData) => {
     const cap = data?.capital ?? country.capital;
+    const pop = (data as any)?.capitalPopulation ?? (country?.population ? Math.round(country.population * 0.12) : 1500000);
+    const dotRadius = Math.max(0.12, Math.min(0.50, Math.sqrt(pop) * 7e-5));
+    const size = Math.max(0.60, Math.min(1.10, Math.sqrt(pop) * 1.3e-4));
     return {
       text: `${cap} • ${country.countryName}`,
       shortText: cap,
-      lat: data?.capitalCoordinates?.lat,
-      lng: data?.capitalCoordinates?.lng,
+      lat: data?.capitalCoordinates?.lat ?? country.lat,
+      lng: data?.capitalCoordinates?.lng ?? country.lng,
+      dotRadius,
+      size,
+      color: 'rgba(245, 158, 11, 0.90)',
     };
+  },
+
+  // 6b. 195+ Capitals Radiant Dots Constellation (globe.gl/example/world-cities pattern - ADR 0069)
+  getCustomLabels: (
+    _data: Record<string, WorldCapitalData>,
+    _activeMetric: string,
+    _theme: 'dark' | 'light',
+    selectedIso3?: string,
+    _simulationDate?: Date,
+    cameraAltitude?: number
+  ) => {
+    const alt = cameraAltitude ?? 2.2;
+    const isZoomedOut = alt > 1.6;
+
+    const list = EXTENDED_COUNTRIES_DATA.map((country) => {
+      const capData = getCapitalDataForCountry(country.iso3);
+      const pop = (capData as any)?.capitalPopulation ?? (country.population ? Math.round(country.population * 0.12) : 1000000);
+      const isSelected = Boolean(selectedIso3 && selectedIso3.toUpperCase() === country.iso3.toUpperCase());
+
+      const dotRadius = isSelected
+        ? 0.35
+        : Math.max(0.08, Math.min(0.48, Math.sqrt(pop) * 6.5e-5));
+      const size = isSelected
+        ? 0.85
+        : Math.max(0.35, Math.min(0.80, Math.sqrt(pop) * 1.0e-4));
+
+      const lat = capData?.capitalCoordinates?.lat ?? country.lat;
+      const lng = capData?.capitalCoordinates?.lng ?? country.lng;
+
+      return {
+        id: `capital-${country.iso3}`,
+        lat,
+        lng,
+        text: `${capData.capital} • ${country.countryName}`,
+        shortText: capData.capital,
+        size,
+        color: isSelected ? '#ffffff' : 'rgba(245, 158, 11, 0.90)',
+        dotRadius,
+        iso3: country.iso3,
+        capitalData: capData,
+        isMajor: pop > 3500000,
+        isSelected,
+      };
+    });
+
+    if (isZoomedOut) {
+      return list.filter((item) => item.isSelected || item.isMajor);
+    }
+    return list;
   },
 
   // 7. Dynamic Filter Predicate

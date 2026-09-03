@@ -262,8 +262,9 @@
         lat,
         lng,
         text,
-        size,
+        size: pinLabel?.size ?? size,
         color: pinLabel?.color ?? defaultColor,
+        dotRadius: pinLabel?.dotRadius,
         iso3,
         country,
       };

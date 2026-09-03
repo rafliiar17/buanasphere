@@ -20,6 +20,7 @@ export interface LabelItem {
   shortText?: string;
   cityId?: string;
   country?: any;
+  dotRadius?: number;
 }
 
 export function filterLabelsByLOD(
@@ -166,7 +167,7 @@ export function configureLabelLayer(
     .labelLng((d: any) => d.lng)
     .labelText((d: any) => sanitizeLabelText(d.text))
     .labelSize((d: any) => d.size ?? 0.95)
-    .labelDotRadius((d: any) => (d.iso3 === selectedIso3 ? 0.24 : 0.06))
+    .labelDotRadius((d: any) => d.dotRadius ?? (d.iso3 === selectedIso3 ? 0.24 : 0.06))
     .labelColor((d: any) => d.color)
     .labelAltitude((d: any) => (d.iso3 === selectedIso3 ? 0.035 : 0.018))
     .labelResolution(3)

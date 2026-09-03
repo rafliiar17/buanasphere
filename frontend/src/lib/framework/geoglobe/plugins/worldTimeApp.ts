@@ -162,10 +162,22 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       const displayText = city.cityName;
       const shortText = city.cityName;
 
+      const pop = city.population ?? (isMajor ? 8000000 : 1500000);
+      const dotRadius = isSelected
+        ? 0.35
+        : Math.max(0.08, Math.min(0.48, Math.sqrt(pop) * 6.5e-5));
       const size = isSelected ? 0.75 : (isMajor ? 0.40 : 0.28);
+
+      // Solar diurnal phase reactive coloring (golden for day, cyan for night)
+      const localTime = calculateLocalTime(now, city.utcOffset);
+      const phase = getDiurnalPhase(localTime.hours, localTime.minutes);
+      const isDaytime = phase.isDaylight;
+
       const color = isSelected
         ? '#ffffff'
-        : (isDark ? 'rgba(241, 245, 249, 0.92)' : 'rgba(15, 23, 42, 0.92)');
+        : isDaytime
+          ? 'rgba(251, 191, 36, 0.92)'   // Solar Golden Amber
+          : (isDark ? 'rgba(56, 189, 248, 0.85)' : 'rgba(14, 116, 144, 0.85)'); // Cyan Night Dot
 
       return {
         id: city.id,
@@ -175,6 +187,7 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
         shortText,
         size,
         color,
+        dotRadius,
         iso3: city.countryIso3,
         cityId: city.id,
         city,
