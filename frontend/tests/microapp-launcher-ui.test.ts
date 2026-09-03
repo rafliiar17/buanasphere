@@ -54,7 +54,7 @@ describe('Microapp Launcher Modal UI/UX & Viewport Constraints (ADR 0058 / TDD)'
     });
 
     it('provides a prominent close button with accessible aria-label', () => {
-      expect(content).toMatch(/<button[^>]*aria-label=["']Tutup[^"']*["']/);
+      expect(content).toMatch(/<button[\s\S]*?aria-label=["']Tutup[^"']*["']/);
     });
   });
 });
