@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@layer base {
+  :root,
+  [data-theme="dark"],
+  .dark {
+    color-scheme: dark;
+    --bg: #0B0F19;
+    --bg-subtle: #111827;
+    --bg-raised: #182234;
+    --bg-rule: #223049;
+    --ink: #F8FAFC;
+    --ink-2: #E2E8F0;
+    --ink-3: #94A3B8;
+    --ink-4: #64748B;
+    --signal: #FB7185;
+    --pos: #34D399;
+    --accent: #38BDF8;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="light"],
+  .light {
+    color-scheme: light;
+    --bg: #FAF8F3;
+    --bg-subtle: #F0EAE1;
+    --bg-raised: #FFFFFF;
+    --bg-rule: #DDD4C7;
+    --ink: #1A1209;
+    --ink-2: #3A2E1F;
+    --ink-3: #6B5B4A;
+    --ink-4: #9A8A78;
+    --signal: #C41E3A;
+    --pos: #1B5E20;
+    --accent: #0284C7;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg);
+    color: var(--ink);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.15) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 1.8s infinite ease-in-out;
+}

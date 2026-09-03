@@ -11,7 +11,8 @@
   },
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "frontend-2"
   ],
   "scripts": {
     "preinstall": "bun ./scripts/ensure-bun.ts",
@@ -19,9 +20,13 @@
     "dev": "bun ./scripts/ensure-bun.ts && bun x concurrently -k -n \"BE,FE\" -c \"blue.bold,green.bold\" \"bun run dev:be\" \"bun run dev:fe\"",
     "dev:be": "cd backend && bun run dev",
     "dev:fe": "cd frontend && bun run dev",
+    "dev:fe2": "cd frontend-2 && bun run dev",
     "test": "bun test backend && bun test frontend",
+    "test:fe2": "bun test frontend-2",
     "build": "(cd backend && bun run build 2>/dev/null || true) && (cd frontend && bun run build)",
-    "check": "(cd backend && (bun run check 2>/dev/null || tsc --noEmit)) && (cd frontend && bun run check)"
+    "build:fe2": "cd frontend-2 && bun run build",
+    "check": "(cd backend && (bun run check 2>/dev/null || tsc --noEmit)) && (cd frontend && bun run check)",
+    "check:fe2": "cd frontend-2 && bun run check"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",

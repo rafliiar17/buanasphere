@@ -53,6 +53,28 @@
         "webview-bun": "^2.4.0",
       },
     },
+    "frontend-2": {
+      "name": "@buanasphere/frontend-2",
+      "version": "1.0.0",
+      "dependencies": {
+        "clsx": "^2.1.1",
+        "globe.gl": "^2.46.2",
+        "lucide-svelte": "^0.475.0",
+        "tailwind-merge": "^3.0.1",
+        "three": "0.160.0",
+      },
+      "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^5.0.3",
+        "@tailwindcss/vite": "^4.0.6",
+        "@types/bun": "^1.2.2",
+        "@types/three": "^0.185.4",
+        "svelte": "^5.20.2",
+        "svelte-check": "^4.1.4",
+        "tailwindcss": "^4.0.6",
+        "typescript": "^5.7.3",
+        "vite": "^6.1.0",
+      },
+    },
   },
   "packages": {
     "@babel/runtime": ["@babel/runtime@7.29.7", "", {}, "sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw=="],
@@ -62,6 +84,8 @@
     "@buanasphere/backend": ["@buanasphere/backend@workspace:backend"],
 
     "@buanasphere/frontend": ["@buanasphere/frontend@workspace:frontend"],
+
+    "@buanasphere/frontend-2": ["@buanasphere/frontend-2@workspace:frontend-2"],
 
     "@cloudflare/kv-asset-handler": ["@cloudflare/kv-asset-handler@0.3.4", "", { "dependencies": { "mime": "^3.0.0" } }, "sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q=="],
 
