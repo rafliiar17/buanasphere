@@ -6,6 +6,7 @@ import { worldTimeApp } from './plugins/worldTimeApp';
 import { flowCorridorsApp } from './plugins/flowCorridorsApp';
 import { passportWorldApp } from './plugins/passportWorldApp';
 import { floraFaunaApp } from './plugins/floraFaunaApp';
+import { worldCapitalsApp } from './plugins/worldCapitalsApp';
 import { resolvePathToAppId, resolveAppIdToPath } from './router';
 import {
   type TimeFilterType,
@@ -15,11 +16,14 @@ import {
   isCountryMatchingAppFilter,
 } from './filterEngine';
 
-if (typeof (globalThis as any).$state === 'undefined') {
-  (globalThis as any).$state = (val: any) => val;
-}
-if (typeof (globalThis as any).$derived === 'undefined') {
-  (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+// Safe polyfill for non-browser runtime (e.g. Bun test) without triggering Svelte 5 browser getter trap
+if (typeof window === 'undefined') {
+  if (!('$state' in globalThis)) {
+    (globalThis as any).$state = (val: any) => val;
+  }
+  if (!('$derived' in globalThis)) {
+    (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+  }
 }
 
 // Auto-register all built-in apps
@@ -28,6 +32,7 @@ geoRegistry.register(worldTimeApp);
 geoRegistry.register(flowCorridorsApp);
 geoRegistry.register(passportWorldApp);
 geoRegistry.register(floraFaunaApp);
+geoRegistry.register(worldCapitalsApp);
 
 export function createGeoStore() {
   const initialAppId = typeof window !== 'undefined'
