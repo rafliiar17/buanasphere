@@ -49,9 +49,11 @@
   <div 
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
     role="dialog"
+    tabindex="-1"
     aria-modal="true"
     aria-labelledby="about-modal-title"
     onclick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    onkeydown={(e) => { if (e.key === 'Escape') onClose(); }}
   >
     <div class="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl bg-slate-900/95 border border-slate-800 text-slate-100 shadow-2xl overflow-hidden font-sans">
       
@@ -246,7 +248,7 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-  .animate-spin-slow {
+  :global(.animate-spin-slow) {
     animation: spin-slow 20s linear infinite;
   }
 </style>
