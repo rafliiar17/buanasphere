@@ -1,4 +1,5 @@
 import type { CountrySpatialMetadata, GeoAppPlugin, GeoArc, InspectorWidget } from '../types';
+import FlightBottomDock from '$lib/apps/flight/FlightBottomDock.svelte';
 import { generateGreatCircleArc } from '../geoMath';
 import { 
   FLIGHT_CORRIDOR_REGIONS, 
@@ -247,4 +248,5 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
           ],
     };
   },
+  BottomDockComponent: FlightBottomDock,
 };

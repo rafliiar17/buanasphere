@@ -21,10 +21,7 @@
   import RateCard from '$lib/features/card/RateCard.svelte';
   import GlobalAppSplashScreen from '$lib/components/GlobalAppSplashScreen.svelte';
   import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
-  import KursBottomDock from '$lib/apps/kurs/KursBottomDock.svelte';
-  import TimeBottomDock from '$lib/apps/time/TimeBottomDock.svelte';
-  import FlightBottomDock from '$lib/apps/flight/FlightBottomDock.svelte';
-  import PassportBottomDock from '$lib/apps/passport/PassportBottomDock.svelte';
+  import RateAlertModal from '$lib/features/alert/RateAlertModal.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { isLandingPath } from '$lib/framework/geoglobe/router';
   import { apiClient } from '$lib/api/client';
@@ -37,15 +34,24 @@
   let isAppInitialLoading = $state(true);
 
   const activeApp = $derived(geoStore.activeApp);
+  const pageTitle = $derived(
+    isLanding
+      ? 'Globe — Platform Informasi Dunia Real-Time | globe.arafz.id'
+      : `${activeApp.name} — ${activeApp.tagline} | globe.arafz.id`
+  );
+  const pageDescription = $derived(
+    isLanding
+      ? 'Eksplorasi bumi 3D interaktif dan platform multi-aplikasi geospatial real-time: nilai tukar kurs, zona waktu dunia, koridor remitansi, dan indeks paspor.'
+      : `${activeApp.name}: ${activeApp.tagline}. Visualisasi data geospatial interaktif dan analitik real-time di globe.arafz.id.`
+  );
+  const canonicalUrl = $derived(
+    isLanding
+      ? 'https://globe.arafz.id/'
+      : `https://globe.arafz.id${activeApp.canonicalPath || ''}`
+  );
   let activeView = $state<'map' | 'chart' | 'matrix' | 'converter' | 'cards'>('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
-  let alertEmail = $state('');
-  let alertCurrency = $state('USD');
-  let alertCondition = $state<'above' | 'below'>('below');
-  let alertTargetRate = $state<number>(16200);
-  let isAlertSubmitting = $state(false);
-  let alertMessage = $state<string | null>(null);
 
   onMount(() => {
     const unsub = subscribeLocale((loc) => {
@@ -88,38 +94,23 @@
   function handleTickerCurrencySelect(currencyCode: string) {
     converterFromCurrency = currencyCode;
   }
-
-  async function handleCreateAlert(e: Event) {
-    e.preventDefault();
-    if (!alertEmail || !alertTargetRate) return;
-    isAlertSubmitting = true;
-    try {
-      const res = await apiClient.createRateAlert({
-        email: alertEmail,
-        baseCurrency: 'IDR',
-        targetCurrency: alertCurrency,
-        condition: alertCondition,
-        targetRate: Number(alertTargetRate),
-      });
-      alertMessage = res.message || t('alert.successMessage');
-      setTimeout(() => {
-        alertMessage = null;
-        isAlertModalOpen = false;
-      }, 3000);
-    } catch (err) {
-      console.error('Error creating alert:', err);
-    } finally {
-      isAlertSubmitting = false;
-    }
-  }
 </script>
 
 <svelte:head>
-  {#if isLanding}
-    <title>Globe — Platform Informasi Dunia Real-Time | globe.arafz.id</title>
-  {:else}
-    <title>{activeApp.name} — {activeApp.tagline} | globe.arafz.id</title>
-  {/if}
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription} />
+  <link rel="canonical" href={canonicalUrl} />
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDescription} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={pageDescription} />
 </svelte:head>
 
 {#if isLanding}
@@ -145,17 +136,9 @@
       <!-- Floating Bottom Dock (Polymorphic per Micro-App - ADR 0040) -->
       {#if geoStore.activeApp?.BottomDockComponent}
         {@const CustomBottomDock = geoStore.activeApp.BottomDockComponent}
-        <CustomBottomDock />
-      {:else if geoStore.activeAppId === 'world-time'}
-        <TimeBottomDock />
-      {:else if geoStore.activeAppId === 'remittance-flow'}
-        <FlightBottomDock />
-      {:else if geoStore.activeAppId === 'passport-power'}
-        <PassportBottomDock />
-      {:else if geoStore.activeAppId === 'fx-rates'}
-        <KursBottomDock
+        <CustomBottomDock
           {activeView}
-          onSelectView={(v) => (activeView = v)}
+          onSelectView={(v: any) => (activeView = v)}
           onSelectCurrency={handleTickerCurrencySelect}
           onOpenAlertModal={() => (isAlertModalOpen = true)}
         />
@@ -231,103 +214,8 @@
 
   </main>
 
-  <!-- Rate Alert Modal -->
-  {#if isAlertModalOpen}
-    <div
-      role="presentation"
-      class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-      onclick={() => (isAlertModalOpen = false)}
-      onkeydown={(e) => e.key === 'Escape' && (isAlertModalOpen = false)}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="alert-modal-title"
-        tabindex="-1"
-        class="relative w-full max-w-md bg-[var(--bg-raised)] border border-[var(--bg-rule)] rounded-2xl p-6 shadow-2xl"
-        style="color: var(--ink);"
-        onclick={(e) => e.stopPropagation()}
-        onkeydown={(e) => e.key === 'Escape' && (isAlertModalOpen = false)}
-      >
-        <button
-          type="button"
-          aria-label={t('common.close')}
-          onclick={() => (isAlertModalOpen = false)}
-          class="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--ink-4)] hover:text-[var(--ink)] hover:bg-[var(--bg-subtle)] transition cursor-pointer"
-        >
-          <X class="w-5 h-5" />
-        </button>
-
-        <div class="mb-5 pb-4 border-b border-[var(--bg-rule)]">
-          <div class="flex items-center gap-2 mb-1">
-            <Bell class="w-4 h-4 text-rose-400" />
-            <h3 id="alert-modal-title" class="text-base font-bold text-[var(--ink)]">
-              {t('alert.modalTitle')}
-            </h3>
-          </div>
-          <p class="text-xs text-[var(--ink-4)]">
-            {t('alert.modalSubtitle')}
-          </p>
-        </div>
-
-        {#if alertMessage}
-          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs">
-            <Check class="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{alertMessage}</span>
-          </div>
-        {:else}
-          <form onsubmit={handleCreateAlert} class="space-y-3.5">
-            <div>
-              <label for="alert-email-input" class="block text-[11px] font-bold text-[var(--ink-3)] uppercase tracking-wider mb-1">
-                {t('alert.emailLabel')}
-              </label>
-              <input id="alert-email-input" type="email" required placeholder={t('alert.emailPlaceholder')} bind:value={alertEmail} class="field" />
-            </div>
-
-            <div class="grid grid-cols-2 gap-2.5">
-              <div>
-                <label for="alert-currency-select" class="block text-[11px] font-bold text-[var(--ink-3)] uppercase tracking-wider mb-1">
-                  {t('alert.currencyLabel')}
-                </label>
-                <select id="alert-currency-select" bind:value={alertCurrency} class="field">
-                  <option value="USD">🇺🇸 USD</option>
-                  <option value="EUR">🇪🇺 EUR</option>
-                  <option value="SGD">🇸🇬 SGD</option>
-                  <option value="JPY">🇯🇵 JPY</option>
-                  <option value="AUD">🇦🇺 AUD</option>
-                  <option value="GBP">🇬🇧 GBP</option>
-                  <option value="SAR">🇸🇦 SAR</option>
-                  <option value="MYR">🇲🇾 MYR</option>
-                  <option value="CNY">🇨🇳 CNY</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="alert-condition-select" class="block text-[11px] font-bold text-[var(--ink-3)] uppercase tracking-wider mb-1">
-                  {t('alert.conditionLabel')}
-                </label>
-                <select id="alert-condition-select" bind:value={alertCondition} class="field">
-                  <option value="below">{t('alert.conditionBelow')}</option>
-                  <option value="above">{t('alert.conditionAbove')}</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label for="alert-target-rate-input" class="block text-[11px] font-bold text-[var(--ink-3)] uppercase tracking-wider mb-1">
-                {t('alert.targetRateLabel')}
-              </label>
-              <input id="alert-target-rate-input" type="number" required step="any" placeholder={t('alert.targetRatePlaceholder')} bind:value={alertTargetRate} class="field font-mono" />
-            </div>
-
-            <button type="submit" class="btn btn-primary w-full mt-2" disabled={isAlertSubmitting}>
-              {isAlertSubmitting ? t('alert.submittingButton') : t('alert.submitButton')}
-            </button>
-          </form>
-        {/if}
-      </div>
-    </div>
-  {/if}
+  <!-- Rate Alert Modal (ADR 0044 Candidate 4) -->
+  <RateAlertModal bind:isOpen={isAlertModalOpen} onClose={() => (isAlertModalOpen = false)} />
 
   <!-- GeoGlobe Pluggable Micro-App Launcher Modal -->
   <GeoAppLauncherModal />

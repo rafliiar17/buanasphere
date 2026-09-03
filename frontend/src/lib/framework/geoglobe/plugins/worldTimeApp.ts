@@ -1,4 +1,5 @@
 import type { CountrySpatialMetadata, GeoAppPlugin, GeoPath, InspectorWidget } from '../types';
+import TimeBottomDock from '$lib/apps/time/TimeBottomDock.svelte';
 import { 
   calculateLocalTime, 
   isDaylight, 
@@ -336,4 +337,5 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       },
     };
   },
+  BottomDockComponent: TimeBottomDock,
 };

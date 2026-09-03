@@ -58,4 +58,7 @@ export class GeoAppRegistry {
   }
 }
 
+import { earthquakeApp } from './plugins/earthquakeApp';
+
 export const geoRegistry = new GeoAppRegistry();
+geoRegistry.register(earthquakeApp);

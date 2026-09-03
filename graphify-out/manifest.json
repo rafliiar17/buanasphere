@@ -1,0 +1,2302 @@
+{
+  "backend/drizzle.config.ts": {
+    "mtime": 1788329990.3855276,
+    "ast_hash": "d70ed7a28e6f5590150d035ab51c9818",
+    "semantic_hash": ""
+  },
+  "backend/drizzle/0000_majestic_dagger.sql": {
+    "mtime": 1788329990.386368,
+    "ast_hash": "772f45c6b3a2b80025c38c1e587324b5",
+    "semantic_hash": ""
+  },
+  "backend/drizzle/meta/0000_snapshot.json": {
+    "mtime": 1788329990.386468,
+    "ast_hash": "2eabeea395bfe268a1235d9b78c66e1d",
+    "semantic_hash": ""
+  },
+  "backend/drizzle/meta/_journal.json": {
+    "mtime": 1788329990.386552,
+    "ast_hash": "4ad64aae8c5f3c21403756db50ae4b0a",
+    "semantic_hash": ""
+  },
+  "backend/package.json": {
+    "mtime": 1788331453.4950805,
+    "ast_hash": "74507bec9836c0f31237fb9b74e7a31e",
+    "semantic_hash": ""
+  },
+  "backend/src/db/index.ts": {
+    "mtime": 1788332058.1069212,
+    "ast_hash": "1fee659824eb9bf165b36b8dac9c94d6",
+    "semantic_hash": ""
+  },
+  "backend/src/db/schema.ts": {
+    "mtime": 1788329990.3867474,
+    "ast_hash": "d277bf7eef668aeb611292100c2809e5",
+    "semantic_hash": ""
+  },
+  "backend/src/domain/country-map.ts": {
+    "mtime": 1788329990.386873,
+    "ast_hash": "c0058707ea4e1f4cfe97f890c6644c4b",
+    "semantic_hash": ""
+  },
+  "backend/src/domain/rate.ts": {
+    "mtime": 1788329990.3870919,
+    "ast_hash": "255c818694d56d743a1baa793625387f",
+    "semantic_hash": ""
+  },
+  "backend/src/index.ts": {
+    "mtime": 1788344937.675009,
+    "ast_hash": "8dbf74235303ef676c60cca249d1d587",
+    "semantic_hash": ""
+  },
+  "backend/src/logger/index.ts": {
+    "mtime": 1788329990.3870919,
+    "ast_hash": "3bb02abd9706d1841b3cda791ac01d7e",
+    "semantic_hash": ""
+  },
+  "backend/src/middleware/logger.ts": {
+    "mtime": 1788329990.3873909,
+    "ast_hash": "130ea43b2184393bad1c6fc79a70e0cd",
+    "semantic_hash": ""
+  },
+  "backend/src/middleware/rate-limiter.ts": {
+    "mtime": 1788344937.676009,
+    "ast_hash": "06fbc0147852d51e4d045611680f2357",
+    "semantic_hash": ""
+  },
+  "backend/src/provider/bca.ts": {
+    "mtime": 1788329990.3874612,
+    "ast_hash": "9a816fe998de200f541f44b62c93418c",
+    "semantic_hash": ""
+  },
+  "backend/src/provider/bi.ts": {
+    "mtime": 1788329990.3876631,
+    "ast_hash": "6846aa8ac17bd44fec9bf20f5c48a65e",
+    "semantic_hash": ""
+  },
+  "backend/src/provider/index.ts": {
+    "mtime": 1788329990.3876631,
+    "ast_hash": "78e592bb615a50c3f9a770bc74011c27",
+    "semantic_hash": ""
+  },
+  "backend/src/provider/mandiri.ts": {
+    "mtime": 1788329990.3876631,
+    "ast_hash": "45d0e7cd0b693af6ff9f39fc6b00f24a",
+    "semantic_hash": ""
+  },
+  "backend/src/provider/open-er-api.ts": {
+    "mtime": 1788344937.676009,
+    "ast_hash": "c26ba046439e5184df238cbdc2c83bfb",
+    "semantic_hash": ""
+  },
+  "backend/src/provider/synthetic.ts": {
+    "mtime": 1788344937.6765687,
+    "ast_hash": "8d1ed3a6b38c9a85c139fe0c896c9bf2",
+    "semantic_hash": ""
+  },
+  "backend/src/routes/convert.ts": {
+    "mtime": 1788329990.3885658,
+    "ast_hash": "64788261e6daa7042ba08c150ffb3be5",
+    "semantic_hash": ""
+  },
+  "backend/src/routes/countries.ts": {
+    "mtime": 1788331291.6273797,
+    "ast_hash": "0b07465e437b90ea67e8a411b56f77a0",
+    "semantic_hash": ""
+  },
+  "backend/src/routes/history.ts": {
+    "mtime": 1788329990.3887475,
+    "ast_hash": "af6d931b701ff769f520a76f21b31f82",
+    "semantic_hash": ""
+  },
+  "backend/src/routes/rates.ts": {
+    "mtime": 1788331291.6273797,
+    "ast_hash": "d9a71f0a4fab4d66f207c3f75da6e9e6",
+    "semantic_hash": ""
+  },
+  "backend/src/service/aggregator.ts": {
+    "mtime": 1788344937.6768277,
+    "ast_hash": "e0370a0523b3b63d74710b470d5b173d",
+    "semantic_hash": ""
+  },
+  "backend/src/service/comparator.ts": {
+    "mtime": 1788329990.3892796,
+    "ast_hash": "b410474fbfce7bdf14a162a90c0858b1",
+    "semantic_hash": ""
+  },
+  "backend/src/service/converter.ts": {
+    "mtime": 1788344937.6768277,
+    "ast_hash": "49859bb980aaa09cfb2fdceba94cfe0b",
+    "semantic_hash": ""
+  },
+  "backend/src/service/country.ts": {
+    "mtime": 1788329990.3896413,
+    "ast_hash": "3e2230fee8b744c7d464bfc64828335a",
+    "semantic_hash": ""
+  },
+  "backend/src/telemetry/index.ts": {
+    "mtime": 1788332058.107668,
+    "ast_hash": "2713eba767317735a967d7c3f385fcf5",
+    "semantic_hash": ""
+  },
+  "backend/tests/adr0033-diagnostic-remediation.test.ts": {
+    "mtime": 1788344937.6768277,
+    "ast_hash": "2fd0c551586f6bb4cb4d80d8d468952b",
+    "semantic_hash": ""
+  },
+  "backend/tests/caching-flow.test.ts": {
+    "mtime": 1788329990.3897235,
+    "ast_hash": "d50f456ae6979fb542f34b5b6c62f15a",
+    "semantic_hash": ""
+  },
+  "backend/tests/converter.test.ts": {
+    "mtime": 1788329990.389852,
+    "ast_hash": "628cef1d84c07f59768e8ac743929012",
+    "semantic_hash": ""
+  },
+  "backend/tests/countries-db.test.ts": {
+    "mtime": 1788329990.3902903,
+    "ast_hash": "3a7dc63d0d37f69ff0aff666c6717f6e",
+    "semantic_hash": ""
+  },
+  "backend/tests/country-map.test.ts": {
+    "mtime": 1788329990.3903706,
+    "ast_hash": "22c1443134f35d345e19e441bdf5b333",
+    "semantic_hash": ""
+  },
+  "backend/tests/domain-cors.test.ts": {
+    "mtime": 1788344937.6768277,
+    "ast_hash": "4529f150c2116d73f2451acaf4a8407f",
+    "semantic_hash": ""
+  },
+  "backend/tests/kv-cache.test.ts": {
+    "mtime": 1788329990.3903706,
+    "ast_hash": "fa505a3043048b3b414958c9ea5a1b27",
+    "semantic_hash": ""
+  },
+  "backend/tests/logger.test.ts": {
+    "mtime": 1788329990.390491,
+    "ast_hash": "655012f82c046cd612b0c821a60da4d7",
+    "semantic_hash": ""
+  },
+  "backend/tests/on-demand-ingestion.test.ts": {
+    "mtime": 1788330727.357064,
+    "ast_hash": "83233b1b9d70464c0b9558c007b01910",
+    "semantic_hash": ""
+  },
+  "backend/tests/open-er-api.test.ts": {
+    "mtime": 1788329990.3905458,
+    "ast_hash": "e51cbe525baed189a73ec3778f4a247a",
+    "semantic_hash": ""
+  },
+  "backend/tests/rates-api.test.ts": {
+    "mtime": 1788329990.3906157,
+    "ast_hash": "27a29d22e0ba4d72b92042732630b28c",
+    "semantic_hash": ""
+  },
+  "backend/tests/security-remediation.test.ts": {
+    "mtime": 1788331229.2667441,
+    "ast_hash": "ae19a174ed1fa5f49fec11a4c996597b",
+    "semantic_hash": ""
+  },
+  "backend/tests/telemetry.test.ts": {
+    "mtime": 1788332058.1077976,
+    "ast_hash": "5512f2fe3fa18aedf29be631376bd1b6",
+    "semantic_hash": ""
+  },
+  "backend/tsconfig.json": {
+    "mtime": 1788329990.390812,
+    "ast_hash": "fe7033e039d49bdb9f3b44aa5f3bfd45",
+    "semantic_hash": ""
+  },
+  "frontend/functions/api/[[path]].ts": {
+    "mtime": 1788344937.679527,
+    "ast_hash": "cf65ce116529887bc0801caaecd50b2f",
+    "semantic_hash": ""
+  },
+  "frontend/package.json": {
+    "mtime": 1788331453.495649,
+    "ast_hash": "5932f94520f1520037314409e43a3b04",
+    "semantic_hash": ""
+  },
+  "frontend/public/_routes.json": {
+    "mtime": 1788329990.3973598,
+    "ast_hash": "60541ac515bbcb544287024bcff3e3e9",
+    "semantic_hash": ""
+  },
+  "frontend/src/App.svelte": {
+    "mtime": 1788400574.2762651,
+    "ast_hash": "41f463ceaa7fd72dcec91a3baff3381a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/api/client.ts": {
+    "mtime": 1788330727.3580642,
+    "ast_hash": "43887b8dc18fd5d44537f9935b014d60",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/api/types.ts": {
+    "mtime": 1788329990.4135325,
+    "ast_hash": "9cbdf31fa5befc5a6b9acbd7cbe8be0f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/flight/FlightBottomDock.svelte": {
+    "mtime": 1788344937.6801302,
+    "ast_hash": "00b88204666354ed76cfb5ebf600225d",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/flight/FlightControls.svelte": {
+    "mtime": 1788398278.9434392,
+    "ast_hash": "cad1145b0870ea8abe0416b78a726d6f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/flight/FlightTooltip.svelte": {
+    "mtime": 1788344937.6803112,
+    "ast_hash": "af56d16290b91df7dcdac711822fd244",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/flora/FloraBottomDock.svelte": {
+    "mtime": 1788345869.5884168,
+    "ast_hash": "d621112662f56e3e3304802c688accbe",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/flora/FloraControls.svelte": {
+    "mtime": 1788398295.9136956,
+    "ast_hash": "1aceed248587438f453e4117fb21d588",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/flora/FloraTooltip.svelte": {
+    "mtime": 1788345869.5885813,
+    "ast_hash": "d632a61c51ef0f780822e0e5f25a20a1",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/kurs/KursBottomDock.svelte": {
+    "mtime": 1788400467.5484169,
+    "ast_hash": "0671a5442bd8c81b40706ba902d10222",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/kurs/KursControls.svelte": {
+    "mtime": 1788398270.4483085,
+    "ast_hash": "a0e76535108b9e571b5efbf1a3cecfc1",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/kurs/KursTooltip.svelte": {
+    "mtime": 1788344937.680737,
+    "ast_hash": "744169f904e5b4c844c80e66768edc8a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/passport/PassportBottomDock.svelte": {
+    "mtime": 1788344937.680737,
+    "ast_hash": "03dc141f0840480569a4261929b23777",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/passport/PassportControls.svelte": {
+    "mtime": 1788398286.3135514,
+    "ast_hash": "d862fe5af751bbd78c79597f51b66a4f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/passport/PassportTooltip.svelte": {
+    "mtime": 1788344937.6811066,
+    "ast_hash": "1322f18d23ce823c8b84a9c429e0688f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/time/TimeBottomDock.svelte": {
+    "mtime": 1788361234.2417707,
+    "ast_hash": "893bd0374b29a90909efb8849adc59d4",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/time/TimeControls.svelte": {
+    "mtime": 1788399078.6959598,
+    "ast_hash": "813b0dd7b29f1a760def358286643bb2",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/apps/time/TimeTooltip.svelte": {
+    "mtime": 1788361234.2437706,
+    "ast_hash": "47ccc6988430b67b7baf312552b1330f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/Footer.svelte": {
+    "mtime": 1788334997.792838,
+    "ast_hash": "75fcd7b94e351d2d4333821794ea080f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/GlobalAppSplashScreen.svelte": {
+    "mtime": 1788396919.9197924,
+    "ast_hash": "7cd91e2f99f124b014a73bdf10300033",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/GlobeLandingPage.svelte": {
+    "mtime": 1788345869.5888426,
+    "ast_hash": "676ad8058f6d5b2cfe8bf73844b50fdd",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/Navbar.svelte": {
+    "mtime": 1788396914.6409638,
+    "ast_hash": "11951d325cc640957e852b3bd7afee3d",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/skeletons/CardSkeleton.svelte": {
+    "mtime": 1788329990.414832,
+    "ast_hash": "5ad896dfadd27ee2bbd757ba1da7443b",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/skeletons/MapSkeleton.svelte": {
+    "mtime": 1788334248.5571182,
+    "ast_hash": "30ce194c6d652c42101e038894340e3e",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/skeletons/TableSkeleton.svelte": {
+    "mtime": 1788329990.4153259,
+    "ast_hash": "328cf3e6593e18b4b3a0c104898029b1",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/ui/Badge.svelte": {
+    "mtime": 1788329990.4153957,
+    "ast_hash": "de3c67b1a649b27409f402d901fed1df",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/ui/Button.svelte": {
+    "mtime": 1788329990.4154634,
+    "ast_hash": "01f72dbf2f4ffd794a35d44ce65e3253",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/ui/Card.svelte": {
+    "mtime": 1788329990.4154634,
+    "ast_hash": "a0f024475a1cc0db99a167058973b997",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/ui/Input.svelte": {
+    "mtime": 1788329990.4156263,
+    "ast_hash": "b8bc1fc5d8050e914dc92eda702de94a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/ui/Select.svelte": {
+    "mtime": 1788329990.4156866,
+    "ast_hash": "e45abd68e05a9fe0b79b5f12e532c6eb",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/components/ui/Tabs.svelte": {
+    "mtime": 1788329990.415741,
+    "ast_hash": "96a961fd2623d983361d5293c0e1a6ac",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/alert/RateAlertModal.svelte": {
+    "mtime": 1788400609.7575297,
+    "ast_hash": "71923ac9270f9e96059595dbf5394d60",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/card/RateCard.svelte": {
+    "mtime": 1788400416.4799798,
+    "ast_hash": "7d2b587b39bcc24fb4c88dfe9a6de781",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/chart/GoogleRateChart.svelte": {
+    "mtime": 1788344937.682715,
+    "ast_hash": "ab7ffb42c4d0cd31d2d1eb5da84dba7b",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/chart/TrendChart.svelte": {
+    "mtime": 1788329990.4161994,
+    "ast_hash": "24efa49842e97bd1d54c0cec22513b5a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/converter/CurrencyConverter.svelte": {
+    "mtime": 1788344937.682715,
+    "ast_hash": "0877642dc088d5115b2bdb05ecaf4b5e",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/GlobalMoversTicker.svelte": {
+    "mtime": 1788332876.3182135,
+    "ast_hash": "49f28dc28e9081c123486d619269ffe0",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/WorldRateMap.svelte": {
+    "mtime": 1788396979.2583034,
+    "ast_hash": "93ce6cad28cdb302ccb32378d8f24de3",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/components/CountryInspectorDrawer.svelte": {
+    "mtime": 1788337524.5864196,
+    "ast_hash": "ae28808e29b5b96b9bd21ac6f51349ae",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/components/FlatMap2DView.svelte": {
+    "mtime": 1788337524.5865767,
+    "ast_hash": "aaad8739687998127c2e4f043596a957",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/components/Globe3DView.svelte": {
+    "mtime": 1788400544.5840373,
+    "ast_hash": "88cf7b2079f87bf1ccf40902a2a39525",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/components/GlobeEntranceLoader.svelte": {
+    "mtime": 1788334997.7935061,
+    "ast_hash": "37660600efd75924a9e49639520b787f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/components/MapControlsToolbar.svelte": {
+    "mtime": 1788360184.9127896,
+    "ast_hash": "caceb732af8883fe57ab86de6846cd56",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/country-flag-colors.ts": {
+    "mtime": 1788329990.417023,
+    "ast_hash": "b15f2952518a56aec1900e49907c4301",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/country-mapping.ts": {
+    "mtime": 1788329990.417497,
+    "ast_hash": "67095ccb11299e98ce40caa015c15919",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/iso-mapping.json": {
+    "mtime": 1788329990.417497,
+    "ast_hash": "8c014f7e324c646883da85ab4970b677",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/map-constants.ts": {
+    "mtime": 1788330727.3610647,
+    "ast_hash": "8873f692ee284c0574f5b1e7eec52e5c",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/mapState.svelte.ts": {
+    "mtime": 1788398865.1745772,
+    "ast_hash": "1b74b25dccc9db1357b78b34b3ce6738",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/mapState.ts": {
+    "mtime": 1788398834.261352,
+    "ast_hash": "df3212590e035a4e6b7591e7174a0920",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/procedural-flags.ts": {
+    "mtime": 1788344937.6835368,
+    "ast_hash": "d8b2eb1f0ddbf3c20ed3fe5c8af1f4cc",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/shader-lut/countryLutEngine.ts": {
+    "mtime": 1788394571.9161751,
+    "ast_hash": "a22ed739cfa60fd5a54aa7e6857d2fd3",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/map/shader-lut/globeShaders.ts": {
+    "mtime": 1788397583.9095688,
+    "ast_hash": "35dc16f88a21bc8cf8e16fe31cb17aa4",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/matrix/CurrencyComparisonMatrix.svelte": {
+    "mtime": 1788334997.7937973,
+    "ast_hash": "63f259ba5c4a8950b3315dce30f914c6",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/features/matrix/RateMatrix.svelte": {
+    "mtime": 1788329990.418434,
+    "ast_hash": "7df1497250f416dd2c2728e6203254ec",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/formatters/currency.ts": {
+    "mtime": 1788329990.41857,
+    "ast_hash": "5831227bb6846bbd4018eca8bb03dc1e",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/appRegistry.ts": {
+    "mtime": 1788400428.769087,
+    "ast_hash": "46e0c22f549a7a5c0e636110e74cd0af",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/countrySpatialData.ts": {
+    "mtime": 1788395860.8532643,
+    "ast_hash": "efa53d1a039509165545e1f821375ec4",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/data/earthquakeData.ts": {
+    "mtime": 1788400388.0347264,
+    "ast_hash": "fa25695d675fa97fbdebe4597436852a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/data/floraFaunaData.ts": {
+    "mtime": 1788345869.589612,
+    "ast_hash": "672b9cf0376c637234baaae031a10d3e",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/data/worldCapitalsData.ts": {
+    "mtime": 1788395842.7911358,
+    "ast_hash": "102a1467aff9e4eee196ae79e77c5aee",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/filterEngine.ts": {
+    "mtime": 1788396614.7770476,
+    "ast_hash": "13e982eed3f2402ced43b91389561583",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/geoMath.ts": {
+    "mtime": 1788361234.2457707,
+    "ast_hash": "ab8d636e4f3ad285f81404fcaf21b115",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/geoStore.svelte.ts": {
+    "mtime": 1788400440.4511878,
+    "ast_hash": "5e62ebe064467d01245b16e35d948682",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/earthquakeApp.ts": {
+    "mtime": 1788400409.6059194,
+    "ast_hash": "24657c3c1b1c8ab65715a3350a403907",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/floraFaunaApp.ts": {
+    "mtime": 1788396680.8808389,
+    "ast_hash": "8beede65bf844d0ae6885aee06be1b18",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/flowCorridorsApp.ts": {
+    "mtime": 1788400397.4538112,
+    "ast_hash": "55d8b29ed47a327fc1ea1689279d2499",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/fxRatesApp.ts": {
+    "mtime": 1788400446.5162396,
+    "ast_hash": "a7f6e1d6f0c2acde50e780867a3a0081",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/passportWorldApp.ts": {
+    "mtime": 1788400429.3590922,
+    "ast_hash": "be10b51b33c9a8c97390d1aa7a241e37",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/worldCapitalsApp.ts": {
+    "mtime": 1788396686.633628,
+    "ast_hash": "e540aa922e765a431e1660aa52311ac5",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/plugins/worldTimeApp.ts": {
+    "mtime": 1788400374.7646055,
+    "ast_hash": "adba53921423a9eb258b3c0802ce0ba9",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/router.ts": {
+    "mtime": 1788400418.788,
+    "ast_hash": "339ffe5f72b4acb6a7ecf1cbec95988a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/types.ts": {
+    "mtime": 1788399107.3801262,
+    "ast_hash": "b87f1440b63b709f34d6c211ca5bb4a2",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte": {
+    "mtime": 1788396930.3024764,
+    "ast_hash": "efa58b59c480e06269b421d440d3e5db",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/ui/UniversalAppControls.svelte": {
+    "mtime": 1788398982.858373,
+    "ast_hash": "bb62c9b496fcc0b4a5a75b42dd02b861",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/framework/geoglobe/ui/UniversalCountryInspector.svelte": {
+    "mtime": 1788400627.2206573,
+    "ast_hash": "1028fa01f35eb3bb2e6f906b754d27ce",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/i18n/index.ts": {
+    "mtime": 1788337524.5865767,
+    "ast_hash": "ab2f7972d50bf7d7936214249d22da2a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/i18n/iso-countries.ts": {
+    "mtime": 1788337524.5865767,
+    "ast_hash": "fe62e69fc2ea9117c92805bdb2648945",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/i18n/locales/en.ts": {
+    "mtime": 1788360184.9167898,
+    "ast_hash": "4c6aac9173f11573c5ed744b24802a7f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/i18n/locales/id.ts": {
+    "mtime": 1788360184.9167898,
+    "ast_hash": "7add42ff73e668c50da021615da5d9d4",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/i18n/state.ts": {
+    "mtime": 1788337524.5865767,
+    "ast_hash": "2e542652f2287165c8b2a442acca731f",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/i18n/types.ts": {
+    "mtime": 1788329990.4189925,
+    "ast_hash": "6568e9359545a8f404d44dcdf24ba83a",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/theme/index.ts": {
+    "mtime": 1788329990.4189925,
+    "ast_hash": "5f3e8ee3edb77d47080415f18c75a73f",
+    "semantic_hash": ""
+  },
+  "frontend/src/main.ts": {
+    "mtime": 1788338068.9585416,
+    "ast_hash": "2c6fedc437c0ecdcb99cbb6df12157e2",
+    "semantic_hash": ""
+  },
+  "frontend/svelte.config.js": {
+    "mtime": 1788329990.4189925,
+    "ast_hash": "329b28849f47942a704f1e24c8e634fb",
+    "semantic_hash": ""
+  },
+  "frontend/tests/adr0033-frontend-diagnostic.test.ts": {
+    "mtime": 1788344937.684858,
+    "ast_hash": "f7e6eb904757504b928f7380d772f5df",
+    "semantic_hash": ""
+  },
+  "frontend/tests/adr0044-bug-fixes-and-expansion.test.ts": {
+    "mtime": 1788400547.5220602,
+    "ast_hash": "fd27528d183397e9c380e38b01ab258b",
+    "semantic_hash": ""
+  },
+  "frontend/tests/adr0044-part3-ui-features.test.ts": {
+    "mtime": 1788400328.5811718,
+    "ast_hash": "4f1fd908e0286a15de0adbce731834b2",
+    "semantic_hash": ""
+  },
+  "frontend/tests/all-191-countries-flags.test.ts": {
+    "mtime": 1788329990.4193213,
+    "ast_hash": "535e3002f2adb1a6043fe215cf92b483",
+    "semantic_hash": ""
+  },
+  "frontend/tests/api-client.test.ts": {
+    "mtime": 1788330727.3620648,
+    "ast_hash": "d85c6005247b87552558f19e0a60c57f",
+    "semantic_hash": ""
+  },
+  "frontend/tests/authentic-flag-textures.test.ts": {
+    "mtime": 1788329990.4195304,
+    "ast_hash": "1f88a8b410342756e30a9f60f75beaa9",
+    "semantic_hash": ""
+  },
+  "frontend/tests/canvas-flag-accuracy.test.ts": {
+    "mtime": 1788329990.41959,
+    "ast_hash": "e9f2f4f68dc86ae5908b772bd18972ea",
+    "semantic_hash": ""
+  },
+  "frontend/tests/container-width-8xl.test.ts": {
+    "mtime": 1788334997.7942972,
+    "ast_hash": "a2326236afb10c1194bbf7dc1c39f2d3",
+    "semantic_hash": ""
+  },
+  "frontend/tests/country-flag-visual-matrix.test.ts": {
+    "mtime": 1788329990.4196641,
+    "ast_hash": "34d90c44c6d8350f8f2e1c754213f0a1",
+    "semantic_hash": ""
+  },
+  "frontend/tests/country-inspector-drawer.test.ts": {
+    "mtime": 1788329990.4197505,
+    "ast_hash": "d8abed24b6cec47d76e9b76fca24a040",
+    "semantic_hash": ""
+  },
+  "frontend/tests/country-mapping.test.ts": {
+    "mtime": 1788329990.419843,
+    "ast_hash": "e97e20fbf66f4bc574ca49754488ca04",
+    "semantic_hash": ""
+  },
+  "frontend/tests/dynamic-app-branding.test.ts": {
+    "mtime": 1788344937.684858,
+    "ast_hash": "ede777bf7297c08b353eab0c4a186881",
+    "semantic_hash": ""
+  },
+  "frontend/tests/flag-visualization.test.ts": {
+    "mtime": 1788329990.4199116,
+    "ast_hash": "d64d4da35814fe86a6fbb40402d0f785",
+    "semantic_hash": ""
+  },
+  "frontend/tests/formatters.test.ts": {
+    "mtime": 1788329990.419981,
+    "ast_hash": "ed6f5726de74570b1b85f50121b707f3",
+    "semantic_hash": ""
+  },
+  "frontend/tests/geoglobe-framework.test.ts": {
+    "mtime": 1788344937.684858,
+    "ast_hash": "e7bde87860656b5fa43ba0c9578600e4",
+    "semantic_hash": ""
+  },
+  "frontend/tests/global-app-splash.test.ts": {
+    "mtime": 1788360184.9167898,
+    "ast_hash": "0542d6c4b3e39b24954692927b4c5907",
+    "semantic_hash": ""
+  },
+  "frontend/tests/globe-entrance-loader.test.ts": {
+    "mtime": 1788334997.794356,
+    "ast_hash": "92f5bde3a39313214794558cd34be740",
+    "semantic_hash": ""
+  },
+  "frontend/tests/globe-performance-optimization.test.ts": {
+    "mtime": 1788397618.9596155,
+    "ast_hash": "5dd7c3ea6b3a30bf4aae35f2ef0760af",
+    "semantic_hash": ""
+  },
+  "frontend/tests/i18n-audit-coverage.test.ts": {
+    "mtime": 1788360184.9167898,
+    "ast_hash": "100be9e7edcae8a6542841886583f0ae",
+    "semantic_hash": ""
+  },
+  "frontend/tests/i18n-reactive-state.test.ts": {
+    "mtime": 1788333675.7227325,
+    "ast_hash": "57eb631aa838eda785f2da28bb20df48",
+    "semantic_hash": ""
+  },
+  "frontend/tests/i18n.test.ts": {
+    "mtime": 1788332876.3189206,
+    "ast_hash": "7217fee651de94ff5c1ac06c57e9b249",
+    "semantic_hash": ""
+  },
+  "frontend/tests/interactive-timezone-lines.test.ts": {
+    "mtime": 1788398792.0650325,
+    "ast_hash": "c400efa2ed2e709fc73444fc91991c37",
+    "semantic_hash": ""
+  },
+  "frontend/tests/isolated-microapp-modules.test.ts": {
+    "mtime": 1788394571.9166365,
+    "ast_hash": "2df189aad6b5eaa358c47aebbedf920c",
+    "semantic_hash": ""
+  },
+  "frontend/tests/map-controls-refactor.test.ts": {
+    "mtime": 1788329990.420187,
+    "ast_hash": "385059c2ace5d0c595f424e7c290aa3d",
+    "semantic_hash": ""
+  },
+  "frontend/tests/map-experience.test.ts": {
+    "mtime": 1788329990.4202666,
+    "ast_hash": "15a50d064de40bc29be968df4f6a43ca",
+    "semantic_hash": ""
+  },
+  "frontend/tests/map-zoom-controls.test.ts": {
+    "mtime": 1788399848.8845556,
+    "ast_hash": "3ce3da98e9d1f4a3dd7fdfb22ae219a2",
+    "semantic_hash": ""
+  },
+  "frontend/tests/mapstate-reactive-class.test.ts": {
+    "mtime": 1788361234.2498913,
+    "ast_hash": "969feb4c5e863733b4922af2adcf0483",
+    "semantic_hash": ""
+  },
+  "frontend/tests/metric-switching-and-lazyloading.test.ts": {
+    "mtime": 1788344937.6850085,
+    "ast_hash": "33ebf91e21081790ce48ff28a54e1e4d",
+    "semantic_hash": ""
+  },
+  "frontend/tests/microapp-filtering-integration.test.ts": {
+    "mtime": 1788344937.6850085,
+    "ast_hash": "19d29f2aa831a5f9895c72b93b902155",
+    "semantic_hash": ""
+  },
+  "frontend/tests/modular-map-architecture.test.ts": {
+    "mtime": 1788337524.5865767,
+    "ast_hash": "4c992ab8e3bffb9d3ff8cfd37e6e5feb",
+    "semantic_hash": ""
+  },
+  "frontend/tests/multi-currency-comparison.test.ts": {
+    "mtime": 1788359847.9709733,
+    "ast_hash": "d2ed6fe371089fe05b37d22567ff4177",
+    "semantic_hash": ""
+  },
+  "frontend/tests/nature-flora-fauna-app.test.ts": {
+    "mtime": 1788345869.5906684,
+    "ast_hash": "cce757d65e09e51aa61d4b4aa94e89f3",
+    "semantic_hash": ""
+  },
+  "frontend/tests/path-routing.test.ts": {
+    "mtime": 1788344937.6850085,
+    "ast_hash": "c51c74ebed636577c86cc812d505b66f",
+    "semantic_hash": ""
+  },
+  "frontend/tests/plug-and-play-framework.test.ts": {
+    "mtime": 1788396999.735939,
+    "ast_hash": "c2507d20d681cfb46bb2e579fcc5d059",
+    "semantic_hash": ""
+  },
+  "frontend/tests/procedural-flags.test.ts": {
+    "mtime": 1788330727.3620648,
+    "ast_hash": "fb298b166c1650d88f5862433e88aeb0",
+    "semantic_hash": ""
+  },
+  "frontend/tests/shader-lut-engine.test.ts": {
+    "mtime": 1788394571.916781,
+    "ast_hash": "cedfdcdff39671eebb78e289a548ed3e",
+    "semantic_hash": ""
+  },
+  "frontend/tests/strict-bun-runtime.test.ts": {
+    "mtime": 1788331453.4957552,
+    "ast_hash": "c84e606281bea022f1eed9810ea63861",
+    "semantic_hash": ""
+  },
+  "frontend/tests/svelte5-rune-guard.test.ts": {
+    "mtime": 1788395836.307719,
+    "ast_hash": "2d8eca6ec60cec16e93953c485a23657",
+    "semantic_hash": ""
+  },
+  "frontend/tests/theme.test.ts": {
+    "mtime": 1788329990.420456,
+    "ast_hash": "850eb3a35f35b3d6514bd03bfc90ea25",
+    "semantic_hash": ""
+  },
+  "frontend/tests/timezone-meridians.test.ts": {
+    "mtime": 1788398519.3805373,
+    "ast_hash": "72e58d172f8e29d88b18c97a5f6c823f",
+    "semantic_hash": ""
+  },
+  "frontend/tests/world-capitals-plugin.test.ts": {
+    "mtime": 1788395836.3147194,
+    "ast_hash": "809c2a3bd3f78d742f77fdddaa7bc09a",
+    "semantic_hash": ""
+  },
+  "frontend/tests/world-time-diurnal-gradient.test.ts": {
+    "mtime": 1788361234.250102,
+    "ast_hash": "bf129596ca5fe89f6e938577f3f2bcc1",
+    "semantic_hash": ""
+  },
+  "frontend/tsconfig.json": {
+    "mtime": 1788329990.4205081,
+    "ast_hash": "c1571d2c884eba6fd22d62681b191be4",
+    "semantic_hash": ""
+  },
+  "frontend/vite.config.ts": {
+    "mtime": 1788338606.3364153,
+    "ast_hash": "b742d6cc9814ef69f2da1fa9b85331b1",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1788331453.4959762,
+    "ast_hash": "a1c255f098556b9d6f1152e4293144fc",
+    "semantic_hash": ""
+  },
+  "scripts/ensure-bun.ts": {
+    "mtime": 1788331453.4960823,
+    "ast_hash": "92bebbc4cdbb9f9e5cb5ff07fa352c7c",
+    "semantic_hash": ""
+  },
+  "skills-lock.json": {
+    "mtime": 1788329990.4205642,
+    "ast_hash": "f2e4751d41343bb4f476c7730b7c5bc9",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1788329990.4205642,
+    "ast_hash": "0ba967174849db0f1316504375efc821",
+    "semantic_hash": ""
+  },
+  ".agents/rules/sdlc-workflow-rules.md": {
+    "mtime": 1788329990.3835273,
+    "ast_hash": "891244c69081b43e6ded426703fe7a54",
+    "semantic_hash": ""
+  },
+  ".agents/rules/tool-calling-rules.md": {
+    "mtime": 1788311503.9803536,
+    "ast_hash": "a5f09073c918e4d9012d652dddfaad01",
+    "semantic_hash": ""
+  },
+  ".agents/skills/frontend-design/LICENSE.txt": {
+    "mtime": 1788329990.3848696,
+    "ast_hash": "2ee41112a44fe7014dce33e26468ba93",
+    "semantic_hash": ""
+  },
+  ".agents/skills/frontend-design/SKILL.md": {
+    "mtime": 1788329990.385016,
+    "ast_hash": "31c633612585bf2dd4e6d1103afc9f33",
+    "semantic_hash": ""
+  },
+  ".github/workflows/bootstrap-cloudflare.yml": {
+    "mtime": 1788330879.9386826,
+    "ast_hash": "a6995d57577163ee2737c7907f7c26ac",
+    "semantic_hash": ""
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1788331453.4931514,
+    "ast_hash": "ef0eb84fbee4ba54bcde6ccce49779f2",
+    "semantic_hash": ""
+  },
+  ".github/workflows/deploy.yml": {
+    "mtime": 1788344937.675009,
+    "ast_hash": "bd1eb58046edd74394fd386b233bc9d1",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1788329990.3851755,
+    "ast_hash": "9db89dac06181aefa028da16a9d61542",
+    "semantic_hash": ""
+  },
+  "ARCHITECTURE.md": {
+    "mtime": 1788393475.575969,
+    "ast_hash": "87f838df1a3cd1112ee415ba0cc4fe4e",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1788329990.3851755,
+    "ast_hash": "ad85378d21eb6fa370ec9a61008c1b9c",
+    "semantic_hash": ""
+  },
+  "CONTEXT.md": {
+    "mtime": 1788311577.4453454,
+    "ast_hash": "ae28282625daa6a86880cfbdd08ee9aa",
+    "semantic_hash": ""
+  },
+  "GEMINI.md": {
+    "mtime": 1788329990.3851755,
+    "ast_hash": "b5b4d9becc82892cec39d3ff9b9c3190",
+    "semantic_hash": ""
+  },
+  "PROMPT.md": {
+    "mtime": 1788329990.3851755,
+    "ast_hash": "be5ea3d4ddecc4f6950cd21599c07ec3",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1788331453.4946861,
+    "ast_hash": "e43636fb36317745c387d3d678500080",
+    "semantic_hash": ""
+  },
+  "docs/adr/0001-open-er-api-and-edge-architecture.md": {
+    "mtime": 1788329990.391696,
+    "ast_hash": "c4693d2b8f2a2d942eec8b7d0d70f7ba",
+    "semantic_hash": ""
+  },
+  "docs/adr/0002-monorepo-workspace-and-pino-structured-logging.md": {
+    "mtime": 1788329990.3919034,
+    "ast_hash": "8ed23cfa8f6b5ae449e1c761bcd3a414",
+    "semantic_hash": ""
+  },
+  "docs/adr/0003-plotly-choropleth-world-map.md": {
+    "mtime": 1788329990.39203,
+    "ast_hash": "1d5aae85d4e6b526fa0b2df87c5544f0",
+    "semantic_hash": ""
+  },
+  "docs/adr/0004-map-centric-product-architecture.md": {
+    "mtime": 1788329990.3921125,
+    "ast_hash": "df7dc9669a7f07c5ba401c93cf6982d2",
+    "semantic_hash": ""
+  },
+  "docs/adr/0005-full-width-map-and-global-countries.md": {
+    "mtime": 1788329990.392253,
+    "ast_hash": "a5e3e7ad80509aea5cc16d08f9db2718",
+    "semantic_hash": ""
+  },
+  "docs/adr/0006-google-finance-style-charts-and-pure-currency-comparison.md": {
+    "mtime": 1788329990.3924391,
+    "ast_hash": "163bbf8f7a2b6b7a657522d80ce94fce",
+    "semantic_hash": ""
+  },
+  "docs/adr/0007-i18n-internationalization-system.md": {
+    "mtime": 1788329990.3924391,
+    "ast_hash": "a3939fbea1391f1a04275e5e114e191d",
+    "semantic_hash": ""
+  },
+  "docs/adr/0007-robust-flag-mode-visualization.md": {
+    "mtime": 1788329990.3924391,
+    "ast_hash": "b222bbc05a6c1764136486f5eef36fa3",
+    "semantic_hash": ""
+  },
+  "docs/adr/0008-dark-and-light-theme-system.md": {
+    "mtime": 1788329990.3924391,
+    "ast_hash": "a1cf894bfe1d87350aaaf73bed115b2f",
+    "semantic_hash": ""
+  },
+  "docs/adr/0008-procedural-flag-patterns.md": {
+    "mtime": 1788329990.392816,
+    "ast_hash": "a2460d540d5caae7ac299666facf86cb",
+    "semantic_hash": ""
+  },
+  "docs/adr/0009-fullscreen-viewport-map-architecture.md": {
+    "mtime": 1788329990.392904,
+    "ast_hash": "d8778a0c4c3b45de105fb68e157b131d",
+    "semantic_hash": ""
+  },
+  "docs/adr/0010-security-remediation-and-edge-hardening.md": {
+    "mtime": 1788329990.3929808,
+    "ast_hash": "c29b16195691dd715ffde65c53b06177",
+    "semantic_hash": ""
+  },
+  "docs/adr/0011-spherical-coordinate-projection-and-overseas-filtering.md": {
+    "mtime": 1788329990.393058,
+    "ast_hash": "07da77f40fe38194c3b6415436733a9d",
+    "semantic_hash": ""
+  },
+  "docs/adr/0012-codebase-simplification-and-adapter-consolidation.md": {
+    "mtime": 1788329990.393058,
+    "ast_hash": "31938028fbd0d3811e240d8f0b695b3c",
+    "semantic_hash": ""
+  },
+  "docs/adr/0013-authentic-vector-flag-texture-engine.md": {
+    "mtime": 1788329990.39323,
+    "ast_hash": "7a50c50d93ad4998aa567367b74d0074",
+    "semantic_hash": ""
+  },
+  "docs/adr/0014-globe-3d-performance-optimization-and-lod.md": {
+    "mtime": 1788329990.393307,
+    "ast_hash": "71a91f8d68d230f608a856bc7f648f3a",
+    "semantic_hash": ""
+  },
+  "docs/adr/0014-synchronous-canvas-flag-engine.md": {
+    "mtime": 1788329990.3933861,
+    "ast_hash": "9e935eb8dac9ca1041b69b4769376118",
+    "semantic_hash": ""
+  },
+  "docs/adr/0015-dynamic-canvas-overlay-flag-engine.md": {
+    "mtime": 1788329990.3934808,
+    "ast_hash": "35d1320e3a992c42f0441111431af483",
+    "semantic_hash": ""
+  },
+  "docs/adr/0017-modular-map-architecture-and-bundle-optimization.md": {
+    "mtime": 1788329990.3934808,
+    "ast_hash": "95dfa88ca270f9b9fd1bbaa6ad681234",
+    "semantic_hash": ""
+  },
+  "docs/adr/0018-countries-database-and-cloudflare-auto-deploy.md": {
+    "mtime": 1788329990.3934808,
+    "ast_hash": "db66269577bd122f5e5348dcce615ba2",
+    "semantic_hash": ""
+  },
+  "docs/adr/0019-d1-kv-caching-and-centralized-ingestion-flow.md": {
+    "mtime": 1788329990.3937943,
+    "ast_hash": "1891e25ebf9b7594bbc5c622b475beb3",
+    "semantic_hash": ""
+  },
+  "docs/adr/0020-pages-worker-service-binding-and-live-rates.md": {
+    "mtime": 1788330454.2088006,
+    "ast_hash": "7e88c86d8da5d23709ab1f416bfa3882",
+    "semantic_hash": ""
+  },
+  "docs/adr/0021-on-demand-lazy-ingestion-and-cron-removal.md": {
+    "mtime": 1788330727.357064,
+    "ast_hash": "39a90708aa00c08342588d975ef945a1",
+    "semantic_hash": ""
+  },
+  "docs/adr/0022-strict-bun-runtime-enforcement.md": {
+    "mtime": 1788331453.4953609,
+    "ast_hash": "c9725f7ff41ad1ef0b3a8e08733f826b",
+    "semantic_hash": ""
+  },
+  "docs/adr/0023-cloudflare-analytics-engine-telemetry.md": {
+    "mtime": 1788332058.1080506,
+    "ast_hash": "edaf674ebdb665e4a61e9a675f432195",
+    "semantic_hash": ""
+  },
+  "docs/adr/0024-complete-i18n-localization-audit-and-coverage.md": {
+    "mtime": 1788332876.317532,
+    "ast_hash": "5ee1d01fbc9da59d1f1cffe7fdb13088",
+    "semantic_hash": ""
+  },
+  "docs/adr/0025-reactive-svelte-5-i18n-and-intl-display-names.md": {
+    "mtime": 1788333675.7210453,
+    "ast_hash": "830c1d04eb41dfc7505909990eb8248a",
+    "semantic_hash": ""
+  },
+  "docs/adr/0026-globe-entrance-animation-and-8xl-width-constraint.md": {
+    "mtime": 1788334997.7925727,
+    "ast_hash": "99c6b06d24b029742345322afee012af",
+    "semantic_hash": ""
+  },
+  "docs/adr/0027-global-initial-app-loading-splash.md": {
+    "mtime": 1788360184.9044838,
+    "ast_hash": "cf94cee95804a93313bcb7871b7b0f48",
+    "semantic_hash": ""
+  },
+  "docs/adr/0028-standard-ts-state-and-svelte-component-reactivity.md": {
+    "mtime": 1788337524.5860963,
+    "ast_hash": "a7242d3eb7c438ccb9f0bca3da2bf499",
+    "semantic_hash": ""
+  },
+  "docs/adr/0029-clean-dom-target-and-literal-reactive-map-state.md": {
+    "mtime": 1788338068.957932,
+    "ast_hash": "39892ffaa48eab8921490e190fb65024",
+    "semantic_hash": ""
+  },
+  "docs/adr/0029-dynamic-microapp-branding-and-routing.md": {
+    "mtime": 1788360184.9050093,
+    "ast_hash": "5bf208fff9bfaced71007201b0155fd3",
+    "semantic_hash": ""
+  },
+  "docs/adr/0030-edge-dev-proxy-and-unidirectional-input-bindings.md": {
+    "mtime": 1788338606.3363478,
+    "ast_hash": "34d17b9ccc791765f9857c22255ed3dd",
+    "semantic_hash": ""
+  },
+  "docs/adr/0030-isolated-microapp-controls-and-views.md": {
+    "mtime": 1788344937.6774457,
+    "ast_hash": "ecee1a390dd43767dd675d374588a632",
+    "semantic_hash": ""
+  },
+  "docs/adr/0031-proper-microapp-filtering-integration.md": {
+    "mtime": 1788344937.6780088,
+    "ast_hash": "5c06290ad2d469f454b674fe87ed88b6",
+    "semantic_hash": ""
+  },
+  "docs/adr/0032-smooth-metric-material-switching-and-lazyloading.md": {
+    "mtime": 1788344937.6784256,
+    "ast_hash": "0778ec8e9decbca00b7a9b3b42585875",
+    "semantic_hash": ""
+  },
+  "docs/adr/0033-system-diagnostics-and-remediation.md": {
+    "mtime": 1788344937.6785884,
+    "ast_hash": "b932573f7be5ea5b7c9d0e6504891304",
+    "semantic_hash": ""
+  },
+  "docs/adr/0034-nature-flora-fauna-microapp.md": {
+    "mtime": 1788360184.9052598,
+    "ast_hash": "9a0f26cb07fcba5f5d71425143087e63",
+    "semantic_hash": ""
+  },
+  "docs/adr/0035-globe-3d-gpu-performance-optimization.md": {
+    "mtime": 1788359270.4199939,
+    "ast_hash": "66230d901c0789bd7b9646e4f1243c2b",
+    "semantic_hash": ""
+  },
+  "docs/adr/0036-dynamic-multi-currency-comparison-converter.md": {
+    "mtime": 1788359847.9698656,
+    "ast_hash": "12bfbb81c617067bd17b0fffe60bc265",
+    "semantic_hash": ""
+  },
+  "docs/adr/0037-diurnal-solar-time-gradient-and-indonesia-default.md": {
+    "mtime": 1788361234.2417707,
+    "ast_hash": "eed940ee818c168b2d16ab286c912002",
+    "semantic_hash": ""
+  },
+  "docs/adr/0038-gpu-shader-lut-globe-renderer.md": {
+    "mtime": 1788394571.914926,
+    "ast_hash": "bc363feffe8606129f086dab017fe8e8",
+    "semantic_hash": ""
+  },
+  "docs/adr/0039-world-capitals-and-independence-plugin.md": {
+    "mtime": 1788395836.3147194,
+    "ast_hash": "f9477751af1f44c7b47b68e6363c7b87",
+    "semantic_hash": ""
+  },
+  "docs/adr/0040-true-plug-and-play-plugin-framework.md": {
+    "mtime": 1788396427.1276467,
+    "ast_hash": "3aa86348929be769d11056bde016d656",
+    "semantic_hash": ""
+  },
+  "docs/adr/0041-timezone-meridians-and-quality-standard.md": {
+    "mtime": 1788398133.3173673,
+    "ast_hash": "870533cd818d198afa7aa590cf6ecbc7",
+    "semantic_hash": ""
+  },
+  "docs/adr/0042-interactive-timezone-meridians.md": {
+    "mtime": 1788398785.0219777,
+    "ast_hash": "e86c04925b6e23b204346abe94ce3bff",
+    "semantic_hash": ""
+  },
+  "docs/adr/0043-map-zoom-navigation-controls.md": {
+    "mtime": 1788399613.6045952,
+    "ast_hash": "384e3b2ede4fea7f2eb26f1f7a570f7c",
+    "semantic_hash": ""
+  },
+  "docs/adr/0044-bug-fixes-and-multi-feature-expansion.md": {
+    "mtime": 1788400202.8558934,
+    "ast_hash": "ec0019e3c20abdb85fa387679a9cc037",
+    "semantic_hash": ""
+  },
+  "docs/brief/BRIEF.md": {
+    "mtime": 1788329990.3940718,
+    "ast_hash": "7ff92bbc18285bf5cde0d3e540df8b91",
+    "semantic_hash": ""
+  },
+  "docs/guides/cloudflare-ci-cd-setup.md": {
+    "mtime": 1788330066.705652,
+    "ast_hash": "4f6387167b3ac2b7c04e41a4a9d19f3e",
+    "semantic_hash": ""
+  },
+  "docs/guides/cloudflare-deployment.md": {
+    "mtime": 1788329990.3940718,
+    "ast_hash": "7157d02ec4f893800baafb9c68227ea3",
+    "semantic_hash": ""
+  },
+  "docs/reports/0001-phase1-mvp-scaffold-verification.md": {
+    "mtime": 1788329990.3943195,
+    "ast_hash": "195b1ae1de29628e7b541254ec820677",
+    "semantic_hash": ""
+  },
+  "docs/reports/0002-monorepo-and-pino-logging-verification.md": {
+    "mtime": 1788329990.3944335,
+    "ast_hash": "c8a718b92a616103967b037a92665ddd",
+    "semantic_hash": ""
+  },
+  "docs/reports/0003-plotly-world-map-verification.md": {
+    "mtime": 1788329990.394692,
+    "ast_hash": "2217f209724b37bf758cc1cfb5fa5ec3",
+    "semantic_hash": ""
+  },
+  "docs/reports/0004-map-centric-redesign-verification.md": {
+    "mtime": 1788329990.3947651,
+    "ast_hash": "aa32c065afbf1a611da9477c76151f35",
+    "semantic_hash": ""
+  },
+  "docs/reports/0005-full-width-map-verification.md": {
+    "mtime": 1788329990.3948467,
+    "ast_hash": "4dcffb9853a76a8eb97c48ecc9eef145",
+    "semantic_hash": ""
+  },
+  "docs/reports/0006-google-charts-and-currency-comparison-verification.md": {
+    "mtime": 1788329990.3949194,
+    "ast_hash": "b27cfb7b841c09650154593128db7727",
+    "semantic_hash": ""
+  },
+  "docs/reports/0007-i18n-verification.md": {
+    "mtime": 1788329990.394988,
+    "ast_hash": "7b6aa4d15a933f3613a4a34a6595d985",
+    "semantic_hash": ""
+  },
+  "docs/reports/0007-robust-flag-mode-verification.md": {
+    "mtime": 1788329990.395062,
+    "ast_hash": "d2829b32afc8320d695a39ca4bfe4992",
+    "semantic_hash": ""
+  },
+  "docs/reports/0008-procedural-flag-and-security-verification.md": {
+    "mtime": 1788329990.3951623,
+    "ast_hash": "d3539758368f686eae337593b6eca1ef",
+    "semantic_hash": ""
+  },
+  "docs/reports/0008-theme-system-verification.md": {
+    "mtime": 1788329990.3951623,
+    "ast_hash": "7b5329ba2b91d4d929d8e6ea2acdce52",
+    "semantic_hash": ""
+  },
+  "docs/reports/0009-fullscreen-map-viewport-verification.md": {
+    "mtime": 1788329990.3953052,
+    "ast_hash": "a29184073f9c8279ad3cf83e58e798c3",
+    "semantic_hash": ""
+  },
+  "docs/reports/0010-security-review-audit.md": {
+    "mtime": 1788329990.3954308,
+    "ast_hash": "6a32bfcb9f160a9da101fd3ab47e0d0f",
+    "semantic_hash": ""
+  },
+  "docs/reports/0011-spherical-coordinate-projection-verification.md": {
+    "mtime": 1788329990.3955176,
+    "ast_hash": "92359b261e3ec66a09ed957426611958",
+    "semantic_hash": ""
+  },
+  "docs/reports/0012-codebase-simplification-verification.md": {
+    "mtime": 1788329990.3955772,
+    "ast_hash": "7cd68575c348ffc07b01612705fe8a34",
+    "semantic_hash": ""
+  },
+  "docs/reports/0013-authentic-vector-flag-texture-engine-verification.md": {
+    "mtime": 1788329990.3955772,
+    "ast_hash": "4b1fd70dc3bcc7950ea8effcfb0fd2d3",
+    "semantic_hash": ""
+  },
+  "docs/reports/0014-globe-3d-performance-optimization-verification.md": {
+    "mtime": 1788329990.3955772,
+    "ast_hash": "f0ff40c0b63df22757459fdc51ed71e0",
+    "semantic_hash": ""
+  },
+  "docs/reports/0014-synchronous-canvas-flag-engine-verification.md": {
+    "mtime": 1788329990.3955772,
+    "ast_hash": "2e3ea207c327709056b48d244bf736e8",
+    "semantic_hash": ""
+  },
+  "docs/reports/0015-dynamic-canvas-overlay-flag-engine-verification.md": {
+    "mtime": 1788329990.3955772,
+    "ast_hash": "91f146c0adb2907e30a46ed4131ce33e",
+    "semantic_hash": ""
+  },
+  "docs/reports/0016-bun-visual-matrix-test-verification.md": {
+    "mtime": 1788329990.3955772,
+    "ast_hash": "5ca1b061c9a7b8f8639476292a96e659",
+    "semantic_hash": ""
+  },
+  "docs/reports/0017-modular-map-and-bundle-optimization-verification.md": {
+    "mtime": 1788329990.396085,
+    "ast_hash": "9dad851d4e717b456ca5e101dd017546",
+    "semantic_hash": ""
+  },
+  "docs/reports/0018-countries-db-and-deploy-verification.md": {
+    "mtime": 1788329990.396192,
+    "ast_hash": "7861a4e61bbba92c808455336ded4d00",
+    "semantic_hash": ""
+  },
+  "docs/reports/0019-caching-flow-verification.md": {
+    "mtime": 1788329990.3962758,
+    "ast_hash": "f528cd6d57de7e402f2a000835e6f4fd",
+    "semantic_hash": ""
+  },
+  "docs/reports/0020-worker-service-binding-verification.md": {
+    "mtime": 1788330727.357064,
+    "ast_hash": "9939078ab1a0a4966149756fb585e537",
+    "semantic_hash": ""
+  },
+  "docs/reports/0023-analytics-engine-verification.md": {
+    "mtime": 1788332058.1081355,
+    "ast_hash": "e013004118f14971866ffc6f16727268",
+    "semantic_hash": ""
+  },
+  "docs/reports/0023-geoglobe-framework-verification.md": {
+    "mtime": 1788336700.2944307,
+    "ast_hash": "28b8c5d81ba42df321eea75acb18b950",
+    "semantic_hash": ""
+  },
+  "docs/reports/0024-i18n-coverage-verification.md": {
+    "mtime": 1788332876.317532,
+    "ast_hash": "e7625614d69da03bee5afa7162b55c12",
+    "semantic_hash": ""
+  },
+  "docs/reports/0026-globe-entrance-and-8xl-width-verification.md": {
+    "mtime": 1788334997.7926705,
+    "ast_hash": "da441663bf7700f892bd3f71485e338e",
+    "semantic_hash": ""
+  },
+  "docs/reports/0027-global-initial-app-loader-verification.md": {
+    "mtime": 1788360184.9054837,
+    "ast_hash": "dabd422b326cc9a179b7ffdfa4cf2050",
+    "semantic_hash": ""
+  },
+  "docs/reports/0028-fix-rune-outside-svelte-verification.md": {
+    "mtime": 1788337524.5860963,
+    "ast_hash": "12d19bd6632ddef3ea77446bff414d31",
+    "semantic_hash": ""
+  },
+  "docs/reports/0028-path-based-routing-and-domains-verification.md": {
+    "mtime": 1788344937.6787624,
+    "ast_hash": "075eddaacffdd0ec3889eaa8a49561b5",
+    "semantic_hash": ""
+  },
+  "docs/reports/0029-dynamic-microapp-branding-verification.md": {
+    "mtime": 1788360184.9056814,
+    "ast_hash": "12b89aad8182e1b142546ab213f0a387",
+    "semantic_hash": ""
+  },
+  "docs/reports/0029-fix-perpetual-loading-and-mapstate-verification.md": {
+    "mtime": 1788338068.957932,
+    "ast_hash": "91e432b7431e55a6032d0951203f28ab",
+    "semantic_hash": ""
+  },
+  "docs/reports/0030-fix-dev-proxy-and-unidirectional-bindings-verification.md": {
+    "mtime": 1788338606.3364153,
+    "ast_hash": "5adbe65edefbf6bac50c8c312006e4a2",
+    "semantic_hash": ""
+  },
+  "docs/reports/0030-isolated-microapp-verification.md": {
+    "mtime": 1788344937.6788967,
+    "ast_hash": "981534b409f5e94f730928746bb1838f",
+    "semantic_hash": ""
+  },
+  "docs/reports/0031-proper-microapp-filtering-verification.md": {
+    "mtime": 1788344937.6788967,
+    "ast_hash": "495d9e2b08163c5b6a5133dc1eff6d07",
+    "semantic_hash": ""
+  },
+  "docs/reports/0032-smooth-metric-material-switching-verification.md": {
+    "mtime": 1788344937.6790087,
+    "ast_hash": "f2443e9b98b5dcc045fb48209e2e745f",
+    "semantic_hash": ""
+  },
+  "docs/specs/BRD.md": {
+    "mtime": 1788329990.3965096,
+    "ast_hash": "c0378d445910f0738d786017cdea4760",
+    "semantic_hash": ""
+  },
+  "docs/specs/PRD.md": {
+    "mtime": 1788360184.9067895,
+    "ast_hash": "7ac69068a4b6746dbefcfa7bd6ac901c",
+    "semantic_hash": ""
+  },
+  "frontend/DESIGN.md": {
+    "mtime": 1788360184.9067895,
+    "ast_hash": "4debf0aa69580fbfb72203890b48aa01",
+    "semantic_hash": ""
+  },
+  "frontend/PRODUCT.md": {
+    "mtime": 1788360184.9067895,
+    "ast_hash": "213ccf389fa5fb552e71304642320ab6",
+    "semantic_hash": ""
+  },
+  "frontend/index.html": {
+    "mtime": 1788338068.9585416,
+    "ast_hash": "41449ddc8fc417212c980540de319e78",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ae.png": {
+    "mtime": 1788329990.4011045,
+    "ast_hash": "0ce631a6cf2b167f3992623d36aa4f71",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/af.png": {
+    "mtime": 1788329990.4014301,
+    "ast_hash": "f90c285477d95e246c415b60078b0ae7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/al.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "16f7a6d20d6e7fd714ec82fdf1fbd2fd",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/am.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "c6c9c62b9c9bbeda4a3e6266361c0d9d",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ao.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "b3b7a7e7c9584ec7638b000c57649315",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/aq.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "cc28ce46e7e69954f643fd8b37900df4",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ar.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "1c09dbde068c871b168a0d433206c423",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/at.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "9ed4ad1a06111a432a6dbcf41cfd0f90",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/au.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "e7fc9d54cdcf1cbaf3a6c3c454440083",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/az.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "db4510556c639af0a90ffee492824378",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ba.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "c0373079f2f6901c51cb836d8b803cb3",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bd.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "1000694713f758165d6c303c72898360",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/be.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "93470b65ae8c9052039ff662526fc0f1",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bf.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "81adb2c9b0023d72ac7e595691693231",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bg.png": {
+    "mtime": 1788329990.4015543,
+    "ast_hash": "2e51109a3779991eaeb57beb47670a8c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bi.png": {
+    "mtime": 1788329990.4022126,
+    "ast_hash": "fd8c252b64fe496edb88b57c0bf9a384",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bj.png": {
+    "mtime": 1788329990.4022126,
+    "ast_hash": "7e818ae10a246321b88849ed32971bdf",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bn.png": {
+    "mtime": 1788329990.4022126,
+    "ast_hash": "624038ecc64bc43a08df12b6586a3d48",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bo.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "605987655f88117297bf5047055f075a",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/br.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "e03c9142484e27d2a3f2df18d64b3353",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bs.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "bdb418ee36c93a6966af12634c3ee669",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bt.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "d6008f18214d5d6698a2f9ee54eae4e0",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bw.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "ad7637ce99b9200f1e7304705d9ce256",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/by.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "d5a83d17bea370850d0677935a7dd30c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/bz.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "a45faa6f1e84cc8bc129756f3b281885",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ca.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "ed8c79fc8bba718d6f84d76d4df0640e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cd.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "0e32063de8c2ec31607caab2c0c4b749",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cf.png": {
+    "mtime": 1788329990.4023654,
+    "ast_hash": "4bd49ee7e82b85943359f394c6ea6a81",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cg.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "c5c7d13c47f0d0737e336cc54f96a293",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ch.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "1d72628a36078a1ae7dc7540d0390f83",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ci.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "44f8a74b6c0b6be6be333a0ad27e6737",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cl.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "f2bceb68ed59e227bc9318f2e56d27a4",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cm.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "a3d429bf55ce127961cfe3c1d44c2c12",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cn.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "f305ebd6e78e723652a008917232b485",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/co.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "68a81f21e14f09335680ccdefdaeba2f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cr.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "c0e74cf8df6d0367e9899f1a25f9d847",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cu.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "3d39ff2d4947d967a96a4d1a14b33c81",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cy.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "822dd0c4054f431ee9b895abbace6767",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/cz.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "5ccb5c5353ec30607248d0ba70760095",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/de.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "2a00d11931d9e7d6d57e91061e7713cc",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/dj.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "789d5ab2d2237b6c1d58d7b910a51c65",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/dk.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "92e4ce56886027152300a4f3608be867",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/do.png": {
+    "mtime": 1788329990.4030101,
+    "ast_hash": "44f0b64751781087d7f5ad9dcd779a49",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/dz.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "43d4404d52ac7b6174aa6a9905e232a7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ec.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "e7f83455e173cb3cc7f283fd8b8befba",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ee.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "6483f146aee0bb3ff7266debf0016871",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/eg.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "b4755cc9dc8185aec54ea9294587c6b1",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/eh.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "c898fe2c591f1f3d07bdef9e8fde4790",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/er.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "1742d7c62829643bbfbf8ab681ef7769",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/es.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "205f3dc92332d770cb8352d274303dec",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/et.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "1311870415e4354ff644604f8e8130ac",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/fi.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "5504a76374ff8ca265fddf6eccc95511",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/fj.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "e229834b6a4ca085442c62ed19154258",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/fk.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "aa7995a50a8071abf41b3058590c4b11",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/fr.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "bb6c37603ae443dd35719d1d8cc46480",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ga.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "4232b10f64e92a8c519e5bbfdf83e32e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gb.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "5b4f0cf865124609d7833026811d1709",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ge.png": {
+    "mtime": 1788329990.403774,
+    "ast_hash": "1bd7fc6c6d53a23f4016ba3dc4ffd4f5",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gh.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "ce37d87396bc6811c19d52b95a8626eb",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gl.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "d0776a4ccf2f1f83333ac91e6caf8509",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gm.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "f4726e915ec8d4f8959068d6e32947be",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gn.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "1377c666e2a7b604c9f50ed0b5a7631e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gq.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "4aff1b8e257b4655ee4722933ae18213",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gr.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "d0e665e58be7ff66e48d8f97e512430c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gt.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "21073576294f5a8c34b92d0494e0c362",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gw.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "5c3f50364244d458193d34b3ab66abf0",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/gy.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "e383067424ca24d3c91fee2c262b1d3d",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/hk.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "bb7af4252a46dbc932b739c2c199aa28",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/hn.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "1c05435867c8ab7596eee25a9f34321f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/hr.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "838b0d77591a2ece45b4a03a0063a1d6",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ht.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "528d2f78e49f87bf909002c1587d342e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/hu.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "dc9e5df16419d8f32054bce634126c43",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/id.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "59d060c859f25460b4cb412e49bf3ef8",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ie.png": {
+    "mtime": 1788329990.404531,
+    "ast_hash": "656aaa5d905c702e107b04729824500d",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/il.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "bfbf41270148ad1e0dc883be59c9a083",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/in.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "fb018902c12c29cd14fad46cfd84a27c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/iq.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "019531e8f44da3ed84a8147014e82c6d",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ir.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "f082d09de773e33a4c3ff01235a25c2f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/is.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "87b2d38a2822967230862aab1c965abf",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/it.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "d352051a152494eae2ba80b83f39ca19",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/jm.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "2783edddc73c2f298b9d3f05f9d5d2da",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/jo.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "0ef075047d879659b1607428fa4af5f3",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/jp.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "1ee111b43976236edc6db31ee96293a2",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ke.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "e081d64f0f7edefd911da68ad761264e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/kg.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "3e4c24d1e36805397eb94227f43f5a72",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/kh.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "575cfc96d5dc3cab4aba2492ea98b1f4",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/kp.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "868881798986438177112e574efe84c0",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/kr.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "db0c9ad2cb0cc204a8c332cdf346c238",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/kw.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "196f3b8e171f00d37704afa3da6f8ff7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/kz.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "cc14a0466bcbf068b16b349035a04c26",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/la.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "88de79a52d651238fd91acc8bb4b462f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/lb.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "57234b1f6c8ac7dbee5260440e2c2bf7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/lk.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "e6d5bb65c7b406d938f631e77a76ce8a",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/lr.png": {
+    "mtime": 1788329990.4055312,
+    "ast_hash": "c8a75b3ddaa522253371e011ceba0a0e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ls.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "9d22fe1f4521bbc273976cd6025b75a8",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/lt.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "0f257647a7d5b36697d3abb2bc7d2629",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/lu.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "86f912d859adfac5683b727cc3c6fe37",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/lv.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "85221b8bfc8cdfa4701cdf7941e3be0b",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ly.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "60a405cdeea9ef8b21d790b7ab063b84",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ma.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "81e8b6da015d3254211859f6853a8018",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/md.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "d62fee01341b9df8a9367df32b28119c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/me.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "60da8b1c841810dd6bba2a4d483efc87",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mg.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "a2bbf3ee3a6e2b39f933feacdb3431db",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mk.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "60013c9f5ef19b7a7416c18768cab957",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ml.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "0b2f35370c74197d4992b7b74949e0a8",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mm.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "91a46d565aedc443f2b65de3877d1cc2",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mn.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "70e96d4aaf2623fea73ae586c773ce22",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mo.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "9e39615cf9f3855ee8f5cef9e7f13fdc",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mr.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "bb6efb7bb8eefe94cddf5f836345176b",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mw.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "cc0a5b99fbd4c3020b9c7d6d8810a992",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mx.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "35ebcf05d36eb2737cc4d99afd8bde9a",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/my.png": {
+    "mtime": 1788329990.4065313,
+    "ast_hash": "a3556d21227c2d3ed5673a95e790804d",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/mz.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "530e414a672ad678523c742cdc0f9863",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/na.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "5f037f79a792fd27d412ae99d12da81e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/nc.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "0dfe8e4aa9de6d904469467e4b38b354",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ne.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "ce5c43ae7e23adeca5c8ea7517af88f6",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ng.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "606e949823672adf2f49cd5f07fa0fce",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ni.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "7a09fbf692350528c9a2b052f0449dc3",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/nl.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "4adbfd25e8dab11668ca04370dc60d0b",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/no.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "70ef6743140768c62387d77d48e9eb31",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/np.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "661f6fb997ae92e227548562b58900af",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/nz.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "a3696c81fe68a95783a43d4061b12a13",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/om.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "3b7b5c8fa5b5c1640e958645da45c730",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pa.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "9af0794fcde5f924f6b4f9705cc6e9eb",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pe.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "9d193a09a70ee6f25a8f0ea2fdba6a50",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pg.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "d0f93bdba218cdb9f6f5e7e6914b0ff6",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ph.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "1b2898f955308289e6ab1bd4ff200bb2",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pk.png": {
+    "mtime": 1788329990.4075315,
+    "ast_hash": "8a8d442f05266ed81423f65c60800ca8",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pl.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "fbe65301eb74396372f0a85051378fb8",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pr.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "35905064b1e7c129cc2a6f6145872b54",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ps.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "b9d9611dd3fad3b1241b75a82e3bf27c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/pt.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "a71c97196519ae8102c6c92deba2d530",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/py.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "8bc07967e7867e6054e71a9c0458b3fb",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/qa.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "e017b7a76a14ecfafe019da5703b02b6",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ro.png": {
+    "mtime": 1788329990.4085317,
+    "ast_hash": "dd75c84ffa6038a1326f3afdd45a580b",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/rs.png": {
+    "mtime": 1788329990.4096448,
+    "ast_hash": "a9c43a2fbbb458f8ec37068a9ceb03d7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ru.png": {
+    "mtime": 1788329990.4096448,
+    "ast_hash": "65796b18d4f006b65544e37afaabe65c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/rw.png": {
+    "mtime": 1788329990.4097452,
+    "ast_hash": "b48687db2299c948d20c2d0a9ae7305a",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sa.png": {
+    "mtime": 1788329990.4098155,
+    "ast_hash": "65fda7116f92462d682885ec9611bf68",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sb.png": {
+    "mtime": 1788329990.4098155,
+    "ast_hash": "ba858d4c8ff7f25065c2860d75ad8c80",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sd.png": {
+    "mtime": 1788329990.4098155,
+    "ast_hash": "a81b553dfd967cd6732829d26dff87ab",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/se.png": {
+    "mtime": 1788329990.4098155,
+    "ast_hash": "1c58c17d5d1681ba95cff9fdee367c8f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/si.png": {
+    "mtime": 1788329990.4098155,
+    "ast_hash": "a0ed0010c8aa63b110471fee18df082f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sk.png": {
+    "mtime": 1788329990.4100919,
+    "ast_hash": "1b1267a7d1831a8e7743935e6395b1af",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sl.png": {
+    "mtime": 1788329990.4100919,
+    "ast_hash": "94c52a13b34268137598f9439838b0a9",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sn.png": {
+    "mtime": 1788329990.4100919,
+    "ast_hash": "020444b6c85b3a63e2f0fb0523a507b6",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/so.png": {
+    "mtime": 1788329990.4100919,
+    "ast_hash": "1bc7f102374947720572aa484ca35619",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sr.png": {
+    "mtime": 1788329990.4100919,
+    "ast_hash": "d4f8398b454cebb020c8cb18827d3e75",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ss.png": {
+    "mtime": 1788329990.4100919,
+    "ast_hash": "91644d64993c8474c13efc168355c389",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sv.png": {
+    "mtime": 1788329990.4104464,
+    "ast_hash": "b2e6a4f0d6ab261793eefb87c2c380d4",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sy.png": {
+    "mtime": 1788329990.4105015,
+    "ast_hash": "7b576914d939a00fa4c1568a1f6a0179",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/sz.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "559163c0e59a4b5f20ed3a87fa39a3d3",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/td.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "cb33804025318113ddc4208956dcace5",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tf.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "f39af30dd2bc1067a569ddcba13d67a7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tg.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "a2be6a6e33d089fd77792c07ca98b6ff",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/th.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "a7fd0eb6d4980913f9bc24e25911829e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tj.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "70e478b1b7b2830223496372893996bb",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tl.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "df72fb4f77865891eb897dffed3439a7",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tm.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "a713ac1855a510c0dd71830a710d00b4",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tn.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "7544a6514b347e0d091e9388ba50613c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tr.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "6004f4e528fe856b639bc7a582c7c5e1",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tt.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "a9c707b5e5ff9ea3f25f01e3b30b6f2a",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tw.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "3d853b43bbfe9315102755e3e848928e",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/tz.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "cb812676f613e65c63544574a94e30d3",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ua.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "a3b3c3a98691af85bd7a213f1d6759e3",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ug.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "465a15d8cf9d26aa0f7c58b947b0ee84",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/us.png": {
+    "mtime": 1788329990.4105663,
+    "ast_hash": "5d6502b658cbe9f38565faee5a31bb2f",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/uy.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "1dab45428a605f046f45656985fca1dd",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/uz.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "03055a30628824c5685c5dbe439d19c9",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ve.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "61b559172542e32ad44402ffa89bb777",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/vn.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "3936f0b9df74c6ed5911b2e168b75b82",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/vu.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "d6a906483b10b0e32ecf57e53dca6e54",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/xk.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "db7c08497455dc39f41d4fa70730b855",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/ye.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "15c5efcdb5c0028d6249cf4eed7f554c",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/za.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "d0335ae8a08b61b03ae4c2861a66904b",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/zm.png": {
+    "mtime": 1788329990.411581,
+    "ast_hash": "b26d4bf381908b2b144959150213c820",
+    "semantic_hash": ""
+  },
+  "frontend/public/flags/zw.png": {
+    "mtime": 1788329990.4120686,
+    "ast_hash": "0d0cd9e91136d283dff86ba0b4c36cba",
+    "semantic_hash": ""
+  }
+}

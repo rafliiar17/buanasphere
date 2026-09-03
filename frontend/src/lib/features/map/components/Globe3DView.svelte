@@ -4,7 +4,6 @@
   import type { MapStateStore } from '../mapState.svelte';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
-  import { getCountryFlagColor } from '../country-flag-colors';
   import { createProceduralFlagMaterial, disposeProceduralFlagCache } from '../procedural-flags';
   import { formatRupiah, formatPercent } from '$lib/formatters/currency';
   import { t } from '$lib/i18n';
@@ -157,25 +156,7 @@
       return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
     }
 
-    if (mapState.activeMetric === 'rate') {
-      const r = country.middleRate;
-      if (r > 20000) return isDark ? 'rgba(99, 102, 241, 0.90)' : 'rgba(79, 70, 229, 0.90)';
-      if (r > 14000) return isDark ? 'rgba(37, 99, 235, 0.90)' : 'rgba(29, 78, 216, 0.90)';
-      if (r > 3000)  return isDark ? 'rgba(6, 182, 212, 0.85)' : 'rgba(8, 145, 178, 0.85)';
-      if (r > 500)   return isDark ? 'rgba(245, 158, 11, 0.85)' : 'rgba(217, 119, 6, 0.85)';
-      return isDark ? 'rgba(234, 88, 12, 0.80)' : 'rgba(194, 65, 12, 0.80)';
-    } else if (mapState.activeMetric === 'change') {
-      const chg = country.change24h;
-      if (chg >= 0.20) return isDark ? 'rgba(16, 185, 129, 0.95)' : 'rgba(5, 150, 105, 0.95)';
-      if (chg > 0.02)  return isDark ? 'rgba(34, 197, 94, 0.90)' : 'rgba(22, 163, 74, 0.90)';
-      if (chg > 0.00)  return isDark ? 'rgba(52, 211, 153, 0.85)' : 'rgba(16, 185, 129, 0.85)';
-      if (chg <= -0.20) return isDark ? 'rgba(225, 29, 72, 0.95)' : 'rgba(190, 18, 60, 0.95)';
-      if (chg < -0.02) return isDark ? 'rgba(244, 63, 94, 0.90)' : 'rgba(225, 29, 72, 0.90)';
-      if (chg < 0.00)  return isDark ? 'rgba(251, 113, 133, 0.85)' : 'rgba(244, 63, 94, 0.85)';
-      return isDark ? 'rgba(100, 116, 139, 0.70)' : 'rgba(148, 163, 184, 0.75)';
-    } else {
-      return getCountryFlagColor(iso3, isDark);
-    }
+    return isDark ? 'rgba(51, 65, 85, 0.40)' : 'rgba(226, 232, 240, 0.60)';
   }
 
   function getPolygonColor(feat: any): string {
@@ -410,6 +391,16 @@
     );
   });
 
+  // 3D Epicenter Pulsing Rings for Earthquake / Disaster Tracker (ADR 0044)
+  const globeRings = $derived.by(() => {
+    if (!geoStore.activeApp?.getRingData) return [];
+    const selected = (mapState.selectedCountryIso3 ? EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === mapState.selectedCountryIso3) : null)
+      ?? EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN')
+      ?? EXTENDED_COUNTRIES_DATA[0];
+    if (!selected) return [];
+    return geoStore.activeApp.getRingData(selected, (geoStore.currentAppData ?? {}) as any) || [];
+  });
+
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
     if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
@@ -532,7 +523,14 @@
         if (path?.utcOffset !== undefined) {
           mapState.setSelectedMeridian(path);
         }
-      });
+      })
+      .ringsData(globeRings)
+      .ringLat((d: any) => d.lat)
+      .ringLng((d: any) => d.lng)
+      .ringColor((d: any) => d.color)
+      .ringMaxRadius((d: any) => d.maxRadius || 5)
+      .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
+      .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
   }
 
   function handleContainerPointerMove(e: MouseEvent) {
@@ -732,6 +730,16 @@
         });
     }
 
+    // 3D Epicenter Pulsing Rings for Earthquake / Disaster Tracker (ADR 0044)
+    globeInstance
+      .ringsData(globeRings)
+      .ringLat((d: any) => d.lat)
+      .ringLng((d: any) => d.lng)
+      .ringColor((d: any) => d.color)
+      .ringMaxRadius((d: any) => d.maxRadius || 5)
+      .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
+      .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
+
     // Google Earth style orbit controls
     const controls = globeInstance.controls();
     if (controls) {
@@ -839,6 +847,8 @@
     const _data = mapData;
     const _perfMap = mapState.performanceMode;
     const _perfGeo = geoStore.performanceMode;
+    const _rings = globeRings;
+    const _appData = geoStore.currentAppData;
 
     if (previousMetric && previousMetric !== currentMetric) {
       isSwitchingMetric = true;
