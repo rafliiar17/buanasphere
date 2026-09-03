@@ -486,7 +486,7 @@
       .pathPoints((d: any) => d.coords)
       .pathColor((d: any) => d.color)
       .pathStroke((d: any) => d.stroke || 1.2)
-      .pathAltitude((d: any) => d.altitude || 0.003)
+      .pathPointAlt(() => 0.003)
       .pathDashLength((d: any) => d.dashLength || 0.1)
       .pathDashGap((d: any) => d.dashGap || 0.02)
       .pathDashAnimateTime((d: any) => d.animateTime || 0);
@@ -677,7 +677,7 @@
         .pathPoints((d: any) => d.coords)
         .pathColor((d: any) => d.color)
         .pathStroke((d: any) => d.stroke || 1.2)
-        .pathAltitude((d: any) => d.altitude || 0.003)
+        .pathPointAlt(() => 0.003)
         .pathDashLength((d: any) => d.dashLength || 0.1)
         .pathDashGap((d: any) => d.dashGap || 0.02)
         .pathDashAnimateTime((d: any) => d.animateTime || 0);

@@ -58,6 +58,7 @@ describe('3D Timezone Meridian Lines & Quality Standard Suite (ADR 0041 / TDD)',
       expect(content).toContain('.pathsData(');
       expect(content).toContain('.pathPoints(');
       expect(content).toContain('.pathColor(');
+      expect(content).toContain('.pathPointAlt(');
     });
   });
 
