@@ -1,10 +1,16 @@
 <script lang="ts">
-  import { ShieldCheck, Globe, Sun, Moon, Sparkles, ChevronDown } from 'lucide-svelte';
+  import { ShieldCheck, Globe, Sun, Moon, Sparkles, ChevronDown, Info } from 'lucide-svelte';
   import { t, getLocale, setLocale, subscribeLocale, SUPPORTED_LOCALES, type SupportedLocale } from '$lib/i18n';
   import { getTheme, toggleTheme, subscribeTheme, type Theme } from '$lib/theme';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { resolveAppIdToPath } from '$lib/framework/geoglobe/router';
   import { onMount } from 'svelte';
+
+  interface Props {
+    onOpenAbout?: () => void;
+  }
+
+  let { onOpenAbout }: Props = $props();
 
   let currentLang = $state<SupportedLocale>(getLocale());
   let currentTheme = $state<Theme>(getTheme());
@@ -146,6 +152,21 @@
         <span class="live-dot"></span>
         <span>{t('common.liveSync')}</span>
       </div>
+
+      <!-- About Modal Trigger -->
+      {#if onOpenAbout}
+        <button
+          type="button"
+          onclick={onOpenAbout}
+          style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--ink-3);background:transparent;border:1px solid var(--bg-rule);border-radius:var(--radius);padding:5px 10px;cursor:pointer;transition:all 120ms;"
+          onmouseenter={(e) => { e.currentTarget.style.background = 'var(--bg-subtle)'; e.currentTarget.style.color = 'var(--ink)'; }}
+          onmouseleave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-3)'; }}
+          title="Tentang Buanasphere"
+        >
+          <Info style="width:13px;height:13px;" />
+          <span>About</span>
+        </button>
+      {/if}
 
       <!-- Public API link -->
       <a

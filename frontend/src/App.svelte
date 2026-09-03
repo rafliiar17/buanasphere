@@ -23,6 +23,7 @@
   import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
   import RateAlertModal from '$lib/features/alert/RateAlertModal.svelte';
   import AdminConsole from '$lib/features/admin/AdminConsole.svelte';
+  import AboutModal from '$lib/components/AboutModal.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { isLandingPath } from '$lib/framework/geoglobe/router';
   import { apiClient } from '$lib/api/client';

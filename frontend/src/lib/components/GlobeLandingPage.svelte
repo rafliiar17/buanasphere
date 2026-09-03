@@ -72,6 +72,34 @@
       badgeTextColor: '#6ee7b7',
       glowColor: 'rgba(5,150,105,0.06)',
     },
+    {
+      path: '/capitals',
+      emoji: '🏛️',
+      name: 'World Capitals',
+      tagline: 'Ibukota & Sejarah Kemerdekaan',
+      description: '195+ ibukota berdaulat di bumi, tahun pendirian, asal kemerdekaan, pemutar lagu kebangsaan audio, dan pergerakan era sejarah.',
+      gradFrom: '#6366f1',
+      gradTo: '#8b5cf6',
+      borderColor: 'rgba(99,102,241,0.25)',
+      badgeText: '195+ Ibukota & Anthems',
+      badgeColor: 'rgba(99,102,241,0.15)',
+      badgeTextColor: '#a5b4fc',
+      glowColor: 'rgba(99,102,241,0.06)',
+    },
+    {
+      path: '/quake',
+      emoji: '🌋',
+      name: 'Earthquake Tracker',
+      tagline: 'Aktivitas Seismik Real-Time',
+      description: 'Pemantauan gempa bumi global & Indonesia (M4.5+), kedalaman hiposentrum, status tsunami, dan gelombang episentrum 3D.',
+      gradFrom: '#ef4444',
+      gradTo: '#f97316',
+      borderColor: 'rgba(239,68,68,0.25)',
+      badgeText: 'Live Seismik M4.5+',
+      badgeColor: 'rgba(239,68,68,0.15)',
+      badgeTextColor: '#fca5a5',
+      glowColor: 'rgba(239,68,68,0.06)',
+    },
   ];
 </script>
 
@@ -89,14 +117,19 @@
       <div class="flex items-center gap-2">
         <Globe2 class="w-5 h-5 text-cyan-400" />
         <span class="text-base font-extrabold tracking-tight">
-          <span class="text-white">Globe</span><span class="text-cyan-400">.arafz.id</span>
+          <span class="text-white">Buana</span><span class="text-cyan-400">sphere</span>
         </span>
-        <span class="ml-1 text-[10px] font-semibold tracking-widest uppercase text-slate-500 border border-slate-700 rounded px-1.5 py-0.5">Beta</span>
+        <span class="ml-1 text-[10px] font-semibold tracking-widest uppercase text-slate-500 border border-slate-700 rounded px-1.5 py-0.5">globe.arafz.id</span>
       </div>
-      <a href="/api/v1/docs" class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-300 transition-colors">
-        <Code2 class="w-3.5 h-3.5" />
-        Public API
-      </a>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/rafliiar17/buanasphere" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-300 transition-colors">
+          GitHub
+        </a>
+        <a href="/api/v1/docs" class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-300 transition-colors">
+          <Code2 class="w-3.5 h-3.5" />
+          Public API
+        </a>
+      </div>
     </div>
   </header>
 
@@ -192,14 +225,17 @@
   <!-- Footer -->
   <footer class="border-t border-white/5 py-6">
     <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-      <span>Data kurs dari Bank Indonesia, ECB, dan bank nasional. Hanya referensi, bukan untuk transaksi keuangan.</span>
-      <div class="flex items-center gap-4">
+      <span>© 2026 <strong>Buanasphere</strong> by <a href="https://github.com/rafliiar17" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:underline">Arafz</a>. Platform observatorium data dunia real-time.</span>
+      <div class="flex items-center gap-4 flex-wrap">
+        <a href="https://github.com/rafliiar17/buanasphere" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300 transition-colors">GitHub</a>
         <a href="/api/v1/docs" class="hover:text-slate-300 transition-colors">API Docs</a>
         <a href="/kurs" class="hover:text-slate-300 transition-colors">Kurs</a>
         <a href="/time" class="hover:text-slate-300 transition-colors">Time</a>
         <a href="/flight" class="hover:text-slate-300 transition-colors">Flight</a>
         <a href="/passport" class="hover:text-slate-300 transition-colors">Passport</a>
         <a href="/nature" class="hover:text-slate-300 transition-colors">Nature</a>
+        <a href="/capitals" class="hover:text-slate-300 transition-colors">Capitals</a>
+        <a href="/quake" class="hover:text-slate-300 transition-colors">Quake</a>
       </div>
     </div>
   </footer>
