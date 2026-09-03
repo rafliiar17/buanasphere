@@ -7,6 +7,7 @@ export interface Env {
   ANALYTICS?: AnalyticsEngineDataset;
   ENVIRONMENT?: string;
   ADMIN_SECRET?: string;
+  ADMIN_SECRET_KEY?: string;
 }
 
 export function getDb(env?: Env) {
