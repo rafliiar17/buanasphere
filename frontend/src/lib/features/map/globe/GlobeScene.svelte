@@ -100,6 +100,13 @@
         .atmosphereColor(themeConfig.atmosphereColor)
         .atmosphereAltitude(themeConfig.atmosphereAltitude);
 
+      if (themeConfig.globeImageUrl) {
+        globeInstance.globeImageUrl(themeConfig.globeImageUrl);
+      }
+      if (themeConfig.bumpImageUrl) {
+        globeInstance.bumpImageUrl(themeConfig.bumpImageUrl);
+      }
+
       // Initial point of view
       globeInstance.pointOfView(initialPov, 0);
 
@@ -147,6 +154,13 @@
       .backgroundColor(themeConfig.backgroundColor)
       .atmosphereColor(themeConfig.atmosphereColor)
       .atmosphereAltitude(themeConfig.atmosphereAltitude);
+
+    if (themeConfig.globeImageUrl) {
+      globeInstance.globeImageUrl(themeConfig.globeImageUrl);
+    }
+    if (themeConfig.bumpImageUrl) {
+      globeInstance.bumpImageUrl(themeConfig.bumpImageUrl);
+    }
 
     // Controls Auto-Rotate
     const controls = globeInstance.controls?.();
