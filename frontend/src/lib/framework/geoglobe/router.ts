@@ -24,6 +24,7 @@ export const APP_PATH_MAP: Record<string, string> = {
   '/quake': 'earthquake-tracker',
   '/earthquake': 'earthquake-tracker',
   '/gempa': 'earthquake-tracker',
+  '/nimda': 'nimda-operator',
 };
 
 export const CANONICAL_APP_PATHS: Record<string, string> = {
@@ -34,6 +35,7 @@ export const CANONICAL_APP_PATHS: Record<string, string> = {
   'flora-fauna': '/nature',
   'world-capitals': '/capitals',
   'earthquake-tracker': '/quake',
+  'nimda-operator': '/nimda',
 };
 
 /**

@@ -749,6 +749,74 @@ export class ApiClient {
       };
     }
   }
+
+  // --------------------------------------------------------------------------
+  // Nimda Operator Console Methods (/nimda) — ADR 0045
+  // --------------------------------------------------------------------------
+
+  async nimdaGetHealth(adminKey: string): Promise<any> {
+    return this.fetchJson('/nimda/health', {
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaTriggerIngest(adminKey: string): Promise<any> {
+    return this.fetchJson('/nimda/ingest/trigger', {
+      method: 'POST',
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaPurgeCache(adminKey: string): Promise<any> {
+    return this.fetchJson('/nimda/cache/purge', {
+      method: 'POST',
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaGetQuarantine(adminKey: string): Promise<{ items: any[]; total?: number }> {
+    return this.fetchJson('/nimda/quarantine', {
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaClearQuarantine(id: number | string, adminKey: string): Promise<any> {
+    return this.fetchJson(`/nimda/quarantine/${id}`, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaGetApiKeys(adminKey: string): Promise<{ keys: any[] }> {
+    return this.fetchJson('/nimda/api-keys', {
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaCreateApiKey(
+    payload: { name: string; ownerEmail: string; tier?: 'free' | 'pro' | 'enterprise' },
+    adminKey: string
+  ): Promise<any> {
+    return this.fetchJson('/nimda/api-keys', {
+      method: 'POST',
+      headers: { 'X-Admin-Key': adminKey },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async nimdaToggleApiKey(id: string, adminKey: string): Promise<any> {
+    return this.fetchJson(`/nimda/api-keys/${id}/toggle`, {
+      method: 'PATCH',
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
+
+  async nimdaDeleteApiKey(id: string, adminKey: string): Promise<any> {
+    return this.fetchJson(`/nimda/api-keys/${id}`, {
+      method: 'DELETE',
+      headers: { 'X-Admin-Key': adminKey },
+    });
+  }
 }
 
 export const apiClient = new ApiClient();

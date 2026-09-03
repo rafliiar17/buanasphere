@@ -22,12 +22,14 @@
   import GlobalAppSplashScreen from '$lib/components/GlobalAppSplashScreen.svelte';
   import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
   import RateAlertModal from '$lib/features/alert/RateAlertModal.svelte';
+  import AdminConsole from '$lib/features/admin/AdminConsole.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { isLandingPath } from '$lib/framework/geoglobe/router';
   import { apiClient } from '$lib/api/client';
   import { t, subscribeLocale, getLocale, type SupportedLocale } from '$lib/i18n';
 
-  // Detect if we're on the root landing page (globe.arafz.id/)
+  // Detect if we're on /nimda (operator console) or root landing page (globe.arafz.id/)
+  const isNimda = typeof window !== 'undefined' && (window.location.pathname === '/nimda' || window.location.pathname === '/nimda/');
   const isLanding = typeof window !== 'undefined' ? isLandingPath(window.location.pathname) : false;
 
   let currentLang = $state<SupportedLocale>(getLocale());
@@ -113,7 +115,10 @@
   <meta name="twitter:description" content={pageDescription} />
 </svelte:head>
 
-{#if isLanding}
+{#if isNimda}
+  <!-- Nimda Edge Operator Console (/nimda) — ADR 0045 -->
+  <AdminConsole />
+{:else if isLanding}
   <!-- Root Landing Page: Pilih Aplikasi -->
   <GlobeLandingPage />
 {:else}
