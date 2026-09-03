@@ -138,28 +138,37 @@
       {/if}
     </div>
 
-    <!-- Projection Toggle & 3D Labels Toggle -->
-    <div class="mt-3 grid grid-cols-2 gap-2">
+    <!-- Projection Toggle, 3D Labels Toggle, and Timezone Lines Toggle -->
+    <div class="mt-3 grid grid-cols-3 gap-2">
       <button
         type="button"
         onclick={() => geoStore.setProjection(geoStore.projectionMode === 'globe' ? 'flat' : 'globe')}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.projectionMode === 'globe' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.projectionMode === 'globe' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
-        <span>{geoStore.projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'}</span>
+        <span>{geoStore.projectionMode === 'globe' ? '🌍 3D' : '🗺️ Datar'}</span>
       </button>
 
       <button
         type="button"
         onclick={() => { geoStore.showLabels = !geoStore.showLabels; }}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
         {#if geoStore.showLabels}
           <Eye class="w-3.5 h-3.5" />
-          <span>Label Jam: ON</span>
+          <span>Label: ON</span>
         {:else}
           <EyeOff class="w-3.5 h-3.5" />
-          <span>Label Jam: OFF</span>
+          <span>Label: OFF</span>
         {/if}
+      </button>
+
+      <button
+        type="button"
+        onclick={() => geoStore.toggleTimezoneLines()}
+        class="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.showTimezoneLines ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        title="Tampilkan / Sembunyikan Garis Zona Waktu 3D"
+      >
+        <span>🌐 Garis: {geoStore.showTimezoneLines ? 'ON' : 'OFF'}</span>
       </button>
     </div>
 

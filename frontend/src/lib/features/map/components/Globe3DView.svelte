@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Loader2 } from 'lucide-svelte';
+  import { Loader2, X } from 'lucide-svelte';
   import type { MapStateStore } from '../mapState.svelte';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
@@ -400,9 +400,9 @@
     });
   });
 
-  // 3D Paths for Meridians / Custom App Curves (ADR 0041)
+  // 3D Paths for Meridians / Custom App Curves (ADR 0041 & ADR 0042)
   const globePaths = $derived.by(() => {
-    if (!geoStore.activeApp?.getPaths) return [];
+    if (!mapState.showTimezoneLines || !geoStore.showTimezoneLines || !geoStore.activeApp?.getPaths) return [];
     return geoStore.activeApp.getPaths(
       (geoStore.currentAppData ?? {}) as any,
       mapState.activeMetric,
@@ -489,7 +489,13 @@
       .pathPointAlt(() => 0.003)
       .pathDashLength((d: any) => d.dashLength || 0.1)
       .pathDashGap((d: any) => d.dashGap || 0.02)
-      .pathDashAnimateTime((d: any) => d.animateTime || 0);
+      .pathDashAnimateTime((d: any) => d.animateTime || 0)
+      .pathLabel((d: any) => d.tooltipHtml || d.label)
+      .onPathClick((path: any) => {
+        if (path?.utcOffset !== undefined) {
+          mapState.setSelectedMeridian(path);
+        }
+      });
   }
 
   function handleContainerPointerMove(e: MouseEvent) {
@@ -680,7 +686,13 @@
         .pathPointAlt(() => 0.003)
         .pathDashLength((d: any) => d.dashLength || 0.1)
         .pathDashGap((d: any) => d.dashGap || 0.02)
-        .pathDashAnimateTime((d: any) => d.animateTime || 0);
+        .pathDashAnimateTime((d: any) => d.animateTime || 0)
+        .pathLabel((d: any) => d.tooltipHtml || d.label)
+        .onPathClick((path: any) => {
+          if (path?.utcOffset !== undefined) {
+            mapState.setSelectedMeridian(path);
+          }
+        });
     }
 
     // Google Earth style orbit controls
@@ -906,6 +918,55 @@
     aria-label="3D Globe Canvas"
     style="z-index: 1;"
   ></div>
+
+  <!-- Interactive Timezone Meridian Inspector Card (ADR 0042) -->
+  {#if mapState.selectedMeridian}
+    {@const m = mapState.selectedMeridian}
+    <div
+      class="absolute top-20 left-6 z-40 w-80 max-w-[calc(100vw-3rem)] rounded-2xl border border-sky-500/30 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200"
+    >
+      <div class="flex items-start justify-between gap-3 mb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30">
+            🌐
+          </div>
+          <div>
+            <h4 class="text-sm font-black text-white">{m.label || m.gmtLabel}</h4>
+            <span class="inline-block text-[11px] font-bold text-sky-400 font-mono">{m.gmtLabel}</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick={() => mapState.setSelectedMeridian(null)}
+          class="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white transition cursor-pointer"
+          title="Tutup Detail Meridian"
+        >
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+
+      <div class="rounded-xl bg-slate-900/80 border border-slate-800 p-3 mb-3">
+        <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-1">Jam Lokal di Meridian Ini</div>
+        <div class="text-2xl font-black text-white font-mono tracking-tight flex items-baseline gap-2">
+          <span>{m.localTime}</span>
+          <span class="text-xs font-bold text-emerald-400 font-sans">{m.diffWib}</span>
+        </div>
+      </div>
+
+      {#if m.keyRegions && m.keyRegions.length > 0}
+        <div>
+          <div class="text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Wilayah / Kota Utama Dilintasi:</div>
+          <div class="flex flex-wrap gap-1.5">
+            {#each m.keyRegions as reg}
+              <span class="rounded-lg bg-slate-800/80 border border-slate-700/60 px-2 py-1 text-[11px] text-slate-200 font-medium">
+                {reg}
+              </span>
+            {/each}
+          </div>
+        </div>
+      {/if}
+    </div>
+  {/if}
 
   <!-- Option C: Instant Zero-Overhead Tooltip in Turbo Mode (ADR 0038) -->
   {#if (mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo') && isHoveringLutGlobe && hoveredCountryIso3}

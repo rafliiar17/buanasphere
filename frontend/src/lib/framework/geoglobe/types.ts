@@ -73,6 +73,17 @@ export interface FilterOption {
   icon?: any;
 }
 
+export interface TimezoneMeridianInfo {
+  id: string;
+  utcOffset: number;
+  label?: string;
+  gmtLabel: string;
+  localTime: string;
+  diffWib: string;
+  keyRegions: string[];
+  color?: string | string[];
+}
+
 export interface GeoPath {
   id: string;
   coords: Array<[number, number]>;
@@ -83,6 +94,12 @@ export interface GeoPath {
   dashGap?: number;
   animateTime?: number;
   label?: string;
+  utcOffset?: number;
+  gmtLabel?: string;
+  localTime?: string;
+  diffWib?: string;
+  keyRegions?: string[];
+  tooltipHtml?: string;
 }
 
 export interface GeoAppPlugin<TData = any> {

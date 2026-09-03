@@ -206,19 +206,19 @@
     </div>
 
     <!-- Projection Toggle & 3D Labels Toggle Row -->
-    <div class="mt-3 grid grid-cols-2 gap-2">
+    <div class="mt-3 grid {activeApp.id === 'world-time' ? 'grid-cols-3' : 'grid-cols-2'} gap-2">
       <button
         type="button"
         onclick={handleToggleProjection}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {currentProjection === 'globe' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {currentProjection === 'globe' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
-        <span>{currentProjection === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'}</span>
+        <span>{currentProjection === 'globe' ? '🌍 Globe' : '🗺️ Datar'}</span>
       </button>
 
       <button
         type="button"
         onclick={handleToggleLabels}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
         {#if showLabels}
           <Eye class="w-3.5 h-3.5" />
@@ -228,6 +228,17 @@
           <span>Label: OFF</span>
         {/if}
       </button>
+
+      {#if activeApp.id === 'world-time'}
+        <button
+          type="button"
+          onclick={() => mapState?.toggleTimezoneLines?.()}
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState?.showTimezoneLines ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          title="Tampilkan / Sembunyikan Garis Zona Waktu 3D"
+        >
+          <span>🌐 Garis: {mapState?.showTimezoneLines ? 'ON' : 'OFF'}</span>
+        </button>
+      {/if}
     </div>
 
     <!-- Filter Section (Dynamic Filter Pills / Tabs) -->
