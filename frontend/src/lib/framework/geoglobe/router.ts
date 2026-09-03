@@ -24,6 +24,11 @@ export const APP_PATH_MAP: Record<string, string> = {
   '/quake': 'earthquake-tracker',
   '/earthquake': 'earthquake-tracker',
   '/gempa': 'earthquake-tracker',
+  '/population': 'population-world',
+  '/demographics': 'population-world',
+  '/populasi': 'population-world',
+  '/people': 'population-world',
+  '/penduduk': 'population-world',
   '/nimda': 'nimda-operator',
 };
 
@@ -35,6 +40,7 @@ export const CANONICAL_APP_PATHS: Record<string, string> = {
   'flora-fauna': '/nature',
   'world-capitals': '/capitals',
   'earthquake-tracker': '/quake',
+  'population-world': '/population',
   'nimda-operator': '/nimda',
 };
 
