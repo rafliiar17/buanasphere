@@ -21,6 +21,9 @@ export const APP_PATH_MAP: Record<string, string> = {
   '/capital': 'world-capitals',
   '/independence': 'world-capitals',
   '/kemerdekaan': 'world-capitals',
+  '/quake': 'earthquake-tracker',
+  '/earthquake': 'earthquake-tracker',
+  '/gempa': 'earthquake-tracker',
 };
 
 export const CANONICAL_APP_PATHS: Record<string, string> = {
@@ -30,6 +33,7 @@ export const CANONICAL_APP_PATHS: Record<string, string> = {
   'passport-power': '/passport',
   'flora-fauna': '/nature',
   'world-capitals': '/capitals',
+  'earthquake-tracker': '/quake',
 };
 
 /**

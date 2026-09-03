@@ -2,6 +2,7 @@ import type { CountrySpatialMetadata, GeoAppPlugin, InspectorWidget } from '../t
 import { BASE_RATES_IDR } from '$lib/api/client';
 import { formatRupiah, formatPercent } from '$lib/formatters/currency';
 import { getCountryFlagColor } from '$lib/features/map/country-flag-colors';
+import KursBottomDock from '$lib/apps/kurs/KursBottomDock.svelte';
 
 export interface FxRateData {
   rateToIdr: number;
@@ -208,4 +209,5 @@ export const fxRatesApp: GeoAppPlugin<FxRateData> = {
       },
     };
   },
+  BottomDockComponent: KursBottomDock,
 };

@@ -1,5 +1,6 @@
 import type { CountrySpatialMetadata, GeoAppPlugin, InspectorWidget } from '../types';
-import { isCountryMatchingPassportFilter, type PassportVisaFilterType } from '../filterEngine';
+import { isCountryMatchingPassportFilter, PASSPORT_ENTRY_STATUS_MAP, type PassportVisaFilterType } from '../filterEngine';
+import PassportBottomDock from '$lib/apps/passport/PassportBottomDock.svelte';
 
 export interface PassportData {
   visaFreeCount: number;
@@ -59,8 +60,13 @@ export const passportWorldApp: GeoAppPlugin<PassportData> = {
     { id: 'voa', label: 'VoA / eVisa 🟡' },
     { id: 'required', label: 'Butuh Visa 🔴' },
   ],
-  filterPredicate: (iso3: string, filterValue: unknown) => {
-    return isCountryMatchingPassportFilter(iso3, (filterValue as PassportVisaFilterType) || 'all');
+  filterPredicate: (iso3: string, filterValue: unknown, data?: PassportData, _country?: CountrySpatialMetadata) => {
+    if (!filterValue || filterValue === 'all') return true;
+    const status = data?.visaRequirementForIndonesian ?? PASSPORT_SCORES[iso3]?.indoRequirement ?? PASSPORT_ENTRY_STATUS_MAP[iso3] ?? 'Visa Required';
+    if (filterValue === 'free') return status === 'Visa Free';
+    if (filterValue === 'voa') return status === 'Visa on Arrival' || status === 'eVisa';
+    if (filterValue === 'required') return status === 'Visa Required';
+    return true;
   },
   metrics: [
     {
@@ -178,4 +184,5 @@ export const passportWorldApp: GeoAppPlugin<PassportData> = {
       ],
     };
   },
+  BottomDockComponent: PassportBottomDock,
 };

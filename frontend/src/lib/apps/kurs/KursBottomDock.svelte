@@ -4,13 +4,18 @@
   import { t } from '$lib/i18n';
 
   interface Props {
-    activeView: 'map' | 'chart' | 'matrix' | 'converter' | 'cards';
-    onSelectView: (view: 'map' | 'chart' | 'matrix' | 'converter' | 'cards') => void;
+    activeView?: 'map' | 'chart' | 'matrix' | 'converter' | 'cards';
+    onSelectView?: (view: 'map' | 'chart' | 'matrix' | 'converter' | 'cards') => void;
     onSelectCurrency?: (currencyCode: string) => void;
-    onOpenAlertModal: () => void;
+    onOpenAlertModal?: () => void;
   }
 
-  let { activeView, onSelectView, onSelectCurrency, onOpenAlertModal }: Props = $props();
+  let {
+    activeView = 'map',
+    onSelectView = () => {},
+    onSelectCurrency,
+    onOpenAlertModal = () => {}
+  }: Props = $props();
 
   const viewOptions = [
     { id: 'map', label: 'Peta Kurs Dunia', icon: Globe },
