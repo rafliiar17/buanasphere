@@ -220,7 +220,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   getPinLabel: (country: CountrySpatialMetadata, data: WorldCapitalData) => {
     const cap = data?.capital ?? country.capital;
     return {
-      text: `🏛️ ${cap} • ${country.countryName}`,
+      text: `${cap} • ${country.countryName}`,
       shortText: cap,
       lat: data?.capitalCoordinates?.lat,
       lng: data?.capitalCoordinates?.lng,
