@@ -7,6 +7,8 @@
 [![Elysia.js](https://img.shields.io/badge/Elysia.js-v1.2+-pink.svg)](https://elysiajs.com)
 [![Svelte 5](https://img.shields.io/badge/Svelte-5_(Runes)-FF3E00.svg)](https://svelte.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
 > **Platform Geospatial 3D Multi-Aplikasi Planet Bumi & Real-Time Intelligence**  
 > *"Eksplorasi Data Dunia Real-Time Tanpa Hambatan"* — Menyediakan observasi bumi 3D interaktif mencakup nilai tukar valas, waktu diurnal, koridor remitansi diaspora, mobilitas paspor, biodiversitas alam, dan aktivitas seismik global (<50ms Edge Latency di [globe.arafz.id](https://globe.arafz.id)).
@@ -232,13 +234,23 @@ rtk bun run build
 
 ---
 
+## 🤝 Berkontribusi (Contributing)
+
+Kami sangat menyambut kontribusi dari komunitas open-source, baik berupa penambahan **Micro-App 3D Plugin baru**, perbaikan bug, penyempurnaan UI/UX, maupun optimasi performa WebGL/Edge!
+
+- 📖 Baca panduan lengkap: [**CONTRIBUTING.md**](CONTRIBUTING.md)
+- 📜 Kode etik komunitas: [**CODE_OF_CONDUCT.md**](CODE_OF_CONDUCT.md)
+- 💡 Cari ide fitur atau diskusikan konsep: [**GitHub Discussions**](https://github.com/rafliiar17/buanasphere/discussions) & [**Issues**](https://github.com/rafliiar17/buanasphere/issues)
+
+---
+
 ## ⚖️ Penafian Hukum (Disclaimer)
 
-Data kurs dan nilai konversi yang disajikan oleh **Kurs World** bersifat **informasional dan referensi semata**. Nilai tukar transaksi riil di kantor cabang bank, ATM, atau money changer dapat berbeda sesuai kebijakan masing-masing penyedia pada waktu transaksi. Kurs World tidak bertanggung jawab atas keputusan finansial atau kerugian yang timbul dari penggunaan data ini.
+Data yang disajikan oleh **Buanasphere** bersifat **informasional dan referensi semata**. Nilai tukar transaksi riil di kantor cabang bank atau money changer dapat berbeda sesuai kebijakan masing-masing penyedia pada waktu transaksi. Buanasphere tidak bertanggung jawab atas keputusan finansial atau kerugian yang timbul dari penggunaan data ini.
 
 ---
 
 ## 📄 Lisensi
 
 Proyek ini dilisensikan di bawah [MIT License](LICENSE).  
-Hak Cipta © 2026 **Kurs World Team**.
+Hak Cipta © 2026 **Buanasphere Contributors (Rafli Arafz)**.
