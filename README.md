@@ -9,14 +9,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Platform Geospatial 3D Multi-Aplikasi Planet Bumi & Real-Time Intelligence**  
-> *"Eksplorasi Data Dunia Real-Time Tanpa Hambatan"* — Menyediakan observasi bumi 3D interaktif mencakup nilai tukar valas, waktu diurnal, koridor remitansi diaspora, mobilitas paspor, biodiversitas alam, dan aktivitas seismik global (<50ms Edge Latency di [globe.arafz.id](https://globe.arafz.id)).
+> *"Eksplorasi Data Dunia Real-Time Tanpa Hambatan"* — Menyediakan observatorium data bumi 3D interaktif mencakup nilai tukar valas, waktu diurnal, koridor remitansi diaspora, mobilitas paspor, biodiversitas alam, dan aktivitas seismik global (<50ms Edge Latency di [globe.arafz.id](https://globe.arafz.id)).
 
 ---
 
 ## 📌 Daftar Isi
 
-- [Tentang Kurs World](#-tentang-kurs-world)
-- [Fitur Utama](#-fitur-utama)
+- [Tentang Buanasphere](#-tentang-buanasphere)
+- [Ekosistem 7 Micro-Apps Interaktif](#-ekosistem-7-micro-apps-interaktif)
 - [Sumber Data & Kepatuhan Atribusi](#-sumber-data--kepatuhan-atribusi)
 - [Arsitektur & Tech Stack](#-arsitektur--tech-stack)
 - [Struktur Monorepo](#-struktur-monorepo)
@@ -24,42 +24,44 @@
 - [Pengujian & Standar Kualitas](#-pengujian--standar-kualitas)
 - [Keamanan & Ingestion Guard](#-keamanan--ingestion-guard)
 - [Penafian Hukum (Disclaimer)](#-penafian-hukum-disclaimer)
+- [Tautan Resmi](#-tautan-resmi)
 - [Lisensi](#-lisensi)
 
 ---
 
-## 📖 Tentang Kurs World
+## 📖 Tentang Buanasphere
 
-**Kurs World** adalah platform agregator informasi nilai tukar mata uang asing (*foreign exchange*) berbasis edge serverless yang dirancang khusus untuk mempermudah masyarakat Indonesia, pelaku bisnis, traveler, serta developer dalam memantau, membandingkan, dan mengonversi kurs secara transparan dan akurat.
+**Buanasphere** adalah platform observatorium geospatial 3D multi-aplikasi berbasis edge computing yang dirancang untuk menyajikan data planet bumi secara real-time, transparan, dan interaktif.
 
-### 💡 Filosofi Inti
-1. **Informasi Dulu, Transaksi Belakangan**: Menyediakan perbandingan jujur tanpa bias komersial, tanpa paywall tersembunyi, dan tanpa registrasi wajib.
-2. **Konteks Indonesia**: Mengutamakan Indonesian Rupiah (`IDR`) sebagai mata uang dasar (*Base Currency*) dengan format penulisan angka baku Indonesia (`Rp 15.850,00`).
-3. **Edge-First & Sub-50ms Response**: Berjalan di atas infrastruktur global Cloudflare Workers dengan caching Stale-While-Revalidate (SWR) pada Cloudflare KV.
-4. **Zero Layout Shift (Zero CLS)**: Antarmuka dibangun dengan Svelte 5 (Runes) dan skeleton shimmer presisi untuk mencegah kedipan layar.
+### 💡 Filosofi & Arti Nama
+- **Asal Nama**: Kata **Buana** *(Bahasa Sanskerta/Indonesia: Jagad Raya / Benua / Alam Semesta)* dipadukan dengan **Sphere** *(Lingkup Bola 3D Planet Bumi)*.
+- **"Informasi Dulu, Transaksi Belakangan"**: Menyajikan data jujur tanpa paywall, tanpa registrasi wajib, dan tanpa bias komersial.
+- **Konteks Indonesia Berwawasan Global**: Mengutamakan perspektif Indonesia (IDR & WIB) sebagai jangkar koordinat dengan cakupan 195+ negara berdaulat di seluruh dunia.
+- **Edge-First & Sub-50ms Response**: Didukung Cloudflare Workers, Cloudflare D1, dan Stale-While-Revalidate (SWR) cache pada Cloudflare KV.
+- **Zero Layout Shift (Zero CLS)**: Menggunakan Svelte 5 (Runes) dan skeleton shimmer presisi untuk performa rendering yang mulus.
 
 ---
 
-## 🚀 Fitur Utama
+## 🌍 Ekosistem 7 Micro-Apps Interaktif
 
-- 📊 **Tabel Perbandingan Kurs Multi-Bank (*Side-by-Side Matrix*)**:
-  Membandingkan kurs beli (*Buy Rate*), kurs jual (*Sell Rate*), dan *spread* antar bank komersial, bank sentral, serta money changer secara langsung dengan indikator *Best Buy* dan *Best Sell*.
-- 🔄 **Multi-Source Currency Converter**:
-  Kalkulator konversi instan yang menghitung selisih hasil tukar riil dari seluruh penyedia kurs secara simultan dalam satu klik.
-- 📈 **Grafik Tren Histori Interaktif**:
-  Visualisasi riwayat pergerakan kurs interaktif bergaya Google Finance dengan rentang waktu 7 Hari, 30 Hari, 90 Hari, hingga 1 Tahun (365 Hari).
-- 🌍 **Peta Dunia Kurs Interaktif (3D Globe & 2D Flat Map)**:
-  Eksplorasi visual nilai tukar 195+ negara di dunia dengan tekstur bendera prosedural, pencarian negara cerdas, dan drawer inspektur mata uang.
-- 🔔 **Sistem Notifikasi Nilai Tukar (*Rate Alert*)**:
-  Peringatan otomatis saat nilai tukar mencapai target yang ditentukan melalui Web Push API dan Cloudflare Transactional Email.
-- ⚡ **Public Developer REST API**:
-  API publik berkinerja tinggi dengan dokumentasi interaktif OpenAPI / Swagger UI di `/swagger`.
+Buanasphere menggunakan arsitektur *plug-and-play micro-apps* yang memungkinkan pengguna beralih konteks visualisasi 3D secara instan:
+
+| Icon | Micro-App | Path | Deskripsi & Fitur Utama |
+|---|---|---|---|
+| 💱 | **Kurs World** | `/kurs` | Nilai tukar 195+ mata uang vs IDR, matriks perbandingan multi-bank (BI, BCA, Mandiri, BNI, BRI, CIMB), converter instan, & grafik tren historis. |
+| ☀️ | **TimeWorld** | `/time` | Model pencahayaan surya diurnal 8-fase global, pelacak siang/malam real-time, jam kerja aktif, dan selisih waktu relatif WIB. |
+| ✈️ | **Flow Corridors** | `/flight` | Visualisasi 3D koridor penerbangan remitansi dan pergerakan modal devisa diaspora buruh migran menuju Indonesia. |
+| 🛂 | **Passport World** | `/passport` | Indeks mobilitas paspor global & matriks visa bagi WNI (bebas visa, visa on arrival, eVisa, visa required). |
+| 🌿 | **Nature World** | `/nature` | Pemetaan biodiversitas, satwa ikonik, flora endemik, dan status konservasi IUCN di 17 negara megadiverse & global bioma. |
+| 🏛️ | **World Capitals** | `/capitals` | 195+ ibukota berdaulat, tahun berdirinya negara, asal kemerdekaan, dan pemutar audio lagu kebangsaan resmi. |
+| 🌋 | **Earthquake Tracker** | `/quake` | Pemantauan aktivitas seismik global & Indonesia terbaru (M4.5+), kedalaman hiposentrum, peringatan tsunami, dan gelombang episentrum 3D beranimasi. |
+| 🛡️ | **Nimda Console** | `/nimda` | Konsol operasional edge yang dilindungi kunci rahasia untuk force ingest, purge KV cache, karantina rate anomali, & manajemen developer API key. |
 
 ---
 
 ## 🏛 Sumber Data & Kepatuhan Atribusi
 
-Kurs World mengumpulkan data secara berkala dari sumber-sumber resmi dan tepercaya:
+Buanasphere mengumpulkan data secara berkala dari sumber-sumber resmi dan tepercaya:
 
 | Kategori Penyedia | Sumber / Provider | Deskripsi Data | URL Resmi |
 |---|---|---|---|
@@ -71,15 +73,7 @@ Kurs World mengumpulkan data secara berkala dari sumber-sumber resmi dan teperca
 | **Bank Komersial** | **Bank Negara Indonesia (BNI)** | Kurs Special Rate & Banknotes BNI | [bni.co.id](https://www.bni.co.id) |
 | **Bank Komersial** | **CIMB Niaga** | OCTO Clicks & Special Rate CIMB Niaga | [cimbniaga.co.id](https://www.cimbniaga.co.id) |
 | **Money Changer** | **DolarAsia** | Kurs fisik / banknotes money changer terverifikasi | [dolarasia.com](https://dolarasia.com) |
-
-### 📜 Ketentuan Kepatuhan Atribusi ExchangeRate-API
-Kurs World menggunakan feed terbuka dari ExchangeRate-API sesuai dengan panduan resmi:
-- 📖 **Dokumentasi Terbuka**: [https://www.exchangerate-api.com/docs/free](https://www.exchangerate-api.com/docs/free)
-- ⚖️ **Syarat & Ketentuan Lisensi**: [https://www.exchangerate-api.com/terms](https://www.exchangerate-api.com/terms)
-- Data di-cache pada edge storage untuk penggunaan aplikasi (*end-use*), tidak diredistribusikan sebagai raw resale API, dan dilengkapi atribusi resmi pada footer aplikasi:
-  ```html
-  <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer">Rates By Exchange Rate API</a>
-  ```
+| **Seismik & Gempa** | **USGS & BMKG Feed** | Data gempa global M4.5+ & kegempaan Indonesia | [usgs.gov](https://earthquake.usgs.gov) |
 
 ---
 
@@ -94,7 +88,7 @@ flowchart LR
         Sanity --> KV[(Cloudflare KV SWR Cache)]
     end
 
-    subgraph Backend ["Backend API (<50ms Edge)"]
+    subgraph Backend ["Backend Edge API (<50ms)"]
         Elysia[Elysia.js on Cloudflare Workers]
         Elysia --> KV
         Elysia --> D1
@@ -102,19 +96,20 @@ flowchart LR
 
     subgraph Frontend ["Web Application"]
         Svelte[Svelte 5 Runes + Vite]
+        Three[Three.js & Globe.gl WebGL]
         UI[Tailwind CSS v4 + shadcn-svelte]
         Svelte --> Backend
     end
 ```
 
 ### Rincian Teknologi:
-- **Runtime & Package Manager**: [Bun](https://bun.sh) **v1.4+ (Mandatory / Wajib)** — Penggunaan Node.js, npm, yarn, dan pnpm dilarang keras.
-- **Backend API Framework**: [Elysia.js](https://elysiajs.com) (TypeScript on Cloudflare Workers)
+- **Runtime & Package Manager**: [Bun](https://bun.sh) **v1.4+ (Mandatory / Wajib)**
+- **Backend Framework**: [Elysia.js](https://elysiajs.com) (TypeScript on Cloudflare Workers)
 - **Database & ORM**: [Cloudflare D1](https://developers.cloudflare.com/d1/) + [Drizzle ORM](https://orm.drizzle.team/)
-- **Edge Cache**: [Cloudflare KV](https://developers.cloudflare.com/kv/) (Stale-While-Revalidate TTL 15m)
-- **Frontend Framework**: [Svelte 5](https://svelte.dev) dengan paradigma Runes (`$state`, `$derived`, `$props`, `$effect`)
-- **Styling & UI Primitives**: [Tailwind CSS v4](https://tailwindcss.com), [shadcn-svelte (Bits UI)](https://shadcn-svelte.com), [Lucide Svelte](https://lucide.dev)
-- **Visualisasi & Charts**: Canvas-based interactive chart engine & vector flag rendering
+- **Edge Cache**: [Cloudflare KV](https://developers.cloudflare.com/kv/) (Stale-While-Revalidate SWR)
+- **Frontend Framework**: [Svelte 5](https://svelte.dev) dengan paradigma modern Runes (`$state`, `$derived`, `$props`, `$effect`)
+- **3D Geospatial Engine**: [Three.js](https://threejs.org/) & [Globe.gl](https://globe.gl/) dengan custom shader LUT picking
+- **Styling & Komponen**: [Tailwind CSS v4](https://tailwindcss.com), [shadcn-svelte (Bits UI)](https://shadcn-svelte.com), [Lucide Svelte](https://lucide.dev)
 - **CLI & Deployment**: [Wrangler](https://developers.cloudflare.com/workers/wrangler/) + [RTK (Rust Token Killer)](https://github.com/)
 
 ---
@@ -122,16 +117,16 @@ flowchart LR
 ## 📂 Struktur Monorepo
 
 ```
-kurs-world/
+buanasphere/
 │
 ├── backend/                        # Elysia.js Backend on Cloudflare Workers
 │   ├── src/
-│   │   ├── domain/                 # Domain entities (Rate, Provider, Alert)
-│   │   ├── provider/               # Provider Ingest Adapters (OpenERApi, Bank Indonesia, BCA, dll.)
+│   │   ├── domain/                 # Domain entities (Rate, Provider, Alert, APIKey)
+│   │   ├── provider/               # Ingest Adapters (OpenERApi, BI, BCA, Mandiri, dll.)
 │   │   ├── service/                # Business logic (Aggregator, Converter, Comparator)
-│   │   ├── routes/                 # Elysia endpoints (/rates, /convert, /history, /alerts)
-│   │   ├── logger/                 # Structured JSON logger
-│   │   └── index.ts                # Worker Entrypoint (Fetch & Scheduled handler)
+│   │   ├── routes/                 # Elysia routes (/rates, /convert, /history, /nimda)
+│   │   ├── middleware/             # Admin auth, Rate limiter, CORS, Error handler
+│   │   └── index.ts                # Cloudflare Worker Entrypoint
 │   ├── tests/                      # Unit & integration tests (Bun test)
 │   ├── wrangler.jsonc              # Cloudflare Workers configuration
 │   └── package.json
@@ -139,22 +134,22 @@ kurs-world/
 ├── frontend/                       # Svelte 5 + Vite Web Application
 │   ├── src/
 │   │   ├── lib/
-│   │   │   ├── api/                # API client & rate baseline dictionaries
-│   │   │   ├── components/         # Reusable UI & shadcn-svelte primitives
-│   │   │   │   ├── ui/             # shadcn-svelte components (Button, Input, Select, dll.)
-│   │   │   │   └── skeletons/      # Shimmer skeletons
-│   │   │   └── features/           # Matrix, Converter, GoogleRateChart, WorldRateMap
-│   │   ├── App.svelte              # Main application root
+│   │   │   ├── components/         # Reusable UI, AboutModal, Navbar, Footer
+│   │   │   ├── framework/geoglobe/ # Pluggable 3D Globe Micro-App Architecture
+│   │   │   │   ├── plugins/        # Micro-app plugins (kurs, time, flight, passport, nature, capitals, quake)
+│   │   │   │   ├── data/           # Modular Geo datasets
+│   │   │   │   └── geoStore.svelte # Svelte 5 global geospatial reactive state
+│   │   │   └── features/           # Matrix, Converter, Chart, Map, RateCard, Admin
+│   │   ├── App.svelte              # Root application component
 │   │   └── app.css                 # Tailwind CSS v4 design tokens
 │   ├── tests/                      # Frontend unit & component tests
 │   └── package.json
 │
 ├── docs/                           # Dokumentasi terstruktur
-│   ├── adr/                        # Architecture Decision Records (0001-0022)
+│   ├── adr/                        # Architecture Decision Records (0001-0048)
 │   ├── specs/                      # PRD & Technical Specifications
 │   ├── guides/                     # Setup & deployment guides
-│   ├── reports/                    # Quality verification & audit reports
-│   └── brief/                      # Project Executive Brief
+│   └── reports/                    # Quality verification & security audits
 │
 ├── scripts/                        # Runtime guard & automation scripts
 │   └── ensure-bun.ts               # Strict Bun v1.4+ runtime validator
@@ -162,7 +157,6 @@ kurs-world/
 ├── AGENTS.md                       # Panduan baku AI Agent & SDLC
 ├── ARCHITECTURE.md                 # Arsitektur sistem & aliran data
 ├── CONTEXT.md                      # Ubiquitous domain language
-├── bunfig.toml                     # Konfigurasi Bun runtime & package manager
 ├── package.json                    # Root workspace package.json
 └── README.md                       # Dokumentasi utama (file ini)
 ```
@@ -171,23 +165,17 @@ kurs-world/
 
 ## 🚀 Panduan Memulai (Getting Started)
 
-### Prasyarat Mutlak (Mandatory):
-- ⚡ **[Bun](https://bun.sh) (v1.4 atau lebih baru) — WAJIB**:
+### Prasyarat Mutlak:
+- ⚡ **[Bun](https://bun.sh) (v1.4+) — WAJIB**:
   ```bash
-  # Instalasi Bun:
   curl -fsSL https://bun.sh/install | bash
-
-  # Verifikasi versi Bun:
   bun --version # Wajib >= 1.4.0
   ```
-  > ⚠️ **Catatan Penting**: Repositori ini memiliki *preinstall guard* otomatis. Eksekusi menggunakan `node`, `npm`, `yarn`, atau `pnpm` akan langsung dihentikan dengan pesan error fatal.
-
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) (v3+)
 
 ### 1. Kloning Repositori
 ```bash
-git clone https://github.com/rafliiar17/kurs-world.git
-cd kurs-world
+git clone https://github.com/rafliiar17/buanasphere.git
+cd buanasphere
 ```
 
 ### 2. Instalasi Dependensi
@@ -195,50 +183,48 @@ cd kurs-world
 bun install
 ```
 
-### 3. Menjalankan Development Server
-Jalankan backend API dan frontend secara bersamaan:
+### 3. Menjalankan Server Lokal
 ```bash
 bun run dev
 ```
-- **Frontend App**: `http://localhost:5173`
+- **Frontend Web**: `http://localhost:5173`
 - **Backend API**: `http://localhost:8787`
 - **Swagger Documentation**: `http://localhost:8787/swagger`
+- **Operator Console**: `http://localhost:5173/nimda`
 
 ---
 
 ## 🧪 Pengujian & Standar Kualitas
 
-Seluruh pengembangan mengikuti alur TDD (*Test-Driven Development*) dengan *Quality Gates* otomatis:
-
 ```bash
-# Menjalankan seluruh test suite (Backend & Frontend)
+# Menjalankan seluruh test suite
 rtk bun test
 
-# Menjalankan Type Checking & Diagnostics
+# Menjalankan type checking & diagnostics (0 errors, 0 warnings wajib)
 rtk bun run check
 
-# Menjalankan Build Produksi
+# Menjalankan production bundle build
 rtk bun run build
 ```
 
 ---
 
-## 🔒 Keamanan & Ingestion Guard
+## 🔗 Tautan Resmi
 
-1. **SSRF & Domain Whitelisting**: Outbound ingestion `fetch()` hanya diizinkan ke domain yang ada dalam allowlist (`bi.go.id`, `bca.co.id`, `open.er-api.com`, dll.).
-2. **Strict Timeouts & Payload Limits**: Timeout maksimal 5 detik via `AbortSignal.timeout(5000)` dan ukuran payload maksimal 5 MB untuk mencegah memory spike.
-3. **Data Sanity & Anomaly Quarantine**: Memvalidasi `buyRate > 0`, `sellRate > 0`, dan `sellRate >= buyRate`. Data yang mengalami fluktuasi anomali (>50%) otomatis masuk ke tabel karantina.
-4. **Zero Hardcoded Secrets**: Seluruh kredensial dan API keys dikelola melalui Cloudflare Worker Secrets (`c.env.*`).
+- 🌐 **Platform Produksi**: [globe.arafz.id](https://globe.arafz.id)
+- 💻 **GitHub Repository**: [github.com/rafliiar17/buanasphere](https://github.com/rafliiar17/buanasphere)
+- 📖 **Dokumentasi REST API**: [globe.arafz.id/swagger](https://globe.arafz.id/swagger)
+- 🛡️ **Operator Console**: [globe.arafz.id/nimda](https://globe.arafz.id/nimda)
 
 ---
 
 ## ⚖️ Penafian Hukum (Disclaimer)
 
-Data kurs dan nilai konversi yang disajikan oleh **Kurs World** bersifat **informasional dan referensi semata**. Nilai tukar transaksi riil di kantor cabang bank, ATM, atau money changer dapat berbeda sesuai kebijakan masing-masing penyedia pada waktu transaksi. Kurs World tidak bertanggung jawab atas keputusan finansial atau kerugian yang timbul dari penggunaan data ini.
+Data yang disajikan oleh **Buanasphere** bersifat **informasional dan referensi semata**. Nilai tukar transaksi riil di kantor cabang bank atau money changer dapat berbeda sesuai kebijakan masing-masing penyedia pada waktu transaksi. Buanasphere tidak bertanggung jawab atas keputusan finansial atau kerugian yang timbul dari penggunaan data ini.
 
 ---
 
 ## 📄 Lisensi
 
 Proyek ini dilisensikan di bawah [MIT License](LICENSE).  
-Hak Cipta © 2026 **Kurs World Team**.
+Hak Cipta © 2026 **Buanasphere by Arafz**.
