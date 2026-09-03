@@ -11,6 +11,10 @@ import {
   getEarthquakeDataForCountry,
   GLOBAL_EARTHQUAKES,
 } from '../data/earthquakeData';
+import {
+  fetchLiveEarthquakes,
+  getLiveEarthquakeRings,
+} from '$lib/features/map/services/liveEarthquakeService';
 
 export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   id: 'earthquake-tracker',
@@ -84,9 +88,21 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   ],
 
   dataLoader: async (countries: CountrySpatialMetadata[]): Promise<Record<string, CountrySeismicProfile>> => {
+    const liveResult = await fetchLiveEarthquakes();
+    const liveEvents = liveResult.events;
+
     const dataMap: Record<string, CountrySeismicProfile> = {};
     for (const country of countries) {
-      dataMap[country.iso3] = getEarthquakeDataForCountry(country.iso3, country.countryName);
+      const base = getEarthquakeDataForCountry(country.iso3, country.countryName);
+      const matchedEvents = liveEvents.filter(
+        (e) => e.countryIso3 === country.iso3 || (base.recentEvents && base.recentEvents.some((be) => be.id === e.id))
+      );
+
+      dataMap[country.iso3] = {
+        ...base,
+        recentEvents: matchedEvents.length > 0 ? matchedEvents : base.recentEvents,
+        activeAlertCount: matchedEvents.filter((e) => e.magnitude >= 5.0).length,
+      };
     }
     return dataMap;
   },
@@ -104,24 +120,7 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     }
 
     const safeEvents = events.length > 0 ? events : GLOBAL_EARTHQUAKES;
-
-    return safeEvents.map((eq) => {
-      let color = '#eab308'; // M < 5 (kuning)
-      if (eq.magnitude >= 6.0) {
-        color = '#ef4444'; // M >= 6 (merah)
-      } else if (eq.magnitude >= 5.0) {
-        color = '#f97316'; // M >= 5 (oranye)
-      }
-
-      return {
-        lat: eq.lat,
-        lng: eq.lng,
-        maxRadius: eq.magnitude * 1.5,
-        propagationSpeed: 2.5,
-        repeatPeriod: 1800,
-        color,
-      };
-    });
+    return getLiveEarthquakeRings(safeEvents);
   },
 
   getPolygonColor: (

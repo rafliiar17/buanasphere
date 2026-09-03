@@ -113,9 +113,11 @@ describe('Live Earthquake Service (USGS & BMKG Live Feed) Suite (ADR 0065 / TDD)
           lng: 100,
           magnitude: 4.6,
           depthKm: 10,
-          time: new Date().toISOString(),
+          timestamp: new Date().toISOString(),
           place: 'Test Light',
           tsunamiWarning: false,
+          seismicRiskTier: 'moderate' as const,
+          countryIso3: 'IDN',
         },
         {
           id: 'eq2',
@@ -123,9 +125,11 @@ describe('Live Earthquake Service (USGS & BMKG Live Feed) Suite (ADR 0065 / TDD)
           lng: 120,
           magnitude: 6.5,
           depthKm: 20,
-          time: new Date().toISOString(),
+          timestamp: new Date().toISOString(),
           place: 'Test Strong',
           tsunamiWarning: true,
+          seismicRiskTier: 'high' as const,
+          countryIso3: 'JPN',
         },
       ];
 
@@ -134,7 +138,7 @@ describe('Live Earthquake Service (USGS & BMKG Live Feed) Suite (ADR 0065 / TDD)
       expect(rings.length).toBe(2);
       expect(rings[0].color).toBe('#eab308'); // M < 5 (kuning)
       expect(rings[1].color).toBe('#ef4444'); // M >= 6 (merah)
-      expect(rings[1].maxRadius).toBeGreaterThan(rings[0].maxRadius);
+      expect(rings[1].maxRadius!).toBeGreaterThan(rings[0].maxRadius!);
     });
   });
 
@@ -142,9 +146,9 @@ describe('Live Earthquake Service (USGS & BMKG Live Feed) Suite (ADR 0065 / TDD)
     it('falls back to bundled local dataset if network fails without throwing', async () => {
       // Pass an invalid custom URL or failing fetch to simulate network loss
       const result = await fetchLiveEarthquakes({
-        customFetch: async () => {
+        customFetch: (async () => {
           throw new Error('Network error / offline');
-        },
+        }) as any,
       });
 
       expect(result).toBeDefined();
