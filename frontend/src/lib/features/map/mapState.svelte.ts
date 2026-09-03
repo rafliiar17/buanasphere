@@ -97,7 +97,7 @@ export class MapState {
   isRegionDropdownOpen: boolean = $state(false);
   highlightedIndex: number = $state(0);
   performanceMode: 'turbo' | 'quality' = $state('quality');
-  showTimezoneLines: boolean = $state(true);
+  showTimezoneLines: boolean = $state(false);
   selectedMeridian: TimezoneMeridianInfo | null = $state(null);
   cameraTravelSignal: { iso3: string; timestamp: number } | null = $state(null);
 

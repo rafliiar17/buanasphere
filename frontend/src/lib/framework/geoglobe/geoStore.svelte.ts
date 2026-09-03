@@ -65,7 +65,7 @@ export function createGeoStore() {
 
   // Performance Profile (ADR 0035 - Laptop GPU & WebGL Optimization)
   let performanceMode = $state<'turbo' | 'quality'>('quality');
-  let showTimezoneLines = $state(true);
+  let showTimezoneLines = $state(false);
 
   // Time-Travel Simulation State (ADR 0054)
   let isSimulatingTime = $state(false);
