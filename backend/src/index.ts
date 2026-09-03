@@ -5,6 +5,7 @@ import { ratesRoutes } from './routes/rates.ts';
 import { convertRoutes } from './routes/convert.ts';
 import { historyRoutes } from './routes/history.ts';
 import { countriesRoutes } from './routes/countries.ts';
+import { nimdaRoutes } from './routes/admin.ts';
 import { loggerMiddleware } from './middleware/logger.ts';
 import { rateLimiterMiddleware } from './middleware/rate-limiter.ts';
 import { AggregatorService } from './service/aggregator.ts';
@@ -223,6 +224,7 @@ export function createApp(env?: Env) {
     .use(convertRoutes(env))
     .use(historyRoutes(env))
     .use(countriesRoutes(env))
+    .use(nimdaRoutes(env))
     .onAfterResponse(({ request, set }) => {
       try {
         const url = new URL(request.url);

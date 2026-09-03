@@ -61,8 +61,12 @@
       padding-top:16px;border-top:1px solid var(--bg-rule);
       font-size:10px;color:var(--ink-4);
     ">
-      <span>{t('footer.copyright')}</span>
-      <span>{t('footer.edgeInfo')}</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span>{t('footer.edgeInfo')}</span>
+        <a href="/nimda" style="color:inherit;opacity:0.25;text-decoration:none;font-size:11px;" title="Operator Console" aria-label="Operator Console">
+          🔒
+        </a>
+      </div>
     </div>
   </div>
 </footer>

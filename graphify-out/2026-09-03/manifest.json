@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "backend/src/index.ts": {
-    "mtime": 1788401531.9507663,
-    "ast_hash": "8083d7e5ba1d0186e792cc0e4f606a8f",
+    "mtime": 1788344937.675009,
+    "ast_hash": "8dbf74235303ef676c60cca249d1d587",
     "semantic_hash": ""
   },
   "backend/src/logger/index.ts": {
@@ -225,13 +225,13 @@
     "semantic_hash": ""
   },
   "frontend/src/App.svelte": {
-    "mtime": 1788401713.121612,
-    "ast_hash": "3c6b011ed3b86a52c99839edefdf6900",
+    "mtime": 1788400574.2762651,
+    "ast_hash": "41f463ceaa7fd72dcec91a3baff3381a",
     "semantic_hash": ""
   },
   "frontend/src/lib/api/client.ts": {
-    "mtime": 1788401612.8581474,
-    "ast_hash": "dd780587c82afec3002268214063cb30",
+    "mtime": 1788330727.3580642,
+    "ast_hash": "43887b8dc18fd5d44537f9935b014d60",
     "semantic_hash": ""
   },
   "frontend/src/lib/api/types.ts": {
@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "frontend/src/lib/components/Footer.svelte": {
-    "mtime": 1788401685.4354846,
-    "ast_hash": "fec08564ba870c12576d7cc8a333862a",
+    "mtime": 1788334997.792838,
+    "ast_hash": "75fcd7b94e351d2d4333821794ea080f",
     "semantic_hash": ""
   },
   "frontend/src/lib/components/GlobalAppSplashScreen.svelte": {
@@ -575,8 +575,8 @@
     "semantic_hash": ""
   },
   "frontend/src/lib/framework/geoglobe/router.ts": {
-    "mtime": 1788401599.0520828,
-    "ast_hash": "64c0afaf049f6200bcea0658e04ef8c2",
+    "mtime": 1788400418.788,
+    "ast_hash": "339ffe5f72b4acb6a7ecf1cbec95988a",
     "semantic_hash": ""
   },
   "frontend/src/lib/framework/geoglobe/types.ts": {
@@ -2297,36 +2297,6 @@
   "frontend/public/flags/zw.png": {
     "mtime": 1788329990.4120686,
     "ast_hash": "0d0cd9e91136d283dff86ba0b4c36cba",
-    "semantic_hash": ""
-  },
-  "backend/src/middleware/admin-auth.ts": {
-    "mtime": 1788401505.032638,
-    "ast_hash": "c1ae741da7962a225adf2c12397a626d",
-    "semantic_hash": ""
-  },
-  "backend/src/routes/admin.ts": {
-    "mtime": 1788401513.180677,
-    "ast_hash": "5b01fd51bd35056603b804bd4350cab8",
-    "semantic_hash": ""
-  },
-  "backend/tests/nimda-operator-api.test.ts": {
-    "mtime": 1788401574.8299692,
-    "ast_hash": "11955bdf1f7948d67ca3c1320f361991",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/features/admin/AdminConsole.svelte": {
-    "mtime": 1788401656.1183488,
-    "ast_hash": "c14e0cf94c08ad75158246172f4af109",
-    "semantic_hash": ""
-  },
-  "frontend/tests/nimda-operator-console.test.ts": {
-    "mtime": 1788401496.4835973,
-    "ast_hash": "8de64159140ea2e71ce09bb202229739",
-    "semantic_hash": ""
-  },
-  "docs/adr/0045-lightweight-edge-operator-console.md": {
-    "mtime": 1788401474.263028,
-    "ast_hash": "5a37e2a2408af80a22d8ab5d842669d8",
     "semantic_hash": ""
   }
 }

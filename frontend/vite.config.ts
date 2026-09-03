@@ -20,6 +20,10 @@ export default defineConfig({
         target: process.env.VITE_API_URL || 'https://kurs-world-api.rafztesting.workers.dev',
         changeOrigin: true,
       },
+      '/nimda': {
+        target: process.env.VITE_API_URL || 'https://kurs-world-api.rafztesting.workers.dev',
+        changeOrigin: true,
+      },
     },
   },
   build: {

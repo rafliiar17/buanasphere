@@ -164,6 +164,5 @@
   "162": "plotly.js-dist-min",
   "163": "svelte",
   "164": "tailwind-merge",
-  "165": "three",
-  "166": "@types/plotly.js-dist-min"
+  "165": "three"
 }
