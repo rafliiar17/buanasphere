@@ -19,43 +19,15 @@ export const FLIGHT_CORRIDOR_REGIONS: Record<FlightCorridorFilterType, string[]>
   west: ['USA', 'AUS', 'CAN', 'GBR', 'IDN'],
 };
 
-export const PASSPORT_ENTRY_STATUS_MAP: Record<string, 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required'> = {
-  SGP: 'Visa Free',
-  JPN: 'Visa Free',
-  DEU: 'Visa Required',
-  FRA: 'Visa Required',
-  ITA: 'Visa Required',
-  ESP: 'Visa Required',
-  KOR: 'Visa Free',
-  GBR: 'Visa Required',
-  USA: 'Visa Required',
-  MYS: 'Visa Free',
-  ARE: 'eVisa',
-  BRN: 'Visa Free',
-  THA: 'Visa Free',
-  IDN: 'Visa Free',
-  PHL: 'Visa Free',
-  VNM: 'Visa Free',
-  IND: 'Visa on Arrival',
-  CHN: 'Visa Required',
-  SAU: 'eVisa',
-  TUR: 'Visa Free',
-  KHM: 'Visa Free',
-  LAO: 'Visa Free',
-  MMR: 'Visa Free',
-  TLS: 'Visa on Arrival',
-  QAT: 'Visa on Arrival',
-  MDV: 'Visa on Arrival',
-  NPL: 'Visa on Arrival',
-  JOR: 'Visa on Arrival',
-  EGY: 'Visa on Arrival',
-  MAR: 'Visa Free',
-  CHL: 'Visa Free',
-  BRA: 'Visa Free',
-  COL: 'Visa Free',
-  PER: 'Visa Free',
-  ECU: 'Visa Free',
-};
+import passportDataset from './data/passport_dataset.json';
+
+export const PASSPORT_ENTRY_STATUS_MAP: Record<
+  string,
+  'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required'
+> = (passportDataset.entryStatus || passportDataset.PASSPORT_ENTRY_STATUS_MAP) as Record<
+  string,
+  'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required'
+>;
 
 /**
  * Validates if country matches the TimeWorld filter

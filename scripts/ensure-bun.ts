@@ -47,7 +47,7 @@ export function checkBunRuntime(): RuntimeCheckResult {
     return {
       valid: false,
       runtime: 'node',
-      error: 'Running under Node.js or an unsupported runtime. kurs-world strictly mandates Bun (v1.4+).',
+      error: 'Running under Node.js or an unsupported runtime. buanasphere strictly mandates Bun (v1.4+).',
     };
   }
 
@@ -68,7 +68,7 @@ export function checkBunRuntime(): RuntimeCheckResult {
     return {
       valid: false,
       runtime: 'unknown',
-      error: `Detected invocation via '${agentName}'. kurs-world strictly prohibits npm/yarn/pnpm. Use 'bun' exclusively.`,
+      error: `Detected invocation via '${agentName}'. buanasphere strictly prohibits npm/yarn/pnpm. Use 'bun' exclusively.`,
     };
   }
 

@@ -23,6 +23,7 @@
   import GeoAppLauncherModal from '$lib/framework/geoglobe/ui/GeoAppLauncherModal.svelte';
   import RateAlertModal from '$lib/features/alert/RateAlertModal.svelte';
   import AdminConsole from '$lib/features/admin/AdminConsole.svelte';
+  import AboutModal from '$lib/components/AboutModal.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { isLandingPath } from '$lib/framework/geoglobe/router';
   import { apiClient } from '$lib/api/client';
@@ -54,6 +55,7 @@
   let activeView = $state<'map' | 'chart' | 'matrix' | 'converter' | 'cards'>('map');
   let converterFromCurrency = $state('USD');
   let isAlertModalOpen = $state(false);
+  let isAboutModalOpen = $state(false);
 
   onMount(() => {
     const unsub = subscribeLocale((loc) => {
@@ -129,7 +131,7 @@
   <GlobalAppSplashScreen isReady={!isAppInitialLoading} />
 
   <!-- Minimalist Top Navigation Header -->
-  <Navbar />
+  <Navbar onOpenAbout={() => (isAboutModalOpen = true)} />
 
   <!-- 100% Viewport Main Work Area -->
   <main class="flex-1 relative w-full h-[calc(100vh-52px)] overflow-hidden">
@@ -224,6 +226,9 @@
 
   <!-- GeoGlobe Pluggable Micro-App Launcher Modal -->
   <GeoAppLauncherModal />
+
+  <!-- Buanasphere About Modal -->
+  <AboutModal isOpen={isAboutModalOpen} onClose={() => (isAboutModalOpen = false)} />
 
 </div>
 {/if}

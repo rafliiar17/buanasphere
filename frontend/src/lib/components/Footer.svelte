@@ -1,7 +1,13 @@
 <script lang="ts">
-  import { ExternalLink } from 'lucide-svelte';
+  import { ExternalLink, Github, Info } from 'lucide-svelte';
   import { MOCK_PROVIDERS } from '$lib/api/client';
   import { t } from '$lib/i18n';
+
+  interface Props {
+    onOpenAbout?: () => void;
+  }
+
+  let { onOpenAbout }: Props = $props();
 </script>
 
 <footer style="
@@ -59,8 +65,31 @@
     <div style="
       display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
       padding-top:16px;border-top:1px solid var(--bg-rule);
-      font-size:10px;color:var(--ink-4);
+      font-size:11px;color:var(--ink-4);
     ">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <span>© 2026 <strong>Buanasphere</strong> by <a href="https://github.com/rafliiar17" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">Arafz</a>.</span>
+        {#if onOpenAbout}
+          <button
+            type="button"
+            onclick={onOpenAbout}
+            style="background:none;border:none;color:var(--ink-3);cursor:pointer;padding:0;font-size:11px;display:inline-flex;align-items:center;gap:4px;text-decoration:underline;"
+          >
+            <Info style="width:11px;height:11px;" />
+            <span>Tentang Buanasphere</span>
+          </button>
+        {/if}
+        <a
+          href="https://github.com/rafliiar17/buanasphere"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="color:var(--ink-3);display:inline-flex;align-items:center;gap:4px;text-decoration:none;"
+        >
+          <Github style="width:11px;height:11px;" />
+          <span>GitHub</span>
+        </a>
+      </div>
+
       <div style="display:flex;align-items:center;gap:12px;">
         <span>{t('footer.edgeInfo')}</span>
         <a href="/nimda" style="color:inherit;opacity:0.25;text-decoration:none;font-size:11px;" title="Operator Console" aria-label="Operator Console">

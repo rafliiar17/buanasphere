@@ -35,6 +35,7 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     main: 'Time',
     sub: '.World',
     accentColor: '#38bdf8',
+    disclaimer: 'Zona waktu & jam digital real-time 195+ negara · Gratis · Tanpa registrasi',
   },
   splash: {
     stepText: 'Memuat Zona Waktu & Jam Digital 195+ Negara...',

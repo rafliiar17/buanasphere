@@ -152,7 +152,7 @@ describe('World Capitals & Independence History Micro-App Plugin (ADR 0039 / TDD
 
       const pin = worldCapitalsApp.getPinLabel!(idnSpatial, idnData, 'era');
       expect(pin.text).toContain('Jakarta');
-      expect(pin.text).toContain('🏛️');
+      expect(pin.text).toContain('Indonesia'); // emoji 🏛️ removed — renders as ?? on WebGL canvas
     });
   });
 

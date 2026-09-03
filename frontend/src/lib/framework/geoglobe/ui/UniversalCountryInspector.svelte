@@ -211,6 +211,43 @@
             {/each}
           </div>
         {/if}
+
+        <!-- National Anthem Audio Card (ADR 0046) -->
+        {#if widget?.customData?.nationalAnthem}
+          {@const anthem = widget.customData.nationalAnthem}
+          <div class="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3.5 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🎵</span>
+                <div>
+                  <span class="text-xs font-bold text-amber-300 block">{anthem.title}</span>
+                  {#if anthem.nativeTitle}
+                    <span class="text-[10px] text-amber-400/80 block">{anthem.nativeTitle}</span>
+                  {/if}
+                </div>
+              </div>
+              {#if anthem.adoptedYear}
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                  Adopsi: {anthem.adoptedYear}
+                </span>
+              {/if}
+            </div>
+
+            {#if anthem.composer}
+              <div class="text-[11px] text-slate-300">
+                <span class="text-slate-400">Komposer:</span> {anthem.composer}
+              </div>
+            {/if}
+
+            {#if anthem.audioUrl}
+              <audio controls class="w-full h-8 mt-1 rounded-lg accent-amber-500" preload="none">
+                <source src={anthem.audioUrl} type="audio/ogg">
+                <source src={anthem.audioUrl} type="audio/mpeg">
+                Browser Anda tidak mendukung pemutar audio.
+              </audio>
+            {/if}
+          </div>
+        {/if}
       {:else}
         <div class="rounded-xl bg-slate-950/40 p-6 text-center text-slate-400 text-xs">
           Memuat data statistik negara...

@@ -15,6 +15,8 @@ describe('Domain & CORS Hardening Suite (ADR 0028 / TDD)', () => {
   });
 
   it('allows Cloudflare Pages deployment domains', () => {
+    expect(isAllowedCorsOrigin('https://buanasphere-frontend.pages.dev')).toBe(true);
+    expect(isAllowedCorsOrigin('https://feat-branch.buanasphere-frontend.pages.dev')).toBe(true);
     expect(isAllowedCorsOrigin('https://kurs-world-frontend.pages.dev')).toBe(true);
     expect(isAllowedCorsOrigin('https://feat-branch.kurs-world-frontend.pages.dev')).toBe(true);
   });

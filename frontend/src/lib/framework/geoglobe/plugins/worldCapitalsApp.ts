@@ -11,6 +11,7 @@ import {
   type WorldCapitalData, 
   getCapitalDataForCountry 
 } from '../data/worldCapitalsData';
+import { getCountryFlagColor } from '$lib/features/map/country-flag-colors';
 
 export type { WorldCapitalData };
 
@@ -35,6 +36,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
     main: 'Capitals',
     sub: '.World',
     accentColor: '#f59e0b',
+    disclaimer: 'Data ibukota & sejarah kemerdekaan 195+ negara · Gratis · Tanpa registrasi',
   },
   splash: {
     stepText: 'Memuat Peta Ibukota & Sejarah Kemerdekaan Global...',
@@ -89,6 +91,16 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
       min: 1,
       max: 12,
     },
+    {
+      id: 'flag',
+      label: 'Bendera Negara',
+      unit: 'Bendera',
+      formatValue: (_val: unknown, raw?: any) => {
+        const item = raw as WorldCapitalData | undefined;
+        return item?.capital ? `Ibukota: ${item.capital}` : 'Warna Bendera';
+      },
+      colorScale: (_norm: number) => '#3b82f6',
+    },
   ],
 
   // 3. Data Loader
@@ -102,7 +114,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
 
   // 4. WebGL Polygon Coloring Hook
   getPolygonColor: (
-    _country: CountrySpatialMetadata,
+    country: CountrySpatialMetadata,
     data: WorldCapitalData,
     activeMetric: string,
     theme: 'dark' | 'light',
@@ -120,6 +132,10 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
 
     if (!data) {
       return isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.6)';
+    }
+
+    if (activeMetric === 'flag') {
+      return getCountryFlagColor(country.iso3);
     }
 
     if (activeMetric === 'national_month') {
@@ -188,6 +204,12 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
           🚩 Asal: ${sovereignty}
         </div>
 
+        ${data?.nationalAnthem?.title ? `
+          <div style="font-size: 11px; font-weight: 700; color: #f59e0b; margin-bottom: 4px;">
+            🎵 Lagu Kebangsaan: ${data.nationalAnthem.title}
+          </div>
+        ` : ''}
+
         <div style="display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
           ${eraText}
         </div>
@@ -199,8 +221,10 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   getPinLabel: (country: CountrySpatialMetadata, data: WorldCapitalData) => {
     const cap = data?.capital ?? country.capital;
     return {
-      text: `🏛️ ${cap} • ${country.countryName}`,
+      text: `${cap} • ${country.countryName}`,
       shortText: cap,
+      lat: data?.capitalCoordinates?.lat,
+      lng: data?.capitalCoordinates?.lng,
     };
   },
 
@@ -260,6 +284,8 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
     const independence = data?.independenceDay ?? '-';
     const sovereignty = data?.sovereigntyFrom ?? '-';
     const trivia = data?.trivia ?? `${cap} adalah pusat pemerintahan resmi ${country.countryName}.`;
+    const anthem = data?.nationalAnthem;
+    const anthemText = anthem ? `${anthem.title}${anthem.composer ? ` (Komposer: ${anthem.composer})` : ''}` : '-';
 
     return {
       title: `${country.flagEmoji} ${country.countryName}`,
@@ -273,6 +299,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
       statsGrid: [
         { label: 'Nama Resmi Ibukota', value: cap },
         { label: 'Tipe Ibukota', value: data?.capitalType ?? 'Administrative' },
+        { label: '🎵 Lagu Kebangsaan', value: anthemText },
         { label: 'Hari Kemerdekaan / Nasional', value: independence },
         { label: 'Tanggal / Tahun Berdiri', value: foundation },
         { label: 'Asal Kedaulatan', value: sovereignty },
@@ -284,6 +311,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
         independenceDay: independence,
         foundationDate: foundation,
         era: data?.historicalEra,
+        nationalAnthem: anthem,
         trivia,
       },
     };

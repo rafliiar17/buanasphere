@@ -2,6 +2,8 @@ import type { CountrySpatialMetadata, GeoAppPlugin, InspectorWidget } from '../t
 import { isCountryMatchingPassportFilter, PASSPORT_ENTRY_STATUS_MAP, type PassportVisaFilterType } from '../filterEngine';
 import PassportBottomDock from '$lib/apps/passport/PassportBottomDock.svelte';
 
+import passportDataset from '../data/passport_dataset.json';
+
 export interface PassportData {
   visaFreeCount: number;
   globalRank: number;
@@ -9,31 +11,17 @@ export interface PassportData {
   visaRequirementForIndonesian: 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required';
 }
 
-export const PASSPORT_SCORES: Record<
-  string,
-  { visaFree: number; rank: number; indoRequirement: 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required' }
-> = {
-  SGP: { visaFree: 195, rank: 1, indoRequirement: 'Visa Free' },
-  JPN: { visaFree: 194, rank: 2, indoRequirement: 'Visa Free' },
-  DEU: { visaFree: 193, rank: 3, indoRequirement: 'Visa Required' },
-  FRA: { visaFree: 193, rank: 3, indoRequirement: 'Visa Required' },
-  ITA: { visaFree: 193, rank: 3, indoRequirement: 'Visa Required' },
-  ESP: { visaFree: 193, rank: 3, indoRequirement: 'Visa Required' },
-  KOR: { visaFree: 192, rank: 4, indoRequirement: 'Visa Free' },
-  GBR: { visaFree: 191, rank: 5, indoRequirement: 'Visa Required' },
-  USA: { visaFree: 188, rank: 8, indoRequirement: 'Visa Required' },
-  MYS: { visaFree: 183, rank: 12, indoRequirement: 'Visa Free' },
-  ARE: { visaFree: 182, rank: 13, indoRequirement: 'eVisa' },
-  BRN: { visaFree: 166, rank: 20, indoRequirement: 'Visa Free' },
-  THA: { visaFree: 82, rank: 64, indoRequirement: 'Visa Free' },
-  IDN: { visaFree: 78, rank: 68, indoRequirement: 'Visa Free' },
-  PHL: { visaFree: 69, rank: 75, indoRequirement: 'Visa Free' },
-  VNM: { visaFree: 55, rank: 88, indoRequirement: 'Visa Free' },
-  IND: { visaFree: 62, rank: 80, indoRequirement: 'Visa on Arrival' },
-  CHN: { visaFree: 85, rank: 60, indoRequirement: 'Visa Required' },
-  SAU: { visaFree: 88, rank: 58, indoRequirement: 'eVisa' },
-  TUR: { visaFree: 118, rank: 52, indoRequirement: 'Visa Free' },
-};
+export type PassportRequirementType = 'Visa Free' | 'Visa on Arrival' | 'eVisa' | 'Visa Required';
+
+export interface PassportScoreItem {
+  visaFree: number;
+  rank: number;
+  indoRequirement: PassportRequirementType;
+}
+
+export const PASSPORT_SCORES: Record<string, PassportScoreItem> = (
+  passportDataset.scores || passportDataset.PASSPORT_SCORES
+) as Record<string, PassportScoreItem>;
 
 export const passportWorldApp: GeoAppPlugin<PassportData> = {
   id: 'passport-power',
@@ -48,6 +36,7 @@ export const passportWorldApp: GeoAppPlugin<PassportData> = {
     main: 'Passport',
     sub: '.World',
     accentColor: '#8b5cf6',
+    disclaimer: 'Indeks kekuatan paspor & akses bebas visa 195+ negara · Data publik · Gratis',
   },
   splash: {
     stepText: 'Memuat Indeks Kekuatan Paspor & Bebas Visa...',

@@ -1,10 +1,16 @@
 <script lang="ts">
-  import { ShieldCheck, Globe, Sun, Moon, Sparkles, ChevronDown } from 'lucide-svelte';
+  import { ShieldCheck, Globe, Sun, Moon, Sparkles, ChevronDown, Info } from 'lucide-svelte';
   import { t, getLocale, setLocale, subscribeLocale, SUPPORTED_LOCALES, type SupportedLocale } from '$lib/i18n';
   import { getTheme, toggleTheme, subscribeTheme, type Theme } from '$lib/theme';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { resolveAppIdToPath } from '$lib/framework/geoglobe/router';
   import { onMount } from 'svelte';
+
+  interface Props {
+    onOpenAbout?: () => void;
+  }
+
+  let { onOpenAbout }: Props = $props();
 
   let currentLang = $state<SupportedLocale>(getLocale());
   let currentTheme = $state<Theme>(getTheme());
@@ -17,6 +23,11 @@
     }
     return { main: activeApp?.name || 'Kurs', sub: '.World' };
   });
+
+  /** Dynamic disclaimer strip — each plugin provides its own relevant text */
+  const disclaimerText = $derived(
+    activeApp?.branding?.disclaimer ?? t('navbar.disclaimerStrip')
+  );
 
   onMount(() => {
     const unsubLang = subscribeLocale((l) => {
@@ -46,7 +57,7 @@
   <div style="background:var(--bg-subtle);border-bottom:1px solid var(--bg-rule);padding:4px 16px;display:flex;align-items:center;justify-content:center;gap:6px;">
     <ShieldCheck style="width:11px;height:11px;color:var(--ink-4);flex-shrink:0;" />
     <span style="font-size:10px;color:var(--ink-4);letter-spacing:0.02em;">
-      {t('navbar.disclaimerStrip')}
+      {disclaimerText}
     </span>
   </div>
 
@@ -146,6 +157,21 @@
         <span class="live-dot"></span>
         <span>{t('common.liveSync')}</span>
       </div>
+
+      <!-- About Modal Trigger -->
+      {#if onOpenAbout}
+        <button
+          type="button"
+          onclick={onOpenAbout}
+          style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--ink-3);background:transparent;border:1px solid var(--bg-rule);border-radius:var(--radius);padding:5px 10px;cursor:pointer;transition:all 120ms;"
+          onmouseenter={(e) => { e.currentTarget.style.background = 'var(--bg-subtle)'; e.currentTarget.style.color = 'var(--ink)'; }}
+          onmouseleave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-3)'; }}
+          title="Tentang Buanasphere"
+        >
+          <Info style="width:13px;height:13px;" />
+          <span>About</span>
+        </button>
+      {/if}
 
       <!-- Public API link -->
       <a

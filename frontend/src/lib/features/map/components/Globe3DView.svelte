@@ -21,6 +21,12 @@
     type CountryIdMapping
   } from '../shader-lut/countryLutEngine';
   import { GLOBE_LUT_VERTEX_SHADER, GLOBE_LUT_FRAGMENT_SHADER } from '../shader-lut/globeShaders';
+  import {
+    calculateGreatCircleDistanceDeg,
+    getCountryFocusAltitude,
+    getCountryCoordinates,
+    getTravelTrajectory,
+  } from '../cameraTravel';
 
   interface Props {
     geoJsonFeatures: any[];
@@ -47,6 +53,7 @@
   let GlobeModule: any = null;
   let resizeObserver: ResizeObserver | null = null;
   let isInitialized = $state(false);
+  let travelTimeoutId: any = null;
 
   // Option C: Shader-LUT Engine State (ADR 0038)
   let lutSphereMesh: THREE.Mesh | null = null;
@@ -302,12 +309,15 @@
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !mapState.showLabels) return [];
     const isDark = currentTheme === 'dark';
     const selected = mapState.selectedCountryIso3;
-    const hovered = mapState.hoveredIso3;
+    // NOTE: mapState.hoveredIso3 is intentionally NOT read here.
+    // Reading it would make globeLabels recompute on every hover event,
+    // which causes updateVisuals() → .labelsData() reset → onLabelHover(null) → infinite loop.
+    // Label hover highlight (color/size) is applied imperatively in onLabelHover via Globe.gl closures.
 
-    // Filter features: major currencies OR actively hovered OR selected
+    // Filter features: major currencies OR selected (hover no longer expands the set)
     const visibleFeatures = geoJsonFeatures.filter((feat: any) => {
       const iso3 = getFeatureIso3(feat);
-      if (iso3 === selected || iso3 === hovered) return true;
+      if (iso3 === selected) return true;
       return MAJOR_LOD_CURRENCIES.has(iso3);
     });
 
@@ -320,7 +330,6 @@
       const lat = Number(p.LABEL_Y) || 0;
       const lng = Number(p.LABEL_X) || 0;
       const isSelected = selected === iso3;
-      const isHovered = hovered === iso3;
       const isMajor = MAJOR_LOD_CURRENCIES.has(iso3);
 
       const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3) || {
@@ -341,27 +350,30 @@
 
       const displayText = pinLabel?.text ?? `${rawName} (${curr || iso3})`;
       const shortText = pinLabel?.shortText ?? (curr || iso3);
-      const defaultSize = isSelected ? 0.65 : (isHovered ? 0.52 : (isMajor ? 0.36 : 0.28));
-      const defaultColor = isSelected 
-        ? '#38bdf8' 
-        : (isHovered 
-            ? '#34d399' 
-            : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)'));
+      // Hover size/color intentionally omitted — applied imperatively in onLabelHover
+      const defaultSize = isSelected ? 0.65 : (isMajor ? 0.36 : 0.28);
+      const defaultColor = isSelected
+        ? '#38bdf8'
+        : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)');
+
+      const finalLat = pinLabel?.lat ?? lat;
+      const finalLng = pinLabel?.lng ?? lng;
 
       return {
         iso3,
         country,
-        lat,
-        lng,
+        lat: finalLat,
+        lng: finalLng,
         text: displayText,
         shortText,
         size: pinLabel?.size ?? defaultSize,
-        color: (isSelected || isHovered) ? defaultColor : (pinLabel?.color ?? defaultColor),
+        color: isSelected ? defaultColor : (pinLabel?.color ?? defaultColor),
       };
     });
   });
 
   import { flowCorridorsApp } from '$lib/framework/geoglobe/plugins/flowCorridorsApp';
+
 
   // 3D Arcs for Flow Corridors filtered by active corridor region
   const remittanceArcs = $derived.by(() => {
@@ -404,6 +416,54 @@
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
     if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
+    }
+  }
+
+  // Interactive Travel & Auto Zoom-in Camera Animation (ADR 0049)
+  export function travelToCountry(
+    iso3: string,
+    options?: { duration?: number; altitude?: number }
+  ) {
+    if (!globeInstance || !iso3) return;
+    const targetCoords = getCountryCoordinates(iso3);
+    if (!targetCoords) return;
+
+    if (travelTimeoutId) {
+      clearTimeout(travelTimeoutId);
+      travelTimeoutId = null;
+    }
+
+    const curPov = globeInstance.pointOfView() || { lat: 0, lng: 0, altitude: 2.2 };
+    const targetAltitude = options?.altitude ?? getCountryFocusAltitude(iso3);
+
+    const trajectory = getTravelTrajectory(
+      { lat: curPov.lat ?? 0, lng: curPov.lng ?? 0, altitude: curPov.altitude ?? 2.2 },
+      targetCoords,
+      { targetAltitude }
+    );
+
+    if (!trajectory.isTwoStage) {
+      globeInstance.pointOfView(
+        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+        options?.duration ?? trajectory.stage1.durationMs
+      );
+    } else {
+      // Stage 1: Lift-off zoom-out arc & rotation
+      globeInstance.pointOfView(
+        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+        trajectory.stage1.durationMs
+      );
+
+      // Stage 2: Swoop down & zoom-in
+      travelTimeoutId = setTimeout(() => {
+        if (globeInstance) {
+          globeInstance.pointOfView(
+            { lat: trajectory.stage2.lat, lng: trajectory.stage2.lng, altitude: trajectory.stage2.altitude },
+            trajectory.stage2.durationMs
+          );
+        }
+        travelTimeoutId = null;
+      }, trajectory.stage1.durationMs - 20);
     }
   }
 
@@ -675,10 +735,16 @@
         const isTurboNow = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
         if (isTurboNow) return;
         if (!clickD) return;
-        const iso3 = getFeatureIso3(clickD);
-        const country = mapData.find(d => d.iso3 === iso3);
+        const featIso3 = getFeatureIso3(clickD);
+        if (featIso3) {
+          travelToCountry(featIso3);
+        }
+        const country = mapData.find(d => d.iso3 === featIso3);
         if (country) {
           onCountryClick?.(country);
+        } else if (featIso3) {
+          geoStore.selectCountry(featIso3);
+          mapState.selectCountry(featIso3);
         }
       });
 
@@ -697,8 +763,14 @@
         .labelAltitude(0.020)
         .labelResolution(2)
         .onLabelClick((d: any) => {
+          if (d?.iso3) {
+            travelToCountry(d.iso3);
+          }
           if (d.country) {
             onCountryClick?.(d.country);
+          } else if (d?.iso3) {
+            geoStore.selectCountry(d.iso3);
+            mapState.selectCountry(d.iso3);
           }
         })
         .onLabelHover((d: any) => {
@@ -707,7 +779,20 @@
           lastHoveredIso3 = iso3 ?? '';
           mapState.hoveredIso3 = iso3;
           onCountryHover?.(iso3);
-          updateVisuals();
+          // Update polygon visuals only (NOT labelsData — that would reset the dataset
+          // and trigger onLabelHover(null) again, causing an infinite fade-in/out loop)
+          if (globeInstance) {
+            requestAnimationFrame(() => {
+              if (globeInstance) {
+                globeInstance.polygonAltitude((feat: any) => {
+                  const featIso3 = getFeatureIso3(feat);
+                  if (mapState.selectedCountryIso3 === featIso3 || mapState.hoveredIso3 === featIso3) return 0.018;
+                  return 0.005;
+                });
+                globeInstance.polygonCapColor((feat: any) => getPolygonColor(feat));
+              }
+            });
+          }
         });
     }
 
@@ -843,7 +928,10 @@
     const _labels = mapState.showLabels;
     const _geoLabels = geoStore.showLabels;
     const _selected = mapState.selectedCountryIso3;
-    const _hovered = mapState.hoveredIso3;
+    // NOTE: mapState.hoveredIso3 is intentionally NOT tracked here.
+    // Tracking it caused an infinite loop: hover → updateVisuals() → labelsData reset
+    // → onLabelHover(null) → hoveredIso3=null → $effect re-runs → loop.
+    // Polygon altitude/color on hover is handled directly in onPolygonHover / onLabelHover.
     const _data = mapData;
     const _perfMap = mapState.performanceMode;
     const _perfGeo = geoStore.performanceMode;
@@ -902,6 +990,22 @@
     }
   });
 
+  // React to reactive country travel signals from geoStore or mapState (ADR 0049)
+  let lastTravelTimestamp = 0;
+  $effect(() => {
+    if (!isInitialized || !globeInstance) return;
+    const storeSignal = geoStore.cameraTravelSignal;
+    const mapSignal = mapState.cameraTravelSignal;
+    const latestSignal = (storeSignal?.timestamp ?? 0) >= (mapSignal?.timestamp ?? 0)
+      ? storeSignal
+      : mapSignal;
+
+    if (latestSignal && latestSignal.timestamp > lastTravelTimestamp) {
+      lastTravelTimestamp = latestSignal.timestamp;
+      travelToCountry(latestSignal.iso3);
+    }
+  });
+
   onMount(() => {
     initGlobe();
     if (typeof window !== 'undefined') {
@@ -910,6 +1014,10 @@
   });
 
   onDestroy(() => {
+    if (travelTimeoutId) {
+      clearTimeout(travelTimeoutId);
+      travelTimeoutId = null;
+    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('keydown', handleKeydown);
     }

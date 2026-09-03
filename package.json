@@ -1,8 +1,8 @@
 {
-  "name": "kurs-world",
+  "name": "buanasphere",
   "version": "1.0.0",
   "private": true,
-  "description": "Real-time multi-source currency exchange rate aggregator and public developer API",
+  "description": "Buanasphere — 3D Geospatial Intelligence & Multi-App Planetary Platform on Cloudflare Workers & Svelte 5",
   "type": "module",
   "packageManager": "bun@1.4.0",
   "engines": {
