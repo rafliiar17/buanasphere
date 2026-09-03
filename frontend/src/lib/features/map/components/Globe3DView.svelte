@@ -302,12 +302,15 @@
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !mapState.showLabels) return [];
     const isDark = currentTheme === 'dark';
     const selected = mapState.selectedCountryIso3;
-    const hovered = mapState.hoveredIso3;
+    // NOTE: mapState.hoveredIso3 is intentionally NOT read here.
+    // Reading it would make globeLabels recompute on every hover event,
+    // which causes updateVisuals() → .labelsData() reset → onLabelHover(null) → infinite loop.
+    // Label hover highlight (color/size) is applied imperatively in onLabelHover via Globe.gl closures.
 
-    // Filter features: major currencies OR actively hovered OR selected
+    // Filter features: major currencies OR selected (hover no longer expands the set)
     const visibleFeatures = geoJsonFeatures.filter((feat: any) => {
       const iso3 = getFeatureIso3(feat);
-      if (iso3 === selected || iso3 === hovered) return true;
+      if (iso3 === selected) return true;
       return MAJOR_LOD_CURRENCIES.has(iso3);
     });
 
@@ -320,7 +323,6 @@
       const lat = Number(p.LABEL_Y) || 0;
       const lng = Number(p.LABEL_X) || 0;
       const isSelected = selected === iso3;
-      const isHovered = hovered === iso3;
       const isMajor = MAJOR_LOD_CURRENCIES.has(iso3);
 
       const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3) || {
@@ -341,12 +343,11 @@
 
       const displayText = pinLabel?.text ?? `${rawName} (${curr || iso3})`;
       const shortText = pinLabel?.shortText ?? (curr || iso3);
-      const defaultSize = isSelected ? 0.65 : (isHovered ? 0.52 : (isMajor ? 0.36 : 0.28));
-      const defaultColor = isSelected 
-        ? '#38bdf8' 
-        : (isHovered 
-            ? '#34d399' 
-            : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)'));
+      // Hover size/color intentionally omitted — applied imperatively in onLabelHover
+      const defaultSize = isSelected ? 0.65 : (isMajor ? 0.36 : 0.28);
+      const defaultColor = isSelected
+        ? '#38bdf8'
+        : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)');
 
       const finalLat = pinLabel?.lat ?? lat;
       const finalLng = pinLabel?.lng ?? lng;
@@ -359,12 +360,13 @@
         text: displayText,
         shortText,
         size: pinLabel?.size ?? defaultSize,
-        color: (isSelected || isHovered) ? defaultColor : (pinLabel?.color ?? defaultColor),
+        color: isSelected ? defaultColor : (pinLabel?.color ?? defaultColor),
       };
     });
   });
 
   import { flowCorridorsApp } from '$lib/framework/geoglobe/plugins/flowCorridorsApp';
+
 
   // 3D Arcs for Flow Corridors filtered by active corridor region
   const remittanceArcs = $derived.by(() => {
