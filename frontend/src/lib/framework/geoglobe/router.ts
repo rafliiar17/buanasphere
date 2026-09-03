@@ -1,7 +1,7 @@
 /**
  * Kurs World / GeoGlobe — Path-Based Micro-App Router Constants & Resolution (ADR 0028, ADR 0034, ADR 0038).
  */
-import { geoRegistry } from './appRegistry';
+import { geoRegistry, type GeoAppRegistry } from './appRegistry';
 
 export const APP_PATH_MAP: Record<string, string> = {
   '/': 'fx-rates',
@@ -34,9 +34,9 @@ export const CANONICAL_APP_PATHS: Record<string, string> = {
 
 /**
  * Resolves a URL pathname to the corresponding micro-app ID.
- * Dynamically resolves from geoRegistry plugins, with fallback to APP_PATH_MAP.
+ * Dynamically resolves from GeoAppRegistry plugins, with fallback to APP_PATH_MAP.
  */
-export function resolvePathToAppId(pathname: string): string {
+export function resolvePathToAppId(pathname: string, registry?: GeoAppRegistry): string {
   if (!pathname || pathname === '') return 'fx-rates';
 
   // Normalize path (strip trailing slash)
@@ -44,8 +44,10 @@ export function resolvePathToAppId(pathname: string): string {
     ? pathname.slice(0, -1)
     : pathname;
 
-  // Dynamic resolution from registered plugins (ADR 0038)
-  for (const app of geoRegistry.getAllApps()) {
+  const reg = registry ?? geoRegistry;
+
+  // Dynamic resolution from registered plugins (ADR 0038, ADR 0040)
+  for (const app of reg.getAllApps()) {
     if (app.canonicalPath === normalized || app.aliasPaths?.includes(normalized)) {
       return app.id;
     }
@@ -57,8 +59,9 @@ export function resolvePathToAppId(pathname: string): string {
 /**
  * Resolves a micro-app ID to its canonical URL pathname.
  */
-export function resolveAppIdToPath(appId: string): string {
-  const app = geoRegistry.getApp(appId);
+export function resolveAppIdToPath(appId: string, registry?: GeoAppRegistry): string {
+  const reg = registry ?? geoRegistry;
+  const app = reg.getApp(appId);
   if (app?.canonicalPath) {
     return app.canonicalPath;
   }

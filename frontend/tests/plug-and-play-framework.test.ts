@@ -153,4 +153,51 @@ describe('True Plug-and-Play GeoGlobe Framework Suite (ADR 0040 / TDD)', () => {
       expect(nonArcPlugin.getArcs).toBeUndefined();
     });
   });
+
+  describe('5. Polymorphic UI Architecture & Controls Component (ADR 0040)', () => {
+    it('supports custom ControlsComponent and BottomDockComponent declaration', () => {
+      const customUiPlugin: GeoAppPlugin = {
+        id: 'custom-ui-app',
+        name: 'Custom UI App',
+        tagline: 'Has dedicated controls and bottom dock',
+        category: 'custom',
+        defaultMetricId: 'demo',
+        metrics: [],
+        dataLoader: async () => ({}),
+        branding: { main: 'Custom', sub: '.UI' },
+        splash: { stepText: 'Loading custom UI app...' },
+        cameraPresets: {
+          all: { lat: 0, lng: 0, altitude: 2.0 },
+          asean: { lat: 4, lng: 108, altitude: 1.5 },
+        },
+        ControlsComponent: { name: 'DummyControls' },
+        BottomDockComponent: { name: 'DummyDock' },
+      };
+
+      expect(customUiPlugin.ControlsComponent).toBeDefined();
+      expect(customUiPlugin.BottomDockComponent).toBeDefined();
+      expect(customUiPlugin.branding?.main).toBe('Custom');
+      expect(customUiPlugin.branding?.sub).toBe('.UI');
+      expect(customUiPlugin.cameraPresets?.asean.lat).toBe(4);
+    });
+
+    it('falls back to default branding when branding property is omitted', () => {
+      const unbrandedPlugin: GeoAppPlugin = {
+        id: 'unbranded-app',
+        name: 'Standard App',
+        tagline: 'Standard test',
+        category: 'test',
+        defaultMetricId: 'm',
+        metrics: [],
+        dataLoader: async () => ({}),
+      };
+
+      const resolvedBranding = unbrandedPlugin.branding ?? {
+        main: unbrandedPlugin.name || 'Kurs',
+        sub: '.World',
+      };
+      expect(resolvedBranding.main).toBe('Standard App');
+      expect(resolvedBranding.sub).toBe('.World');
+    });
+  });
 });

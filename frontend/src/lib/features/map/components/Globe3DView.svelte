@@ -384,10 +384,11 @@
 
   // 3D Arcs for Flow Corridors filtered by active corridor region
   const remittanceArcs = $derived.by(() => {
-    if (geoStore.activeAppId !== 'remittance-flow') return [];
+    if (!geoStore.activeApp?.getArcs && !geoStore.activeApp?.getArcData) return [];
     const indonesia = EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN');
     if (!indonesia) return [];
-    const allArcs = flowCorridorsApp.getArcData ? flowCorridorsApp.getArcData(indonesia as any, {} as any) : [];
+    const app = geoStore.activeApp ?? flowCorridorsApp;
+    const allArcs = app.getArcData ? app.getArcData(indonesia as any, (geoStore.currentAppData ?? {}) as any) : (app.getArcs ? app.getArcs((geoStore.currentAppData ?? {}) as any, geoStore.flightCorridorFilter) : []);
     if (geoStore.flightCorridorFilter === 'all') return allArcs;
 
     return allArcs.filter(arc => {
@@ -417,7 +418,7 @@
   function updateVisuals() {
     if (!globeInstance) return;
     const isDark = currentTheme === 'dark';
-    const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
+    const isFlag = mapState.activeMetric === 'flag';
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
 
     applyOptimalDpr();
@@ -559,7 +560,7 @@
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     const width = globeContainer.clientWidth || window.innerWidth;
     const height = globeContainer.clientHeight || window.innerHeight;
-    const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
+    const isFlag = mapState.activeMetric === 'flag';
 
     globeInstance = GlobeModule()(globeContainer)
       .width(width)
@@ -788,7 +789,7 @@
     if (!presets) return;
 
     const filterKey = (
-      (geoStore.activeAppId === 'remittance-flow' || geoStore.activeAppId === 'flow-corridors')
+      (geoStore.activeApp?.getArcs || geoStore.activeApp?.getArcData)
         ? geoStore.flightCorridorFilter
         : (geoStore.timeFilter !== 'all' ? geoStore.timeFilter :
            geoStore.passportVisaFilter !== 'all' ? geoStore.passportVisaFilter :

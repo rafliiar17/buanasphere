@@ -4,7 +4,7 @@ import {
   MEGADIVERSE_ISO3_LIST, 
   getFloraFaunaDataForCountry 
 } from './data/floraFaunaData';
-import { geoRegistry } from './appRegistry';
+import { geoRegistry, type GeoAppRegistry } from './appRegistry';
 
 export type TimeFilterType = 'all' | 'working' | 'daylight' | 'night' | 'golden_hour';
 export type FlightCorridorFilterType = 'all' | 'mideast' | 'asean' | 'eastasia' | 'west';
@@ -161,15 +161,37 @@ export function isCountryMatchingAppFilter(
     customFilter?: unknown;
     appData?: Record<string, any>;
     region?: string;
-  } = {}
+  } = {},
+  registry?: GeoAppRegistry
 ): boolean {
-  const plugin = geoRegistry.getApp(appId);
-  if (plugin?.filterPredicate && filters.customFilter !== undefined) {
-    const data = filters.appData?.[iso3] ?? geoRegistry.getAppData(appId)?.[iso3];
-    const spatial = EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === iso3);
-    return plugin.filterPredicate(iso3, filters.customFilter, data, spatial);
+  const reg = registry ?? geoRegistry;
+  const plugin = reg.getApp(appId);
+
+  // Dynamic delegation to plugin.filterPredicate (ADR 0040)
+  if (plugin?.filterPredicate) {
+    let activeFilterValue = filters.customFilter;
+    if (activeFilterValue === undefined) {
+      if (appId === 'world-time' && filters.timeFilter !== undefined) {
+        activeFilterValue = filters.timeFilter;
+      } else if (appId === 'remittance-flow' && filters.flightFilter !== undefined) {
+        activeFilterValue = filters.flightFilter;
+      } else if (appId === 'passport-power' && filters.passportFilter !== undefined) {
+        activeFilterValue = filters.passportFilter;
+      } else if (appId === 'flora-fauna' && filters.natureFilter !== undefined) {
+        activeFilterValue = filters.natureFilter;
+      } else if (filters.region !== undefined) {
+        activeFilterValue = filters.region;
+      }
+    }
+
+    if (activeFilterValue !== undefined) {
+      const data = filters.appData?.[iso3] ?? reg.getAppData(appId)?.[iso3];
+      const spatial = EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === iso3);
+      return plugin.filterPredicate(iso3, activeFilterValue, data, spatial);
+    }
   }
 
+  // Backwards compatibility fallback for legacy calls / built-ins without filterPredicate
   if (appId === 'world-time') {
     return isCountryMatchingTimeFilter(iso3, filters.timeFilter || 'all');
   }

@@ -55,6 +55,7 @@ export function createGeoStore() {
   let flightCorridorFilter = $state<FlightCorridorFilterType>('all');
   let passportVisaFilter = $state<PassportVisaFilterType>('all');
   let natureFilter = $state<NatureFilterType>('all');
+  let customFilter = $state<unknown>('all');
 
   // Performance Profile (ADR 0035 - Laptop GPU & WebGL Optimization)
   let performanceMode = $state<'turbo' | 'quality'>('turbo');
@@ -100,6 +101,7 @@ export function createGeoStore() {
     if (!app) return;
     activeAppId = appId;
     activeMetricId = app.defaultMetricId;
+    customFilter = 'all';
     loadDataForApp(app);
     isLauncherOpen = false;
 
@@ -170,12 +172,21 @@ export function createGeoStore() {
     natureFilter = filter;
   }
 
+  function setCustomFilter(filter: unknown) {
+    customFilter = filter;
+    if (activeAppId === 'world-time') timeFilter = filter as TimeFilterType;
+    if (activeAppId === 'remittance-flow') flightCorridorFilter = filter as FlightCorridorFilterType;
+    if (activeAppId === 'passport-power') passportVisaFilter = filter as PassportVisaFilterType;
+    if (activeAppId === 'flora-fauna') natureFilter = filter as NatureFilterType;
+  }
+
   function isCountryMatched(iso3: string): boolean {
     return isCountryMatchingAppFilter(iso3, activeAppId, {
       timeFilter,
       flightFilter: flightCorridorFilter,
       passportFilter: passportVisaFilter,
       natureFilter,
+      customFilter,
       region: activeRegion,
     });
   }
@@ -207,6 +218,8 @@ export function createGeoStore() {
     set passportVisaFilter(val) { passportVisaFilter = val; },
     get natureFilter() { return natureFilter; },
     set natureFilter(val) { natureFilter = val; },
+    get customFilter() { return customFilter; },
+    set customFilter(val) { customFilter = val; },
     get performanceMode() { return performanceMode; },
     set performanceMode(val) { performanceMode = val; },
     get currentAppData() { return appDataCache[activeAppId] ?? {}; },
@@ -226,6 +239,7 @@ export function createGeoStore() {
     setFlightCorridorFilter,
     setPassportVisaFilter,
     setNatureFilter,
+    setCustomFilter,
     setPerformanceMode: (mode: 'turbo' | 'quality') => { performanceMode = mode; },
     togglePerformanceMode: () => { performanceMode = performanceMode === 'turbo' ? 'quality' : 'turbo'; },
     isCountryMatched,

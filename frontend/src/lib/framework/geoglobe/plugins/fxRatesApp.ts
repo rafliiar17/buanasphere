@@ -18,6 +18,31 @@ export const fxRatesApp: GeoAppPlugin<FxRateData> = {
   icon: 'Coins',
   category: 'finance',
   defaultMetricId: 'rate',
+  canonicalPath: '/kurs',
+  aliasPaths: ['/'],
+  branding: {
+    main: 'Kurs',
+    sub: '.World',
+    accentColor: '#10b981',
+  },
+  splash: {
+    stepText: 'Memuat Nilai Tukar 195+ Valuta Asing Dunia...',
+    gradientFrom: 'from-emerald-500',
+    gradientTo: 'to-teal-500',
+  },
+  filterOptions: [
+    { id: 'all', label: 'Semua Kawasan' },
+    { id: 'asia', label: 'Asia' },
+    { id: 'europe', label: 'Eropa' },
+    { id: 'americas', label: 'Amerika' },
+    { id: 'africa', label: 'Afrika' },
+    { id: 'oceania', label: 'Oseania' },
+  ],
+  filterPredicate: (iso3: string, filterValue: unknown, _data?: FxRateData, country?: CountrySpatialMetadata) => {
+    if (!filterValue || filterValue === 'all') return true;
+    const val = String(filterValue).toLowerCase();
+    return country?.region.toLowerCase() === val || country?.continent.toLowerCase() === val;
+  },
   metrics: [
     {
       id: 'rate',

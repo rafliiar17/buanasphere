@@ -20,10 +20,7 @@
   import GlobeEntranceLoader from './components/GlobeEntranceLoader.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import KursControls from '$lib/apps/kurs/KursControls.svelte';
-  import TimeControls from '$lib/apps/time/TimeControls.svelte';
-  import FlightControls from '$lib/apps/flight/FlightControls.svelte';
-  import PassportControls from '$lib/apps/passport/PassportControls.svelte';
-  import FloraControls from '$lib/apps/flora/FloraControls.svelte';
+  import UniversalAppControls from '../../framework/geoglobe/ui/UniversalAppControls.svelte';
   import UniversalCountryInspector from '$lib/framework/geoglobe/ui/UniversalCountryInspector.svelte';
 
   interface Props {
@@ -246,10 +243,11 @@
         </div>
       </div>
 
-      <!-- Top-Right Floating Controls Card (Isolated per Micro-App) -->
-      {#if geoStore.activeAppId === 'world-time'}
-        <TimeControls
-          onSelectCountry={(iso3) => {
+      <!-- Top-Right Floating Controls Card (Polymorphic per Micro-App - ADR 0040) -->
+      {#if geoStore.activeApp?.ControlsComponent}
+        {@const CustomControls = geoStore.activeApp.ControlsComponent}
+        <CustomControls
+          onSelectCountry={(iso3: string) => {
             const country = mapData.find(d => d.iso3 === iso3);
             if (country) handleCountryClick(country);
           }}
@@ -258,40 +256,7 @@
             mapState.setSearchQuery('');
           }}
         />
-      {:else if geoStore.activeAppId === 'remittance-flow'}
-        <FlightControls
-          onSelectCountry={(iso3) => {
-            const country = mapData.find(d => d.iso3 === iso3);
-            if (country) handleCountryClick(country);
-          }}
-          onResetView={() => {
-            mapState.setRegion('all');
-            mapState.setSearchQuery('');
-          }}
-        />
-      {:else if geoStore.activeAppId === 'passport-power'}
-        <PassportControls
-          onSelectCountry={(iso3) => {
-            const country = mapData.find(d => d.iso3 === iso3);
-            if (country) handleCountryClick(country);
-          }}
-          onResetView={() => {
-            mapState.setRegion('all');
-            mapState.setSearchQuery('');
-          }}
-        />
-      {:else if geoStore.activeAppId === 'flora-fauna'}
-        <FloraControls
-          onSelectCountry={(iso3) => {
-            const country = mapData.find(d => d.iso3 === iso3);
-            if (country) handleCountryClick(country);
-          }}
-          onResetView={() => {
-            mapState.setRegion('all');
-            mapState.setSearchQuery('');
-          }}
-        />
-      {:else}
+      {:else if geoStore.activeAppId === 'fx-rates'}
         <KursControls
           {mapState}
           {mapData}
@@ -307,6 +272,18 @@
           onSelectRegion={(r) => mapState.setRegion(r)}
           onToggleLabels={() => mapState.toggleLabels()}
           onOpenInspector={() => mapState.openInspector()}
+        />
+      {:else}
+        <UniversalAppControls
+          {mapState}
+          onSelectCountry={(iso3: string) => {
+            const country = mapData.find(d => d.iso3 === iso3);
+            if (country) handleCountryClick(country);
+          }}
+          onResetView={() => {
+            mapState.setRegion('all');
+            mapState.setSearchQuery('');
+          }}
         />
       {/if}
     </div>
