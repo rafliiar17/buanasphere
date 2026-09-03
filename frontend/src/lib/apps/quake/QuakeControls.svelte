@@ -62,8 +62,10 @@
   }
 </script>
 
-<div class="w-72 sm:w-80 p-4 rounded-3xl bg-slate-900/90 border border-slate-700/70 shadow-2xl backdrop-blur-2xl text-slate-100 flex flex-col gap-4 select-none">
-  <!-- Header -->
+<!-- Floating Top-Right Controls Card -->
+<div class="absolute top-4 right-4 z-20 w-80 sm:w-88 flex flex-col gap-3 pointer-events-auto select-none">
+  <div class="rounded-3xl border border-slate-700/80 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-xl text-slate-100 flex flex-col gap-3.5 transition-all duration-200">
+    <!-- Header -->
   <div class="flex items-center justify-between border-b border-slate-800 pb-3">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
@@ -266,4 +268,5 @@
       <span>Detail Lempeng</span>
     </button>
   </div>
+</div>
 </div>
