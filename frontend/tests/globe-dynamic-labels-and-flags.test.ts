@@ -65,7 +65,7 @@ describe('Dynamic High-Contrast Country Labels & Capitals Flag Mode (ADR 0050 / 
         capitalCoordinates: { lat: 38.9072, lng: -77.0369 },
       };
 
-      const pinLabel = worldCapitalsApp.getPinLabel(mockCountry, mockData as any, 'era');
+      const pinLabel = worldCapitalsApp.getPinLabel!(mockCountry, mockData as any, 'era');
       expect(pinLabel.text).toContain('🇺🇸');
       expect(pinLabel.text).toContain('Washington, D.C.');
       expect(pinLabel.text).toContain('Amerika Serikat');
@@ -101,7 +101,7 @@ describe('Dynamic High-Contrast Country Labels & Capitals Flag Mode (ADR 0050 / 
         utcOffset: -5,
         continent: 'North America',
       };
-      const color = worldCapitalsApp.getPolygonColor(mockCountry, {} as any, 'flag', 'dark', { isSelected: true });
+      const color = worldCapitalsApp.getPolygonColor!(mockCountry, {} as any, 'flag', 'dark', { isSelected: true });
       // In flag mode, selected country should not turn flat #38bdf8, but preserve authentic flag color
       expect(color).not.toBe('#38bdf8');
     });
