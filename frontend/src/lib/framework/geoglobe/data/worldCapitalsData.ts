@@ -3,6 +3,13 @@
  * Comprehensive geopolitical and historic dataset for 195+ sovereign countries.
  */
 import { EXTENDED_COUNTRIES_DATA } from '../countrySpatialData';
+import { 
+  type NationalAnthem, 
+  CAPITAL_COORDINATES_MAP, 
+  NATIONAL_ANTHEMS_MAP 
+} from './worldCapitalsDetail';
+
+export type { NationalAnthem };
 
 export type HistoricalEra = 
   | 'ancient'              // Kuno / Sebelum 1800 (Kerajaan kuno, tanpa penjajahan modern)
@@ -23,6 +30,7 @@ export interface WorldCapitalData {
   countryName: string;
   capital: string;
   capitalType: CapitalType;
+  capitalCoordinates?: { lat: number; lng: number };
   foundationDate: string;           // Tanggal resmi berdiri / terbentuknya entitas negara
   independenceDay: string;          // Hari Kemerdekaan resmi / Hari Nasional
   independenceYear: number;         // Tahun kemerdekaan (atau tahun berdirinya monarki/negara)
@@ -30,6 +38,7 @@ export interface WorldCapitalData {
   sovereigntyFrom: string;          // Pihak asal kedaulatan diperoleh / Penjajah sebelumnya
   historicalEra: HistoricalEra;
   eraLabel: string;
+  nationalAnthem?: NationalAnthem;
   trivia: string;
 }
 
@@ -1744,20 +1753,31 @@ export const WORLD_CAPITALS_DATASET: Record<string, WorldCapitalData> = {
  * Falls back gracefully to spatial data if a specific historic entry is pending.
  */
 export function getCapitalDataForCountry(iso3: string): WorldCapitalData {
-  const custom = WORLD_CAPITALS_DATASET[iso3.toUpperCase()];
-  if (custom) return custom;
+  const code = iso3.toUpperCase();
+  const custom = WORLD_CAPITALS_DATASET[code];
+  const coords = CAPITAL_COORDINATES_MAP[code];
+  const anthem = NATIONAL_ANTHEMS_MAP[code];
 
-  const spatial = EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === iso3.toUpperCase());
+  if (custom) {
+    return {
+      ...custom,
+      capitalCoordinates: custom.capitalCoordinates ?? coords,
+      nationalAnthem: custom.nationalAnthem ?? anthem,
+    };
+  }
+
+  const spatial = EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === code);
   const cap = spatial?.capital || 'Ibukota Tidak Diketahui';
-  const name = spatial?.countryName || iso3;
+  const name = spatial?.countryName || code;
   const continent = spatial?.continent || 'Dunia';
 
   // Default fallback entry for any unlisted small island or territory
   return {
-    iso3: iso3.toUpperCase(),
+    iso3: code,
     countryName: name,
     capital: cap,
     capitalType: 'Administrative',
+    capitalCoordinates: coords ?? (spatial ? { lat: spatial.lat, lng: spatial.lng } : undefined),
     foundationDate: 'Abad ke-20 Masehi',
     independenceDay: 'Hari Nasional Resmi',
     independenceYear: 1960,
@@ -1765,6 +1785,7 @@ export function getCapitalDataForCountry(iso3: string): WorldCapitalData {
     sovereigntyFrom: 'Kedaulatan Nasional Yang Diakui PBB',
     historicalEra: 'decolonization',
     eraLabel: 'Dekolonisasi & Kedaulatan Modern',
+    nationalAnthem: anthem,
     trivia: `${cap} adalah pusat pemerintahan dan ibukota resmi dari negara ${name} di kawasan ${continent}.`,
   };
 }

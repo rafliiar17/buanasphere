@@ -348,11 +348,14 @@
             ? '#34d399' 
             : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)'));
 
+      const finalLat = pinLabel?.lat ?? lat;
+      const finalLng = pinLabel?.lng ?? lng;
+
       return {
         iso3,
         country,
-        lat,
-        lng,
+        lat: finalLat,
+        lng: finalLng,
         text: displayText,
         shortText,
         size: pinLabel?.size ?? defaultSize,
