@@ -6,6 +6,7 @@ import { worldTimeApp } from './plugins/worldTimeApp';
 import { flowCorridorsApp } from './plugins/flowCorridorsApp';
 import { passportWorldApp } from './plugins/passportWorldApp';
 import { floraFaunaApp } from './plugins/floraFaunaApp';
+import { worldCapitalsApp } from './plugins/worldCapitalsApp';
 import { resolvePathToAppId, resolveAppIdToPath } from './router';
 import {
   type TimeFilterType,
@@ -31,6 +32,7 @@ geoRegistry.register(worldTimeApp);
 geoRegistry.register(flowCorridorsApp);
 geoRegistry.register(passportWorldApp);
 geoRegistry.register(floraFaunaApp);
+geoRegistry.register(worldCapitalsApp);
 
 export function createGeoStore() {
   const initialAppId = typeof window !== 'undefined'

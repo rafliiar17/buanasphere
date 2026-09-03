@@ -207,4 +207,14 @@ export const EXTENDED_COUNTRIES_DATA: readonly CountrySpatialMetadata[] = [
   { iso3: 'MHL', countryName: 'Kepulauan Marshall', currencyCode: 'USD', currencyName: 'US Dollar', flagEmoji: '🇲🇭', region: 'Oceania', capital: 'Majuro', lat: 7.1315, lng: 171.1845, utcOffset: 12, continent: 'Oceania', population: 42000 },
   { iso3: 'NRU', countryName: 'Nauru', currencyCode: 'AUD', currencyName: 'Australian Dollar', flagEmoji: '🇳🇷', region: 'Oceania', capital: 'Yaren', lat: -0.5228, lng: 166.9315, utcOffset: 12, continent: 'Oceania', population: 12000 },
   { iso3: 'TUV', countryName: 'Tuvalu', currencyCode: 'AUD', currencyName: 'Australian Dollar', flagEmoji: '🇹🇻', region: 'Oceania', capital: 'Funafuti', lat: -7.1095, lng: 177.6493, utcOffset: 12, continent: 'Oceania', population: 11000 },
+
+  // ADDITIONAL SOVEREIGN NATIONS (EUROPE & MIDDLE EAST)
+  { iso3: 'VAT', countryName: 'Vatikan', currencyCode: 'EUR', currencyName: 'Euro', flagEmoji: '🇻🇦', region: 'Europe', capital: 'Vatican City', lat: 41.9029, lng: 12.4534, utcOffset: 1, continent: 'Europe', population: 800 },
+  { iso3: 'MCO', countryName: 'Monako', currencyCode: 'EUR', currencyName: 'Euro', flagEmoji: '🇲🇨', region: 'Europe', capital: 'Monaco', lat: 43.7384, lng: 7.4246, utcOffset: 1, continent: 'Europe', population: 39000 },
+  { iso3: 'SMR', countryName: 'San Marino', currencyCode: 'EUR', currencyName: 'Euro', flagEmoji: '🇸🇲', region: 'Europe', capital: 'San Marino', lat: 43.9424, lng: 12.4578, utcOffset: 1, continent: 'Europe', population: 34000 },
+  { iso3: 'LIE', countryName: 'Liechtenstein', currencyCode: 'CHF', currencyName: 'Swiss Franc', flagEmoji: '🇱🇮', region: 'Europe', capital: 'Vaduz', lat: 47.141, lng: 9.5209, utcOffset: 1, continent: 'Europe', population: 39000 },
+  { iso3: 'AND', countryName: 'Andorra', currencyCode: 'EUR', currencyName: 'Euro', flagEmoji: '🇦🇩', region: 'Europe', capital: 'Andorra la Vella', lat: 42.5063, lng: 1.5218, utcOffset: 1, continent: 'Europe', population: 79000 },
+  { iso3: 'SYR', countryName: 'Suriah', currencyCode: 'SYP', currencyName: 'Syrian Pound', flagEmoji: '🇸🇾', region: 'Middle East', capital: 'Damaskus', lat: 34.8021, lng: 38.9968, utcOffset: 3, continent: 'Asia', population: 22000000 },
+  { iso3: 'PSE', countryName: 'Palestina', currencyCode: 'ILS', currencyName: 'Israeli Shekel', flagEmoji: '🇵🇸', region: 'Middle East', capital: 'Ramallah', lat: 31.9522, lng: 35.2332, utcOffset: 3, continent: 'Asia', population: 5300000 },
+  { iso3: 'XKX', countryName: 'Kosovo', currencyCode: 'EUR', currencyName: 'Euro', flagEmoji: '🇽🇰', region: 'Europe', capital: 'Pristina', lat: 42.6026, lng: 20.903, utcOffset: 1, continent: 'Europe', population: 1800000 },
 ];

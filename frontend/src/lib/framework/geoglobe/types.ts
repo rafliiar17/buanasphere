@@ -74,11 +74,15 @@ export interface GeoAppPlugin<TData = any> {
   icon: string;
   category: string;
   defaultMetricId: string;
+  canonicalPath?: string;
+  aliasPaths?: string[];
+  cameraPresets?: Record<string, { lat: number; lng: number; altitude: number }>;
+  filterPredicate?: (iso3: string, filterValue: unknown, data?: TData, country?: CountrySpatialMetadata) => boolean;
   metrics: GeoMetric[];
   dataLoader: (countries: CountrySpatialMetadata[]) => Promise<Record<string, TData>>;
   getArcData?: (selectedCountry: CountrySpatialMetadata, allData: Record<string, TData>) => GeoArc[];
   getRingData?: (selectedCountry: CountrySpatialMetadata, allData: Record<string, TData>) => GeoRing[];
-  getPolygonColor?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
+  getPolygonColor?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light', state?: { isMatched?: boolean; isSelected?: boolean; isHovered?: boolean }) => string;
   getTooltipHtml?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
   getPinLabel?: (country: CountrySpatialMetadata, data: TData, activeMetric: string) => { text: string; shortText?: string; size?: number; color?: string };
   getArcs?: (data: Record<string, TData>, activeFilter: string) => GeoArc[];
