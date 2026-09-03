@@ -42,5 +42,10 @@ describe('Floating Map Zoom In and Zoom Out Navigation Controls (ADR 0043 / TDD)
     it('has proper keyboard accessibility or shortcut listeners for zoom', () => {
       expect(content).toContain('handleKeydown');
     });
+
+    it('is positioned with proper vertical clearance above the bottom dock (not colliding at bottom-8)', () => {
+      expect(content).not.toContain('bottom-8 right-6 z-30');
+      expect(content).toMatch(/bottom-2[4-8]|bottom-\[.*\]/);
+    });
   });
 });

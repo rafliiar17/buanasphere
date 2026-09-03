@@ -1033,7 +1033,7 @@
 
   <!-- Floating 3D Navigation Controls (Zoom In, Zoom Out, Reset View - ADR 0043) -->
   <div
-    class="absolute bottom-8 right-6 z-30 flex flex-col gap-1 rounded-2xl border border-slate-700/80 bg-slate-900/85 p-1.5 shadow-2xl backdrop-blur-xl"
+    class="absolute bottom-24 sm:bottom-28 right-4 sm:right-6 z-30 flex flex-col gap-1 rounded-2xl border border-slate-700/80 bg-slate-950/90 p-1.5 shadow-2xl backdrop-blur-xl"
     role="toolbar"
     aria-label="Kontrol Navigasi Peta"
   >
