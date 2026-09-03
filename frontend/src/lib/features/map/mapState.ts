@@ -13,6 +13,7 @@ import {
   PRESET_AMOUNTS,
 } from './map-constants';
 import type { RateItem } from '../../api/types';
+import type { TimezoneMeridianInfo } from '../../framework/geoglobe/types';
 
 export interface MetricOption {
   id: MetricType;
@@ -67,6 +68,8 @@ export class MapState {
   isRegionDropdownOpen: boolean = false;
   highlightedIndex: number = 0;
   performanceMode: 'turbo' | 'quality' = 'quality';
+  showTimezoneLines: boolean = true;
+  selectedMeridian: TimezoneMeridianInfo | null = null;
 
   constructor(initial?: Partial<MapStateConfig & { performanceMode?: 'turbo' | 'quality' }>) {
     if (initial) {
@@ -155,6 +158,14 @@ export class MapState {
 
   toggleLabels = () => {
     this.showLabels = !this.showLabels;
+  };
+
+  toggleTimezoneLines = () => {
+    this.showTimezoneLines = !this.showTimezoneLines;
+  };
+
+  setSelectedMeridian = (meridian: TimezoneMeridianInfo | null) => {
+    this.selectedMeridian = meridian;
   };
 
   setShowLabels = (show: boolean) => {
