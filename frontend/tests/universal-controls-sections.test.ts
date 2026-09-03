@@ -69,11 +69,13 @@ describe('Global vs Per-App Controls Hierarchy Suite (ADR 0051 / TDD)', () => {
     const content = fs.readFileSync(globePath, 'utf-8');
 
     it('connects mapState.autoRotate to globeInstance.controls().autoRotate', () => {
-      expect(content).toMatch(/controls\(\)\.autoRotate\s*=/);
+      // Controls can be stored as const controls = globeInstance.controls() then controls.autoRotate =
+      // OR called inline as globeInstance.controls().autoRotate =
+      expect(content).toMatch(/controls(?:\(\))?\.autoRotate\s*=/);
     });
 
     it('configures smooth auto-rotation speed on OrbitControls', () => {
-      expect(content).toMatch(/controls\(\)\.autoRotateSpeed\s*=/);
+      expect(content).toMatch(/controls(?:\(\))?\.autoRotateSpeed\s*=/);
     });
   });
 });
