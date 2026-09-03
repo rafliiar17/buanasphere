@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Loader2, X } from 'lucide-svelte';
+  import { Loader2, X, Plus, Minus, RotateCcw } from 'lucide-svelte';
   import type { MapStateStore } from '../mapState.svelte';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
@@ -413,6 +413,43 @@
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
     if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
+    }
+  }
+
+  // Camera Zoom & Navigation Functions (ADR 0043)
+  export function zoomIn(factor: number = 0.7, durationMs: number = 300) {
+    if (!globeInstance) return;
+    const pov = globeInstance.pointOfView();
+    const currentAlt = pov.altitude || 2.2;
+    const nextAlt = Math.max(0.15, currentAlt * factor);
+    globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+  }
+
+  export function zoomOut(factor: number = 1.4, durationMs: number = 300) {
+    if (!globeInstance) return;
+    const pov = globeInstance.pointOfView();
+    const currentAlt = pov.altitude || 2.2;
+    const nextAlt = Math.min(6.0, currentAlt * factor);
+    globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+  }
+
+  export function resetView(durationMs: number = 600) {
+    if (!globeInstance) return;
+    globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, durationMs);
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (typeof window === 'undefined') return;
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      zoomIn();
+    } else if (e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      zoomOut();
+    } else if (e.key === '0') {
+      e.preventDefault();
+      resetView();
     }
   }
 
@@ -857,9 +894,15 @@
 
   onMount(() => {
     initGlobe();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', handleKeydown);
+    }
   });
 
   onDestroy(() => {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('keydown', handleKeydown);
+    }
     if (resizeObserver) {
       resizeObserver.disconnect();
       resizeObserver = null;
@@ -987,4 +1030,43 @@
       <span>{transitionLabel}</span>
     </div>
   {/if}
+
+  <!-- Floating 3D Navigation Controls (Zoom In, Zoom Out, Reset View - ADR 0043) -->
+  <div
+    class="absolute bottom-8 right-6 z-30 flex flex-col gap-1 rounded-2xl border border-slate-700/80 bg-slate-900/85 p-1.5 shadow-2xl backdrop-blur-xl"
+    role="toolbar"
+    aria-label="Kontrol Navigasi Peta"
+  >
+    <button
+      type="button"
+      onclick={() => zoomIn()}
+      class="flex h-8 w-8 items-center justify-center rounded-xl text-slate-300 transition hover:bg-sky-500/20 hover:text-sky-300 active:scale-95 cursor-pointer"
+      title="Perbesar Tampilan (Zoom In) [+]"
+      aria-label="Perbesar Tampilan (Zoom In)"
+    >
+      <Plus class="w-4 h-4" />
+    </button>
+
+    <button
+      type="button"
+      onclick={() => zoomOut()}
+      class="flex h-8 w-8 items-center justify-center rounded-xl text-slate-300 transition hover:bg-sky-500/20 hover:text-sky-300 active:scale-95 cursor-pointer"
+      title="Perkecil Tampilan (Zoom Out) [-]"
+      aria-label="Perkecil Tampilan (Zoom Out)"
+    >
+      <Minus class="w-4 h-4" />
+    </button>
+
+    <div class="my-0.5 h-px w-full bg-slate-800"></div>
+
+    <button
+      type="button"
+      onclick={() => resetView()}
+      class="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-800 hover:text-white active:scale-95 cursor-pointer"
+      title="Reset Sudut Pandang [0]"
+      aria-label="Reset Sudut Pandang"
+    >
+      <RotateCcw class="w-3.5 h-3.5" />
+    </button>
+  </div>
 </div>
