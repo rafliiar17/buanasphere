@@ -13,10 +13,10 @@ async function sha256Hex(str: string): Promise<string> {
   return hashArr.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-export function nimdaRoutes(env?: Env) {
+function buildNimdaApp(prefix: string, env?: Env) {
   const aggregator = new AggregatorService({ env });
 
-  return new Elysia({ prefix: '/nimda' })
+  return new Elysia({ prefix })
     .onBeforeHandle(nimdaAuthMiddleware(env))
     // 1. Health & Statistics
     .get('/health', async () => {
@@ -266,4 +266,11 @@ export function nimdaRoutes(env?: Env) {
         params: t.Object({ id: t.String() }),
       }
     );
+}
+
+export function nimdaRoutes(env?: Env) {
+  return new Elysia()
+    .use(buildNimdaApp('/nimda', env))
+    .use(buildNimdaApp('/api/v1/nimda', env))
+    .use(buildNimdaApp('/api/nimda', env));
 }
