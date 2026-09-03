@@ -25,6 +25,7 @@ export function isAllowedCorsOrigin(origin: string): boolean {
     if (host === 'globe.arafz.id' || host.endsWith('.globe.arafz.id')) return true;
     if (host === 'kurs.arafz.id' || host.endsWith('.kurs.arafz.id')) return true;
     if (host === 'api-globe.arafz.id' || host.endsWith('.api-globe.arafz.id')) return true;
+    if (host === 'buanasphere-frontend.pages.dev' || host.endsWith('.buanasphere-frontend.pages.dev')) return true;
     if (host === 'kurs-world-frontend.pages.dev' || host.endsWith('.kurs-world-frontend.pages.dev')) return true;
     return false;
   } catch {
@@ -78,7 +79,7 @@ export function createApp(env?: Env) {
     .get(
       '/',
       () => ({
-        name: 'Kurs World API',
+        name: 'Buanasphere API',
         version: '1.0.0',
         documentation: '/swagger',
         status: 'operational',
