@@ -19,6 +19,7 @@ export const floraFaunaApp: GeoAppPlugin<FloraFaunaData> = {
     main: 'Nature',
     sub: '.World',
     accentColor: '#10b981',
+    disclaimer: 'Data keanekaragaman hayati & satwa endemik global · Sumber: IUCN & WWF · Gratis',
   },
   splash: {
     stepText: 'Memuat Keanekaragaman Hayati & Satwa Global...',

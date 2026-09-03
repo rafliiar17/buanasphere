@@ -3,6 +3,16 @@
  * Standard TypeScript class and domain constants for 3D Globe and 2D Flat Choropleth Maps.
  */
 
+// Safe polyfill for non-browser runtime (e.g. Bun test)
+if (typeof window === 'undefined') {
+  if (!('$state' in globalThis)) {
+    (globalThis as any).$state = (val: any) => val;
+  }
+  if (!('$derived' in globalThis)) {
+    (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+  }
+}
+
 import {
   REGION_FILTERS,
   type RegionFilter,
@@ -42,11 +52,12 @@ export interface MapStateConfig {
   isSearchDropdownOpen?: boolean;
   isInspectorOpen?: boolean;
   showLabels?: boolean;
+  showFlags?: boolean;
+  autoRotate?: boolean;
   convertAmount?: number;
   convertDirection?: 'foreign_to_idr' | 'idr_to_foreign';
   isControlsCollapsed?: boolean;
   isRegionDropdownOpen?: boolean;
-  autoRotate?: boolean;
 }
 
 /**
@@ -63,6 +74,9 @@ export class MapState {
   isSearchDropdownOpen: boolean = false;
   isInspectorOpen: boolean = false;
   showLabels: boolean = true;
+  showFlags: boolean = false;
+  autoRotate: boolean = false;
+  _previousMetricBeforeFlag: MetricType = 'rate';
   convertAmount: number = 1;
   convertDirection: 'foreign_to_idr' | 'idr_to_foreign' = 'foreign_to_idr';
   isControlsCollapsed: boolean = false;
@@ -72,7 +86,6 @@ export class MapState {
   showTimezoneLines: boolean = true;
   selectedMeridian: TimezoneMeridianInfo | null = null;
   cameraTravelSignal: { iso3: string; timestamp: number } | null = null;
-  autoRotate: boolean = false;
 
   constructor(initial?: Partial<MapStateConfig & { performanceMode?: 'turbo' | 'quality' }>) {
     if (initial) {
@@ -87,11 +100,12 @@ export class MapState {
       if (initial.isSearchDropdownOpen !== undefined) this.isSearchDropdownOpen = initial.isSearchDropdownOpen;
       if (initial.isInspectorOpen !== undefined) this.isInspectorOpen = initial.isInspectorOpen;
       if (initial.showLabels !== undefined) this.showLabels = initial.showLabels;
+      if (initial.showFlags !== undefined) this.showFlags = initial.showFlags;
+      if (initial.autoRotate !== undefined) this.autoRotate = initial.autoRotate;
       if (initial.convertAmount !== undefined) this.convertAmount = initial.convertAmount;
       if (initial.convertDirection !== undefined) this.convertDirection = initial.convertDirection;
       if (initial.isControlsCollapsed !== undefined) this.isControlsCollapsed = initial.isControlsCollapsed;
       if (initial.isRegionDropdownOpen !== undefined) this.isRegionDropdownOpen = initial.isRegionDropdownOpen;
-      if (initial.autoRotate !== undefined) this.autoRotate = initial.autoRotate;
     }
   }
 
@@ -101,6 +115,36 @@ export class MapState {
 
   setMetric = (metric: MetricType) => {
     this.activeMetric = metric;
+    if (metric !== 'flag') {
+      this.showFlags = false;
+    } else {
+      this.showFlags = true;
+    }
+  };
+
+  toggleFlags = () => {
+    this.showFlags = !this.showFlags;
+    if (this.showFlags) {
+      if (this.activeMetric !== 'flag') {
+        this._previousMetricBeforeFlag = this.activeMetric;
+      }
+      this.activeMetric = 'flag';
+    } else {
+      this.activeMetric = this._previousMetricBeforeFlag ?? 'rate';
+    }
+  };
+
+  setFlags = (enabled: boolean) => {
+    if (this.showFlags === enabled) return;
+    this.toggleFlags();
+  };
+
+  toggleAutoRotate = () => {
+    this.autoRotate = !this.autoRotate;
+  };
+
+  setAutoRotate = (enabled: boolean) => {
+    this.autoRotate = enabled;
   };
 
   setRegion = (region: string) => {
@@ -179,14 +223,6 @@ export class MapState {
 
   setShowLabels = (show: boolean) => {
     this.showLabels = show;
-  };
-
-  toggleAutoRotate = () => {
-    this.autoRotate = !this.autoRotate;
-  };
-
-  setAutoRotate = (enabled: boolean) => {
-    this.autoRotate = enabled;
   };
 
   toggleSearchDropdown = (open?: boolean) => {

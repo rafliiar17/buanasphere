@@ -9,6 +9,11 @@ import {
   type DiurnalPhaseInfo 
 } from '../geoMath';
 import { isCountryMatchingTimeFilter, type TimeFilterType } from '../filterEngine';
+import { 
+  WORLD_CITIES_TIME, 
+  type WorldCityTimeInfo, 
+  findCitiesByCountry 
+} from '../data/worldCitiesTimeData';
 
 export interface WorldTimeData {
   hours: number;
@@ -35,6 +40,7 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     main: 'Time',
     sub: '.World',
     accentColor: '#38bdf8',
+    disclaimer: 'Zona waktu & jam digital real-time 195+ negara · Gratis · Tanpa registrasi',
   },
   splash: {
     stepText: 'Memuat Zona Waktu & Jam Digital 195+ Negara...',
@@ -125,6 +131,45 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       text: `${country.countryName} ${local.formatted} ${phase.emoji}`,
       shortText: `${local.formatted} ${phase.emoji}`,
     };
+  },
+
+  getCustomLabels: (
+    _data: Record<string, WorldTimeData>,
+    _activeMetric: string,
+    theme: 'dark' | 'light',
+    selectedIso3?: string,
+    simulationDate?: Date
+  ) => {
+    const isDark = theme === 'dark';
+    const now = simulationDate ?? new Date();
+
+    return WORLD_CITIES_TIME.map((city) => {
+      const local = calculateLocalTime(now, city.utcOffset);
+      const phase = getDiurnalPhase(local.hours, local.minutes);
+      const isSelected = selectedIso3 === city.countryIso3;
+      const isMajor = city.isMajorHub;
+
+      const displayText = city.cityName;
+      const shortText = city.cityName;
+
+      const size = isSelected ? 0.75 : (isMajor ? 0.40 : 0.28);
+      const color = isSelected
+        ? '#ffffff'
+        : (isDark ? 'rgba(241, 245, 249, 0.92)' : 'rgba(15, 23, 42, 0.92)');
+
+      return {
+        id: city.id,
+        lat: city.lat,
+        lng: city.lng,
+        text: displayText,
+        shortText,
+        size,
+        color,
+        iso3: city.countryIso3,
+        cityId: city.id,
+        city,
+      };
+    });
   },
 
   getPaths: (_data: Record<string, WorldTimeData>, _activeMetric: string, theme: 'dark' | 'light'): GeoPath[] => {
@@ -307,11 +352,11 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     const now = new Date();
     const local = calculateLocalTime(now, country.utcOffset);
     const phase = getDiurnalPhase(local.hours, local.minutes);
-    const diffHours = country.utcOffset - 7;
-    const diffStr =
-      diffHours === 0
-        ? 'Waktu Acuan Lokal (WIB UTC+7)'
-        : `${Math.abs(diffHours)} Jam ${diffHours > 0 ? 'lebih cepat' : 'lebih lambat'} dari Jakarta`;
+    const diffWib = country.utcOffset - 7;
+    const diffWita = country.utcOffset - 8;
+    const diffWit = country.utcOffset - 9;
+    const formatRel = (diff: number) =>
+      diff === 0 ? 'Sama (0 Jam)' : `${diff > 0 ? '+' : ''}${diff} Jam ${diff > 0 ? 'lebih cepat' : 'lebih lambat'}`;
 
     return {
       title: `${country.flagEmoji} ${country.countryName}`,
@@ -325,7 +370,9 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       statsGrid: [
         { label: 'Fase Surya / Diurnal', value: `${phase.emoji} ${phase.label} (${phase.description})` },
         { label: 'Status Bisnis & Kantor', value: data?.isWorkingHours ? '🟢 Jam Kerja Aktif (09:00 - 17:00)' : '🔴 Di Luar Jam Kantor' },
-        { label: 'Relasi vs Waktu Indonesia', value: diffStr },
+        { label: 'Relasi vs WIB (Jakarta)', value: formatRel(diffWib) },
+        { label: 'Relasi vs WITA (Bali / IKN)', value: formatRel(diffWita) },
+        { label: 'Relasi vs WIT (Jayapura)', value: formatRel(diffWit) },
         { label: 'Zona Waktu Baku', value: formatUtcOffset(country.utcOffset) },
         { label: 'Ibukota Negara', value: country.capital },
       ],

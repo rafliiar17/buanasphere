@@ -36,6 +36,7 @@ export const passportWorldApp: GeoAppPlugin<PassportData> = {
     main: 'Passport',
     sub: '.World',
     accentColor: '#8b5cf6',
+    disclaimer: 'Indeks kekuatan paspor & akses bebas visa 195+ negara · Data publik · Gratis',
   },
   splash: {
     stepText: 'Memuat Indeks Kekuatan Paspor & Bebas Visa...',

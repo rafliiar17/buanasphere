@@ -3,16 +3,16 @@
     Search,
     X,
     RotateCcw,
-    RotateCw,
     Eye,
     EyeOff,
-    Globe,
     SlidersHorizontal,
     Sparkles,
     Compass,
     Layers,
     Activity,
-    Flag
+    Flag,
+    Globe,
+    RotateCw
   } from 'lucide-svelte';
   import { geoStore } from '../geoStore.svelte';
   import { EXTENDED_COUNTRIES_DATA } from '../countrySpatialData';
@@ -28,6 +28,7 @@
   let { mapState, onSelectCountry, onResetView }: Props = $props();
 
   const activeApp = $derived(geoStore.activeApp);
+  const nonFlagMetrics = $derived((activeApp.metrics || []).filter((m: any) => m.id !== 'flag'));
 
   let localSearchQuery = $state('');
   let isSearchDropdownOpen = $state(false);
@@ -99,7 +100,12 @@
 
   function handleToggleAutoRotate() {
     mapState?.toggleAutoRotate?.();
-    geoStore?.toggleAutoRotate?.();
+    geoStore.toggleAutoRotate?.();
+  }
+
+  function handleToggleFlags() {
+    mapState?.toggleFlags?.();
+    geoStore.toggleFlags?.();
   }
 
   function handleMetricChange(metricId: string) {
@@ -143,89 +149,39 @@
   }
 
   const currentProjection = $derived(mapState?.projectionMode ?? geoStore.projectionMode);
-  const isAutoRotating = $derived(mapState?.autoRotate ?? geoStore.autoRotate ?? false);
   const showLabels = $derived(mapState?.showLabels ?? geoStore.showLabels);
   const activeMetricId = $derived(mapState?.activeMetric ?? geoStore.activeMetricId);
   const activeRegion = $derived(mapState?.activeRegion ?? geoStore.activeRegion);
   const activeCustomFilter = $derived(geoStore.customFilter ?? 'all');
+  const isRotating = $derived(Boolean(mapState?.autoRotate || geoStore.autoRotate));
+  const isFlagActive = $derived(Boolean(mapState?.showFlags || mapState?.activeMetric === 'flag' || geoStore.showFlags || geoStore.activeMetricId === 'flag'));
 </script>
 
-<!-- Floating Top-Right Universal Controls Panel (ADR 0040) -->
+<!-- Floating Top-Right Universal Controls Panel (ADR 0040 & ADR 0052) -->
 <div class="absolute top-4 right-4 z-20 w-80 sm:w-88 flex flex-col gap-3 pointer-events-auto select-none">
-  <div class="rounded-3xl border border-slate-700/80 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-xl text-slate-100 transition-all duration-200">
+  <div class="rounded-3xl border border-slate-700/80 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-xl text-slate-100 transition-all duration-200 flex flex-col gap-3.5">
     
-    <!-- Search Input & Viewport Reset Row -->
-    <div class="relative flex items-center gap-2">
-      <div class="relative flex-1 flex items-center">
-        <Search class="absolute left-3 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-        <input
-          type="text"
-          placeholder="Cari negara, ibukota, ISO3..."
-          value={localSearchQuery}
-          oninput={handleSearchInput}
-          onkeydown={handleSearchKeydown}
-          onfocus={() => {
-            if (localSearchQuery.trim()) isSearchDropdownOpen = true;
-          }}
-          class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 transition"
-        />
-        {#if localSearchQuery}
-          <button
-            type="button"
-            onclick={handleClearSearch}
-            class="absolute right-2.5 p-0.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            aria-label="Bersihkan pencarian"
-          >
-            <X class="w-3.5 h-3.5" />
-          </button>
-        {/if}
-      </div>
-      <button
-        type="button"
-        onclick={handleReset}
-        class="p-2 rounded-xl bg-slate-800/80 border border-slate-700/80 text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer shrink-0"
-        title="Reset Sudut Pandang"
-      >
-        <RotateCcw class="w-3.5 h-3.5" />
-      </button>
-    </div>
-
-    <!-- Autocomplete Dropdown List -->
-    {#if isSearchDropdownOpen && searchResults.length > 0}
-      <div class="absolute top-16 left-4 right-4 max-h-56 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
-        {#each searchResults as item}
-          <button
-            type="button"
-            onclick={() => handleSelectCountry(item.iso3)}
-            class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs cursor-pointer"
-          >
-            <div class="flex items-center gap-2 truncate">
-              <span class="text-sm">{item.flagEmoji}</span>
-              <span class="font-medium text-white truncate">{item.countryName}</span>
-              <span class="text-[10px] text-slate-400 font-mono">({item.capital})</span>
-            </div>
-            <span class="text-[10px] font-mono font-bold text-sky-400 shrink-0">{item.iso3}</span>
-          </button>
-        {/each}
-      </div>
-    {/if}
-
-    <!-- SECTION 1: 🌐 TAMPILAN GLOBE (Global Controls) -->
-    <div class="mt-3.5 pt-3 border-t border-slate-800/80">
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-1.5">
-          <Globe class="w-3.5 h-3.5 text-sky-400 shrink-0" />
-          <span class="text-xs font-bold tracking-tight text-white uppercase">
-            Tampilan Globe
-          </span>
+    <!-- GROUP 1: 🌐 TAMPILAN GLOBE (GLOBAL) -->
+    <div class="space-y-2.5 pb-3 border-b border-slate-800/80">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <Globe class="w-4 h-4 text-sky-400 shrink-0" />
+          <span class="text-xs font-bold tracking-tight text-white uppercase">Tampilan Globe</span>
+          <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 uppercase font-bold">Global</span>
         </div>
-        <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/60">
-          Global
-        </span>
+        <button
+          type="button"
+          onclick={handleReset}
+          class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+          title="Reset Sudut Pandang"
+        >
+          <RotateCcw class="w-3.5 h-3.5" />
+        </button>
       </div>
 
-      <!-- Grid Row 1: Proyeksi & Label Toggles -->
+      <!-- 2x2 Grid: Projection, Label, Rotasi, Bendera -->
       <div class="grid grid-cols-2 gap-2">
+        <!-- 1. Projection Toggle -->
         <button
           type="button"
           onclick={handleToggleProjection}
@@ -234,6 +190,7 @@
           <span>{currentProjection === 'globe' ? '🌍 Globe' : '🗺️ Datar'}</span>
         </button>
 
+        <!-- 2. Label Toggle -->
         <button
           type="button"
           onclick={handleToggleLabels}
@@ -247,53 +204,108 @@
             <span>Label: OFF</span>
           {/if}
         </button>
-      </div>
 
-      <!-- Grid Row 2: Auto-Rotate Toggle (with Amber highlight when active) -->
-      <div class="mt-2">
+        <!-- 3. Rotasi Toggle -->
         <button
           type="button"
           onclick={handleToggleAutoRotate}
-          class="w-full flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {isAutoRotating ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20' : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-white'}"
-          title="Putar Otomatis Bola Dunia Tampilan 3D"
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {isRotating ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          title="Putar Otomatis Sudut Pandang Globe"
         >
-          <RotateCw class="w-3.5 h-3.5 {isAutoRotating ? 'animate-spin [animation-duration:4s]' : ''}" />
-          <span>Rotasi: {isAutoRotating ? 'ON' : 'OFF'}</span>
+          <RotateCw class="w-3.5 h-3.5 {isRotating ? 'animate-spin' : ''}" />
+          <span>Rotasi: {isRotating ? 'ON' : 'OFF'}</span>
+        </button>
+
+        <!-- 4. Bendera Toggle -->
+        <button
+          type="button"
+          onclick={handleToggleFlags}
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {isFlagActive ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          title="Tampilkan Tekstur Bendera Nasional di Setiap Negara"
+        >
+          <Flag class="w-3.5 h-3.5 text-amber-300" />
+          <span>Bendera: {isFlagActive ? 'ON' : 'OFF'}</span>
         </button>
       </div>
     </div>
 
-    <!-- SECTION 2: 🎛️ [NAMA MICROAPP] (Per-App Controls) -->
-    <div class="mt-3.5 pt-3 border-t border-slate-800/80">
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-1.5 truncate">
-          <SlidersHorizontal class="w-3.5 h-3.5 text-sky-400 shrink-0" />
+    <!-- GROUP 2: 🎛️ [NAMA MICROAPP] (APP) -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 truncate">
+          <SlidersHorizontal class="w-4 h-4 text-sky-400 shrink-0" />
           <span class="text-xs font-bold tracking-tight text-white uppercase truncate">
             {activeApp.name}
           </span>
         </div>
-        <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 shrink-0">
-          App
-        </span>
+        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase font-bold">App</span>
       </div>
 
-      <!-- Micro-app specific layer: Timezone Lines Toggle (when activeApp.id === 'world-time') -->
+      <!-- Search Input Row -->
+      <div class="relative">
+        <div class="relative flex items-center">
+          <Search class="absolute left-3 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Cari negara, ibukota, ISO3..."
+            value={localSearchQuery}
+            oninput={handleSearchInput}
+            onkeydown={handleSearchKeydown}
+            onfocus={() => {
+              if (localSearchQuery.trim()) isSearchDropdownOpen = true;
+            }}
+            class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 transition"
+          />
+          {#if localSearchQuery}
+            <button
+              type="button"
+              onclick={handleClearSearch}
+              class="absolute right-2.5 p-0.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+              aria-label="Bersihkan pencarian"
+            >
+              <X class="w-3.5 h-3.5" />
+            </button>
+          {/if}
+        </div>
+
+        <!-- Autocomplete Dropdown List -->
+        {#if isSearchDropdownOpen && searchResults.length > 0}
+          <div class="absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
+            {#each searchResults as item}
+              <button
+                type="button"
+                onclick={() => handleSelectCountry(item.iso3)}
+                class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs cursor-pointer"
+              >
+                <div class="flex items-center gap-2 truncate">
+                  <span class="text-sm">{item.flagEmoji}</span>
+                  <span class="font-medium text-white truncate">{item.countryName}</span>
+                  <span class="text-[10px] text-slate-400 font-mono">({item.capital})</span>
+                </div>
+                <span class="text-[10px] font-mono font-bold text-sky-400 shrink-0">{item.iso3}</span>
+              </button>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <!-- Timezone Lines Toggle (when activeApp.id === 'world-time') -->
       {#if activeApp.id === 'world-time'}
-        <div class="mb-2.5">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/60 border border-slate-800">
+          <span class="text-xs text-slate-300 font-medium">Garis Bujur Zona Waktu 3D</span>
           <button
             type="button"
             onclick={() => mapState?.toggleTimezoneLines?.()}
-            class="w-full flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState?.showTimezoneLines ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-            title="Tampilkan / Sembunyikan Garis Zona Waktu 3D"
+            class="py-1 px-2.5 rounded-lg border text-xs font-semibold transition cursor-pointer {mapState?.showTimezoneLines ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
           >
-            <span>🌐 Garis Zona Waktu: {mapState?.showTimezoneLines ? 'ON' : 'OFF'}</span>
+            {mapState?.showTimezoneLines ? 'ON' : 'OFF'}
           </button>
         </div>
       {/if}
 
       <!-- Filter Section (Dynamic Filter Pills / Tabs) -->
       {#if activeApp.filterOptions && activeApp.filterOptions.length > 0}
-        <div class="mt-2.5">
+        <div>
           <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
             Filter & Kategori
           </span>
@@ -314,14 +326,14 @@
         </div>
       {/if}
 
-      <!-- Metrics Section (Dynamic Metric Switcher Buttons) -->
-      {#if activeApp.metrics && activeApp.metrics.length > 1}
-        <div class="mt-3">
+      <!-- Metrics Section (Dynamic Metric Switcher Buttons without 'flag') -->
+      {#if nonFlagMetrics.length > 1}
+        <div>
           <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
             Pewarnaan Metrik
           </span>
-          <div class="grid {activeApp.metrics.length >= 3 ? 'grid-cols-3' : 'grid-cols-2'} gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800">
-            {#each activeApp.metrics as m}
+          <div class="grid {nonFlagMetrics.length >= 3 ? 'grid-cols-3' : 'grid-cols-2'} gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800">
+            {#each nonFlagMetrics as m}
               {@const isMetricActive = activeMetricId === m.id}
               <button
                 type="button"
@@ -331,11 +343,7 @@
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/60'}"
                 title={m.label}
               >
-                {#if m.id === 'flag'}
-                  <Flag class="w-3 h-3 shrink-0 text-amber-300" />
-                {:else}
-                  <Activity class="w-3 h-3 shrink-0" />
-                {/if}
+                <Activity class="w-3 h-3 shrink-0" />
                 <span class="truncate">{m.label}</span>
               </button>
             {/each}
@@ -345,7 +353,7 @@
 
       <!-- Camera Presets Section (Dynamic Jump Continent / Region Pills) -->
       {#if activeApp.cameraPresets && Object.keys(activeApp.cameraPresets).length > 0}
-        <div class="mt-3">
+        <div>
           <div class="flex items-center gap-1 mb-1.5">
             <Compass class="w-3 h-3 text-sky-400 shrink-0" />
             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -368,6 +376,7 @@
           </div>
         </div>
       {/if}
+
     </div>
 
   </div>
