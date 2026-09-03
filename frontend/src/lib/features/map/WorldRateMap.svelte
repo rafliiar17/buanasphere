@@ -138,6 +138,8 @@
     lastClickedIso3 = country.iso3;
 
     mapState.selectCountry(country.iso3, country.currencyCode);
+    geoStore.selectCountry(country.iso3);
+    geoStore.travelToCountry?.(country.iso3);
     mapState.setSearchQuery(country.countryName);
     mapState.isSearchDropdownOpen = false;
 
@@ -249,7 +251,13 @@
         <CustomControls
           onSelectCountry={(iso3: string) => {
             const country = mapData.find(d => d.iso3 === iso3);
-            if (country) handleCountryClick(country);
+            if (country) {
+              handleCountryClick(country);
+            } else {
+              mapState.selectCountry(iso3);
+              geoStore.selectCountry(iso3);
+              geoStore.travelToCountry?.(iso3);
+            }
           }}
           onResetView={() => {
             mapState.setRegion('all');
@@ -278,7 +286,13 @@
           {mapState}
           onSelectCountry={(iso3: string) => {
             const country = mapData.find(d => d.iso3 === iso3);
-            if (country) handleCountryClick(country);
+            if (country) {
+              handleCountryClick(country);
+            } else {
+              mapState.selectCountry(iso3);
+              geoStore.selectCountry(iso3);
+              geoStore.travelToCountry?.(iso3);
+            }
           }}
           onResetView={() => {
             mapState.setRegion('all');

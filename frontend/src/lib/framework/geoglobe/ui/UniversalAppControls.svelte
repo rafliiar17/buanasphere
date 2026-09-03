@@ -167,6 +167,7 @@
           placeholder="Cari negara, ibukota, ISO3..."
           value={localSearchQuery}
           oninput={handleSearchInput}
+          onkeydown={handleSearchKeydown}
           onfocus={() => {
             if (localSearchQuery.trim()) isSearchDropdownOpen = true;
           }}
