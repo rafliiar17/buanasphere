@@ -80,7 +80,7 @@ export class MapState {
   isControlsCollapsed: boolean = $state(false);
   isRegionDropdownOpen: boolean = $state(false);
   highlightedIndex: number = $state(0);
-  performanceMode: 'turbo' | 'quality' = $state('turbo');
+  performanceMode: 'turbo' | 'quality' = $state('quality');
 
   constructor(initial?: Partial<MapStateConfig>) {
     if (initial) {

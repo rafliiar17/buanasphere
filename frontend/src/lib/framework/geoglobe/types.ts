@@ -67,15 +67,32 @@ export interface InspectorWidget {
   customData?: any;
 }
 
+export interface FilterOption {
+  id: string;
+  label: string;
+  icon?: any;
+}
+
 export interface GeoAppPlugin<TData = any> {
   id: string;
   name: string;
   tagline: string;
-  icon: string;
+  icon?: any;
   category: string;
   defaultMetricId: string;
   canonicalPath?: string;
   aliasPaths?: string[];
+  branding?: {
+    main: string;
+    sub: string;
+    accentColor?: string;
+  };
+  splash?: {
+    stepText: string;
+    gradientFrom?: string;
+    gradientTo?: string;
+  };
+  filterOptions?: FilterOption[];
   cameraPresets?: Record<string, { lat: number; lng: number; altitude: number }>;
   filterPredicate?: (iso3: string, filterValue: unknown, data?: TData, country?: CountrySpatialMetadata) => boolean;
   metrics: GeoMetric[];

@@ -17,29 +17,17 @@
   const activeApp = $derived(geoStore.activeApp);
 
   const brandParts = $derived.by(() => {
-    switch (activeApp.id) {
-      case 'world-time':
-        return { main: 'Time', sub: '.World' };
-      case 'remittance-flow':
-        return { main: 'Flow', sub: '.Corridors' };
-      case 'passport-power':
-        return { main: 'Passport', sub: '.World' };
-      default:
-        return { main: 'Kurs', sub: '.World' };
+    if (activeApp?.branding) {
+      return { main: activeApp.branding.main, sub: activeApp.branding.sub };
     }
+    return { main: activeApp?.name || 'Kurs', sub: '.World' };
   });
 
   const step2Text = $derived.by(() => {
-    switch (activeApp.id) {
-      case 'world-time':
-        return 'Memuat Zona Waktu & Jam Digital 195+ Negara...';
-      case 'remittance-flow':
-        return 'Memuat Rute Koridor Remitansi 3D ke Jakarta...';
-      case 'passport-power':
-        return 'Memuat Indeks Kekuatan Paspor & Bebas Visa...';
-      default:
-        return t('splash.ratesLoading');
+    if (activeApp?.splash?.stepText) {
+      return activeApp.splash.stepText;
     }
+    return activeApp?.tagline || t('splash.ratesLoading');
   });
 
   onMount(() => {

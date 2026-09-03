@@ -1,7 +1,7 @@
 <script lang="ts">
   import { geoStore } from '../geoStore.svelte';
   import { resolveAppIdToPath } from '../router';
-  import { Coins, Clock, Plane, BookOpen, Trees, Sparkles, X, Check, ArrowRight } from 'lucide-svelte';
+  import { Coins, Clock, Plane, BookOpen, Trees, Landmark, Sparkles, X, Check, ArrowRight } from 'lucide-svelte';
 
   const ICONS: Record<string, any> = {
     Coins,
@@ -9,6 +9,7 @@
     Plane,
     BookOpen,
     Trees,
+    Landmark,
   };
 </script>
 
@@ -60,7 +61,9 @@
       <!-- App Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
         {#each geoStore.allApps as app (app.id)}
-          {@const IconComponent = ICONS[app.icon] ?? Sparkles}
+          {@const IconComponent = (typeof app.icon === 'function' || (typeof app.icon === 'object' && app.icon !== null))
+            ? app.icon
+            : (typeof app.icon === 'string' && ICONS[app.icon] ? ICONS[app.icon] : Sparkles)}
           {@const isActive = geoStore.activeAppId === app.id}
           {@const appPath = resolveAppIdToPath(app.id)}
 

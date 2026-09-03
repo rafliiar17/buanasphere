@@ -1,6 +1,10 @@
 import type { CountrySpatialMetadata, GeoAppPlugin, GeoArc, InspectorWidget } from '../types';
 import { generateGreatCircleArc } from '../geoMath';
-import { FLIGHT_CORRIDOR_REGIONS, type FlightCorridorFilterType } from '../filterEngine';
+import { 
+  FLIGHT_CORRIDOR_REGIONS, 
+  type FlightCorridorFilterType,
+  isCountryMatchingFlightFilter 
+} from '../filterEngine';
 
 export interface RemittanceCorridorData {
   annualVolumeMillionUsd: number;
@@ -34,6 +38,28 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
   icon: 'Plane',
   category: 'finance',
   defaultMetricId: 'volume',
+  canonicalPath: '/flight',
+  aliasPaths: ['/flow'],
+  branding: {
+    main: 'Flow',
+    sub: '.Corridors',
+    accentColor: '#06b6d4',
+  },
+  splash: {
+    stepText: 'Memuat Rute Koridor Remitansi 3D ke Jakarta...',
+    gradientFrom: 'from-cyan-500',
+    gradientTo: 'to-blue-600',
+  },
+  filterOptions: [
+    { id: 'all', label: 'Semua Rute (10 Hub)' },
+    { id: 'mideast', label: 'Timur Tengah 🕌' },
+    { id: 'asean', label: 'ASEAN Hub 🌴' },
+    { id: 'eastasia', label: 'Asia Timur 🏯' },
+    { id: 'west', label: 'Barat & Pasifik 🌐' },
+  ],
+  filterPredicate: (iso3: string, filterValue: unknown) => {
+    return isCountryMatchingFlightFilter(iso3, (filterValue as FlightCorridorFilterType) || 'all');
+  },
   metrics: [
     {
       id: 'volume',

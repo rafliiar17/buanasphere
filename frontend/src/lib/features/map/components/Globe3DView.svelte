@@ -384,10 +384,11 @@
 
   // 3D Arcs for Flow Corridors filtered by active corridor region
   const remittanceArcs = $derived.by(() => {
-    if (geoStore.activeAppId !== 'remittance-flow') return [];
+    if (!geoStore.activeApp?.getArcs && !geoStore.activeApp?.getArcData) return [];
     const indonesia = EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN');
     if (!indonesia) return [];
-    const allArcs = flowCorridorsApp.getArcData ? flowCorridorsApp.getArcData(indonesia as any, {} as any) : [];
+    const app = geoStore.activeApp ?? flowCorridorsApp;
+    const allArcs = app.getArcData ? app.getArcData(indonesia as any, (geoStore.currentAppData ?? {}) as any) : (app.getArcs ? app.getArcs((geoStore.currentAppData ?? {}) as any, geoStore.flightCorridorFilter) : []);
     if (geoStore.flightCorridorFilter === 'all') return allArcs;
 
     return allArcs.filter(arc => {
@@ -417,22 +418,25 @@
   function updateVisuals() {
     if (!globeInstance) return;
     const isDark = currentTheme === 'dark';
-    const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
+    const isFlag = mapState.activeMetric === 'flag';
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
 
     applyOptimalDpr();
 
-    // ⚡ Option C (ADR 0038): Dynamic Switch between 1-Draw-Call Shader-LUT vs 3D Polygons
+    // ⚡ Option C (ADR 0038): Clean Switch between 1-Draw-Call Shader-LUT vs 3D Raised Polygons
     if (isTurbo && lutSphereMesh) {
       lutSphereMesh.visible = true;
       updatePaletteLut();
       globeInstance
-        .polygonAltitude(0.0)
-        .polygonCapColor(() => 'rgba(0,0,0,0)')
-        .polygonSideColor(() => 'rgba(0,0,0,0)')
-        .polygonStrokeColor(() => 'rgba(0,0,0,0)');
+        .showGlobe(false)
+        .polygonAltitude(-10.0)
+        .polygonLabel(() => '');
     } else {
       if (lutSphereMesh) lutSphereMesh.visible = false;
+      globeInstance
+        .showGlobe(true)
+        .polygonLabel((d: any) => getTooltipHtml(d));
+
       if (!isFlag) {
         globeInstance.polygonCapMaterial(null);
       } else {
@@ -559,7 +563,7 @@
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     const width = globeContainer.clientWidth || window.innerWidth;
     const height = globeContainer.clientHeight || window.innerHeight;
-    const isFlag = geoStore.activeAppId === 'fx-rates' && mapState.activeMetric === 'flag';
+    const isFlag = mapState.activeMetric === 'flag';
 
     globeInstance = GlobeModule()(globeContainer)
       .width(width)
@@ -567,7 +571,8 @@
       .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
       .showAtmosphere(true)
       .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .atmosphereAltitude(0.22)
+      .atmosphereAltitude(isTurbo ? 0.14 : 0.22)
+      .showGlobe(!isTurbo)
       .polygonsData(geoJsonFeatures)
       .polygonGeoJsonGeometry((d: any) => d.geometry)
       .polygonCapMaterial((d: any) => {
@@ -579,12 +584,15 @@
       .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
       .polygonsTransitionDuration(0)
       .polygonAltitude((d: any) => {
+        if (isTurbo) return -10.0;
         const iso3 = getFeatureIso3(d);
         if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
         return 0.005;
       })
-      .polygonLabel((d: any) => getTooltipHtml(d))
+      .polygonLabel((d: any) => (isTurbo ? '' : getTooltipHtml(d)))
       .onPolygonHover((hoverD: any) => {
+        const isTurboNow = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+        if (isTurboNow) return;
         const iso3 = hoverD ? getFeatureIso3(hoverD) : null;
         // Hover deduplication guard: prevent redundant GPU geometry re-evaluations
         if (iso3 === lastHoveredIso3) return;
@@ -605,6 +613,8 @@
         }
       })
       .onPolygonClick((clickD: any) => {
+        const isTurboNow = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+        if (isTurboNow) return;
         if (!clickD) return;
         const iso3 = getFeatureIso3(clickD);
         const country = mapData.find(d => d.iso3 === iso3);
@@ -701,7 +711,7 @@
       depthWrite: true,
     });
 
-    const sphereGeo = new THREE.SphereGeometry(100.05, 72, 72);
+    const sphereGeo = new THREE.SphereGeometry(100.0, 96, 96);
     lutSphereMesh = new THREE.Mesh(sphereGeo, lutShaderMaterial);
     lutSphereMesh.rotation.y = -Math.PI / 2;
     lutSphereMesh.visible = isTurbo;
@@ -788,7 +798,7 @@
     if (!presets) return;
 
     const filterKey = (
-      (geoStore.activeAppId === 'remittance-flow' || geoStore.activeAppId === 'flow-corridors')
+      (geoStore.activeApp?.getArcs || geoStore.activeApp?.getArcData)
         ? geoStore.flightCorridorFilter
         : (geoStore.timeFilter !== 'all' ? geoStore.timeFilter :
            geoStore.passportVisaFilter !== 'all' ? geoStore.passportVisaFilter :

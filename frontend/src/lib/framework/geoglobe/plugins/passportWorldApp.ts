@@ -1,4 +1,5 @@
 import type { CountrySpatialMetadata, GeoAppPlugin, InspectorWidget } from '../types';
+import { isCountryMatchingPassportFilter, type PassportVisaFilterType } from '../filterEngine';
 
 export interface PassportData {
   visaFreeCount: number;
@@ -40,6 +41,27 @@ export const passportWorldApp: GeoAppPlugin<PassportData> = {
   icon: 'BookOpen',
   category: 'travel',
   defaultMetricId: 'visa_free',
+  canonicalPath: '/passport',
+  aliasPaths: [],
+  branding: {
+    main: 'Passport',
+    sub: '.World',
+    accentColor: '#8b5cf6',
+  },
+  splash: {
+    stepText: 'Memuat Indeks Kekuatan Paspor & Bebas Visa...',
+    gradientFrom: 'from-violet-500',
+    gradientTo: 'to-purple-600',
+  },
+  filterOptions: [
+    { id: 'all', label: 'Semua Paspor' },
+    { id: 'free', label: 'Bebas Visa WNI 🟢' },
+    { id: 'voa', label: 'VoA / eVisa 🟡' },
+    { id: 'required', label: 'Butuh Visa 🔴' },
+  ],
+  filterPredicate: (iso3: string, filterValue: unknown) => {
+    return isCountryMatchingPassportFilter(iso3, (filterValue as PassportVisaFilterType) || 'all');
+  },
   metrics: [
     {
       id: 'visa_free',

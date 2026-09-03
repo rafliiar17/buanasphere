@@ -7,6 +7,7 @@ import {
   interpolateDiurnalColor,
   type DiurnalPhaseInfo 
 } from '../geoMath';
+import { isCountryMatchingTimeFilter, type TimeFilterType } from '../filterEngine';
 
 export interface WorldTimeData {
   hours: number;
@@ -27,6 +28,28 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
   icon: 'Clock',
   category: 'time',
   defaultMetricId: 'local_hour',
+  canonicalPath: '/time',
+  aliasPaths: [],
+  branding: {
+    main: 'Time',
+    sub: '.World',
+    accentColor: '#38bdf8',
+  },
+  splash: {
+    stepText: 'Memuat Zona Waktu & Jam Digital 195+ Negara...',
+    gradientFrom: 'from-sky-500',
+    gradientTo: 'to-indigo-500',
+  },
+  filterOptions: [
+    { id: 'all', label: 'Semua Zona' },
+    { id: 'working', label: 'Jam Kantor (09:00 - 17:00)' },
+    { id: 'daylight', label: 'Siang Hari ☀️' },
+    { id: 'night', label: 'Malam Hari 🌙' },
+    { id: 'golden_hour', label: 'Fajar & Senja 🌅' },
+  ],
+  filterPredicate: (iso3: string, filterValue: unknown) => {
+    return isCountryMatchingTimeFilter(iso3, (filterValue as TimeFilterType) || 'all');
+  },
   metrics: [
     {
       id: 'diurnal_cycle',

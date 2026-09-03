@@ -4,6 +4,7 @@ import {
   getFloraFaunaDataForCountry, 
   FLORA_FAUNA_DATASET 
 } from '../data/floraFaunaData';
+import { isCountryMatchingNatureFilter, type NatureFilterType } from '../filterEngine';
 
 export const floraFaunaApp: GeoAppPlugin<FloraFaunaData> = {
   id: 'flora-fauna',
@@ -12,6 +13,28 @@ export const floraFaunaApp: GeoAppPlugin<FloraFaunaData> = {
   icon: 'Trees',
   category: 'nature',
   defaultMetricId: 'biodiversity',
+  canonicalPath: '/nature',
+  aliasPaths: ['/flora-fauna', '/flora', '/fauna', '/wildlife', '/biodiversity'],
+  branding: {
+    main: 'Nature',
+    sub: '.World',
+    accentColor: '#10b981',
+  },
+  splash: {
+    stepText: 'Memuat Keanekaragaman Hayati & Satwa Global...',
+    gradientFrom: 'from-emerald-500',
+    gradientTo: 'to-green-600',
+  },
+  filterOptions: [
+    { id: 'all', label: 'Semua Wilayah' },
+    { id: 'megadiverse', label: 'Megadiverse 17 🌟' },
+    { id: 'endangered', label: 'Satwa Terancam 🔴' },
+    { id: 'rainforest', label: 'Hutan Hujan 🌴' },
+    { id: 'endemic', label: 'Spesies Endemik Tinggi 🦎' },
+  ],
+  filterPredicate: (iso3: string, filterValue: unknown) => {
+    return isCountryMatchingNatureFilter(iso3, (filterValue as NatureFilterType) || 'all');
+  },
   metrics: [
     {
       id: 'biodiversity',

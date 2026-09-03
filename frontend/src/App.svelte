@@ -142,20 +142,33 @@
       <!-- 100% Full-Viewport Interactive World Map with Top-Right Floating Controls -->
       <WorldRateMap onSelectCurrency={handleMapCurrencySelect} class="w-full h-full" />
 
-      <!-- Floating Bottom Dock (Isolated per Micro-App) -->
-      {#if geoStore.activeAppId === 'world-time'}
+      <!-- Floating Bottom Dock (Polymorphic per Micro-App - ADR 0040) -->
+      {#if geoStore.activeApp?.BottomDockComponent}
+        {@const CustomBottomDock = geoStore.activeApp.BottomDockComponent}
+        <CustomBottomDock />
+      {:else if geoStore.activeAppId === 'world-time'}
         <TimeBottomDock />
       {:else if geoStore.activeAppId === 'remittance-flow'}
         <FlightBottomDock />
       {:else if geoStore.activeAppId === 'passport-power'}
         <PassportBottomDock />
-      {:else}
+      {:else if geoStore.activeAppId === 'fx-rates'}
         <KursBottomDock
           {activeView}
           onSelectView={(v) => (activeView = v)}
           onSelectCurrency={handleTickerCurrencySelect}
           onOpenAlertModal={() => (isAlertModalOpen = true)}
         />
+      {:else}
+        <!-- Sleek minimal dock for plug-and-play apps without dedicated dock -->
+        <div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
+          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 backdrop-blur-md shadow-lg text-[11px] text-slate-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-medium text-slate-300">{activeApp.name}</span>
+            <span class="text-slate-600">•</span>
+            <span>{activeApp.tagline}</span>
+          </div>
+        </div>
       {/if}
 
     {:else}

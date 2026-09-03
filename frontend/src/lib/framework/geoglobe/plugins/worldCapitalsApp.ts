@@ -31,6 +31,26 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   canonicalPath: '/capitals',
   aliasPaths: ['/ibukota', '/capital', '/independence', '/kemerdekaan'],
 
+  branding: {
+    main: 'Capitals',
+    sub: '.World',
+    accentColor: '#f59e0b',
+  },
+  splash: {
+    stepText: 'Memuat Peta Ibukota & Sejarah Kemerdekaan Global...',
+    gradientFrom: 'from-amber-500',
+    gradientTo: 'to-rose-500',
+  },
+  filterOptions: [
+    { id: 'all', label: 'Semua Era' },
+    { id: 'ancient', label: 'Peradaban Kuno' },
+    { id: '19th_century', label: 'Abad ke-19' },
+    { id: 'post_ww1', label: 'Pasca PD I (1918-1939)' },
+    { id: 'post_ww2', label: 'Pasca PD II (1945-1959)' },
+    { id: 'decolonization', label: 'Dekolonisasi (1960-1989)' },
+    { id: 'post_1990', label: 'Modern Pasca-1990' },
+  ],
+
   // 2. Metrics Definition
   metrics: [
     {

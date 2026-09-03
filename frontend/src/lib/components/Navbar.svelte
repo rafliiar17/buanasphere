@@ -12,18 +12,10 @@
   const activeApp = $derived(geoStore.activeApp);
 
   const brandParts = $derived.by(() => {
-    switch (activeApp.id) {
-      case 'world-time':
-        return { main: 'Time', sub: '.World' };
-      case 'remittance-flow':
-        return { main: 'Flow', sub: '.Corridors' };
-      case 'passport-power':
-        return { main: 'Passport', sub: '.World' };
-      case 'flora-fauna':
-        return { main: 'Nature', sub: '.World' };
-      default:
-        return { main: 'Kurs', sub: '.World' };
+    if (activeApp?.branding) {
+      return { main: activeApp.branding.main, sub: activeApp.branding.sub };
     }
+    return { main: activeApp?.name || 'Kurs', sub: '.World' };
   });
 
   onMount(() => {

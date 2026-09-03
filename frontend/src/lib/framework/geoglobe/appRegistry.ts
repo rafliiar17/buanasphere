@@ -9,6 +9,24 @@ export class GeoAppRegistry {
     this.apps.set(plugin.id, plugin);
   }
 
+  registerPlugins(plugins: GeoAppPlugin[]): void {
+    for (const plugin of plugins) {
+      this.register(plugin);
+    }
+  }
+
+  registerFromModules(modules: Record<string, any>): void {
+    for (const key of Object.keys(modules)) {
+      const mod = modules[key];
+      const plugin = mod?.default ?? Object.values(mod).find(
+        (val: any) => val && typeof val === 'object' && 'id' in val && 'name' in val && 'metrics' in val
+      );
+      if (plugin && typeof plugin === 'object' && (plugin as any).id) {
+        this.register(plugin as GeoAppPlugin);
+      }
+    }
+  }
+
   getAppData(id: string): Record<string, any> | undefined {
     return this.appData.get(id);
   }
