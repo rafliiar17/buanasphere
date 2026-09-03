@@ -6,7 +6,7 @@ import type { Env } from '../db/index.ts';
  * Validates 'X-Admin-Key' header or 'Authorization: Bearer <key>'.
  */
 export function validateAdminAuth(headers: Record<string, string | undefined>, env?: Env): boolean {
-  const secretKey = env?.ADMIN_SECRET_KEY || 'kw_nimda_secret_key_dev';
+  const secretKey = env?.ADMIN_SECRET_KEY || env?.ADMIN_SECRET || 'kw_nimda_secret_key_dev';
 
   const xAdminKey = headers['x-admin-key'];
   if (xAdminKey && xAdminKey === secretKey) {
