@@ -859,7 +859,10 @@
     const _labels = mapState.showLabels;
     const _geoLabels = geoStore.showLabels;
     const _selected = mapState.selectedCountryIso3;
-    const _hovered = mapState.hoveredIso3;
+    // NOTE: mapState.hoveredIso3 is intentionally NOT tracked here.
+    // Tracking it caused an infinite loop: hover → updateVisuals() → labelsData reset
+    // → onLabelHover(null) → hoveredIso3=null → $effect re-runs → loop.
+    // Polygon altitude/color on hover is handled directly in onPolygonHover / onLabelHover.
     const _data = mapData;
     const _perfMap = mapState.performanceMode;
     const _perfGeo = geoStore.performanceMode;
