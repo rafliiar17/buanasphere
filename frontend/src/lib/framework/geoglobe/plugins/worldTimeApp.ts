@@ -1,4 +1,4 @@
-import type { CountrySpatialMetadata, GeoAppPlugin, InspectorWidget } from '../types';
+import type { CountrySpatialMetadata, GeoAppPlugin, GeoPath, InspectorWidget } from '../types';
 import { 
   calculateLocalTime, 
   isDaylight, 
@@ -124,6 +124,76 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       text: `${country.countryName} ${local.formatted} ${phase.emoji}`,
       shortText: `${local.formatted} ${phase.emoji}`,
     };
+  },
+
+  getPaths: (_data: Record<string, WorldTimeData>, _activeMetric: string, theme: 'dark' | 'light'): GeoPath[] => {
+    const isDark = theme === 'dark';
+    const paths: GeoPath[] = [];
+
+    // 24 standard timezone meridians (from -180 to +165 in 15-degree steps)
+    for (let lng = -180; lng < 180; lng += 15) {
+      const utcOffset = Math.round(lng / 15);
+      const isWib = lng === 105; // UTC+7 (Jakarta / WIB baseline)
+      const isWita = lng === 120; // UTC+8 (WITA / Bali & Makassar)
+      const isWit = lng === 135; // UTC+9 (WIT / Maluku & Papua)
+      const isGmt = lng === 0;   // UTC 0 (Prime Meridian)
+      const isIdl = lng === -180; // International Date Line (±180)
+
+      // Sample latitude coordinates from +85 (North) to -85 (South)
+      const coords: Array<[number, number]> = [];
+      for (let lat = 85; lat >= -85; lat -= 5) {
+        coords.push([lat, lng]);
+      }
+
+      let color = isDark ? 'rgba(56, 189, 248, 0.22)' : 'rgba(14, 116, 144, 0.28)';
+      let stroke = 1.0;
+      let altitude = 0.003;
+      let dashLength: number | undefined;
+      let dashGap: number | undefined;
+      let label = `UTC${utcOffset >= 0 ? '+' : ''}${utcOffset}`;
+
+      if (isWib) {
+        color = '#10b981'; // Glowing emerald for WIB baseline
+        stroke = 2.2;
+        altitude = 0.006;
+        label = 'WIB (UTC+7 / Jakarta Baseline)';
+      } else if (isWita) {
+        color = isDark ? '#34d399' : '#059669';
+        stroke = 1.6;
+        altitude = 0.004;
+        label = 'WITA (UTC+8 / Bali & Makassar)';
+      } else if (isWit) {
+        color = isDark ? '#38bdf8' : '#0284c7';
+        stroke = 1.6;
+        altitude = 0.004;
+        label = 'WIT (UTC+9 / Maluku & Papua)';
+      } else if (isGmt) {
+        color = '#06b6d4'; // Cyan for Greenwich Prime Meridian
+        stroke = 2.0;
+        altitude = 0.005;
+        label = 'UTC 0 (Prime Meridian / GMT)';
+      } else if (isIdl) {
+        color = '#f59e0b'; // Amber dashed for International Date Line
+        stroke = 1.8;
+        altitude = 0.004;
+        dashLength = 0.15;
+        dashGap = 0.08;
+        label = 'International Date Line (UTC±12)';
+      }
+
+      paths.push({
+        id: `meridian-utc-${utcOffset}`,
+        coords,
+        color,
+        stroke,
+        altitude,
+        dashLength,
+        dashGap,
+        label,
+      });
+    }
+
+    return paths;
   },
 
   getTooltipHtml: (country: CountrySpatialMetadata, data: WorldTimeData | undefined, _activeMetric: string, theme: 'dark' | 'light'): string => {

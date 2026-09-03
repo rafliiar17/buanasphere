@@ -146,14 +146,6 @@
         </span>
       </div>
       <div class="flex items-center gap-1.5 shrink-0">
-        <button
-          type="button"
-          onclick={() => geoStore.togglePerformanceMode?.()}
-          class="flex items-center gap-1 py-1 px-2 rounded-lg text-[10px] font-bold border transition cursor-pointer {geoStore.performanceMode === 'turbo' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800 text-slate-400 border-slate-700'}"
-          title="Mode Performa (Turbo 60 FPS / High Quality)"
-        >
-          <span>{geoStore.performanceMode === 'turbo' ? '⚡ 60 FPS' : '✨ Quality'}</span>
-        </button>
 
         <button
           type="button"
