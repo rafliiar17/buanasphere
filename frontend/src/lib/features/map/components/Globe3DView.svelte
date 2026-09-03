@@ -10,6 +10,7 @@
   import type { Theme } from '$lib/theme';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
+  import { calculateSimulatedDateFromMinutes } from '$lib/framework/geoglobe/geoMath';
   import * as THREE from 'three';
   import {
     buildCountryIdMapping,
@@ -312,11 +313,15 @@
 
     // Check polymorphic custom labels from active app (e.g. World Cities in TimeWorld)
     if (geoStore.activeApp?.getCustomLabels) {
+      const simDate = geoStore.isSimulatingTime
+        ? calculateSimulatedDateFromMinutes(geoStore.simulatedMinutes, geoStore.simulationAnchorZone)
+        : undefined;
       return geoStore.activeApp.getCustomLabels(
         geoStore.currentAppData,
         mapState.activeMetric,
         currentTheme,
-        selected
+        selected,
+        simDate
       );
     }
 

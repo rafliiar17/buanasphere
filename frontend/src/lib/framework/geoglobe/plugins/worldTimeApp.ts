@@ -137,10 +137,11 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     _data: Record<string, WorldTimeData>,
     _activeMetric: string,
     theme: 'dark' | 'light',
-    selectedIso3?: string
+    selectedIso3?: string,
+    simulationDate?: Date
   ) => {
     const isDark = theme === 'dark';
-    const now = new Date();
+    const now = simulationDate ?? new Date();
 
     return WORLD_CITIES_TIME.map((city) => {
       const local = calculateLocalTime(now, city.utcOffset);
@@ -351,11 +352,11 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     const now = new Date();
     const local = calculateLocalTime(now, country.utcOffset);
     const phase = getDiurnalPhase(local.hours, local.minutes);
-    const diffHours = country.utcOffset - 7;
-    const diffStr =
-      diffHours === 0
-        ? 'Waktu Acuan Lokal (WIB UTC+7)'
-        : `${Math.abs(diffHours)} Jam ${diffHours > 0 ? 'lebih cepat' : 'lebih lambat'} dari Jakarta`;
+    const diffWib = country.utcOffset - 7;
+    const diffWita = country.utcOffset - 8;
+    const diffWit = country.utcOffset - 9;
+    const formatRel = (diff: number) =>
+      diff === 0 ? 'Sama (0 Jam)' : `${diff > 0 ? '+' : ''}${diff} Jam ${diff > 0 ? 'lebih cepat' : 'lebih lambat'}`;
 
     return {
       title: `${country.flagEmoji} ${country.countryName}`,
@@ -369,7 +370,9 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       statsGrid: [
         { label: 'Fase Surya / Diurnal', value: `${phase.emoji} ${phase.label} (${phase.description})` },
         { label: 'Status Bisnis & Kantor', value: data?.isWorkingHours ? '🟢 Jam Kerja Aktif (09:00 - 17:00)' : '🔴 Di Luar Jam Kantor' },
-        { label: 'Relasi vs Waktu Indonesia', value: diffStr },
+        { label: 'Relasi vs WIB (Jakarta)', value: formatRel(diffWib) },
+        { label: 'Relasi vs WITA (Bali / IKN)', value: formatRel(diffWita) },
+        { label: 'Relasi vs WIT (Jayapura)', value: formatRel(diffWit) },
         { label: 'Zona Waktu Baku', value: formatUtcOffset(country.utcOffset) },
         { label: 'Ibukota Negara', value: country.capital },
       ],

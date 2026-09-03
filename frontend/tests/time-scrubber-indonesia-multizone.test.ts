@@ -59,7 +59,7 @@ describe('Interactive 24-Hour Time Scrubber & Indonesia Multi-Timezones (ADR 005
       expect(typeof findCitiesByTimezoneAbbr).toBe('function');
       const wibCities = findCitiesByTimezoneAbbr('WIB');
       expect(wibCities.length).toBeGreaterThanOrEqual(7);
-      expect(wibCities.every((c) => c.utcOffset === 7)).toBe(true);
+      expect(wibCities.every((c: WorldCityTimeInfo) => c.utcOffset === 7)).toBe(true);
     });
 
     it('covers major international metropolises across all 6 inhabited continents', () => {

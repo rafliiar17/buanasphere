@@ -1,7 +1,7 @@
 /**
- * Curated World Cities Dataset with Accurate Geographic Coordinates & Timezone Offsets (ADR 0052)
- * Covers 65+ major global metropolises across all 24+ standard timezones,
- * including multi-timezone nations (Indonesia, USA, Australia, Russia, Canada, Brazil).
+ * Curated World Cities Dataset with Accurate Geographic Coordinates & Timezone Offsets (ADR 0052 & ADR 0054)
+ * Covers 120+ major global metropolises across all standard timezones,
+ * with comprehensive coverage of all Indonesian timezones (WIB UTC+7, WITA UTC+8, WIT UTC+9).
  */
 
 export interface WorldCityTimeInfo {
@@ -16,13 +16,14 @@ export interface WorldCityTimeInfo {
   timezoneAbbr: string;
   timezoneName: string;
   isMajorHub: boolean;
+  regionGroup?: 'indonesia' | 'asia_pacific' | 'europe_me' | 'americas' | 'africa';
   populationRank?: number;
 }
 
 export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
-  // ==========================================
-  // INDONESIA (3 Timezones: WIB, WITA, WIT)
-  // ==========================================
+  // =========================================================================
+  // 🇮🇩 INDONESIA - ZONA WAKTU BARAT (WIB / UTC+7) - Jawa, Sumatera, Kalbar
+  // =========================================================================
   {
     id: 'id-jkt',
     cityName: 'Jakarta',
@@ -35,6 +36,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WIB',
     timezoneName: 'Waktu Indonesia Barat (UTC+7)',
     isMajorHub: true,
+    regionGroup: 'indonesia',
   },
   {
     id: 'id-sub',
@@ -48,6 +50,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WIB',
     timezoneName: 'Waktu Indonesia Barat (UTC+7)',
     isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-bdg',
+    cityName: 'Bandung',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -6.9175,
+    lng: 107.6191,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
   },
   {
     id: 'id-med',
@@ -61,7 +78,124 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WIB',
     timezoneName: 'Waktu Indonesia Barat (UTC+7)',
     isMajorHub: false,
+    regionGroup: 'indonesia',
   },
+  {
+    id: 'id-plm',
+    cityName: 'Palembang',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -2.9761,
+    lng: 104.7754,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-smg',
+    cityName: 'Semarang',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -6.9667,
+    lng: 110.4167,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-jog',
+    cityName: 'Yogyakarta',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -7.7956,
+    lng: 110.3695,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-btj',
+    cityName: 'Banda Aceh',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: 5.5483,
+    lng: 95.3238,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-pdg',
+    cityName: 'Padang',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -0.9471,
+    lng: 100.4172,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-pku',
+    cityName: 'Pekanbaru',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: 0.5071,
+    lng: 101.4478,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-tkg',
+    cityName: 'Bandar Lampung',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -5.4500,
+    lng: 105.2667,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-pnk',
+    cityName: 'Pontianak',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -0.0263,
+    lng: 109.3425,
+    utcOffset: 7,
+    timezoneAbbr: 'WIB',
+    timezoneName: 'Waktu Indonesia Barat (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+
+  // =========================================================================
+  // 🇮🇩 INDONESIA - ZONA WAKTU TENGAH (WITA / UTC+8) - Bali, NTB, NTT, Kal, Sul
+  // =========================================================================
   {
     id: 'id-dps',
     cityName: 'Denpasar (Bali)',
@@ -74,6 +208,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WITA',
     timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
     isMajorHub: true,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-ikn',
+    cityName: 'Balikpapan / IKN Nusantara',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -1.2379,
+    lng: 116.8529,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: true,
+    regionGroup: 'indonesia',
   },
   {
     id: 'id-upg',
@@ -87,7 +236,110 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WITA',
     timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
     isMajorHub: false,
+    regionGroup: 'indonesia',
   },
+  {
+    id: 'id-mdc',
+    cityName: 'Manado',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: 1.4748,
+    lng: 124.8428,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-bdj',
+    cityName: 'Banjarmasin',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -3.3167,
+    lng: 114.5900,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-sri',
+    cityName: 'Samarinda',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -0.5022,
+    lng: 117.1536,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-ami',
+    cityName: 'Mataram (Lombok)',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -8.5833,
+    lng: 116.1167,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-koe',
+    cityName: 'Kupang',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -10.1772,
+    lng: 123.6070,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-plw',
+    cityName: 'Palu',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -0.9000,
+    lng: 119.8333,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-kdi',
+    cityName: 'Kendari',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -3.9985,
+    lng: 122.5126,
+    utcOffset: 8,
+    timezoneAbbr: 'WITA',
+    timezoneName: 'Waktu Indonesia Tengah (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+
+  // =========================================================================
+  // 🇮🇩 INDONESIA - ZONA WAKTU TIMUR (WIT / UTC+9) - Maluku & Papua
+  // =========================================================================
   {
     id: 'id-djj',
     cityName: 'Jayapura',
@@ -100,6 +352,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WIT',
     timezoneName: 'Waktu Indonesia Timur (UTC+9)',
     isMajorHub: true,
+    regionGroup: 'indonesia',
   },
   {
     id: 'id-amq',
@@ -113,11 +366,68 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'WIT',
     timezoneName: 'Waktu Indonesia Timur (UTC+9)',
     isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-soq',
+    cityName: 'Sorong',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -0.8762,
+    lng: 131.2558,
+    utcOffset: 9,
+    timezoneAbbr: 'WIT',
+    timezoneName: 'Waktu Indonesia Timur (UTC+9)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-mkq',
+    cityName: 'Merauke',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -8.4991,
+    lng: 140.4019,
+    utcOffset: 9,
+    timezoneAbbr: 'WIT',
+    timezoneName: 'Waktu Indonesia Timur (UTC+9)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-tte',
+    cityName: 'Ternate',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: 0.7833,
+    lng: 127.3833,
+    utcOffset: 9,
+    timezoneAbbr: 'WIT',
+    timezoneName: 'Waktu Indonesia Timur (UTC+9)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
+  },
+  {
+    id: 'id-mkw',
+    cityName: 'Manokwari',
+    countryIso3: 'IDN',
+    countryName: 'Indonesia',
+    flagEmoji: '🇮🇩',
+    lat: -0.8615,
+    lng: 134.0620,
+    utcOffset: 9,
+    timezoneAbbr: 'WIT',
+    timezoneName: 'Waktu Indonesia Timur (UTC+9)',
+    isMajorHub: false,
+    regionGroup: 'indonesia',
   },
 
-  // ==========================================
-  // ASIA TENGGARA & ASIA TIMUR
-  // ==========================================
+  // =========================================================================
+  // 🌏 ASIA TENGGARA & ASIA TIMUR
+  // =========================================================================
   {
     id: 'sg-sin',
     cityName: 'Singapura',
@@ -130,6 +440,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'SGT',
     timezoneName: 'Singapore Standard Time (UTC+8)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'my-kul',
@@ -143,6 +454,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'MYT',
     timezoneName: 'Malaysia Time (UTC+8)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'my-pen',
+    cityName: 'Penang (George Town)',
+    countryIso3: 'MYS',
+    countryName: 'Malaysia',
+    flagEmoji: '🇲🇾',
+    lat: 5.4141,
+    lng: 100.3288,
+    utcOffset: 8,
+    timezoneAbbr: 'MYT',
+    timezoneName: 'Malaysia Time (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'th-bkk',
@@ -156,6 +482,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'ICT',
     timezoneName: 'Indochina Time (UTC+7)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'th-cnx',
+    cityName: 'Chiang Mai',
+    countryIso3: 'THA',
+    countryName: 'Thailand',
+    flagEmoji: '🇹🇭',
+    lat: 18.7883,
+    lng: 98.9853,
+    utcOffset: 7,
+    timezoneAbbr: 'ICT',
+    timezoneName: 'Indochina Time (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'vn-han',
@@ -169,6 +510,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'ICT',
     timezoneName: 'Indochina Time (UTC+7)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'vn-sgn',
+    cityName: 'Ho Chi Minh City',
+    countryIso3: 'VNM',
+    countryName: 'Vietnam',
+    flagEmoji: '🇻🇳',
+    lat: 10.8231,
+    lng: 106.6297,
+    utcOffset: 7,
+    timezoneAbbr: 'ICT',
+    timezoneName: 'Indochina Time (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'ph-mnl',
@@ -182,6 +538,63 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'PHT',
     timezoneName: 'Philippine Time (UTC+8)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'ph-ceb',
+    cityName: 'Cebu',
+    countryIso3: 'PHL',
+    countryName: 'Filipina',
+    flagEmoji: '🇵🇭',
+    lat: 10.3157,
+    lng: 123.8854,
+    utcOffset: 8,
+    timezoneAbbr: 'PHT',
+    timezoneName: 'Philippine Time (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'kh-pnh',
+    cityName: 'Phnom Penh',
+    countryIso3: 'KHM',
+    countryName: 'Kamboja',
+    flagEmoji: '🇰🇭',
+    lat: 11.5564,
+    lng: 104.9282,
+    utcOffset: 7,
+    timezoneAbbr: 'ICT',
+    timezoneName: 'Indochina Time (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'la-vte',
+    cityName: 'Vientiane',
+    countryIso3: 'LAO',
+    countryName: 'Laos',
+    flagEmoji: '🇱🇦',
+    lat: 17.9757,
+    lng: 102.6331,
+    utcOffset: 7,
+    timezoneAbbr: 'ICT',
+    timezoneName: 'Indochina Time (UTC+7)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'mm-rgn',
+    cityName: 'Yangon',
+    countryIso3: 'MMR',
+    countryName: 'Myanmar',
+    flagEmoji: '🇲🇲',
+    lat: 16.8661,
+    lng: 96.1951,
+    utcOffset: 6.5,
+    timezoneAbbr: 'MMT',
+    timezoneName: 'Myanmar Time (UTC+6:30)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'jp-tyo',
@@ -195,6 +608,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'JST',
     timezoneName: 'Japan Standard Time (UTC+9)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'jp-osa',
+    cityName: 'Osaka',
+    countryIso3: 'JPN',
+    countryName: 'Jepang',
+    flagEmoji: '🇯🇵',
+    lat: 34.6937,
+    lng: 135.5023,
+    utcOffset: 9,
+    timezoneAbbr: 'JST',
+    timezoneName: 'Japan Standard Time (UTC+9)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'kr-sel',
@@ -208,6 +636,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'KST',
     timezoneName: 'Korea Standard Time (UTC+9)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'kr-pus',
+    cityName: 'Busan',
+    countryIso3: 'KOR',
+    countryName: 'Korea Selatan',
+    flagEmoji: '🇰🇷',
+    lat: 35.1796,
+    lng: 129.0756,
+    utcOffset: 9,
+    timezoneAbbr: 'KST',
+    timezoneName: 'Korea Standard Time (UTC+9)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'cn-bjs',
@@ -221,6 +664,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CST',
     timezoneName: 'China Standard Time (UTC+8)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'cn-sha',
@@ -234,6 +678,35 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CST',
     timezoneName: 'China Standard Time (UTC+8)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'cn-can',
+    cityName: 'Guangzhou',
+    countryIso3: 'CHN',
+    countryName: 'Tiongkok',
+    flagEmoji: '🇨🇳',
+    lat: 23.1291,
+    lng: 113.2644,
+    utcOffset: 8,
+    timezoneAbbr: 'CST',
+    timezoneName: 'China Standard Time (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'cn-szx',
+    cityName: 'Shenzhen',
+    countryIso3: 'CHN',
+    countryName: 'Tiongkok',
+    flagEmoji: '🇨🇳',
+    lat: 22.5431,
+    lng: 114.0579,
+    utcOffset: 8,
+    timezoneAbbr: 'CST',
+    timezoneName: 'China Standard Time (UTC+8)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'hk-hkg',
@@ -247,6 +720,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'HKT',
     timezoneName: 'Hong Kong Time (UTC+8)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'tw-tpe',
@@ -260,11 +734,12 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CST',
     timezoneName: 'Taipei Standard Time (UTC+8)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
 
-  // ==========================================
-  // ASIA SELATAN & ASIA TENGAH
-  // ==========================================
+  // =========================================================================
+  // 🕌 ASIA SELATAN & ASIA TENGAH
+  // =========================================================================
   {
     id: 'in-del',
     cityName: 'New Delhi',
@@ -277,6 +752,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'IST',
     timezoneName: 'India Standard Time (UTC+5:30)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'in-bom',
@@ -290,6 +766,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'IST',
     timezoneName: 'India Standard Time (UTC+5:30)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'in-blr',
+    cityName: 'Bengaluru',
+    countryIso3: 'IND',
+    countryName: 'India',
+    flagEmoji: '🇮🇳',
+    lat: 12.9716,
+    lng: 77.5946,
+    utcOffset: 5.5,
+    timezoneAbbr: 'IST',
+    timezoneName: 'India Standard Time (UTC+5:30)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'pk-khi',
@@ -303,6 +794,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'PKT',
     timezoneName: 'Pakistan Standard Time (UTC+5)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'pk-lhe',
+    cityName: 'Lahore',
+    countryIso3: 'PAK',
+    countryName: 'Pakistan',
+    flagEmoji: '🇵🇰',
+    lat: 31.5204,
+    lng: 74.3587,
+    utcOffset: 5,
+    timezoneAbbr: 'PKT',
+    timezoneName: 'Pakistan Standard Time (UTC+5)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'bd-dac',
@@ -316,6 +822,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'BST',
     timezoneName: 'Bangladesh Standard Time (UTC+6)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'lk-cmb',
+    cityName: 'Colombo',
+    countryIso3: 'LKA',
+    countryName: 'Sri Lanka',
+    flagEmoji: '🇱🇰',
+    lat: 6.9271,
+    lng: 79.8612,
+    utcOffset: 5.5,
+    timezoneAbbr: 'SLST',
+    timezoneName: 'Sri Lanka Time (UTC+5:30)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'np-ktm',
@@ -329,6 +850,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'NPT',
     timezoneName: 'Nepal Time (UTC+5:45)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'uz-tas',
@@ -342,11 +864,26 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'UZT',
     timezoneName: 'Uzbekistan Time (UTC+5)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'kz-ala',
+    cityName: 'Almaty',
+    countryIso3: 'KAZ',
+    countryName: 'Kazakhstan',
+    flagEmoji: '🇰🇿',
+    lat: 43.2220,
+    lng: 76.8512,
+    utcOffset: 5,
+    timezoneAbbr: 'KZT',
+    timezoneName: 'Kazakhstan Time (UTC+5)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
 
-  // ==========================================
-  // TIMUR TENGAH
-  // ==========================================
+  // =========================================================================
+  // 🏜️ TIMUR TENGAH
+  // =========================================================================
   {
     id: 'ae-dxb',
     cityName: 'Dubai',
@@ -359,6 +896,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'GST',
     timezoneName: 'Gulf Standard Time (UTC+4)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'ae-auh',
+    cityName: 'Abu Dhabi',
+    countryIso3: 'ARE',
+    countryName: 'Uni Emirat Arab',
+    flagEmoji: '🇦🇪',
+    lat: 24.4539,
+    lng: 54.3773,
+    utcOffset: 4,
+    timezoneAbbr: 'GST',
+    timezoneName: 'Gulf Standard Time (UTC+4)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'sa-ruh',
@@ -372,6 +924,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AST',
     timezoneName: 'Arabia Standard Time (UTC+3)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'sa-jed',
+    cityName: 'Jeddah',
+    countryIso3: 'SAU',
+    countryName: 'Arab Saudi',
+    flagEmoji: '🇸🇦',
+    lat: 21.5433,
+    lng: 39.1728,
+    utcOffset: 3,
+    timezoneAbbr: 'AST',
+    timezoneName: 'Arabia Standard Time (UTC+3)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'qa-doh',
@@ -385,6 +952,35 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AST',
     timezoneName: 'Arabia Standard Time (UTC+3)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'kw-kwi',
+    cityName: 'Kuwait City',
+    countryIso3: 'KWT',
+    countryName: 'Kuwait',
+    flagEmoji: '🇰🇼',
+    lat: 29.3759,
+    lng: 47.9774,
+    utcOffset: 3,
+    timezoneAbbr: 'AST',
+    timezoneName: 'Arabia Standard Time (UTC+3)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'om-mct',
+    cityName: 'Muscat',
+    countryIso3: 'OMN',
+    countryName: 'Oman',
+    flagEmoji: '🇴🇲',
+    lat: 23.5880,
+    lng: 58.3829,
+    utcOffset: 4,
+    timezoneAbbr: 'GST',
+    timezoneName: 'Gulf Standard Time (UTC+4)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'tr-ist',
@@ -398,11 +994,26 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'TRT',
     timezoneName: 'Turkey Time (UTC+3)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'ir-thr',
+    cityName: 'Tehran',
+    countryIso3: 'IRN',
+    countryName: 'Iran',
+    flagEmoji: '🇮🇷',
+    lat: 35.6892,
+    lng: 51.3890,
+    utcOffset: 3.5,
+    timezoneAbbr: 'IRST',
+    timezoneName: 'Iran Standard Time (UTC+3:30)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
 
-  // ==========================================
-  // EROPA & RUSIA
-  // ==========================================
+  // =========================================================================
+  // 🏰 EROPA & RUSIA
+  // =========================================================================
   {
     id: 'gb-lon',
     cityName: 'London',
@@ -415,6 +1026,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'GMT',
     timezoneName: 'Greenwich Mean Time (UTC 0)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
   },
   {
     id: 'fr-par',
@@ -428,6 +1040,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
   },
   {
     id: 'de-ber',
@@ -441,6 +1054,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
   },
   {
     id: 'de-fra',
@@ -454,6 +1068,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'it-rom',
@@ -467,6 +1082,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'it-mil',
+    cityName: 'Milan',
+    countryIso3: 'ITA',
+    countryName: 'Italia',
+    flagEmoji: '🇮🇹',
+    lat: 45.4642,
+    lng: 9.1900,
+    utcOffset: 1,
+    timezoneAbbr: 'CET',
+    timezoneName: 'Central European Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'es-mad',
@@ -480,6 +1110,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'es-bcn',
+    cityName: 'Barcelona',
+    countryIso3: 'ESP',
+    countryName: 'Spanyol',
+    flagEmoji: '🇪🇸',
+    lat: 41.3879,
+    lng: 2.1699,
+    utcOffset: 1,
+    timezoneAbbr: 'CET',
+    timezoneName: 'Central European Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'nl-ams',
@@ -493,6 +1138,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'ch-zrh',
@@ -506,6 +1152,77 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CET',
     timezoneName: 'Central European Time (UTC+1)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'at-vie',
+    cityName: 'Vienna',
+    countryIso3: 'AUT',
+    countryName: 'Austria',
+    flagEmoji: '🇦🇹',
+    lat: 48.2082,
+    lng: 16.3738,
+    utcOffset: 1,
+    timezoneAbbr: 'CET',
+    timezoneName: 'Central European Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'se-sto',
+    cityName: 'Stockholm',
+    countryIso3: 'SWE',
+    countryName: 'Swedia',
+    flagEmoji: '🇸🇪',
+    lat: 59.3293,
+    lng: 18.0686,
+    utcOffset: 1,
+    timezoneAbbr: 'CET',
+    timezoneName: 'Central European Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'no-osl',
+    cityName: 'Oslo',
+    countryIso3: 'NOR',
+    countryName: 'Norwegia',
+    flagEmoji: '🇳🇴',
+    lat: 59.9139,
+    lng: 10.7522,
+    utcOffset: 1,
+    timezoneAbbr: 'CET',
+    timezoneName: 'Central European Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'pl-waw',
+    cityName: 'Warsawa',
+    countryIso3: 'POL',
+    countryName: 'Polandia',
+    flagEmoji: '🇵🇱',
+    lat: 52.2297,
+    lng: 21.0122,
+    utcOffset: 1,
+    timezoneAbbr: 'CET',
+    timezoneName: 'Central European Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'gr-ath',
+    cityName: 'Athena',
+    countryIso3: 'GRC',
+    countryName: 'Yunani',
+    flagEmoji: '🇬🇷',
+    lat: 37.9838,
+    lng: 23.7275,
+    utcOffset: 2,
+    timezoneAbbr: 'EET',
+    timezoneName: 'Eastern European Time (UTC+2)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'ru-mow',
@@ -519,6 +1236,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'MSK',
     timezoneName: 'Moscow Standard Time (UTC+3)',
     isMajorHub: true,
+    regionGroup: 'europe_me',
+  },
+  {
+    id: 'ru-led',
+    cityName: 'St. Petersburg',
+    countryIso3: 'RUS',
+    countryName: 'Rusia',
+    flagEmoji: '🇷🇺',
+    lat: 59.9343,
+    lng: 30.3351,
+    utcOffset: 3,
+    timezoneAbbr: 'MSK',
+    timezoneName: 'Moscow Standard Time (UTC+3)',
+    isMajorHub: false,
+    regionGroup: 'europe_me',
   },
   {
     id: 'ru-vvo',
@@ -532,67 +1264,12 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'VLAT',
     timezoneName: 'Vladivostok Time (UTC+10)',
     isMajorHub: false,
+    regionGroup: 'europe_me',
   },
 
-  // ==========================================
-  // AFRIKA
-  // ==========================================
-  {
-    id: 'eg-cai',
-    cityName: 'Kairo',
-    countryIso3: 'EGY',
-    countryName: 'Mesir',
-    flagEmoji: '🇪🇬',
-    lat: 30.0444,
-    lng: 31.2357,
-    utcOffset: 2,
-    timezoneAbbr: 'EET',
-    timezoneName: 'Eastern European Time (UTC+2)',
-    isMajorHub: true,
-  },
-  {
-    id: 'za-jnb',
-    cityName: 'Johannesburg',
-    countryIso3: 'ZAF',
-    countryName: 'Afrika Selatan',
-    flagEmoji: '🇿🇦',
-    lat: -26.2041,
-    lng: 28.0473,
-    utcOffset: 2,
-    timezoneAbbr: 'SAST',
-    timezoneName: 'South Africa Standard Time (UTC+2)',
-    isMajorHub: true,
-  },
-  {
-    id: 'ng-los',
-    cityName: 'Lagos',
-    countryIso3: 'NGA',
-    countryName: 'Nigeria',
-    flagEmoji: '🇳🇬',
-    lat: 6.5244,
-    lng: 3.3792,
-    utcOffset: 1,
-    timezoneAbbr: 'WAT',
-    timezoneName: 'West Africa Time (UTC+1)',
-    isMajorHub: false,
-  },
-  {
-    id: 'ke-nbo',
-    cityName: 'Nairobi',
-    countryIso3: 'KEN',
-    countryName: 'Kenya',
-    flagEmoji: '🇰🇪',
-    lat: -1.2921,
-    lng: 36.8219,
-    utcOffset: 3,
-    timezoneAbbr: 'EAT',
-    timezoneName: 'East Africa Time (UTC+3)',
-    isMajorHub: false,
-  },
-
-  // ==========================================
-  // AMERIKA SERIKAT & KANADA (Multi-Timezones)
-  // ==========================================
+  // =========================================================================
+  // 🗽 AMERIKA SERIKAT & KANADA (Multi-Timezones)
+  // =========================================================================
   {
     id: 'us-nyc',
     cityName: 'New York',
@@ -605,6 +1282,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'EST',
     timezoneName: 'Eastern Standard Time (UTC-5)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'us-was',
@@ -618,6 +1296,35 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'EST',
     timezoneName: 'Eastern Standard Time (UTC-5)',
     isMajorHub: false,
+    regionGroup: 'americas',
+  },
+  {
+    id: 'us-bos',
+    cityName: 'Boston',
+    countryIso3: 'USA',
+    countryName: 'Amerika Serikat',
+    flagEmoji: '🇺🇸',
+    lat: 42.3601,
+    lng: -71.0589,
+    utcOffset: -5,
+    timezoneAbbr: 'EST',
+    timezoneName: 'Eastern Standard Time (UTC-5)',
+    isMajorHub: false,
+    regionGroup: 'americas',
+  },
+  {
+    id: 'us-mia',
+    cityName: 'Miami',
+    countryIso3: 'USA',
+    countryName: 'Amerika Serikat',
+    flagEmoji: '🇺🇸',
+    lat: 25.7617,
+    lng: -80.1918,
+    utcOffset: -5,
+    timezoneAbbr: 'EST',
+    timezoneName: 'Eastern Standard Time (UTC-5)',
+    isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'us-chi',
@@ -631,6 +1338,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CST',
     timezoneName: 'Central Standard Time (UTC-6)',
     isMajorHub: true,
+    regionGroup: 'americas',
+  },
+  {
+    id: 'us-hou',
+    cityName: 'Houston',
+    countryIso3: 'USA',
+    countryName: 'Amerika Serikat',
+    flagEmoji: '🇺🇸',
+    lat: 29.7604,
+    lng: -95.3698,
+    utcOffset: -6,
+    timezoneAbbr: 'CST',
+    timezoneName: 'Central Standard Time (UTC-6)',
+    isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'us-den',
@@ -644,6 +1366,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'MST',
     timezoneName: 'Mountain Standard Time (UTC-7)',
     isMajorHub: false,
+    regionGroup: 'americas',
+  },
+  {
+    id: 'us-phx',
+    cityName: 'Phoenix',
+    countryIso3: 'USA',
+    countryName: 'Amerika Serikat',
+    flagEmoji: '🇺🇸',
+    lat: 33.4484,
+    lng: -112.0740,
+    utcOffset: -7,
+    timezoneAbbr: 'MST',
+    timezoneName: 'Mountain Standard Time (UTC-7)',
+    isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'us-lax',
@@ -657,6 +1394,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'PST',
     timezoneName: 'Pacific Standard Time (UTC-8)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'us-sfo',
@@ -670,6 +1408,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'PST',
     timezoneName: 'Pacific Standard Time (UTC-8)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'us-sea',
@@ -683,6 +1422,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'PST',
     timezoneName: 'Pacific Standard Time (UTC-8)',
     isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'us-anc',
@@ -696,6 +1436,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AKST',
     timezoneName: 'Alaska Standard Time (UTC-9)',
     isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'us-hnl',
@@ -709,6 +1450,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'HST',
     timezoneName: 'Hawaii Standard Time (UTC-10)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'ca-yto',
@@ -722,6 +1464,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'EST',
     timezoneName: 'Eastern Standard Time (UTC-5)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'ca-yvr',
@@ -735,11 +1478,12 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'PST',
     timezoneName: 'Pacific Standard Time (UTC-8)',
     isMajorHub: false,
+    regionGroup: 'americas',
   },
 
-  // ==========================================
-  // AMERIKA LATIN
-  // ==========================================
+  // =========================================================================
+  // 💃 AMERIKA LATIN
+  // =========================================================================
   {
     id: 'mx-mex',
     cityName: 'Mexico City',
@@ -752,6 +1496,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CST',
     timezoneName: 'Central Standard Time (UTC-6)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'br-sao',
@@ -765,6 +1510,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'BRT',
     timezoneName: 'Brasilia Time (UTC-3)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'br-rio',
@@ -778,6 +1524,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'BRT',
     timezoneName: 'Brasilia Time (UTC-3)',
     isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'br-mao',
@@ -791,6 +1538,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AMT',
     timezoneName: 'Amazon Time (UTC-4)',
     isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'ar-bue',
@@ -804,6 +1552,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'ART',
     timezoneName: 'Argentina Time (UTC-3)',
     isMajorHub: true,
+    regionGroup: 'americas',
   },
   {
     id: 'cl-scl',
@@ -817,6 +1566,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'CLT',
     timezoneName: 'Chile Standard Time (UTC-4)',
     isMajorHub: false,
+    regionGroup: 'americas',
   },
   {
     id: 'co-bog',
@@ -830,11 +1580,26 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'COT',
     timezoneName: 'Colombia Time (UTC-5)',
     isMajorHub: false,
+    regionGroup: 'americas',
+  },
+  {
+    id: 'pe-lim',
+    cityName: 'Lima',
+    countryIso3: 'PER',
+    countryName: 'Peru',
+    flagEmoji: '🇵🇪',
+    lat: -12.0464,
+    lng: -77.0428,
+    utcOffset: -5,
+    timezoneAbbr: 'PET',
+    timezoneName: 'Peru Time (UTC-5)',
+    isMajorHub: false,
+    regionGroup: 'americas',
   },
 
-  // ==========================================
-  // OSEANIA & PASIFIK (Multi-Timezones)
-  // ==========================================
+  // =========================================================================
+  // 🦘 OSEANIA & PASIFIK
+  // =========================================================================
   {
     id: 'au-syd',
     cityName: 'Sydney',
@@ -847,6 +1612,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AEST',
     timezoneName: 'Australian Eastern Standard Time (UTC+10)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'au-mel',
@@ -860,6 +1626,21 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AEST',
     timezoneName: 'Australian Eastern Standard Time (UTC+10)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+  {
+    id: 'au-bne',
+    cityName: 'Brisbane',
+    countryIso3: 'AUS',
+    countryName: 'Australia',
+    flagEmoji: '🇦🇺',
+    lat: -27.4698,
+    lng: 153.0251,
+    utcOffset: 10,
+    timezoneAbbr: 'AEST',
+    timezoneName: 'Australian Eastern Standard Time (UTC+10)',
+    isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'au-adl',
@@ -873,6 +1654,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'ACST',
     timezoneName: 'Australian Central Standard Time (UTC+9:30)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'au-per',
@@ -886,6 +1668,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'AWST',
     timezoneName: 'Australian Western Standard Time (UTC+8)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'nz-akl',
@@ -899,6 +1682,7 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'NZST',
     timezoneName: 'New Zealand Standard Time (UTC+12)',
     isMajorHub: true,
+    regionGroup: 'asia_pacific',
   },
   {
     id: 'fj-suv',
@@ -912,22 +1696,119 @@ export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
     timezoneAbbr: 'FJT',
     timezoneName: 'Fiji Time (UTC+12)',
     isMajorHub: false,
+    regionGroup: 'asia_pacific',
+  },
+
+  // =========================================================================
+  // 🦁 AFRIKA
+  // =========================================================================
+  {
+    id: 'eg-cai',
+    cityName: 'Kairo',
+    countryIso3: 'EGY',
+    countryName: 'Mesir',
+    flagEmoji: '🇪🇬',
+    lat: 30.0444,
+    lng: 31.2357,
+    utcOffset: 2,
+    timezoneAbbr: 'EET',
+    timezoneName: 'Eastern European Time (UTC+2)',
+    isMajorHub: true,
+    regionGroup: 'africa',
+  },
+  {
+    id: 'za-jnb',
+    cityName: 'Johannesburg',
+    countryIso3: 'ZAF',
+    countryName: 'Afrika Selatan',
+    flagEmoji: '🇿🇦',
+    lat: -26.2041,
+    lng: 28.0473,
+    utcOffset: 2,
+    timezoneAbbr: 'SAST',
+    timezoneName: 'South Africa Standard Time (UTC+2)',
+    isMajorHub: true,
+    regionGroup: 'africa',
+  },
+  {
+    id: 'za-cpt',
+    cityName: 'Cape Town',
+    countryIso3: 'ZAF',
+    countryName: 'Afrika Selatan',
+    flagEmoji: '🇿🇦',
+    lat: -33.9249,
+    lng: 18.4241,
+    utcOffset: 2,
+    timezoneAbbr: 'SAST',
+    timezoneName: 'South Africa Standard Time (UTC+2)',
+    isMajorHub: false,
+    regionGroup: 'africa',
+  },
+  {
+    id: 'ng-los',
+    cityName: 'Lagos',
+    countryIso3: 'NGA',
+    countryName: 'Nigeria',
+    flagEmoji: '🇳🇬',
+    lat: 6.5244,
+    lng: 3.3792,
+    utcOffset: 1,
+    timezoneAbbr: 'WAT',
+    timezoneName: 'West Africa Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'africa',
+  },
+  {
+    id: 'ke-nbo',
+    cityName: 'Nairobi',
+    countryIso3: 'KEN',
+    countryName: 'Kenya',
+    flagEmoji: '🇰🇪',
+    lat: -1.2921,
+    lng: 36.8219,
+    utcOffset: 3,
+    timezoneAbbr: 'EAT',
+    timezoneName: 'East Africa Time (UTC+3)',
+    isMajorHub: false,
+    regionGroup: 'africa',
+  },
+  {
+    id: 'ma-cas',
+    cityName: 'Casablanca',
+    countryIso3: 'MAR',
+    countryName: 'Maroko',
+    flagEmoji: '🇲🇦',
+    lat: 33.5731,
+    lng: -7.5898,
+    utcOffset: 1,
+    timezoneAbbr: 'WEST',
+    timezoneName: 'Western European Summer Time (UTC+1)',
+    isMajorHub: false,
+    regionGroup: 'africa',
   },
 ];
 
 /**
- * Find city by id
+ * Find city by unique ID
  */
 export function getWorldCityById(id: string): WorldCityTimeInfo | undefined {
   return WORLD_CITIES_TIME.find((c) => c.id === id);
 }
 
 /**
- * Filter cities belonging to a specific country ISO3
+ * Filter cities belonging to a specific country ISO3 (e.g. 'IDN')
  */
 export function findCitiesByCountry(iso3: string): WorldCityTimeInfo[] {
   const query = iso3.toUpperCase();
   return WORLD_CITIES_TIME.filter((c) => c.countryIso3 === query);
+}
+
+/**
+ * Filter cities belonging to a specific timezone abbreviation (e.g. 'WIB', 'WITA', 'WIT')
+ */
+export function findCitiesByTimezoneAbbr(abbr: string): WorldCityTimeInfo[] {
+  const query = abbr.toUpperCase();
+  return WORLD_CITIES_TIME.filter((c) => c.timezoneAbbr === query);
 }
 
 /**

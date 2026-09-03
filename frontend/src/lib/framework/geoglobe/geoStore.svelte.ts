@@ -67,6 +67,24 @@ export function createGeoStore() {
   let performanceMode = $state<'turbo' | 'quality'>('quality');
   let showTimezoneLines = $state(true);
 
+  // Time-Travel Simulation State (ADR 0054)
+  let isSimulatingTime = $state(false);
+  let simulatedMinutes = $state(720); // 12:00 midday
+  let simulationAnchorZone = $state<'WIB' | 'WITA' | 'WIT' | 'LOCAL'>('WIB');
+
+  function setSimulatedMinutes(minutes: number) {
+    simulatedMinutes = Math.max(0, Math.min(1439, minutes));
+    isSimulatingTime = true;
+  }
+
+  function setSimulationAnchorZone(zone: 'WIB' | 'WITA' | 'WIT' | 'LOCAL') {
+    simulationAnchorZone = zone;
+  }
+
+  function resetTimeToLive() {
+    isSimulatingTime = false;
+  }
+
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);
 
@@ -279,6 +297,15 @@ export function createGeoStore() {
     set customFilter(val) { customFilter = val; },
     get performanceMode() { return performanceMode; },
     set performanceMode(val) { performanceMode = val; },
+    get isSimulatingTime() { return isSimulatingTime; },
+    set isSimulatingTime(val) { isSimulatingTime = val; },
+    get simulatedMinutes() { return simulatedMinutes; },
+    set simulatedMinutes(val) { simulatedMinutes = val; },
+    get simulationAnchorZone() { return simulationAnchorZone; },
+    set simulationAnchorZone(val) { simulationAnchorZone = val; },
+    setSimulatedMinutes,
+    setSimulationAnchorZone,
+    resetTimeToLive,
     get currentAppData() { return appDataCache[activeAppId] ?? {}; },
     get isLoadingData() { return isLoadingData; },
     switchApp,
