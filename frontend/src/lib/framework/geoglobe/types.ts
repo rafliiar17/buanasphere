@@ -115,6 +115,8 @@ export interface GeoAppPlugin<TData = any> {
     main: string;
     sub: string;
     accentColor?: string;
+    /** App-specific disclaimer strip text shown in Navbar. Falls back to generic kurs disclaimer if omitted. */
+    disclaimer?: string;
   };
   splash?: {
     stepText: string;

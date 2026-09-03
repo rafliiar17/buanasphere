@@ -9,7 +9,8 @@
     Sparkles,
     Compass,
     Layers,
-    Activity
+    Activity,
+    Flag
   } from 'lucide-svelte';
   import { geoStore } from '../geoStore.svelte';
   import { EXTENDED_COUNTRIES_DATA } from '../countrySpatialData';
@@ -279,18 +280,22 @@
         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
           Pewarnaan Metrik
         </span>
-        <div class="grid grid-cols-2 gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800">
+        <div class="grid {activeApp.metrics.length >= 3 ? 'grid-cols-3' : 'grid-cols-2'} gap-1.5 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800">
           {#each activeApp.metrics as m}
             {@const isMetricActive = activeMetricId === m.id}
             <button
               type="button"
               onclick={() => handleMetricChange(m.id)}
-              class="py-1 px-2 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer truncate {isMetricActive
+              class="py-1 px-1.5 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer truncate {isMetricActive
                 ? 'bg-sky-500 text-white font-bold shadow border border-sky-400'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'}"
               title={m.label}
             >
-              <Activity class="w-3 h-3 shrink-0" />
+              {#if m.id === 'flag'}
+                <Flag class="w-3 h-3 shrink-0 text-amber-300" />
+              {:else}
+                <Activity class="w-3 h-3 shrink-0" />
+              {/if}
               <span class="truncate">{m.label}</span>
             </button>
           {/each}

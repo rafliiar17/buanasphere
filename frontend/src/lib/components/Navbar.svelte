@@ -24,6 +24,11 @@
     return { main: activeApp?.name || 'Kurs', sub: '.World' };
   });
 
+  /** Disclaimer strip — each plugin provides its own text via branding.disclaimer */
+  const disclaimerText = $derived(
+    activeApp?.branding?.disclaimer ?? t('navbar.disclaimerStrip')
+  );
+
   onMount(() => {
     const unsubLang = subscribeLocale((l) => {
       currentLang = l;
@@ -52,7 +57,7 @@
   <div style="background:var(--bg-subtle);border-bottom:1px solid var(--bg-rule);padding:4px 16px;display:flex;align-items:center;justify-content:center;gap:6px;">
     <ShieldCheck style="width:11px;height:11px;color:var(--ink-4);flex-shrink:0;" />
     <span style="font-size:10px;color:var(--ink-4);letter-spacing:0.02em;">
-      {t('navbar.disclaimerStrip')}
+      {disclaimerText}
     </span>
   </div>
 

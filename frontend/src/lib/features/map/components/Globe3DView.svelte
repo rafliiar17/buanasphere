@@ -348,13 +348,11 @@
       const appData = geoStore.currentAppData?.[iso3] ?? country;
       const pinLabel = geoStore.activeApp?.getPinLabel?.(spatial, appData, mapState.activeMetric);
 
-      const displayText = pinLabel?.text ?? `${rawName} (${curr || iso3})`;
-      const shortText = pinLabel?.shortText ?? (curr || iso3);
+      const displayText = pinLabel?.text ?? `${spatial.flagEmoji ? spatial.flagEmoji + ' ' : ''}${rawName} (${curr || iso3})`;
+      const shortText = pinLabel?.shortText ?? `${spatial.flagEmoji ? spatial.flagEmoji + ' ' : ''}${curr || iso3}`;
       // Hover size/color intentionally omitted — applied imperatively in onLabelHover
-      const defaultSize = isSelected ? 0.65 : (isMajor ? 0.36 : 0.28);
-      const defaultColor = isSelected
-        ? '#38bdf8'
-        : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)');
+      const defaultSize = isSelected ? 0.80 : (isMajor ? 0.38 : 0.28);
+      const defaultColor = isSelected ? '#ffffff' : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)');
 
       const finalLat = pinLabel?.lat ?? lat;
       const finalLng = pinLabel?.lng ?? lng;
@@ -516,7 +514,7 @@
   function updateVisuals() {
     if (!globeInstance) return;
     const isDark = currentTheme === 'dark';
-    const isFlag = mapState.activeMetric === 'flag';
+    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag');
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
 
     applyOptimalDpr();
@@ -562,7 +560,9 @@
       .labelsData(mapState.showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
       .labelColor((d: any) => d.color)
-      .labelResolution(isTurbo ? 1.2 : 1.8)
+      .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.24 : 0.06))
+      .labelAltitude((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.035 : 0.018))
+      .labelResolution(isTurbo ? 1.5 : 3)
       .arcsData(remittanceArcs)
       .arcColor((d: any) => d.color || ['#10b981', '#38bdf8'])
       .arcAltitude((d: any) => d.altitude || 0.35)
@@ -682,7 +682,7 @@
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     const width = globeContainer.clientWidth || window.innerWidth;
     const height = globeContainer.clientHeight || window.innerHeight;
-    const isFlag = mapState.activeMetric === 'flag';
+    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag');
 
     globeInstance = GlobeModule()(globeContainer)
       .width(width)
@@ -758,10 +758,10 @@
         .labelLng((d: any) => d.lng)
         .labelText((d: any) => d.text)
         .labelSize((d: any) => d.size)
-        .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.15 : 0.06))
+        .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.24 : 0.06))
         .labelColor((d: any) => d.color)
-        .labelAltitude(0.020)
-        .labelResolution(2)
+        .labelAltitude((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.035 : 0.018))
+        .labelResolution(3)
         .onLabelClick((d: any) => {
           if (d?.iso3) {
             travelToCountry(d.iso3);
@@ -924,7 +924,7 @@
     const _flightFilter = geoStore.flightCorridorFilter;
     const _passportFilter = geoStore.passportVisaFilter;
     const _theme = currentTheme;
-    const currentMetric = mapState.activeMetric;
+    const currentMetric = geoStore.activeMetricId ?? mapState.activeMetric;
     const _labels = mapState.showLabels;
     const _geoLabels = geoStore.showLabels;
     const _selected = mapState.selectedCountryIso3;

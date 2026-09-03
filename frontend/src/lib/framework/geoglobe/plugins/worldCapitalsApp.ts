@@ -36,6 +36,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
     main: 'Capitals',
     sub: '.World',
     accentColor: '#f59e0b',
+    disclaimer: 'Data ibukota & sejarah kemerdekaan 195+ negara · Gratis · Tanpa registrasi',
   },
   splash: {
     stepText: 'Memuat Peta Ibukota & Sejarah Kemerdekaan Global...',
@@ -121,6 +122,10 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   ) => {
     const isDark = theme === 'dark';
 
+    if (activeMetric === 'flag') {
+      return getCountryFlagColor(country.iso3);
+    }
+
     if (state?.isSelected) return '#38bdf8';
     if (state?.isHovered) return '#34d399';
 
@@ -131,10 +136,6 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
 
     if (!data) {
       return isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(203, 213, 225, 0.6)';
-    }
-
-    if (activeMetric === 'flag') {
-      return getCountryFlagColor(country.iso3);
     }
 
     if (activeMetric === 'national_month') {
@@ -219,9 +220,10 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
   // 6. 3D Globe Landmark Pin Labels
   getPinLabel: (country: CountrySpatialMetadata, data: WorldCapitalData) => {
     const cap = data?.capital ?? country.capital;
+    const flag = country.flagEmoji || '🏛️';
     return {
-      text: `${cap} • ${country.countryName}`,
-      shortText: cap,
+      text: `${flag} ${cap} • ${country.countryName}`,
+      shortText: `${flag} ${cap}`,
       lat: data?.capitalCoordinates?.lat,
       lng: data?.capitalCoordinates?.lng,
     };
