@@ -2,10 +2,19 @@ import type { GeoAppPlugin } from './types';
 
 export class GeoAppRegistry {
   private apps: Map<string, GeoAppPlugin> = new Map();
+  private appData: Map<string, Record<string, any>> = new Map();
   private activeAppId: string = 'fx-rates';
 
   register(plugin: GeoAppPlugin): void {
     this.apps.set(plugin.id, plugin);
+  }
+
+  getAppData(id: string): Record<string, any> | undefined {
+    return this.appData.get(id);
+  }
+
+  setAppData(id: string, data: Record<string, any>): void {
+    this.appData.set(id, data);
   }
 
   getApp(id: string): GeoAppPlugin | undefined {

@@ -4,6 +4,7 @@ import {
   MEGADIVERSE_ISO3_LIST, 
   getFloraFaunaDataForCountry 
 } from './data/floraFaunaData';
+import { geoRegistry } from './appRegistry';
 
 export type TimeFilterType = 'all' | 'working' | 'daylight' | 'night' | 'golden_hour';
 export type FlightCorridorFilterType = 'all' | 'mideast' | 'asean' | 'eastasia' | 'west';
@@ -157,9 +158,18 @@ export function isCountryMatchingAppFilter(
     flightFilter?: FlightCorridorFilterType;
     passportFilter?: PassportVisaFilterType;
     natureFilter?: NatureFilterType;
+    customFilter?: unknown;
+    appData?: Record<string, any>;
     region?: string;
   } = {}
 ): boolean {
+  const plugin = geoRegistry.getApp(appId);
+  if (plugin?.filterPredicate && filters.customFilter !== undefined) {
+    const data = filters.appData?.[iso3] ?? geoRegistry.getAppData(appId)?.[iso3];
+    const spatial = EXTENDED_COUNTRIES_DATA.find((c) => c.iso3 === iso3);
+    return plugin.filterPredicate(iso3, filters.customFilter, data, spatial);
+  }
+
   if (appId === 'world-time') {
     return isCountryMatchingTimeFilter(iso3, filters.timeFilter || 'all');
   }
