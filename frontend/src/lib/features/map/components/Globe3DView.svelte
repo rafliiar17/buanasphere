@@ -710,7 +710,20 @@
           lastHoveredIso3 = iso3 ?? '';
           mapState.hoveredIso3 = iso3;
           onCountryHover?.(iso3);
-          updateVisuals();
+          // Update polygon visuals only (NOT labelsData — that would reset the dataset
+          // and trigger onLabelHover(null) again, causing an infinite fade-in/out loop)
+          if (globeInstance) {
+            requestAnimationFrame(() => {
+              if (globeInstance) {
+                globeInstance.polygonAltitude((feat: any) => {
+                  const featIso3 = getFeatureIso3(feat);
+                  if (mapState.selectedCountryIso3 === featIso3 || mapState.hoveredIso3 === featIso3) return 0.018;
+                  return 0.005;
+                });
+                globeInstance.polygonCapColor((feat: any) => getPolygonColor(feat));
+              }
+            });
+          }
         });
     }
 
