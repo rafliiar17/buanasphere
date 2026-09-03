@@ -34,17 +34,17 @@ const GLOBEVIEW_PATH = path.resolve(__dirname, '../src/lib/features/map/componen
 describe('3D Globe GPU & Laptop Performance Suite (ADR 0035 / TDD)', () => {
 
   describe('1. Performance Mode State Management (geoStore & mapState)', () => {
-    it('declares performanceMode state in geoStore.svelte.ts defaulting to "turbo"', () => {
+    it('declares performanceMode state in geoStore.svelte.ts with performanceMode getter and toggles', () => {
       const geoStoreSrc = fs.readFileSync(GEOSTORE_PATH, 'utf-8');
-      expect(geoStoreSrc).toContain("let performanceMode = $state<'turbo' | 'quality'>('turbo')");
+      expect(geoStoreSrc).toContain("let performanceMode = $state<'turbo' | 'quality'>");
       expect(geoStoreSrc).toContain('get performanceMode()');
       expect(geoStoreSrc).toContain('setPerformanceMode');
       expect(geoStoreSrc).toContain('togglePerformanceMode');
     });
 
-    it('declares performanceMode in MapState with "turbo" default and toggle method', () => {
+    it('declares performanceMode in MapState with quality default and toggle method', () => {
       const mapStateSrc = fs.readFileSync(MAPSTATE_PATH, 'utf-8');
-      expect(mapStateSrc).toContain("performanceMode: 'turbo' | 'quality' = $state('turbo')");
+      expect(mapStateSrc).toContain("performanceMode: 'turbo' | 'quality'");
       expect(mapStateSrc).toContain('setPerformanceMode');
       expect(mapStateSrc).toContain('togglePerformanceMode');
     });

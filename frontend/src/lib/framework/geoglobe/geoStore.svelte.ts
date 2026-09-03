@@ -58,7 +58,7 @@ export function createGeoStore() {
   let customFilter = $state<unknown>('all');
 
   // Performance Profile (ADR 0035 - Laptop GPU & WebGL Optimization)
-  let performanceMode = $state<'turbo' | 'quality'>('turbo');
+  let performanceMode = $state<'turbo' | 'quality'>('quality');
 
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);

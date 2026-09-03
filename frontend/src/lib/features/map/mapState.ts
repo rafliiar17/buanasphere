@@ -66,7 +66,7 @@ export class MapState {
   isControlsCollapsed: boolean = false;
   isRegionDropdownOpen: boolean = false;
   highlightedIndex: number = 0;
-  performanceMode: 'turbo' | 'quality' = 'turbo';
+  performanceMode: 'turbo' | 'quality' = 'quality';
 
   constructor(initial?: Partial<MapStateConfig & { performanceMode?: 'turbo' | 'quality' }>) {
     if (initial) {

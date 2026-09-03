@@ -50,19 +50,6 @@ export const GLOBE_LUT_FRAGMENT_SHADER = /* glsl */ `
     float lutCoord = (countryIdFloat + 0.5) / 256.0;
     vec4 countryColor = texture2D(uPaletteLut, vec2(lutCoord, 0.5));
 
-    // Crisp country border outline detection (multi-direction neighbor check)
-    vec2 dUv = vec2(1.0 / 2048.0, 1.0 / 1024.0);
-    float idRight = floor(texture2D(uCountryIdMap, vUv + vec2(dUv.x, 0.0)).r * 255.0 + 0.5);
-    float idLeft  = floor(texture2D(uCountryIdMap, vUv - vec2(dUv.x, 0.0)).r * 255.0 + 0.5);
-    float idUp    = floor(texture2D(uCountryIdMap, vUv + vec2(0.0, dUv.y)).r * 255.0 + 0.5);
-    float idDown  = floor(texture2D(uCountryIdMap, vUv - vec2(0.0, dUv.y)).r * 255.0 + 0.5);
-
-    bool isBorder = (countryIdFloat != idRight || countryIdFloat != idLeft || countryIdFloat != idUp || countryIdFloat != idDown);
-    if (isBorder) {
-      vec3 borderColor = vec3(0.20, 0.26, 0.38);
-      countryColor.rgb = mix(countryColor.rgb, borderColor, 0.75);
-    }
-
     // 4. Instant GPU Highlight for Selection & Hover
     if (abs(countryIdFloat - uSelectedId) < 0.5) {
       countryColor.rgb = mix(countryColor.rgb, uSelectColor, 0.85);
