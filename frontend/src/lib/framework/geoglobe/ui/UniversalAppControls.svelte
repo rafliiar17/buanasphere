@@ -71,7 +71,15 @@
     isSearchDropdownOpen = false;
     geoStore.selectCountry(iso3);
     mapState?.selectCountry?.(iso3);
+    geoStore.travelToCountry?.(iso3);
     onSelectCountry?.(iso3);
+  }
+
+  function handleSearchKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && searchResults.length > 0) {
+      e.preventDefault();
+      handleSelectCountry(searchResults[0].iso3);
+    }
   }
 
   function handleToggleProjection() {
