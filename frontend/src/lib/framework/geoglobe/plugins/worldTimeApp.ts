@@ -148,11 +148,18 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
 
     // Zoom-aware LOD: when zoomed out far (> 1.4), only render major global hubs
     // or cities belonging to the currently selected country.
-    // When zoomed in (<= 1.4), render all 120+ cities in full detail!
+    // For Indonesia (ADR 0070): when zoomed out, only show the 3 primary timezone pillars
+    // (Jakarta for WIB, Denpasar for WITA, Jayapura for WIT) to prevent visual clutter.
+    // When zoomed in (<= 1.4), render all 28 Indonesian cities and 120+ global cities in full detail!
+    const INDO_TIMEZONE_PILLARS = new Set(['id-jkt', 'id-dps', 'id-djj']);
+
     const filteredCities = isZoomedOut
-      ? WORLD_CITIES_TIME.filter(
-          (city) => city.isMajorHub || (selectedIso3 && city.countryIso3 === selectedIso3)
-        )
+      ? WORLD_CITIES_TIME.filter((city) => {
+          if (city.countryIso3 === 'IDN') {
+            return INDO_TIMEZONE_PILLARS.has(city.id);
+          }
+          return city.isMajorHub || (selectedIso3 && city.countryIso3 === selectedIso3);
+        })
       : WORLD_CITIES_TIME;
 
     return filteredCities.map((city) => {

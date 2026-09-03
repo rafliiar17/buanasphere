@@ -38,8 +38,8 @@ describe('Zoom-Aware City Level-of-Detail (LOD) Filtering in TimeWorld (ADR 0056
     it('returns all cities of selected country even when zoomed out far (altitude > 1.4)', async () => {
       const { worldTimeApp } = await import('../src/lib/framework/geoglobe/plugins/worldTimeApp');
       
-      // Far zoom altitude = 2.2 with Indonesia selected ('IDN')
-      const labels = worldTimeApp.getCustomLabels!({}, 'diurnal_cycle', 'dark', 'IDN', undefined, 2.2);
+      // Far zoom altitude = 2.2 with USA selected ('USA')
+      const labels = worldTimeApp.getCustomLabels!({}, 'diurnal_cycle', 'dark', 'USA', undefined, 2.2);
 
       const cityNames = labels.map((l: any) => l.text);
 
@@ -47,13 +47,10 @@ describe('Zoom-Aware City Level-of-Detail (LOD) Filtering in TimeWorld (ADR 0056
       expect(cityNames).toContain('Tokyo');
       expect(cityNames).toContain('London');
 
-      // AND all Indonesian regional cities are present for selected country!
-      expect(cityNames).toContain('Jakarta');
-      expect(cityNames).toContain('Banda Aceh');
-      expect(cityNames).toContain('Medan');
-      expect(cityNames).toContain('Semarang');
-      expect(cityNames).toContain('Surabaya');
-      expect(cityNames).toContain('Jayapura');
+      // AND US regional cities are present for selected country!
+      expect(cityNames).toContain('New York');
+      expect(cityNames).toContain('Los Angeles');
+      expect(cityNames).toContain('Chicago');
     });
 
     it('returns all 120+ cities in full detail when zoomed in (altitude <= 1.4)', async () => {
