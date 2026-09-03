@@ -71,8 +71,8 @@ describe('Unified Two-Group Controls & Global Flag Mode Suite (ADR 0052 / TDD)',
       expect(content).toMatch(/Global/i);
     });
 
-    it('provides all 4 global controls in Section 1 (Projection, Label, Rotasi, Bendera)', () => {
-      expect(content).toContain('handleToggleProjection');
+    it('provides global controls in Section 1 (Label, Rotasi, Bendera - ADR 0066)', () => {
+      expect(content).not.toContain('handleToggleProjection');
       expect(content).toContain('handleToggleLabels');
       expect(content).toMatch(/handleToggleAutoRotate|toggleAutoRotate/);
       expect(content).toMatch(/handleToggleFlags|toggleFlags/);

@@ -128,20 +128,12 @@
       {/if}
     </div>
 
-    <!-- Projection Toggle & 3D Labels Toggle -->
-    <div class="mt-3 grid grid-cols-2 gap-2">
-      <button
-        type="button"
-        onclick={() => geoStore.setProjection(geoStore.projectionMode === 'globe' ? 'flat' : 'globe')}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.projectionMode === 'globe' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-      >
-        <span>{geoStore.projectionMode === 'globe' ? '🌍 Globe 3D Nature' : '🗺️ Peta Datar'}</span>
-      </button>
-
+    <!-- 3D Labels Toggle -->
+    <div class="mt-3">
       <button
         type="button"
         onclick={() => { geoStore.showLabels = !geoStore.showLabels; }}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.showLabels ? 'bg-teal-500/20 text-teal-300 border-teal-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        class="w-full flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.showLabels ? 'bg-teal-500/20 text-teal-300 border-teal-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
       >
         <span>{geoStore.showLabels ? 'Label Satwa: ON' : 'Label Satwa: OFF'}</span>
       </button>

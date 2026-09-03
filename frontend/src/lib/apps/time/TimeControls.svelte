@@ -441,16 +441,8 @@
       {/if}
     </div>
 
-    <!-- Projection Toggle, 3D Labels Toggle, and Timezone Lines Toggle -->
-    <div class="grid grid-cols-3 gap-2">
-      <button
-        type="button"
-        onclick={() => geoStore.setProjection(geoStore.projectionMode === 'globe' ? 'flat' : 'globe')}
-        class="flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {geoStore.projectionMode === 'globe' ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-      >
-        <span>{geoStore.projectionMode === 'globe' ? '🌍 3D' : '🗺️ Datar'}</span>
-      </button>
-
+    <!-- 3D Labels Toggle and Timezone Lines Toggle -->
+    <div class="grid grid-cols-2 gap-2">
       <button
         type="button"
         onclick={() => { geoStore.showLabels = !geoStore.showLabels; }}

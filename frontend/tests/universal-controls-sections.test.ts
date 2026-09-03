@@ -42,9 +42,9 @@ describe('Global vs Per-App Controls Hierarchy Suite (ADR 0051 / TDD)', () => {
       expect(content).toMatch(/Tampilan Globe/i);
     });
 
-    it('places Projection and Label toggles inside the Global Globe section', () => {
-      expect(content).toContain('handleToggleProjection');
+    it('places Label and 3D display toggles inside the Global Globe section (ADR 0066)', () => {
       expect(content).toContain('handleToggleLabels');
+      expect(content).not.toContain('handleToggleProjection');
     });
 
     it('provides an Auto-Rotate globe toggle in the Global section', () => {

@@ -35,7 +35,6 @@
         "clsx": "^2.1.1",
         "globe.gl": "^2.46.2",
         "lucide-svelte": "^0.475.0",
-        "plotly.js-dist-min": "^4.0.0",
         "tailwind-merge": "^3.0.1",
         "three": "0.160.0",
       },
@@ -43,7 +42,6 @@
         "@sveltejs/vite-plugin-svelte": "^5.0.3",
         "@tailwindcss/vite": "^4.0.6",
         "@types/bun": "^1.2.2",
-        "@types/plotly.js-dist-min": "^2.3.4",
         "@types/three": "^0.185.4",
         "svelte": "^5.20.2",
         "svelte-check": "^4.1.4",
@@ -51,28 +49,6 @@
         "typescript": "^5.7.3",
         "vite": "^6.1.0",
         "webview-bun": "^2.4.0",
-      },
-    },
-    "frontend-2": {
-      "name": "@buanasphere/frontend-2",
-      "version": "1.0.0",
-      "dependencies": {
-        "clsx": "^2.1.1",
-        "globe.gl": "^2.46.2",
-        "lucide-svelte": "^0.475.0",
-        "tailwind-merge": "^3.0.1",
-        "three": "0.160.0",
-      },
-      "devDependencies": {
-        "@sveltejs/vite-plugin-svelte": "^5.0.3",
-        "@tailwindcss/vite": "^4.0.6",
-        "@types/bun": "^1.2.2",
-        "@types/three": "^0.185.4",
-        "svelte": "^5.20.2",
-        "svelte-check": "^4.1.4",
-        "tailwindcss": "^4.0.6",
-        "typescript": "^5.7.3",
-        "vite": "^6.1.0",
       },
     },
   },
@@ -84,8 +60,6 @@
     "@buanasphere/backend": ["@buanasphere/backend@workspace:backend"],
 
     "@buanasphere/frontend": ["@buanasphere/frontend@workspace:frontend"],
-
-    "@buanasphere/frontend-2": ["@buanasphere/frontend-2@workspace:frontend-2"],
 
     "@cloudflare/kv-asset-handler": ["@cloudflare/kv-asset-handler@0.3.4", "", { "dependencies": { "mime": "^3.0.0" } }, "sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q=="],
 
@@ -346,10 +320,6 @@
     "@types/geojson": ["@types/geojson@7946.0.16", "", {}, "sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg=="],
 
     "@types/node": ["@types/node@26.4.1", "", { "dependencies": { "undici-types": "~8.3.0" } }, "sha512-k97ENvZWtvA6yqz5/FS6a7duDgOPEeOQOc2iKS/nY6mX6qJUKtLnWzQS+Xj6tXweyj6ZcTAK2Qecetnvi9nCLA=="],
-
-    "@types/plotly.js": ["@types/plotly.js@3.0.13", "", {}, "sha512-mWI1NZRDHDoiFiPEvUjR0P12fv21kmT8XSLrEjfNwIDahELaXXkSz38n6o+5SYsq0YEGxkK3ANqqM0cRl8uZdg=="],
-
-    "@types/plotly.js-dist-min": ["@types/plotly.js-dist-min@2.3.4", "", { "dependencies": { "@types/plotly.js": "*" } }, "sha512-ISwLFV6Zs/v3DkaRFLyk2rvYAfVdnYP2VVVy7h+fBDWw52sn7sMUzytkWiN4M75uxr1uz1uiBioePTDpAfoFIg=="],
 
     "@types/stats.js": ["@types/stats.js@0.17.4", "", {}, "sha512-jIBvWWShCvlBqBNIZt0KAshWpvSjhkwkEu4ZUcASoAvhmrgAUI2t1dXrjSL4xXVLB4FznPrIsX3nKXFl/Dt4vA=="],
 
@@ -624,8 +594,6 @@
     "pino-std-serializers": ["pino-std-serializers@7.1.0", "", {}, "sha512-BndPH67/JxGExRgiX1dX0w1FvZck5Wa4aal9198SrRhZjH3GxKQUKIBnYJTdj2HDN3UQAS06HlfcSbQj2OHmaw=="],
 
     "playwright-core": ["playwright-core@1.62.1", "", { "bin": { "playwright-core": "cli.js" } }, "sha512-wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw=="],
-
-    "plotly.js-dist-min": ["plotly.js-dist-min@4.0.0", "", {}, "sha512-Dm6Sr5aHaxDZ7HN6eLRBotMZ9zRYEd+eoimm27B8d2XOFiNpv0oO7QIE0WFwFAfPN16JHM/6do6kDbasB+ftbQ=="],
 
     "point-in-polygon-hao": ["point-in-polygon-hao@1.2.4", "", { "dependencies": { "robust-predicates": "^3.0.2" } }, "sha512-x2pcvXeqhRHlNRdhLs/tgFapAbSSe86wa/eqmj1G6pWftbEs5aVRJhRGM6FYSUERKu0PjekJzMq0gsI2XyiclQ=="],
 

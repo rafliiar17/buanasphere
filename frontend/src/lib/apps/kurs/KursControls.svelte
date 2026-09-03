@@ -30,7 +30,6 @@
     calculatedConvertResult: { value: number; formatted: string };
     onSelectCountry: (country: MapCountryData, explicitInspect?: boolean) => void;
     onResetView: () => void;
-    onToggleProjection: (mode: 'globe' | 'flat') => void;
     onToggleMetric: (metric: MetricType) => void;
     onSelectRegion: (region: RegionId) => void;
     onToggleLabels: () => void;
@@ -44,7 +43,6 @@
     calculatedConvertResult,
     onSelectCountry,
     onResetView,
-    onToggleProjection,
     onToggleMetric,
     onSelectRegion,
     onToggleLabels,
@@ -160,48 +158,39 @@
         </button>
       </div>
 
-      <!-- 2x2 Grid: Projection, Label, Rotasi, Bendera -->
-      <div class="grid grid-cols-2 gap-2">
-        <!-- 1. Projection Toggle -->
-        <button
-          type="button"
-          onclick={() => onToggleProjection(mapState.projectionMode === 'globe' ? 'flat' : 'globe')}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.projectionMode === 'globe' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-        >
-          <span>{mapState.projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'}</span>
-        </button>
-
-        <!-- 2. Label 3D Toggle -->
+      <!-- 3-col Grid: Label, Rotasi, Bendera -->
+      <div class="grid grid-cols-3 gap-1.5">
+        <!-- 1. Label 3D Toggle -->
         <button
           type="button"
           onclick={onToggleLabels}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          class="flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl border text-[11px] font-semibold transition cursor-pointer {mapState.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
         >
           {#if mapState.showLabels}
             <Eye class="w-3.5 h-3.5" />
-            <span>Label 3D: ON</span>
+            <span>Label: ON</span>
           {:else}
             <EyeOff class="w-3.5 h-3.5" />
-            <span>Label 3D: OFF</span>
+            <span>Label: OFF</span>
           {/if}
         </button>
 
-        <!-- 3. Rotasi Toggle -->
+        <!-- 2. Rotasi Toggle -->
         <button
           type="button"
           onclick={() => mapState.toggleAutoRotate()}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.autoRotate ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          class="flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl border text-[11px] font-semibold transition cursor-pointer {mapState.autoRotate ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
           title="Putar Otomatis Sudut Pandang Globe"
         >
           <RotateCw class="w-3.5 h-3.5 {mapState.autoRotate ? 'animate-spin' : ''}" />
           <span>Rotasi: {mapState.autoRotate ? 'ON' : 'OFF'}</span>
         </button>
 
-        <!-- 4. Bendera Toggle -->
+        <!-- 3. Bendera Toggle -->
         <button
           type="button"
           onclick={() => mapState.toggleFlags()}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {(mapState.showFlags || mapState.activeMetric === 'flag') ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          class="flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl border text-[11px] font-semibold transition cursor-pointer {(mapState.showFlags || mapState.activeMetric === 'flag') ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
           title="Tampilkan Tekstur Bendera Nasional di Setiap Negara"
         >
           <Flag class="w-3.5 h-3.5 text-amber-300" />
