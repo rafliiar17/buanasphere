@@ -304,6 +304,7 @@
   ]);
 
   let lastHoveredIso3 = '';
+  let cameraAltitude = $state(2.2);
 
   // Country 3D Pin Labels with LOD filtering (reduces draw calls by 85%)
   const globeLabels = $derived.by(() => {
@@ -321,7 +322,8 @@
         mapState.activeMetric,
         currentTheme,
         selected,
-        simDate
+        simDate,
+        cameraAltitude
       );
     }
 
@@ -895,6 +897,16 @@
       controls.dampingFactor = 0.06;
       controls.minDistance = 105;
       controls.maxDistance = 550;
+
+      // Track camera altitude for Zoom-Aware LOD (ADR 0056)
+      controls.addEventListener('change', () => {
+        const pov = globeInstance.pointOfView();
+        if (pov && typeof pov.altitude === 'number') {
+          if (Math.abs(pov.altitude - cameraAltitude) > 0.12) {
+            cameraAltitude = pov.altitude;
+          }
+        }
+      });
     }
 
     // Centered initially near Indonesia / Asia-Pacific

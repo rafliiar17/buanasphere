@@ -86,7 +86,7 @@ describe('Accurate World Cities & Geographic 3D Points in TimeWorld (ADR 0052 / 
 
     it('getCustomLabels returns clean city labels with pure city name without emojis or time text (ADR 0055)', async () => {
       const { worldTimeApp } = await import('../src/lib/framework/geoglobe/plugins/worldTimeApp');
-      const labels = worldTimeApp.getCustomLabels!({}, 'diurnal_cycle', 'dark');
+      const labels = worldTimeApp.getCustomLabels!({}, 'diurnal_cycle', 'dark', undefined, undefined, 1.0);
 
       expect(labels.length).toBeGreaterThanOrEqual(50);
       const tokyo = labels.find((l: any) => l.text === 'Tokyo');

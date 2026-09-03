@@ -138,14 +138,24 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     _activeMetric: string,
     theme: 'dark' | 'light',
     selectedIso3?: string,
-    simulationDate?: Date
+    simulationDate?: Date,
+    cameraAltitude?: number
   ) => {
     const isDark = theme === 'dark';
     const now = simulationDate ?? new Date();
+    const alt = cameraAltitude ?? 2.2;
+    const isZoomedOut = alt > 1.4;
 
-    return WORLD_CITIES_TIME.map((city) => {
-      const local = calculateLocalTime(now, city.utcOffset);
-      const phase = getDiurnalPhase(local.hours, local.minutes);
+    // Zoom-aware LOD: when zoomed out far (> 1.4), only render major global hubs
+    // or cities belonging to the currently selected country.
+    // When zoomed in (<= 1.4), render all 120+ cities in full detail!
+    const filteredCities = isZoomedOut
+      ? WORLD_CITIES_TIME.filter(
+          (city) => city.isMajorHub || (selectedIso3 && city.countryIso3 === selectedIso3)
+        )
+      : WORLD_CITIES_TIME;
+
+    return filteredCities.map((city) => {
       const isSelected = selectedIso3 === city.countryIso3;
       const isMajor = city.isMajorHub;
 
