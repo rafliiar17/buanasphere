@@ -15,4 +15,6 @@ export * from './layers/arcLayer';
 export * from './layers/pathLayer';
 export * from './layers/ringLayer';
 export * from './layers/labelLayer';
+export * from './data/financialHubsData';
+export * from './layers/hexBinLayer';
 export { default as GlobeScene } from './GlobeScene.svelte';

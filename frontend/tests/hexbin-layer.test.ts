@@ -80,7 +80,7 @@ describe('3D Hexagonal Binning Financial Volume Suite (ADR 0063 / TDD)', () => {
       const html = createHexBinTooltip(gbr, 20300, 'dark');
 
       expect(html).toContain('London');
-      expect(html).toContain('3,755');
+      expect(html).toContain('3.755');
       expect(html).toContain('38.1%');
       expect(html).toContain('Rp 20.300');
     });
@@ -94,6 +94,7 @@ describe('3D Hexagonal Binning Financial Volume Suite (ADR 0063 / TDD)', () => {
         hexBinPointWeight: (fn: any) => { calls.hexBinPointWeight = fn; return mockGlobe; },
         hexBinResolution: (r: any) => { calls.hexBinResolution = r; return mockGlobe; },
         hexMargin: (m: any) => { calls.hexMargin = m; return mockGlobe; },
+        hexTopCurvatureResolution: (r: any) => { calls.hexTopCurvatureResolution = r; return mockGlobe; },
         hexAltitude: (fn: any) => { calls.hexAltitude = fn; return mockGlobe; },
         hexTopColor: (fn: any) => { calls.hexTopColor = fn; return mockGlobe; },
         hexSideColor: (fn: any) => { calls.hexSideColor = fn; return mockGlobe; },

@@ -6,6 +6,8 @@
   import { configurePathLayer } from './layers/pathLayer';
   import { configureRingLayer } from './layers/ringLayer';
   import { configureLabelLayer } from './layers/labelLayer';
+  import { configureHexBinLayer, type HexBinPointData } from './layers/hexBinLayer';
+  import type { FinancialHubData } from './data/financialHubsData';
   import {
     flyTo as cameraFlyTo,
     travelToCountry as cameraTravelToCountry,
@@ -28,6 +30,8 @@
     paths?: any[];
     rings?: any[];
     labels?: any[];
+    hexBinPoints?: HexBinPointData[];
+    rateMapByCurrency?: Record<string, number>;
     theme?: Theme;
     autoRotate?: boolean;
     autoRotateSpeed?: number;
@@ -38,6 +42,8 @@
     currentAppData?: Record<string, any> | null;
     onCountryClick?: (iso3: string, feat: any, event: MouseEvent) => void;
     onCountryHover?: (iso3: string | null, feat: any | null) => void;
+    onHexClick?: (hub: FinancialHubData, event?: MouseEvent) => void;
+    onHexHover?: (hub: FinancialHubData | null, event?: MouseEvent) => void;
     onPathClick?: (path: any) => void;
     onArcClick?: (arc: any, event: MouseEvent) => void;
     onLabelClick?: (label: any, event?: MouseEvent) => void;
@@ -55,6 +61,8 @@
     paths = [],
     rings = [],
     labels = [],
+    hexBinPoints = [],
+    rateMapByCurrency = {},
     theme = 'dark',
     autoRotate = false,
     autoRotateSpeed = 0.5,
@@ -65,6 +73,8 @@
     currentAppData = null,
     onCountryClick,
     onCountryHover,
+    onHexClick,
+    onHexHover,
     onPathClick,
     onArcClick,
     onLabelClick,
@@ -214,6 +224,15 @@
         const iso3 = label ? label.iso3 ?? null : null;
         onCountryHover?.(iso3, label);
       },
+    });
+
+    // Configure Hexagonal Binning 3D Layer (Financial Volume Hubs)
+    configureHexBinLayer(globeInstance, {
+      points: hexBinPoints,
+      theme,
+      rateMapByCurrency,
+      onHexClick,
+      onHexHover,
     });
   });
 

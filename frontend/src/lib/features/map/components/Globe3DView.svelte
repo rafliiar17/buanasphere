@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Loader2, X, Plus, Minus, RotateCcw } from 'lucide-svelte';
+  import { Loader2, X, Plus, Minus, RotateCcw, BarChart3 } from 'lucide-svelte';
   import type { MapStateStore } from '../mapState.svelte';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
@@ -8,6 +8,8 @@
   import type { Theme } from '$lib/theme';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
+  import { GLOBAL_FINANCIAL_HUBS, type FinancialHubData } from '../globe/data/financialHubsData';
+  import type { HexBinPointData } from '../globe/layers/hexBinLayer';
   import { calculateSimulatedDateFromMinutes } from '$lib/framework/geoglobe/geoMath';
   import * as THREE from 'three';
   import {
@@ -299,6 +301,40 @@
       selectedIso3: mapState.selectedCountryIso3,
     });
   });
+
+  // 3D Hexagonal Binning Pillars for Global Financial FX Volume (ADR 0063)
+  let showHexBins = $state(true);
+
+  const hexBinPoints = $derived.by<HexBinPointData[]>(() => {
+    if (!showHexBins) return [];
+    return GLOBAL_FINANCIAL_HUBS.map((hub) => ({
+      lat: hub.lat,
+      lng: hub.lng,
+      weight: hub.dailyTurnoverBillionUsd,
+      hub,
+    }));
+  });
+
+  const rateMapByCurrency = $derived.by<Record<string, number>>(() => {
+    const map: Record<string, number> = {};
+    for (const d of mapData) {
+      if (d.currencyCode) {
+        map[d.currencyCode] = d.middleRate;
+      }
+    }
+    return map;
+  });
+
+  function handleHexClick(hub: FinancialHubData) {
+    travelToCountry(hub.iso3);
+    const country = mapData.find((d) => d.iso3 === hub.iso3);
+    if (country) {
+      onCountryClick?.(country);
+    } else {
+      geoStore.selectCountry(hub.iso3);
+      mapState.selectCountry(hub.iso3);
+    }
+  }
 
   // Exported Camera Navigation Controller Methods (ADR 0043 & ADR 0049)
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
@@ -1072,6 +1108,9 @@
     paths={globePaths}
     rings={globeRings}
     labels={globeLabels}
+    {hexBinPoints}
+    {rateMapByCurrency}
+    onHexClick={handleHexClick}
     theme={currentTheme}
     autoRotate={Boolean(mapState.autoRotate || geoStore.autoRotate)}
     isFilterActive={isFilterCurrentlyActive()}
@@ -1180,6 +1219,16 @@
     </button>
 
     <div class="my-0.5 h-px w-full bg-slate-800"></div>
+
+    <button
+      type="button"
+      onclick={() => (showHexBins = !showHexBins)}
+      class="flex h-8 w-8 items-center justify-center rounded-xl transition cursor-pointer {showHexBins ? 'bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30 shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white active:scale-95'}"
+      title={showHexBins ? 'Sembunyikan Pilar Volume Valas (BIS)' : 'Tampilkan Pilar 3D Volume Pasar Valas (BIS)'}
+      aria-label="Toggle Pilar Volume Valas"
+    >
+      <BarChart3 class="w-3.5 h-3.5" />
+    </button>
 
     <button
       type="button"
