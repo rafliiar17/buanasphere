@@ -84,17 +84,29 @@ describe('Accurate World Cities & Geographic 3D Points in TimeWorld (ADR 0052 / 
       expect(typeof worldTimeApp.getCustomLabels).toBe('function');
     });
 
-    it('getCustomLabels returns accurate city points with live time and diurnal phase', async () => {
+    it('getCustomLabels returns clean city labels with pure city name without emojis or time text (ADR 0055)', async () => {
       const { worldTimeApp } = await import('../src/lib/framework/geoglobe/plugins/worldTimeApp');
       const labels = worldTimeApp.getCustomLabels!({}, 'diurnal_cycle', 'dark');
 
       expect(labels.length).toBeGreaterThanOrEqual(50);
-      const tokyo = labels.find((l: any) => l.text.includes('Tokyo'));
+      const tokyo = labels.find((l: any) => l.text === 'Tokyo');
       expect(tokyo).toBeDefined();
       expect(tokyo!.lat).toBeCloseTo(35.67, 1);
       expect(tokyo!.lng).toBeCloseTo(139.65, 1);
-      // Format must contain flag, city name, time, and phase emoji
-      expect(tokyo!.text).toMatch(/🇯🇵.*Tokyo.*[0-9]{2}:[0-9]{2}/);
+      expect(tokyo!.text).toBe('Tokyo');
+      expect(tokyo!.shortText).toBe('Tokyo');
+
+      const jakarta = labels.find((l: any) => l.text === 'Jakarta');
+      expect(jakarta).toBeDefined();
+      expect(jakarta!.text).toBe('Jakarta');
+      expect(jakarta!.shortText).toBe('Jakarta');
+
+      // Ensure no labels contain broken question marks, flag emojis, or time colons
+      for (const label of labels) {
+        expect(label.text).not.toContain('??');
+        expect(label.text).not.toMatch(/[0-9]{2}:[0-9]{2}/);
+        expect(label.text).not.toContain('•');
+      }
     });
   });
 
