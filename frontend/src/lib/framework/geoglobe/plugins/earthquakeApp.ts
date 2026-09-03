@@ -15,6 +15,8 @@ import {
   fetchLiveEarthquakes,
   getLiveEarthquakeRings,
 } from '$lib/features/map/services/liveEarthquakeService';
+import QuakeControls from '$lib/apps/quake/QuakeControls.svelte';
+import QuakeBottomDock from '$lib/apps/quake/QuakeBottomDock.svelte';
 
 export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   id: 'earthquake-tracker',
@@ -38,9 +40,12 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   },
   filterOptions: [
     { id: 'all', label: 'Semua Wilayah Seismik' },
-    { id: 'high_risk', label: 'Risiko Tinggi (Ring of Fire) 🔴' },
-    { id: 'm6_plus', label: 'Gempa Kuat (M6.0+) ⚡' },
-    { id: 'tsunami_alert', label: 'Peringatan Tsunami 🌊' },
+    { id: 'high_risk', label: 'Risiko Tinggi (Ring of Fire)' },
+    { id: 'm6_plus', label: 'Gempa Kuat (M6.0+)' },
+    { id: 'tsunami_alert', label: 'Peringatan Tsunami' },
+    { id: 'depth_shallow', label: 'Hiposentrum Dangkal (<30 km)' },
+    { id: 'depth_medium', label: 'Hiposentrum Menengah (30-300 km)' },
+    { id: 'depth_deep', label: 'Hiposentrum Dalam (>300 km)' },
   ],
   filterPredicate: (iso3: string, filterValue: unknown, data?: CountrySeismicProfile) => {
     const profile = data ?? getEarthquakeDataForCountry(iso3);
@@ -49,6 +54,9 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     if (filter === 'high_risk') return profile.seismicRiskTier === 'high';
     if (filter === 'm6_plus') return profile.recentEvents.some((e) => e.magnitude >= 6.0);
     if (filter === 'tsunami_alert') return profile.recentEvents.some((e) => e.tsunamiWarning) || profile.tsunamiRisk;
+    if (filter === 'depth_shallow') return profile.recentEvents.some((e) => e.depthKm < 30);
+    if (filter === 'depth_medium') return profile.recentEvents.some((e) => e.depthKm >= 30 && e.depthKm <= 300);
+    if (filter === 'depth_deep') return profile.recentEvents.some((e) => e.depthKm > 300);
     return true;
   },
   metrics: [
@@ -279,4 +287,7 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
       customData: cData,
     };
   },
+
+  ControlsComponent: QuakeControls,
+  BottomDockComponent: QuakeBottomDock,
 };
