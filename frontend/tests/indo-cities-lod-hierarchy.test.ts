@@ -11,7 +11,7 @@ describe('Indonesian Timezone Pillars LOD Hierarchy Suite (ADR 0070 / TDD)', () 
 
       const cityNames = indoCities.map((c) => c.text);
       expect(cityNames).toContain('Jakarta');
-      expect(cityNames).toContain('Denpasar');
+      expect(cityNames).toContain('Denpasar (Bali)');
       expect(cityNames).toContain('Jayapura');
 
       // Secondary cities must NOT be rendered at this altitude
@@ -43,7 +43,7 @@ describe('Indonesian Timezone Pillars LOD Hierarchy Suite (ADR 0070 / TDD)', () 
       expect(cityNames).toContain('Surabaya');
       expect(cityNames).toContain('Bandung');
       expect(cityNames).toContain('Medan');
-      expect(cityNames).toContain('Denpasar');
+      expect(cityNames).toContain('Denpasar (Bali)');
       expect(cityNames).toContain('Makassar');
       expect(cityNames).toContain('Jayapura');
       expect(cityNames).toContain('Ambon');
