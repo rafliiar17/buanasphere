@@ -400,6 +400,16 @@
     });
   });
 
+  // 3D Paths for Meridians / Custom App Curves (ADR 0041)
+  const globePaths = $derived.by(() => {
+    if (!geoStore.activeApp?.getPaths) return [];
+    return geoStore.activeApp.getPaths(
+      (geoStore.currentAppData ?? {}) as any,
+      mapState.activeMetric,
+      currentTheme
+    );
+  });
+
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
     if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
@@ -471,7 +481,15 @@
       .arcStroke((d: any) => d.stroke || 1.8)
       .arcDashLength((d: any) => d.dashLength || 0.4)
       .arcDashGap((d: any) => d.dashGap || 0.2)
-      .arcDashAnimateTime((d: any) => d.dashAnimateTime || 2000);
+      .arcDashAnimateTime((d: any) => d.dashAnimateTime || 2000)
+      .pathsData(globePaths)
+      .pathPoints((d: any) => d.coords)
+      .pathColor((d: any) => d.color)
+      .pathStroke((d: any) => d.stroke || 1.2)
+      .pathAltitude((d: any) => d.altitude || 0.003)
+      .pathDashLength((d: any) => d.dashLength || 0.1)
+      .pathDashGap((d: any) => d.dashGap || 0.02)
+      .pathDashAnimateTime((d: any) => d.animateTime || 0);
   }
 
   function handleContainerPointerMove(e: MouseEvent) {
@@ -650,6 +668,19 @@
           onCountryHover?.(iso3);
           updateVisuals();
         });
+    }
+
+    // 3D Paths for Meridians / Corridors (ADR 0041)
+    if (globePaths.length > 0) {
+      globeInstance
+        .pathsData(globePaths)
+        .pathPoints((d: any) => d.coords)
+        .pathColor((d: any) => d.color)
+        .pathStroke((d: any) => d.stroke || 1.2)
+        .pathAltitude((d: any) => d.altitude || 0.003)
+        .pathDashLength((d: any) => d.dashLength || 0.1)
+        .pathDashGap((d: any) => d.dashGap || 0.02)
+        .pathDashAnimateTime((d: any) => d.animateTime || 0);
     }
 
     // Google Earth style orbit controls

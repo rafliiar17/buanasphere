@@ -73,6 +73,18 @@ export interface FilterOption {
   icon?: any;
 }
 
+export interface GeoPath {
+  id: string;
+  coords: Array<[number, number]>;
+  color?: string | string[];
+  stroke?: number;
+  altitude?: number;
+  dashLength?: number;
+  dashGap?: number;
+  animateTime?: number;
+  label?: string;
+}
+
 export interface GeoAppPlugin<TData = any> {
   id: string;
   name: string;
@@ -103,6 +115,7 @@ export interface GeoAppPlugin<TData = any> {
   getTooltipHtml?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
   getPinLabel?: (country: CountrySpatialMetadata, data: TData, activeMetric: string) => { text: string; shortText?: string; size?: number; color?: string };
   getArcs?: (data: Record<string, TData>, activeFilter: string) => GeoArc[];
+  getPaths?: (data: Record<string, TData>, activeMetric: string, theme: 'dark' | 'light') => GeoPath[];
   renderInspector?: (country: CountrySpatialMetadata, data: TData, allData?: Record<string, TData>) => InspectorWidget;
   ControlsComponent?: any;
   BottomDockComponent?: any;
