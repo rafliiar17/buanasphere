@@ -24,7 +24,7 @@
     return { main: activeApp?.name || 'Kurs', sub: '.World' };
   });
 
-  /** Disclaimer strip — each plugin provides its own text via branding.disclaimer */
+  /** Dynamic disclaimer strip — each plugin provides its own relevant text */
   const disclaimerText = $derived(
     activeApp?.branding?.disclaimer ?? t('navbar.disclaimerStrip')
   );

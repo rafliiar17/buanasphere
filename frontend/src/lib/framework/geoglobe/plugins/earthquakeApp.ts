@@ -25,6 +25,7 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     main: 'Quake',
     sub: '.World',
     accentColor: '#ef4444',
+    disclaimer: 'Data seismik & peta risiko gempa bumi global · Sumber: USGS & BMKG · Gratis',
   },
   splash: {
     stepText: 'Memuat Pemantauan Seismik Global & Peta Risiko Gempa...',
