@@ -7,6 +7,8 @@ import {
   isCountryMatchingFlightFilter 
 } from '../filterEngine';
 
+import flowCorridorsDataset from '../data/flow_corridors_dataset.json';
+
 export interface RemittanceCorridorData {
   annualVolumeMillionUsd: number;
   migrantWorkersCount: number;
@@ -14,21 +16,20 @@ export interface RemittanceCorridorData {
   isOriginToIndonesia: boolean;
 }
 
-export const REMITTANCE_HUBS: Record<
+export interface RemittanceHubItem {
+  volumeM: number;
+  workers: number;
+  fee: number;
+  color: string;
+  lat: number;
+  lng: number;
+  region?: string;
+}
+
+export const REMITTANCE_HUBS: Record<string, RemittanceHubItem> = flowCorridorsDataset as Record<
   string,
-  { volumeM: number; workers: number; fee: number; color: string; lat: number; lng: number }
-> = {
-  SAU: { volumeM: 3200, workers: 950000, fee: 3.2, color: '#10b981', lat: 24.71, lng: 46.67 },
-  MYS: { volumeM: 2800, workers: 1400000, fee: 2.5, color: '#06b6d4', lat: 3.13, lng: 101.68 },
-  TWN: { volumeM: 1900, workers: 320000, fee: 2.8, color: '#3b82f6', lat: 25.03, lng: 121.56 },
-  HKG: { volumeM: 1600, workers: 170000, fee: 2.1, color: '#8b5cf6', lat: 22.31, lng: 114.16 },
-  SGP: { volumeM: 1500, workers: 140000, fee: 1.8, color: '#ec4899', lat: 1.35, lng: 103.81 },
-  JPN: { volumeM: 1100, workers: 85000, fee: 3.5, color: '#f59e0b', lat: 35.67, lng: 139.65 },
-  USA: { volumeM: 950, workers: 65000, fee: 3.8, color: '#6366f1', lat: 38.90, lng: -77.03 },
-  KOR: { volumeM: 800, workers: 55000, fee: 3.1, color: '#14b8a6', lat: 37.56, lng: 126.97 },
-  ARE: { volumeM: 750, workers: 60000, fee: 3.3, color: '#eab308', lat: 24.45, lng: 54.37 },
-  AUS: { volumeM: 620, workers: 45000, fee: 2.9, color: '#f97316', lat: -35.28, lng: 149.13 },
-};
+  RemittanceHubItem
+>;
 
 const REMITTANCE_HUBS_SET = new Set(Object.keys(REMITTANCE_HUBS));
 
