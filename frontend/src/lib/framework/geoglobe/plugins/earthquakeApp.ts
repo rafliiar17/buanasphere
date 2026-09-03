@@ -11,6 +11,12 @@ import {
   getEarthquakeDataForCountry,
   GLOBAL_EARTHQUAKES,
 } from '../data/earthquakeData';
+import {
+  fetchLiveEarthquakes,
+  getLiveEarthquakeRings,
+} from '$lib/features/map/services/liveEarthquakeService';
+import QuakeControls from '$lib/apps/quake/QuakeControls.svelte';
+import QuakeBottomDock from '$lib/apps/quake/QuakeBottomDock.svelte';
 
 export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   id: 'earthquake-tracker',
@@ -34,9 +40,12 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   },
   filterOptions: [
     { id: 'all', label: 'Semua Wilayah Seismik' },
-    { id: 'high_risk', label: 'Risiko Tinggi (Ring of Fire) 🔴' },
-    { id: 'm6_plus', label: 'Gempa Kuat (M6.0+) ⚡' },
-    { id: 'tsunami_alert', label: 'Peringatan Tsunami 🌊' },
+    { id: 'high_risk', label: 'Risiko Tinggi (Ring of Fire)' },
+    { id: 'm6_plus', label: 'Gempa Kuat (M6.0+)' },
+    { id: 'tsunami_alert', label: 'Peringatan Tsunami' },
+    { id: 'depth_shallow', label: 'Hiposentrum Dangkal (<30 km)' },
+    { id: 'depth_medium', label: 'Hiposentrum Menengah (30-300 km)' },
+    { id: 'depth_deep', label: 'Hiposentrum Dalam (>300 km)' },
   ],
   filterPredicate: (iso3: string, filterValue: unknown, data?: CountrySeismicProfile) => {
     const profile = data ?? getEarthquakeDataForCountry(iso3);
@@ -45,6 +54,9 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     if (filter === 'high_risk') return profile.seismicRiskTier === 'high';
     if (filter === 'm6_plus') return profile.recentEvents.some((e) => e.magnitude >= 6.0);
     if (filter === 'tsunami_alert') return profile.recentEvents.some((e) => e.tsunamiWarning) || profile.tsunamiRisk;
+    if (filter === 'depth_shallow') return profile.recentEvents.some((e) => e.depthKm < 30);
+    if (filter === 'depth_medium') return profile.recentEvents.some((e) => e.depthKm >= 30 && e.depthKm <= 300);
+    if (filter === 'depth_deep') return profile.recentEvents.some((e) => e.depthKm > 300);
     return true;
   },
   metrics: [
@@ -84,9 +96,21 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
   ],
 
   dataLoader: async (countries: CountrySpatialMetadata[]): Promise<Record<string, CountrySeismicProfile>> => {
+    const liveResult = await fetchLiveEarthquakes();
+    const liveEvents = liveResult.events;
+
     const dataMap: Record<string, CountrySeismicProfile> = {};
     for (const country of countries) {
-      dataMap[country.iso3] = getEarthquakeDataForCountry(country.iso3, country.countryName);
+      const base = getEarthquakeDataForCountry(country.iso3, country.countryName);
+      const matchedEvents = liveEvents.filter(
+        (e) => e.countryIso3 === country.iso3 || (base.recentEvents && base.recentEvents.some((be) => be.id === e.id))
+      );
+
+      dataMap[country.iso3] = {
+        ...base,
+        recentEvents: matchedEvents.length > 0 ? matchedEvents : base.recentEvents,
+        activeAlertCount: matchedEvents.filter((e) => e.magnitude >= 5.0).length,
+      };
     }
     return dataMap;
   },
@@ -104,24 +128,7 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     }
 
     const safeEvents = events.length > 0 ? events : GLOBAL_EARTHQUAKES;
-
-    return safeEvents.map((eq) => {
-      let color = '#eab308'; // M < 5 (kuning)
-      if (eq.magnitude >= 6.0) {
-        color = '#ef4444'; // M >= 6 (merah)
-      } else if (eq.magnitude >= 5.0) {
-        color = '#f97316'; // M >= 5 (oranye)
-      }
-
-      return {
-        lat: eq.lat,
-        lng: eq.lng,
-        maxRadius: eq.magnitude * 1.5,
-        propagationSpeed: 2.5,
-        repeatPeriod: 1800,
-        color,
-      };
-    });
+    return getLiveEarthquakeRings(safeEvents);
   },
 
   getPolygonColor: (
@@ -211,15 +218,13 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
     const latest = cData.recentEvents?.[0];
     if (latest) {
       return {
-        text: `⚡ ${country.countryName} (M${latest.magnitude.toFixed(1)})`,
+        text: `${country.countryName} (M${latest.magnitude.toFixed(1)})`,
         shortText: `M${latest.magnitude.toFixed(1)}`,
       };
     }
-    const tierIcon =
-      cData.seismicRiskTier === 'high' ? '🌋' : cData.seismicRiskTier === 'moderate' ? '⚠️' : '🛡️';
     return {
-      text: `${tierIcon} ${country.countryName}`,
-      shortText: tierIcon,
+      text: country.countryName,
+      shortText: country.countryName,
     };
   },
 
@@ -282,4 +287,7 @@ export const earthquakeApp: GeoAppPlugin<CountrySeismicProfile> = {
       customData: cData,
     };
   },
+
+  ControlsComponent: QuakeControls,
+  BottomDockComponent: QuakeBottomDock,
 };

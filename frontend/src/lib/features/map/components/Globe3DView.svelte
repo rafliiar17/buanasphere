@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Loader2, X, Plus, Minus, RotateCcw } from 'lucide-svelte';
+  import { Loader2, X, Plus, Minus, RotateCcw, BarChart3 } from 'lucide-svelte';
   import type { MapStateStore } from '../mapState.svelte';
   import type { MapCountryData } from '../map-constants';
   import { REGION_FILTERS } from '../map-constants';
   import { createProceduralFlagMaterial, disposeProceduralFlagCache } from '../procedural-flags';
-  import { formatRupiah, formatPercent } from '$lib/formatters/currency';
-  import { t } from '$lib/i18n';
   import type { Theme } from '$lib/theme';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
   import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
+  import { GLOBAL_FINANCIAL_HUBS, type FinancialHubData } from '../globe/data/financialHubsData';
+  import type { HexBinPointData } from '../globe/layers/hexBinLayer';
   import { calculateSimulatedDateFromMinutes } from '$lib/framework/geoglobe/geoMath';
   import * as THREE from 'three';
   import {
@@ -22,12 +22,27 @@
     type CountryIdMapping
   } from '../shader-lut/countryLutEngine';
   import { GLOBE_LUT_VERTEX_SHADER, GLOBE_LUT_FRAGMENT_SHADER } from '../shader-lut/globeShaders';
+
+  // Declarative GlobeScene & Modular Layers (ADR 0061 & ADR 0062)
+  import GlobeScene from '../globe/GlobeScene.svelte';
+  import {
+    getFeatureIso3,
+    getCountryColor,
+    getPolygonAltitude,
+    getTooltipHtml,
+    getDimmedCapMaterial,
+  } from '../globe/layers/polygonLayer';
+  import { getGlobeArcs } from '../globe/layers/arcLayer';
+  import { getGlobePaths } from '../globe/layers/pathLayer';
+  import { getGlobeRings } from '../globe/layers/ringLayer';
+  import { MAJOR_LOD_CURRENCIES } from '../globe/layers/labelLayer';
+  import { getGlobeThemeConfig } from '../globe/theme';
   import {
     calculateGreatCircleDistanceDeg,
     getCountryFocusAltitude,
     getCountryCoordinates,
     getTravelTrajectory,
-  } from '../cameraTravel';
+  } from '../globe/camera';
 
   interface Props {
     geoJsonFeatures: any[];
@@ -49,6 +64,7 @@
     onReady,
   }: Props = $props();
 
+  let globeSceneRef = $state<any>(null);
   let globeContainer = $state<HTMLDivElement | null>(null);
   let globeInstance: any = null;
   let GlobeModule: any = null;
@@ -85,193 +101,79 @@
     return '⚡ Memperbarui Tampilan Globe...';
   }
 
-  // ISO-3 to ISO-2 Fallback Mapping for FlagCDN
-  const ISO3_TO_ISO2_MAP: Record<string, string> = {
-    IDN: 'id', USA: 'us', JPN: 'jp', CHN: 'cn', GBR: 'gb', DEU: 'de', FRA: 'fr', SGP: 'sg',
-    AUS: 'au', SAU: 'sa', MYS: 'my', THA: 'th', IND: 'in', BRA: 'br', ZAF: 'za', KOR: 'kr',
-    CAN: 'ca', RUS: 'ru', ITA: 'it', ESP: 'es', TUR: 'tr', EGY: 'eg', ARE: 'ae', PHL: 'ph',
-    VNM: 'vn', KAZ: 'kz', NLD: 'nl', CHE: 'ch', SWE: 'se', NOR: 'no', DNK: 'dk', POL: 'pl',
-    MEX: 'mx', ARG: 'ar', CHL: 'cl', COL: 'co', PER: 'pe', NZL: 'nz', QAT: 'qa', KWT: 'kw',
-    OMN: 'om', BHR: 'bh', JOR: 'jo', LBN: 'lb', IRQ: 'iq', ISR: 'il', IRN: 'ir', PAK: 'pk',
-    BGD: 'bd', LKA: 'lk', NPL: 'np', MMR: 'mm', KHM: 'kh', LAO: 'la', BRN: 'bn', NGA: 'ng',
-    KEN: 'ke', GHA: 'gh', MAR: 'ma', DZA: 'dz', TUN: 'tn', ETH: 'et', TZA: 'tz', UGA: 'ug',
-    UKR: 'ua', ROU: 'ro', CZE: 'cz', GRC: 'gr', PRT: 'pt', BEL: 'be', AUT: 'at', IRL: 'ie',
-    FIN: 'fi', HUN: 'hu', HRV: 'hr', BGR: 'bg', SRB: 'rs', SVK: 'sk', SVN: 'si', EST: 'ee',
-    LVA: 'lv', LTU: 'lt', CYP: 'cy', ISL: 'is', LUX: 'lu', MLT: 'mt', GEO: 'ge', ARM: 'am',
-    AZE: 'az', UZB: 'uz', TKM: 'tm', TJK: 'tj', KGZ: 'kg', MNG: 'mn', TWN: 'tw', HKG: 'hk',
-    MAC: 'mo', FJI: 'fj', PNG: 'pg', SLB: 'sb', VUT: 'vu', WSM: 'ws', TON: 'to', SOM: 'so',
-  };
-
-  function getFeatureIso3(feat: any): string {
-    if (!feat || !feat.properties) return '';
-    const p = feat.properties;
-    const code = p.ISO_A3 || p.ADM0_A3 || p.SOV_A3 || p.adm0_a3 || p.iso_a3 || '';
-    if (code === '-99' || !code) {
-      return p.ADM0_A3 || p.SOV_A3 || p.GU_A3 || p.BRK_A3 || '';
-    }
-    return code;
+  function isFilterCurrentlyActive(): boolean {
+    return (
+      geoStore.timeFilter !== 'all' ||
+      geoStore.flightCorridorFilter !== 'all' ||
+      geoStore.passportVisaFilter !== 'all' ||
+      (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) ||
+      geoStore.activeRegion !== 'all'
+    );
   }
 
-  function getFeatureIso2(feat: any): string {
-    if (!feat || !feat.properties) return '';
-    const p = feat.properties;
-    const a2 = p.ISO_A2 || p.ISO_A2_EH || p.WB_A2 || p.POSTAL || p.FIPS_10 || '';
-    if (a2 && a2 !== '-99' && a2.length === 2) {
-      return a2.toLowerCase();
-    }
+  function getPolygonColorForFeature(feat: any): string {
     const iso3 = getFeatureIso3(feat);
-    return (ISO3_TO_ISO2_MAP[iso3] || iso3.slice(0, 2)).toLowerCase();
-  }
-
-  function getCountryColorByIso3(iso3: string): string {
-    const isDark = currentTheme === 'dark';
-    const country = mapData.find(d => d.iso3 === iso3);
-    const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3) || {
-      iso3,
-      countryName: country?.countryName || iso3,
-      currencyCode: country?.currencyCode || iso3,
-      currencyName: country?.currencyName || '',
-      flagEmoji: '🌐',
-      region: 'Unknown',
-      capital: '',
-      lat: 0,
-      lng: 0,
-      utcOffset: 0,
-      continent: 'Unknown'
-    };
-    const isSelected = mapState.selectedCountryIso3 === iso3;
-    const isHovered = mapState.hoveredIso3 === iso3;
     const isMatched = geoStore.isCountryMatched(iso3);
+    const isFilterActive = isFilterCurrentlyActive();
 
-    if (isSelected) {
-      return '#38bdf8'; // Glowing sky blue highlight
-    }
-    if (isHovered) {
-      return '#34d399'; // Emerald hover
-    }
-
-    const appData = geoStore.currentAppData?.[iso3] ?? country;
-    if (geoStore.activeApp?.getPolygonColor && spatial) {
-      return geoStore.activeApp.getPolygonColor(spatial, appData, mapState.activeMetric, currentTheme);
-    }
-
-    // Fallback if activeApp does not provide getPolygonColor hook
-    if (!isMatched && (geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all')) {
-      return isDark ? 'rgba(30, 41, 59, 0.20)' : 'rgba(226, 232, 240, 0.35)';
-    }
-
-    if (!country) {
-      return isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(226, 232, 240, 0.7)';
-    }
-
-    return isDark ? 'rgba(51, 65, 85, 0.40)' : 'rgba(226, 232, 240, 0.60)';
+    return getCountryColor(iso3, {
+      mapData,
+      selectedIso3: mapState.selectedCountryIso3,
+      hoveredIso3: mapState.hoveredIso3,
+      currentTheme,
+      activeMetric: mapState.activeMetric,
+      isMatched,
+      isFilterActive,
+      activeApp: geoStore.activeApp,
+      currentAppData: geoStore.currentAppData,
+    });
   }
 
-  function getPolygonColor(feat: any): string {
+  function getTooltipHtmlForFeature(feat: any): string {
     const iso3 = getFeatureIso3(feat);
-    return getCountryColorByIso3(iso3);
+    return getTooltipHtml(iso3, {
+      mapData,
+      currentTheme,
+      activeMetric: mapState.activeMetric,
+      activeApp: geoStore.activeApp,
+      currentAppData: geoStore.currentAppData,
+    });
   }
 
   function getTooltipHtmlByIso3(iso3: string): string {
-    const isDark = currentTheme === 'dark';
-    const country = mapData.find(d => d.iso3 === iso3);
-    const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3) || {
-      iso3,
-      countryName: country?.countryName || iso3,
-      currencyCode: country?.currencyCode || iso3,
-      currencyName: country?.currencyName || '',
-      flagEmoji: '🌐',
-      region: 'Unknown',
-      capital: '',
-      lat: 0,
-      lng: 0,
-      utcOffset: 0,
-      continent: 'Unknown'
-    };
-    const appData = geoStore.currentAppData?.[iso3] ?? country;
-
-    if (geoStore.activeApp?.getTooltipHtml && spatial) {
-      return geoStore.activeApp.getTooltipHtml(spatial, appData, mapState.activeMetric, currentTheme);
-    }
-
-    // Default fallback: fx-rates
-    const iso2 = (ISO3_TO_ISO2_MAP[iso3] || iso3.slice(0, 2)).toLowerCase();
-    const name = spatial?.countryName || country?.countryName || iso3;
-    const code = country?.currencyCode || '';
-    const currName = country?.currencyName || '';
-    const midFormatted = country ? formatRupiah(country.middleRate) : '-';
-    const buyFormatted = country ? formatRupiah(country.buyRate) : '-';
-    const sellFormatted = country ? formatRupiah(country.sellRate) : '-';
-    const chgFormatted = country ? formatPercent(country.change24h) : '0.00%';
-    const chgColor = (country?.change24h ?? 0) >= 0 ? '#10b981' : '#ef4444';
-
-    if (mapState.activeMetric === 'change') {
-      return `
-        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-            <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 22px; height: 15px; border-radius: 3px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);" onerror="this.style.display='none'" />
-            <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
-            ${code ? `<span style="font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">${code}</span>` : ''}
-          </div>
-          <div style="font-size: 13px; font-weight: 800; color: ${chgColor}; margin: 6px 0 3px 0;">
-            📈 Tren 24 Jam: ${chgFormatted} (${(country?.change24h ?? 0) >= 0 ? 'Menguat' : 'Melemah'})
-          </div>
-          <div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#475569'}; margin-bottom: 2px;">
-            Kurs Tengah: ${midFormatted}
-          </div>
-          <div style="font-size: 10px; color: #38bdf8; margin-top: 4px; font-weight: 600;">
-            👉 Klik untuk pilih • Klik 2x untuk split view
-          </div>
-        </div>
-      `;
-    }
-
-    return `
-      <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.97)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-          <img src="https://flagcdn.com/w40/${iso2}.png" alt="${name}" style="width: 22px; height: 15px; border-radius: 3px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);" onerror="this.style.display='none'" />
-          <span style="font-size: 13px; font-weight: 800; color: ${isDark ? '#f8fafc' : '#0f172a'};">${name}</span>
-          ${code ? `<span style="font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">${code}</span>` : ''}
-        </div>
-        ${currName ? `<div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#475569'}; margin-bottom: 6px;">${currName}</div>` : ''}
-        <div style="font-size: 12px; font-weight: 700; color: #10b981; margin-bottom: 2px;">
-          Kurs Tengah: ${midFormatted}
-        </div>
-        <div style="font-size: 11px; color: ${isDark ? '#cbd5e1' : '#334155'}; margin-bottom: 2px;">
-          Beli: ${buyFormatted} | Jual: ${sellFormatted}
-        </div>
-        <div style="font-size: 11px; font-weight: 700; color: ${chgColor};">
-          24 Jam: ${chgFormatted}
-        </div>
-        <div style="font-size: 10px; color: #38bdf8; margin-top: 4px; font-weight: 600;">
-          👉 Klik untuk pilih • Klik 2x untuk split view
-        </div>
-      </div>
-    `;
+    return getTooltipHtml(iso3, {
+      mapData,
+      currentTheme,
+      activeMetric: mapState.activeMetric,
+      activeApp: geoStore.activeApp,
+      currentAppData: geoStore.currentAppData,
+    });
   }
 
-  function getTooltipHtml(feat: any): string {
-    const iso3 = getFeatureIso3(feat);
-    return getTooltipHtmlByIso3(iso3);
-  }
-
-  /**
-   * Updates the GPU 1D Palette LUT (Look-Up Table) buffer (ADR 0038).
-   * Runs in 0.005 ms, instantly recoloring the entire globe in 1 draw call!
-   */
   function updatePaletteLut() {
     if (!lutPaletteBuffer || !lutPaletteTexture || !countryMapping) return;
     const isDark = currentTheme === 'dark';
 
-    // Ocean color (Slot 0)
     const oceanRgba = hexOrRgbaToRgbaArray(isDark ? '#0B0F19' : '#FAF8F3');
     updatePaletteLutSlot(lutPaletteBuffer, 0, oceanRgba);
 
-    // Update each country in the LUT buffer
+    const isFilterActive = isFilterCurrentlyActive();
+
     for (const country of EXTENDED_COUNTRIES_DATA) {
       const countryId = countryMapping.iso3ToId[country.iso3];
       if (!countryId) continue;
-      const colorStr = getCountryColorByIso3(country.iso3);
+      const isMatched = geoStore.isCountryMatched(country.iso3);
+      const colorStr = getCountryColor(country.iso3, {
+        mapData,
+        selectedIso3: mapState.selectedCountryIso3,
+        hoveredIso3: mapState.hoveredIso3,
+        currentTheme,
+        activeMetric: mapState.activeMetric,
+        isMatched,
+        isFilterActive,
+        activeApp: geoStore.activeApp,
+        currentAppData: geoStore.currentAppData,
+      });
       const rgba = hexOrRgbaToRgbaArray(colorStr);
       updatePaletteLutSlot(lutPaletteBuffer, countryId, rgba);
     }
@@ -296,17 +198,10 @@
     }
   }
 
-  // Major Trading Currencies Set for Level-of-Detail (LOD) Label Optimization
-  const MAJOR_LOD_CURRENCIES = new Set([
-    'IDN', 'USA', 'JPN', 'CHN', 'GBR', 'DEU', 'FRA', 'SGP', 'AUS', 'SAU',
-    'MYS', 'THA', 'IND', 'BRA', 'ZAF', 'KOR', 'CAN', 'RUS', 'ITA', 'ESP',
-    'TUR', 'EGY', 'ARE', 'CHE'
-  ]);
-
   let lastHoveredIso3 = '';
   let cameraAltitude = $state(2.2);
 
-  // Country 3D Pin Labels with LOD filtering (reduces draw calls by 85%)
+  // Country 3D Pin Labels with LOD filtering & WorldCapitals support (ADR 0046, ADR 0050, ADR 0056)
   const globeLabels = $derived.by(() => {
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !mapState.showLabels) return [];
     const isDark = currentTheme === 'dark';
@@ -327,12 +222,7 @@
       );
     }
 
-    // NOTE: mapState.hoveredIso3 is intentionally NOT read here.
-    // Reading it would make globeLabels recompute on every hover event,
-    // which causes updateVisuals() → .labelsData() reset → onLabelHover(null) → infinite loop.
-    // Label hover highlight (color/size) is applied imperatively in onLabelHover via Globe.gl closures.
-
-    // Filter features: major currencies OR selected (hover no longer expands the set)
+    // Filter features: major currencies OR selected
     const visibleFeatures = geoJsonFeatures.filter((feat: any) => {
       const iso3 = getFeatureIso3(feat);
       if (iso3 === selected) return true;
@@ -343,104 +233,122 @@
       const p = feat.properties;
       const iso3 = getFeatureIso3(feat);
       const country = mapData.find(d => d.iso3 === iso3);
+      const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3);
+      const pinLabel = (geoStore.activeApp as any)?.getPinLabel?.(
+        spatial,
+        geoStore.currentAppData?.[iso3] ?? country,
+        mapState.activeMetric,
+        currentTheme
+      );
+
       const rawName = country?.countryName || p.NAME || p.ADMIN || iso3;
       const curr = country?.currencyCode || '';
-      const lat = Number(p.LABEL_Y) || 0;
-      const lng = Number(p.LABEL_X) || 0;
+      const lat = pinLabel?.lat ?? Number(p.LABEL_Y) ?? spatial?.lat ?? 0;
+      const lng = pinLabel?.lng ?? Number(p.LABEL_X) ?? spatial?.lng ?? 0;
       const isSelected = selected === iso3;
-      const isMajor = MAJOR_LOD_CURRENCIES.has(iso3);
 
-      const spatial = EXTENDED_COUNTRIES_DATA.find(d => d.iso3 === iso3) || {
-        iso3,
-        countryName: rawName,
-        currencyCode: curr || iso3,
-        currencyName: country?.currencyName || '',
-        flagEmoji: '🌐',
-        region: 'Unknown',
-        capital: '',
-        lat,
-        lng,
-        utcOffset: 0,
-        continent: 'Unknown'
-      };
-      const appData = geoStore.currentAppData?.[iso3] ?? country;
-      const pinLabel = geoStore.activeApp?.getPinLabel?.(spatial, appData, mapState.activeMetric);
+      let text = pinLabel?.text;
+      if (!text) {
+        text = rawName;
+        if (curr && curr !== 'IDR') {
+          text = `${text} (${curr})`;
+        }
+      }
 
-      const displayText = pinLabel?.text ?? `${spatial.flagEmoji ? spatial.flagEmoji + ' ' : ''}${rawName} (${curr || iso3})`;
-      const shortText = pinLabel?.shortText ?? `${spatial.flagEmoji ? spatial.flagEmoji + ' ' : ''}${curr || iso3}`;
-      // Hover size/color intentionally omitted — applied imperatively in onLabelHover
-      const defaultSize = isSelected ? 0.80 : (isMajor ? 0.38 : 0.28);
       const defaultColor = isSelected ? '#ffffff' : (isDark ? 'rgba(241, 245, 249, 0.90)' : 'rgba(15, 23, 42, 0.90)');
-
-      const finalLat = pinLabel?.lat ?? lat;
-      const finalLng = pinLabel?.lng ?? lng;
+      const size = isSelected ? 0.85 : 0.65;
 
       return {
+        lat,
+        lng,
+        text,
+        size: pinLabel?.size ?? size,
+        color: pinLabel?.color ?? defaultColor,
+        dotRadius: pinLabel?.dotRadius,
         iso3,
         country,
-        lat: finalLat,
-        lng: finalLng,
-        text: displayText,
-        shortText,
-        size: pinLabel?.size ?? defaultSize,
-        color: isSelected ? defaultColor : (pinLabel?.color ?? defaultColor),
       };
     });
   });
 
-  import { flowCorridorsApp } from '$lib/framework/geoglobe/plugins/flowCorridorsApp';
-
-
-  // 3D Arcs for Flow Corridors filtered by active corridor region
+  // Dynamic 3D Arcs for Remittance / Flights (ADR 0038 & ADR 0061)
   const remittanceArcs = $derived.by(() => {
-    if (!geoStore.activeApp?.getArcs && !geoStore.activeApp?.getArcData) return [];
-    const indonesia = EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN');
-    if (!indonesia) return [];
-    const app = geoStore.activeApp ?? flowCorridorsApp;
-    const allArcs = app.getArcData ? app.getArcData(indonesia as any, (geoStore.currentAppData ?? {}) as any) : (app.getArcs ? app.getArcs((geoStore.currentAppData ?? {}) as any, geoStore.flightCorridorFilter) : []);
-    if (geoStore.flightCorridorFilter === 'all') return allArcs;
-
-    return allArcs.filter(arc => {
-      const originCountry = EXTENDED_COUNTRIES_DATA.find(
-        c => Math.abs(c.lat - arc.startLat) < 2.0 && Math.abs(c.lng - arc.startLng) < 2.0
-      );
-      if (!originCountry) return true;
-      return geoStore.isCountryMatched(originCountry.iso3);
+    return getGlobeArcs({
+      activeApp: geoStore.activeApp,
+      currentAppData: geoStore.currentAppData,
+      flightCorridorFilter: geoStore.flightCorridorFilter,
+      isCountryMatched: (iso3) => geoStore.isCountryMatched(iso3),
     });
   });
 
   // 3D Paths for Meridians / Custom App Curves (ADR 0041 & ADR 0042)
   const globePaths = $derived.by(() => {
-    if (!mapState.showTimezoneLines || !geoStore.showTimezoneLines || !geoStore.activeApp?.getPaths) return [];
-    return geoStore.activeApp.getPaths(
-      (geoStore.currentAppData ?? {}) as any,
-      mapState.activeMetric,
-      currentTheme
-    );
+    const show = mapState.showTimezoneLines && geoStore.showTimezoneLines;
+    return getGlobePaths({
+      showTimezoneLines: show,
+      activeApp: geoStore.activeApp,
+      currentAppData: geoStore.currentAppData,
+      activeMetric: mapState.activeMetric,
+      currentTheme,
+    });
   });
 
   // 3D Epicenter Pulsing Rings for Earthquake / Disaster Tracker (ADR 0044)
   const globeRings = $derived.by(() => {
-    if (!geoStore.activeApp?.getRingData) return [];
-    const selected = (mapState.selectedCountryIso3 ? EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === mapState.selectedCountryIso3) : null)
-      ?? EXTENDED_COUNTRIES_DATA.find(c => c.iso3 === 'IDN')
-      ?? EXTENDED_COUNTRIES_DATA[0];
-    if (!selected) return [];
-    return geoStore.activeApp.getRingData(selected, (geoStore.currentAppData ?? {}) as any) || [];
+    return getGlobeRings({
+      activeApp: geoStore.activeApp,
+      currentAppData: geoStore.currentAppData,
+      selectedIso3: mapState.selectedCountryIso3,
+    });
   });
 
+  // 3D Hexagonal Binning Pillars for Global Financial FX Volume (ADR 0063)
+  let showHexBins = $state(true);
+
+  const hexBinPoints = $derived.by<HexBinPointData[]>(() => {
+    if (!showHexBins) return [];
+    return GLOBAL_FINANCIAL_HUBS.map((hub) => ({
+      lat: hub.lat,
+      lng: hub.lng,
+      weight: hub.dailyTurnoverBillionUsd,
+      hub,
+    }));
+  });
+
+  const rateMapByCurrency = $derived.by<Record<string, number>>(() => {
+    const map: Record<string, number> = {};
+    for (const d of mapData) {
+      if (d.currencyCode) {
+        map[d.currencyCode] = d.middleRate;
+      }
+    }
+    return map;
+  });
+
+  function handleHexClick(hub: FinancialHubData) {
+    travelToCountry(hub.iso3);
+    const country = mapData.find((d) => d.iso3 === hub.iso3);
+    if (country) {
+      onCountryClick?.(country);
+    } else {
+      geoStore.selectCountry(hub.iso3);
+      mapState.selectCountry(hub.iso3);
+    }
+  }
+
+  // Exported Camera Navigation Controller Methods (ADR 0043 & ADR 0049)
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
-    if (globeInstance) {
+    if (globeSceneRef) {
+      globeSceneRef.flyTo(lat, lng, altitude, durationMs);
+    } else if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
     }
   }
 
-  // Interactive Travel & Auto Zoom-in Camera Animation (ADR 0049)
   export function travelToCountry(
     iso3: string,
     options?: { duration?: number; altitude?: number }
   ) {
-    if (!globeInstance || !iso3) return;
     const targetCoords = getCountryCoordinates(iso3);
     if (!targetCoords) return;
 
@@ -449,7 +357,8 @@
       travelTimeoutId = null;
     }
 
-    const curPov = globeInstance.pointOfView() || { lat: 0, lng: 0, altitude: 2.2 };
+    const currentGlobe = globeSceneRef?.getGlobe() || globeInstance;
+    const curPov = currentGlobe?.pointOfView() || { lat: 0, lng: 0, altitude: 2.2 };
     const targetAltitude = options?.altitude ?? getCountryFocusAltitude(iso3);
 
     const trajectory = getTravelTrajectory(
@@ -459,20 +368,28 @@
     );
 
     if (!trajectory.isTwoStage) {
-      globeInstance.pointOfView(
-        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
-        options?.duration ?? trajectory.stage1.durationMs
-      );
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(trajectory.stage1.lat, trajectory.stage1.lng, trajectory.stage1.altitude, options?.duration ?? trajectory.stage1.durationMs);
+      } else if (globeInstance) {
+        globeInstance.pointOfView(
+          { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+          options?.duration ?? trajectory.stage1.durationMs
+        );
+      }
     } else {
-      // Stage 1: Lift-off zoom-out arc & rotation
-      globeInstance.pointOfView(
-        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
-        trajectory.stage1.durationMs
-      );
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(trajectory.stage1.lat, trajectory.stage1.lng, trajectory.stage1.altitude, trajectory.stage1.durationMs);
+      } else if (globeInstance) {
+        globeInstance.pointOfView(
+          { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+          trajectory.stage1.durationMs
+        );
+      }
 
-      // Stage 2: Swoop down & zoom-in
       travelTimeoutId = setTimeout(() => {
-        if (globeInstance) {
+        if (globeSceneRef) {
+          globeSceneRef.flyTo(trajectory.stage2.lat, trajectory.stage2.lng, trajectory.stage2.altitude, trajectory.stage2.durationMs);
+        } else if (globeInstance) {
           globeInstance.pointOfView(
             { lat: trajectory.stage2.lat, lng: trajectory.stage2.lng, altitude: trajectory.stage2.altitude },
             trajectory.stage2.durationMs
@@ -483,26 +400,34 @@
     }
   }
 
-  // Camera Zoom & Navigation Functions (ADR 0043)
   export function zoomIn(factor: number = 0.7, durationMs: number = 300) {
-    if (!globeInstance) return;
-    const pov = globeInstance.pointOfView();
-    const currentAlt = pov.altitude || 2.2;
-    const nextAlt = Math.max(0.15, currentAlt * factor);
-    globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    if (globeSceneRef) {
+      globeSceneRef.handleZoomIn(factor);
+    } else if (globeInstance) {
+      const pov = globeInstance.pointOfView();
+      const currentAlt = pov?.altitude || 2.2;
+      const nextAlt = Math.max(0.15, currentAlt * factor);
+      globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    }
   }
 
   export function zoomOut(factor: number = 1.4, durationMs: number = 300) {
-    if (!globeInstance) return;
-    const pov = globeInstance.pointOfView();
-    const currentAlt = pov.altitude || 2.2;
-    const nextAlt = Math.min(6.0, currentAlt * factor);
-    globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    if (globeSceneRef) {
+      globeSceneRef.handleZoomOut(factor);
+    } else if (globeInstance) {
+      const pov = globeInstance.pointOfView();
+      const currentAlt = pov?.altitude || 2.2;
+      const nextAlt = Math.min(6.0, currentAlt * factor);
+      globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    }
   }
 
   export function resetView(durationMs: number = 600) {
-    if (!globeInstance) return;
-    globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, durationMs);
+    if (globeSceneRef) {
+      globeSceneRef.flyTo(10, 110, 2.2, durationMs);
+    } else if (globeInstance) {
+      globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, durationMs);
+    }
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -521,102 +446,80 @@
   }
 
   function applyOptimalDpr() {
-    if (!globeInstance || typeof window === 'undefined') return;
-    const renderer = globeInstance.renderer?.();
+    const currentGlobe = globeSceneRef?.getGlobe() || globeInstance;
+    if (!currentGlobe || typeof window === 'undefined') return;
+    const renderer = currentGlobe.renderer?.();
     if (!renderer) return;
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     const dpr = isTurbo ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.35);
     renderer.setPixelRatio(dpr);
   }
 
-  let dimmedCapMaterialDark: THREE.MeshLambertMaterial | null = null;
-  let dimmedCapMaterialLight: THREE.MeshLambertMaterial | null = null;
-
-  function getDimmedCapMaterial(isDark: boolean) {
-    if (isDark) {
-      if (!dimmedCapMaterialDark) {
-        dimmedCapMaterialDark = new THREE.MeshLambertMaterial({
-          color: 0x1e293b,
-          transparent: true,
-          opacity: 0.25,
-        });
-      }
-      return dimmedCapMaterialDark;
-    } else {
-      if (!dimmedCapMaterialLight) {
-        dimmedCapMaterialLight = new THREE.MeshLambertMaterial({
-          color: 0xe2e8f0,
-          transparent: true,
-          opacity: 0.25,
-        });
-      }
-      return dimmedCapMaterialLight;
-    }
-  }
-
   function updateVisuals() {
-    if (!globeInstance) return;
+    const currentGlobe = globeSceneRef?.getGlobe() || globeInstance;
+    if (!currentGlobe) return;
     const isDark = currentTheme === 'dark';
     const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag' || mapState.showFlags || geoStore.showFlags);
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+    const themeConfig = getGlobeThemeConfig(currentTheme, isTurbo);
 
     applyOptimalDpr();
 
-    // ⚡ Option C (ADR 0038): Clean Switch between 1-Draw-Call Shader-LUT vs 3D Raised Polygons
     if (isTurbo && lutSphereMesh) {
       lutSphereMesh.visible = true;
       updatePaletteLut();
-      globeInstance
+      currentGlobe
         .showGlobe(false)
         .polygonAltitude(-10.0)
         .polygonLabel(() => '');
     } else {
       if (lutSphereMesh) lutSphereMesh.visible = false;
-      globeInstance
+      currentGlobe
         .showGlobe(true)
-        .polygonLabel((d: any) => getTooltipHtml(d));
+        .polygonLabel((d: any) => getTooltipHtmlForFeature(d));
 
       if (!isFlag) {
-        globeInstance.polygonCapMaterial(null);
+        currentGlobe.polygonCapMaterial(null);
       } else {
-        globeInstance.polygonCapMaterial((d: any) => {
+        currentGlobe.polygonCapMaterial((d: any) => {
           const iso3 = getFeatureIso3(d);
-          const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
+          const isFilterActive = isFilterCurrentlyActive();
           if (isFilterActive && !geoStore.isCountryMatched(iso3)) {
             return getDimmedCapMaterial(isDark);
           }
           return createProceduralFlagMaterial(d, isDark);
         });
       }
-      globeInstance
-        .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
-        .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
-        .polygonCapColor((d: any) => getPolygonColor(d))
+
+      currentGlobe
+        .polygonSideColor(() => themeConfig.polygonSideColor)
+        .polygonStrokeColor(() => themeConfig.polygonStrokeColor)
+        .polygonCapColor((d: any) => getPolygonColorForFeature(d))
         .polygonAltitude((d: any) => {
           const iso3 = getFeatureIso3(d);
-          if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
+          const isFilterActive = isFilterCurrentlyActive();
           const isMatched = geoStore.isCountryMatched(iso3);
-          const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
-          if (isFlag && isFilterActive && !isMatched) {
-            return 0.001;
-          }
-          if (!isMatched && isFilterActive) {
-            return 0.001;
-          }
-          return 0.008;
+
+          return getPolygonAltitude(iso3, {
+            selectedIso3: mapState.selectedCountryIso3,
+            hoveredIso3: mapState.hoveredIso3,
+            isMatched,
+            isFilterActive,
+            isFlag,
+          });
         });
     }
 
-    globeInstance
-      .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
-      .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .atmosphereAltitude(isTurbo ? 0.14 : 0.22)
+    currentGlobe
+      .backgroundColor(themeConfig.backgroundColor)
+      .atmosphereColor(themeConfig.atmosphereColor)
+      .atmosphereAltitude(themeConfig.atmosphereAltitude)
       .labelsData(mapState.showLabels ? globeLabels : [])
       .labelSize((d: any) => d.size)
       .labelColor((d: any) => d.color)
       .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.24 : 0.06))
       .labelAltitude((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.035 : 0.018))
-      .labelResolution(isTurbo ? 1.5 : 3)
+      .labelResolution(3)
       .arcsData(remittanceArcs)
       .arcColor((d: any) => d.color || ['#10b981', '#38bdf8'])
       .arcAltitude((d: any) => d.altitude || 0.35)
@@ -645,6 +548,276 @@
       .ringMaxRadius((d: any) => d.maxRadius || 5)
       .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
       .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
+  }
+
+  async function initGlobe() {
+    if (!globeContainer || geoJsonFeatures.length === 0) return;
+
+    if (!GlobeModule) {
+      const globePkg = await import('globe.gl');
+      GlobeModule = globePkg.default || globePkg;
+    }
+
+    if (globeContainer.firstChild) {
+      globeContainer.innerHTML = '';
+    }
+
+    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+    const width = globeContainer.clientWidth || window.innerWidth;
+    const height = globeContainer.clientHeight || window.innerHeight;
+    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag' || mapState.showFlags || geoStore.showFlags);
+    const themeConfig = getGlobeThemeConfig(currentTheme, isTurbo);
+    const isDark = currentTheme === 'dark';
+
+    globeInstance = GlobeModule()(globeContainer)
+      .width(width)
+      .height(height)
+      .backgroundColor(themeConfig.backgroundColor)
+      .showAtmosphere(true)
+      .atmosphereColor(themeConfig.atmosphereColor)
+      .atmosphereAltitude(themeConfig.atmosphereAltitude)
+      .showGlobe(!isTurbo)
+      .polygonsData(geoJsonFeatures)
+      .polygonGeoJsonGeometry((d: any) => d.geometry)
+      .polygonCapColor((feat: any) => getPolygonColorForFeature(feat))
+      .polygonSideColor(() => themeConfig.polygonSideColor)
+      .polygonStrokeColor(() => themeConfig.polygonStrokeColor)
+      .polygonAltitude((feat: any) => {
+        const iso3 = getFeatureIso3(feat);
+        const isFilterActive = isFilterCurrentlyActive();
+        const isMatched = geoStore.isCountryMatched(iso3);
+
+        return getPolygonAltitude(iso3, {
+          selectedIso3: mapState.selectedCountryIso3,
+          hoveredIso3: mapState.hoveredIso3,
+          isMatched,
+          isFilterActive,
+          isFlag,
+        });
+      })
+      .polygonCapMaterial((feat: any) => {
+        if (!isFlag) return null;
+        const iso3 = getFeatureIso3(feat);
+        const isFilterActive = isFilterCurrentlyActive();
+        if (isFilterActive && !geoStore.isCountryMatched(iso3)) {
+          return getDimmedCapMaterial(isDark);
+        }
+        return createProceduralFlagMaterial(feat, isDark);
+      })
+      .polygonLabel((feat: any) => (isTurbo ? '' : getTooltipHtmlForFeature(feat)))
+      .onPolygonHover((hoverD: any) => {
+        if (isTurbo) return;
+        const iso3 = hoverD ? getFeatureIso3(hoverD) : null;
+        if (iso3 === lastHoveredIso3) return;
+        lastHoveredIso3 = iso3 ?? '';
+        mapState.hoveredIso3 = iso3;
+        onCountryHover?.(iso3);
+
+        if (globeInstance) {
+          globeInstance.polygonAltitude((feat: any) => {
+            const featIso3 = getFeatureIso3(feat);
+            const isFilterActive = isFilterCurrentlyActive();
+            const isMatched = geoStore.isCountryMatched(featIso3);
+
+            return getPolygonAltitude(featIso3, {
+              selectedIso3: mapState.selectedCountryIso3,
+              hoveredIso3: mapState.hoveredIso3,
+              isMatched,
+              isFilterActive,
+              isFlag,
+            });
+          });
+          globeInstance.polygonCapColor((feat: any) => getPolygonColorForFeature(feat));
+        }
+      })
+      .onPolygonClick((clickD: any) => {
+        if (!clickD) return;
+        const featIso3 = getFeatureIso3(clickD);
+        if (featIso3) {
+          travelToCountry(featIso3);
+        }
+        const country = mapData.find((d) => d.iso3 === featIso3);
+        if (country) {
+          onCountryClick?.(country);
+        } else if (featIso3) {
+          geoStore.selectCountry(featIso3);
+          mapState.selectCountry(featIso3);
+        }
+      });
+
+    applyOptimalDpr();
+
+    if (mapState.showLabels && globeLabels.length > 0) {
+      globeInstance
+        .labelsData(globeLabels)
+        .labelLat((d: any) => d.lat)
+        .labelLng((d: any) => d.lng)
+        .labelText((d: any) => d.text)
+        .labelSize((d: any) => d.size)
+        .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.24 : 0.06))
+        .labelColor((d: any) => d.color)
+        .labelAltitude((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.035 : 0.018))
+        .labelResolution(3)
+        .onLabelClick((d: any) => {
+          if (d?.iso3) {
+            travelToCountry(d.iso3);
+          }
+          if (d.country) {
+            onCountryClick?.(d.country);
+          } else if (d?.iso3) {
+            geoStore.selectCountry(d.iso3);
+            mapState.selectCountry(d.iso3);
+          }
+        })
+        .onLabelHover((d: any) => {
+          const iso3 = d ? d.iso3 : null;
+          if (iso3 === lastHoveredIso3) return;
+          lastHoveredIso3 = iso3 ?? '';
+          mapState.hoveredIso3 = iso3;
+          onCountryHover?.(iso3);
+          if (globeInstance) {
+            requestAnimationFrame(() => {
+              if (globeInstance) {
+                globeInstance.polygonAltitude((feat: any) => {
+                  const featIso3 = getFeatureIso3(feat);
+                  const isFilterActive = isFilterCurrentlyActive();
+                  const isMatched = geoStore.isCountryMatched(featIso3);
+
+                  return getPolygonAltitude(featIso3, {
+                    selectedIso3: mapState.selectedCountryIso3,
+                    hoveredIso3: mapState.hoveredIso3,
+                    isMatched,
+                    isFilterActive,
+                    isFlag,
+                  });
+                });
+                globeInstance.polygonCapColor((feat: any) => getPolygonColorForFeature(feat));
+              }
+            });
+          }
+        });
+    }
+
+    if (globePaths.length > 0) {
+      globeInstance
+        .pathsData(globePaths)
+        .pathPoints((d: any) => d.coords)
+        .pathColor((d: any) => d.color)
+        .pathStroke((d: any) => d.stroke || 1.2)
+        .pathPointAlt(() => 0.003)
+        .pathDashLength((d: any) => d.dashLength || 0.1)
+        .pathDashGap((d: any) => d.dashGap || 0.02)
+        .pathDashAnimateTime((d: any) => d.animateTime || 0)
+        .pathLabel((d: any) => d.tooltipHtml || d.label)
+        .onPathClick((path: any) => {
+          if (path?.utcOffset !== undefined) {
+            mapState.setSelectedMeridian(path);
+          }
+        });
+    }
+
+    globeInstance
+      .ringsData(globeRings)
+      .ringLat((d: any) => d.lat)
+      .ringLng((d: any) => d.lng)
+      .ringColor((d: any) => d.color)
+      .ringMaxRadius((d: any) => d.maxRadius || 5)
+      .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
+      .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
+
+    const controls = globeInstance.controls();
+    if (controls) {
+      controls.autoRotate = false;
+      controls.autoRotateSpeed = 0.5;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.minDistance = 105;
+      controls.maxDistance = 550;
+
+      controls.addEventListener('change', () => {
+        const pov = globeInstance.pointOfView();
+        if (pov && typeof pov.altitude === 'number') {
+          if (Math.abs(pov.altitude - cameraAltitude) > 0.12) {
+            cameraAltitude = pov.altitude;
+          }
+        }
+      });
+    }
+
+    globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 800);
+
+    countryMapping = buildCountryIdMapping(EXTENDED_COUNTRIES_DATA);
+    const { canvas: idCanvas, buffer: rawIdBuffer } = renderEquirectangularIdTexture(
+      geoJsonFeatures,
+      countryMapping,
+      idTextureWidth,
+      idTextureHeight
+    );
+    idBuffer = rawIdBuffer;
+
+    countryIdTexture = new THREE.CanvasTexture(idCanvas);
+    countryIdTexture.minFilter = THREE.NearestFilter;
+    countryIdTexture.magFilter = THREE.NearestFilter;
+    countryIdTexture.wrapS = THREE.ClampToEdgeWrapping;
+    countryIdTexture.wrapT = THREE.ClampToEdgeWrapping;
+
+    lutPaletteBuffer = createPaletteLutBuffer(isDark ? '#0B0F19' : '#FAF8F3');
+    lutPaletteTexture = new THREE.DataTexture(
+      lutPaletteBuffer,
+      256,
+      1,
+      THREE.RGBAFormat,
+      THREE.UnsignedByteType
+    );
+    lutPaletteTexture.minFilter = THREE.NearestFilter;
+    lutPaletteTexture.magFilter = THREE.NearestFilter;
+    lutPaletteTexture.needsUpdate = true;
+
+    lutShaderMaterial = new THREE.ShaderMaterial({
+      vertexShader: GLOBE_LUT_VERTEX_SHADER,
+      fragmentShader: GLOBE_LUT_FRAGMENT_SHADER,
+      uniforms: {
+        uCountryIdMap: { value: countryIdTexture },
+        uPaletteLut: { value: lutPaletteTexture },
+        uHoveredId: { value: 0 },
+        uSelectedId: { value: 0 },
+        uHoverColor: { value: new THREE.Color('#34d399') },
+        uSelectColor: { value: new THREE.Color('#38bdf8') },
+        uOceanColor: { value: new THREE.Vector4(isDark ? 11/255 : 250/255, isDark ? 15/255 : 248/255, isDark ? 25/255 : 243/255, 1.0) },
+        uAtmosphereGlow: { value: isTurbo ? 0.6 : 1.0 },
+      },
+      transparent: false,
+      depthWrite: true,
+    });
+
+    const sphereGeo = new THREE.SphereGeometry(100.0, 96, 96);
+    lutSphereMesh = new THREE.Mesh(sphereGeo, lutShaderMaterial);
+    lutSphereMesh.rotation.y = -Math.PI / 2;
+    lutSphereMesh.visible = isTurbo;
+
+    const scene = globeInstance.scene?.();
+    if (scene) {
+      scene.add(lutSphereMesh);
+    }
+
+    lutRaycaster = new THREE.Raycaster();
+    lutMouseVec = new THREE.Vector2();
+
+    updatePaletteLut();
+
+    isInitialized = true;
+    onReady?.();
+
+    if (globeContainer && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (globeInstance && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+            globeInstance.width(entry.contentRect.width).height(entry.contentRect.height);
+          }
+        }
+      });
+      resizeObserver.observe(globeContainer);
+    }
   }
 
   function handleContainerPointerMove(e: MouseEvent) {
@@ -714,193 +887,43 @@
   function handleContainerClick() {
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     if (!isTurbo || !hoveredCountryIso3) return;
-    const country = mapData.find(d => d.iso3 === hoveredCountryIso3);
+    const country = mapData.find((d) => d.iso3 === hoveredCountryIso3);
     if (country) {
       onCountryClick?.(country);
     }
   }
 
-  async function initGlobe() {
-    if (!globeContainer || geoJsonFeatures.length === 0) return;
-
-    if (!GlobeModule) {
-      const globePkg = await import('globe.gl');
-      GlobeModule = globePkg.default || globePkg;
+  function handleCountryClickFromScene(iso3: string) {
+    if (iso3) {
+      travelToCountry(iso3);
     }
-
-    if (globeContainer.firstChild) {
-      globeContainer.innerHTML = '';
+    const country = mapData.find((d) => d.iso3 === iso3);
+    if (country) {
+      onCountryClick?.(country);
+    } else if (iso3) {
+      geoStore.selectCountry(iso3);
+      mapState.selectCountry(iso3);
     }
+  }
 
-    const isDark = currentTheme === 'dark';
-    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
-    const width = globeContainer.clientWidth || window.innerWidth;
-    const height = globeContainer.clientHeight || window.innerHeight;
-    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag' || mapState.showFlags || geoStore.showFlags);
+  function handleCountryHoverFromScene(iso3: string | null) {
+    mapState.hoveredIso3 = iso3;
+    onCountryHover?.(iso3);
+  }
 
-    globeInstance = GlobeModule()(globeContainer)
-      .width(width)
-      .height(height)
-      .backgroundColor(isDark ? '#0B0F19' : '#FAF8F3')
-      .showAtmosphere(true)
-      .atmosphereColor(isDark ? '#06b6d4' : '#38bdf8')
-      .atmosphereAltitude(isTurbo ? 0.14 : 0.22)
-      .showGlobe(!isTurbo)
-      .polygonsData(geoJsonFeatures)
-      .polygonGeoJsonGeometry((d: any) => d.geometry)
-      .polygonCapMaterial((d: any) => {
-        if (!isFlag) return null;
-        const iso3 = getFeatureIso3(d);
-        const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
-        if (isFilterActive && !geoStore.isCountryMatched(iso3)) {
-          return getDimmedCapMaterial(isDark);
-        }
-        return createProceduralFlagMaterial(d, isDark);
-      })
-      .polygonCapColor((d: any) => getPolygonColor(d))
-      .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
-      .polygonStrokeColor(() => (isDark ? '#334155' : '#94a3b8'))
-      .polygonsTransitionDuration(0)
-      .polygonAltitude((d: any) => {
-        if (isTurbo) return -10.0;
-        const iso3 = getFeatureIso3(d);
-        if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
-        const isMatched = geoStore.isCountryMatched(iso3);
-        const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
-        if (isFlag && isFilterActive && !isMatched) return 0.001;
-        if (!isMatched && isFilterActive) return 0.001;
-        return 0.005;
-      })
-      .polygonLabel((d: any) => (isTurbo ? '' : getTooltipHtml(d)))
-      .onPolygonHover((hoverD: any) => {
-        const isTurboNow = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
-        if (isTurboNow) return;
-        const iso3 = hoverD ? getFeatureIso3(hoverD) : null;
-        // Hover deduplication guard: prevent redundant GPU geometry re-evaluations
-        if (iso3 === lastHoveredIso3) return;
-        lastHoveredIso3 = iso3 ?? '';
-        mapState.hoveredIso3 = iso3;
-        onCountryHover?.(iso3);
-        if (globeInstance) {
-          requestAnimationFrame(() => {
-            if (globeInstance) {
-              globeInstance.polygonAltitude((d: any) => {
-                const featIso3 = getFeatureIso3(d);
-                if (mapState.selectedCountryIso3 === featIso3 || mapState.hoveredIso3 === featIso3) return 0.018;
-                return 0.005;
-              });
-              globeInstance.polygonCapColor((d: any) => getPolygonColor(d));
-            }
-          });
-        }
-      })
-      .onPolygonClick((clickD: any) => {
-        const isTurboNow = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
-        if (isTurboNow) return;
-        if (!clickD) return;
-        const featIso3 = getFeatureIso3(clickD);
-        if (featIso3) {
-          travelToCountry(featIso3);
-        }
-        const country = mapData.find(d => d.iso3 === featIso3);
-        if (country) {
-          onCountryClick?.(country);
-        } else if (featIso3) {
-          geoStore.selectCountry(featIso3);
-          mapState.selectCountry(featIso3);
-        }
-      });
-
-    // Enforce WebGL Adaptive DPR Clamp (ADR 0035)
-    applyOptimalDpr();
-
-    if (mapState.showLabels && globeLabels.length > 0) {
-      globeInstance
-        .labelsData(globeLabels)
-        .labelLat((d: any) => d.lat)
-        .labelLng((d: any) => d.lng)
-        .labelText((d: any) => d.text)
-        .labelSize((d: any) => d.size)
-        .labelDotRadius((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.24 : 0.06))
-        .labelColor((d: any) => d.color)
-        .labelAltitude((d: any) => (d.iso3 === mapState.selectedCountryIso3 ? 0.035 : 0.018))
-        .labelResolution(3)
-        .onLabelClick((d: any) => {
-          if (d?.iso3) {
-            travelToCountry(d.iso3);
-          }
-          if (d.country) {
-            onCountryClick?.(d.country);
-          } else if (d?.iso3) {
-            geoStore.selectCountry(d.iso3);
-            mapState.selectCountry(d.iso3);
-          }
-        })
-        .onLabelHover((d: any) => {
-          const iso3 = d ? d.iso3 : null;
-          if (iso3 === lastHoveredIso3) return;
-          lastHoveredIso3 = iso3 ?? '';
-          mapState.hoveredIso3 = iso3;
-          onCountryHover?.(iso3);
-          // Update polygon visuals only (NOT labelsData — that would reset the dataset
-          // and trigger onLabelHover(null) again, causing an infinite fade-in/out loop)
-          if (globeInstance) {
-            requestAnimationFrame(() => {
-              if (globeInstance) {
-                globeInstance.polygonAltitude((feat: any) => {
-                  const featIso3 = getFeatureIso3(feat);
-                  if (mapState.selectedCountryIso3 === featIso3 || mapState.hoveredIso3 === featIso3) return 0.018;
-                  return 0.005;
-                });
-                globeInstance.polygonCapColor((feat: any) => getPolygonColor(feat));
-              }
-            });
-          }
-        });
+  function handlePathClickFromScene(path: any) {
+    if (path?.utcOffset !== undefined) {
+      mapState.setSelectedMeridian(path);
     }
+  }
 
-    // 3D Paths for Meridians / Corridors (ADR 0041)
-    if (globePaths.length > 0) {
-      globeInstance
-        .pathsData(globePaths)
-        .pathPoints((d: any) => d.coords)
-        .pathColor((d: any) => d.color)
-        .pathStroke((d: any) => d.stroke || 1.2)
-        .pathPointAlt(() => 0.003)
-        .pathDashLength((d: any) => d.dashLength || 0.1)
-        .pathDashGap((d: any) => d.dashGap || 0.02)
-        .pathDashAnimateTime((d: any) => d.animateTime || 0)
-        .pathLabel((d: any) => d.tooltipHtml || d.label)
-        .onPathClick((path: any) => {
-          if (path?.utcOffset !== undefined) {
-            mapState.setSelectedMeridian(path);
-          }
-        });
-    }
-
-    // 3D Epicenter Pulsing Rings for Earthquake / Disaster Tracker (ADR 0044)
-    globeInstance
-      .ringsData(globeRings)
-      .ringLat((d: any) => d.lat)
-      .ringLng((d: any) => d.lng)
-      .ringColor((d: any) => d.color)
-      .ringMaxRadius((d: any) => d.maxRadius || 5)
-      .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
-      .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
-
-    // Google Earth style orbit controls
-    const controls = globeInstance.controls();
+  function handleGlobeSceneReady(globe: any) {
+    globeInstance = globe;
+    isInitialized = true;
+    const controls = globe?.controls?.();
     if (controls) {
-      controls.autoRotate = false;
-      controls.autoRotateSpeed = 0.5;
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.06;
-      controls.minDistance = 105;
-      controls.maxDistance = 550;
-
-      // Track camera altitude for Zoom-Aware LOD (ADR 0056)
       controls.addEventListener('change', () => {
-        const pov = globeInstance.pointOfView();
+        const pov = globe?.pointOfView?.();
         if (pov && typeof pov.altitude === 'number') {
           if (Math.abs(pov.altitude - cameraAltitude) > 0.12) {
             cameraAltitude = pov.altitude;
@@ -908,90 +931,12 @@
         }
       });
     }
-
-    // Centered initially near Indonesia / Asia-Pacific
-    globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 800);
-
-    // ⚡ Option C (ADR 0038): Initialize Single-Sphere Shader-LUT Engine
-    countryMapping = buildCountryIdMapping(EXTENDED_COUNTRIES_DATA);
-    const { canvas: idCanvas, buffer: rawIdBuffer } = renderEquirectangularIdTexture(
-      geoJsonFeatures,
-      countryMapping,
-      idTextureWidth,
-      idTextureHeight
-    );
-    idBuffer = rawIdBuffer;
-
-    countryIdTexture = new THREE.CanvasTexture(idCanvas);
-    countryIdTexture.minFilter = THREE.NearestFilter;
-    countryIdTexture.magFilter = THREE.NearestFilter;
-    countryIdTexture.wrapS = THREE.ClampToEdgeWrapping;
-    countryIdTexture.wrapT = THREE.ClampToEdgeWrapping;
-
-    lutPaletteBuffer = createPaletteLutBuffer(isDark ? '#0B0F19' : '#FAF8F3');
-    lutPaletteTexture = new THREE.DataTexture(
-      lutPaletteBuffer,
-      256,
-      1,
-      THREE.RGBAFormat,
-      THREE.UnsignedByteType
-    );
-    lutPaletteTexture.minFilter = THREE.NearestFilter;
-    lutPaletteTexture.magFilter = THREE.NearestFilter;
-    lutPaletteTexture.needsUpdate = true;
-
-    lutShaderMaterial = new THREE.ShaderMaterial({
-      vertexShader: GLOBE_LUT_VERTEX_SHADER,
-      fragmentShader: GLOBE_LUT_FRAGMENT_SHADER,
-      uniforms: {
-        uCountryIdMap: { value: countryIdTexture },
-        uPaletteLut: { value: lutPaletteTexture },
-        uHoveredId: { value: 0 },
-        uSelectedId: { value: 0 },
-        uHoverColor: { value: new THREE.Color('#34d399') },
-        uSelectColor: { value: new THREE.Color('#38bdf8') },
-        uOceanColor: { value: new THREE.Vector4(isDark ? 11/255 : 250/255, isDark ? 15/255 : 248/255, isDark ? 25/255 : 243/255, 1.0) },
-        uAtmosphereGlow: { value: isTurbo ? 0.6 : 1.0 },
-      },
-      transparent: false,
-      depthWrite: true,
-    });
-
-    const sphereGeo = new THREE.SphereGeometry(100.0, 96, 96);
-    lutSphereMesh = new THREE.Mesh(sphereGeo, lutShaderMaterial);
-    lutSphereMesh.rotation.y = -Math.PI / 2;
-    lutSphereMesh.visible = isTurbo;
-
-    const scene = globeInstance.scene?.();
-    if (scene) {
-      scene.add(lutSphereMesh);
-    }
-
-    lutRaycaster = new THREE.Raycaster();
-    lutMouseVec = new THREE.Vector2();
-
-    updatePaletteLut();
-
-    isInitialized = true;
     onReady?.();
-
-    // Set up Auto-Resize Observer
-    if (globeContainer && typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          if (globeInstance && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-            globeInstance.width(entry.contentRect.width).height(entry.contentRect.height);
-          }
-        }
-      });
-      resizeObserver.observe(globeContainer);
-    }
   }
 
   // React to reactive state changes with non-blocking lazy-loading transition
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
-    // Track dependencies
+    if (!isInitialized) return;
     const _app = geoStore.activeAppId;
     const _timeFilter = geoStore.timeFilter;
     const _flightFilter = geoStore.flightCorridorFilter;
@@ -1002,10 +947,6 @@
     const _labels = mapState.showLabels;
     const _geoLabels = geoStore.showLabels;
     const _selected = mapState.selectedCountryIso3;
-    // NOTE: mapState.hoveredIso3 is intentionally NOT tracked here.
-    // Tracking it caused an infinite loop: hover → updateVisuals() → labelsData reset
-    // → onLabelHover(null) → hoveredIso3=null → $effect re-runs → loop.
-    // Polygon altitude/color on hover is handled directly in onPolygonHover / onLabelHover.
     const _data = mapData;
     const _perfMap = mapState.performanceMode;
     const _perfGeo = geoStore.performanceMode;
@@ -1017,7 +958,6 @@
       transitionLabel = getTransitionMessage(currentMetric);
       previousMetric = currentMetric;
 
-      // Allow browser to render loading HUD first, then update WebGL materials
       requestAnimationFrame(() => {
         setTimeout(() => {
           updateVisuals();
@@ -1034,12 +974,16 @@
 
   // React to region changes
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const regionId = mapState.activeRegion;
-    const regionObj = REGION_FILTERS.find(r => r.id === regionId);
+    const regionObj = REGION_FILTERS.find((r) => r.id === regionId);
     if (regionObj) {
       const altitude = regionId === 'all' ? 2.2 : (regionObj.zoom ? Math.max(0.6, 2.5 / regionObj.zoom) : 1.5);
-      globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(regionObj.lat, regionObj.lon, altitude, 1000);
+      } else if (globeInstance) {
+        globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+      }
     }
   });
 
@@ -1055,7 +999,7 @@
 
   // React to dynamic camera presets for active app (ADR 0038)
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const presets = (geoStore.activeApp as any)?.cameraPresets;
     if (!presets) return;
 
@@ -1070,14 +1014,18 @@
 
     const preset = presets[filterKey];
     if (preset) {
-      globeInstance.pointOfView(preset, 1000);
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(preset.lat, preset.lng, preset.altitude, 1000);
+      } else if (globeInstance) {
+        globeInstance.pointOfView(preset, 1000);
+      }
     }
   });
 
   // React to reactive country travel signals from geoStore or mapState (ADR 0049)
   let lastTravelTimestamp = 0;
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const storeSignal = geoStore.cameraTravelSignal;
     const mapSignal = mapState.cameraTravelSignal;
     const latestSignal = (storeSignal?.timestamp ?? 0) >= (mapSignal?.timestamp ?? 0)
@@ -1091,7 +1039,6 @@
   });
 
   onMount(() => {
-    initGlobe();
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', handleKeydown);
     }
@@ -1110,7 +1057,6 @@
       resizeObserver = null;
     }
     if (globeInstance) {
-      // Dispose Three.js WebGL renderer to prevent GPU context leaks
       const renderer = globeInstance.renderer?.();
       if (renderer) {
         renderer.dispose?.();
@@ -1129,7 +1075,6 @@
     if (globeContainer) {
       globeContainer.innerHTML = '';
     }
-    // Clean up GPU Textures & ShaderMaterials (ADR 0038)
     if (lutSphereMesh) {
       lutSphereMesh.geometry?.dispose();
       lutSphereMesh = null;
@@ -1151,18 +1096,32 @@
 </script>
 
 <div class="relative w-full h-full min-h-[500px] overflow-hidden select-none">
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    bind:this={globeContainer}
-    class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-    onmousemove={handleContainerPointerMove}
-    onmouseleave={clearLutHover}
-    onclick={handleContainerClick}
-    role="region"
-    aria-label="3D Globe Canvas"
-    style="z-index: 1;"
-  ></div>
+  <!-- Declarative Globe Canvas Scene from fe-2 (ADR 0062) -->
+  <GlobeScene
+    bind:this={globeSceneRef}
+    polygons={geoJsonFeatures}
+    {mapData}
+    selectedIso3={mapState.selectedCountryIso3}
+    hoveredIso3={mapState.hoveredIso3}
+    activeMetric={mapState.activeMetric}
+    arcs={remittanceArcs}
+    paths={globePaths}
+    rings={globeRings}
+    labels={globeLabels}
+    {hexBinPoints}
+    {rateMapByCurrency}
+    onHexClick={handleHexClick}
+    theme={currentTheme}
+    autoRotate={Boolean(mapState.autoRotate || geoStore.autoRotate)}
+    isFilterActive={isFilterCurrentlyActive()}
+    isCountryMatched={(iso3) => geoStore.isCountryMatched(iso3)}
+    activeApp={geoStore.activeApp}
+    currentAppData={geoStore.currentAppData}
+    onCountryClick={handleCountryClickFromScene}
+    onCountryHover={handleCountryHoverFromScene}
+    onPathClick={handlePathClickFromScene}
+    onReady={handleGlobeSceneReady}
+  />
 
   <!-- Interactive Timezone Meridian Inspector Card (ADR 0042) -->
   {#if mapState.selectedMeridian}
@@ -1260,6 +1219,16 @@
     </button>
 
     <div class="my-0.5 h-px w-full bg-slate-800"></div>
+
+    <button
+      type="button"
+      onclick={() => (showHexBins = !showHexBins)}
+      class="flex h-8 w-8 items-center justify-center rounded-xl transition cursor-pointer {showHexBins ? 'bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30 shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white active:scale-95'}"
+      title={showHexBins ? 'Sembunyikan Pilar Volume Valas (BIS)' : 'Tampilkan Pilar 3D Volume Pasar Valas (BIS)'}
+      aria-label="Toggle Pilar Volume Valas"
+    >
+      <BarChart3 class="w-3.5 h-3.5" />
+    </button>
 
     <button
       type="button"

@@ -15,7 +15,6 @@
 
   // Sub-components decomposition (ADR 0017 & ADR 0030)
   import Globe3DView from './components/Globe3DView.svelte';
-  import FlatMap2DView from './components/FlatMap2DView.svelte';
   import CountryInspectorDrawer from './components/CountryInspectorDrawer.svelte';
   import GlobeEntranceLoader from './components/GlobeEntranceLoader.svelte';
   import { geoStore } from '$lib/framework/geoglobe/geoStore.svelte';
@@ -202,26 +201,17 @@
   {/if}
 
   {#if !isLoading}
-    <!-- Left Column: Map Viewport (Globe 3D / Flat 2D) -->
+    <!-- Left Column: Map Viewport (Globe 3D WebGL) -->
     <div class="flex-1 h-full min-w-0 relative overflow-hidden transition-all duration-300 ease-out">
-      {#if mapState.projectionMode === 'globe'}
-        <Globe3DView
-          {geoJsonFeatures}
-          {mapData}
-          {mapState}
-          {currentTheme}
-          onCountryClick={(c) => handleCountryClick(c)}
-          onCountryHover={(iso3) => { mapState.hoveredIso3 = iso3; }}
-          onReady={() => { isGlobeSceneReady = true; }}
-        />
-      {:else}
-        <FlatMap2DView
-          {mapData}
-          {mapState}
-          {currentTheme}
-          onCountryClick={(c) => handleCountryClick(c)}
-        />
-      {/if}
+      <Globe3DView
+        {geoJsonFeatures}
+        {mapData}
+        {mapState}
+        {currentTheme}
+        onCountryClick={(c) => handleCountryClick(c)}
+        onCountryHover={(iso3) => { mapState.hoveredIso3 = iso3; }}
+        onReady={() => { isGlobeSceneReady = true; }}
+      />
 
       <!-- Top-Left Floating Live Status Pill -->
       <div class="absolute top-4 left-4 z-10 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[var(--bg-raised)]/85 border border-[var(--bg-rule)] text-xs font-semibold text-[var(--ink)] backdrop-blur-xl shadow-xl">
@@ -232,7 +222,7 @@
           </span>
           <span class="font-bold tracking-tight">{activeApp.name}</span>
           <span class="text-[10px] text-[var(--ink-4)] font-normal">
-            • {mapState.projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} 
+            • 🌍 Globe 3D WebGL 
             {#if mapState.activeMetric === 'flag'}
               • 🏁 Mode Bendera
             {/if}
@@ -275,7 +265,6 @@
             mapState.setRegion('all');
             mapState.setSearchQuery('');
           }}
-          onToggleProjection={(m) => mapState.setProjection(m)}
           onToggleMetric={(m) => mapState.setMetric(m)}
           onSelectRegion={(r) => mapState.setRegion(r)}
           onToggleLabels={() => mapState.toggleLabels()}

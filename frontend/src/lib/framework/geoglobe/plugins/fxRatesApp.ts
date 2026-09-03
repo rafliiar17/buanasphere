@@ -108,11 +108,11 @@ export const fxRatesApp: GeoAppPlugin<FxRateData> = {
     const chg = data?.change24h ?? BASE_RATES_IDR[country.currencyCode]?.change ?? 0;
 
     if (activeMetric === 'rate') {
-      if (rate > 20000) return isDark ? 'rgba(99, 102, 241, 0.90)' : 'rgba(79, 70, 229, 0.90)';
-      if (rate > 14000) return isDark ? 'rgba(37, 99, 235, 0.90)' : 'rgba(29, 78, 216, 0.90)';
-      if (rate > 3000)  return isDark ? 'rgba(6, 182, 212, 0.85)' : 'rgba(8, 145, 178, 0.85)';
-      if (rate > 500)   return isDark ? 'rgba(245, 158, 11, 0.85)' : 'rgba(217, 119, 6, 0.85)';
-      return isDark ? 'rgba(234, 88, 12, 0.80)' : 'rgba(194, 65, 12, 0.80)';
+      if (rate > 20000) return isDark ? 'rgba(99, 102, 241, 0.65)' : 'rgba(79, 70, 229, 0.65)';
+      if (rate > 14000) return isDark ? 'rgba(37, 99, 235, 0.60)' : 'rgba(29, 78, 216, 0.60)';
+      if (rate > 3000)  return isDark ? 'rgba(6, 182, 212, 0.55)' : 'rgba(8, 145, 178, 0.55)';
+      if (rate > 500)   return isDark ? 'rgba(14, 165, 233, 0.50)' : 'rgba(2, 132, 199, 0.50)';
+      return isDark ? 'rgba(56, 189, 248, 0.45)' : 'rgba(14, 165, 233, 0.45)';
     } else if (activeMetric === 'change') {
       if (chg >= 0.20) return isDark ? 'rgba(16, 185, 129, 0.95)' : 'rgba(5, 150, 105, 0.95)';
       if (chg > 0.02)  return isDark ? 'rgba(34, 197, 94, 0.90)' : 'rgba(22, 163, 74, 0.90)';

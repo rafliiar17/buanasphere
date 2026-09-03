@@ -74,3 +74,17 @@ export function formatTimeAgo(dateInput: string | Date | number): string {
   if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} jam lalu`;
   return `${Math.floor(diffSec / 86400)} hari lalu`;
 }
+
+export function formatCompactNumber(num: number): string {
+  if (isNaN(num) || num === null || num === undefined) return '0';
+  if (num >= 1_000_000_000) {
+    return `${(num / 1_000_000_000).toFixed(2).replace(/\.00$/, '')} Miliar`;
+  }
+  if (num >= 1_000_000) {
+    return `${(num / 1_000_000).toFixed(1).replace(/\.0$/, '')} Juta`;
+  }
+  if (num >= 1_000) {
+    return `${(num / 1_000).toFixed(1).replace(/\.0$/, '')} Ribu`;
+  }
+  return num.toLocaleString('id-ID');
+}

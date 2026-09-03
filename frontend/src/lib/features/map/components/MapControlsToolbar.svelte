@@ -139,7 +139,7 @@
     </span>
     <span class="font-bold tracking-tight">Kurs.World</span>
     <span class="text-[10px] text-[var(--ink-4)] font-normal">
-      • {mapState.projectionMode === 'globe' ? '🌍 Globe 3D WebGL' : '🗺️ Peta Datar'} 
+      • 🌍 Globe 3D WebGL 
       {#if mapState.activeMetric === 'flag'}
         • 🏁 Mode Bendera
       {/if}
@@ -280,52 +280,22 @@
         {/if}
       </div>
 
-      <!-- 3. Section: Tampilan Peta & Lapisan (Projection + 3D Pin Switch) -->
+      <!-- 3. Section: Lapisan & Pin Label Globe 3D -->
       <div class="space-y-1.5">
         <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[var(--ink-4)]">
           <span>{t('map.viewAndLayers')}</span>
-          {#if mapState.projectionMode === 'globe'}
-            <button
-              type="button"
-              onclick={onToggleLabels}
-              class={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition border cursor-pointer ${
-                mapState.showLabels
-                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
-                  : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
-              }`}
-              title={t('map.togglePinLabels')}
-            >
-              <MapPin class="w-2.5 h-2.5" />
-              <span>{t('map.pinLabels')}: {mapState.showLabels ? 'ON' : 'OFF'}</span>
-            </button>
-          {/if}
-        </div>
-
-        <!-- Segmented Projection Switcher -->
-        <div class="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[var(--bg-subtle)] border border-[var(--bg-rule)]">
           <button
             type="button"
-            onclick={() => onToggleProjection('globe')}
-            class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-              mapState.projectionMode === 'globe'
-                ? 'bg-emerald-500 text-slate-950 shadow-md font-extrabold'
-                : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
+            onclick={onToggleLabels}
+            class={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold transition border cursor-pointer ${
+              mapState.showLabels
+                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                : 'bg-[var(--bg-subtle)] border-[var(--bg-rule)] text-[var(--ink-4)] hover:text-[var(--ink)]'
             }`}
+            title={t('map.togglePinLabels')}
           >
-            <Globe class="w-3.5 h-3.5" />
-            <span>{t('map.projectionGlobe')}</span>
-          </button>
-          <button
-            type="button"
-            onclick={() => onToggleProjection('flat')}
-            class={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-              mapState.projectionMode === 'flat'
-                ? 'bg-sky-500 text-slate-950 shadow-md font-extrabold'
-                : 'text-[var(--ink-3)] hover:text-[var(--ink)]'
-            }`}
-          >
-            <Compass class="w-3.5 h-3.5" />
-            <span>{t('map.projectionFlat')}</span>
+            <MapPin class="w-2.5 h-2.5" />
+            <span>{t('map.pinLabels')}: {mapState.showLabels ? 'ON' : 'OFF'}</span>
           </button>
         </div>
       </div>

@@ -127,10 +127,9 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
   getPinLabel: (country: CountrySpatialMetadata, data: WorldTimeData | undefined, _activeMetric: string): { text: string; shortText: string } => {
     const now = new Date();
     const local = calculateLocalTime(now, country.utcOffset);
-    const phase = getDiurnalPhase(local.hours, local.minutes);
     return {
-      text: `${country.countryName} ${local.formatted} ${phase.emoji}`,
-      shortText: `${local.formatted} ${phase.emoji}`,
+      text: `${country.countryName} ${local.formatted}`,
+      shortText: `${local.formatted}`,
     };
   },
 
@@ -149,11 +148,18 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
 
     // Zoom-aware LOD: when zoomed out far (> 1.4), only render major global hubs
     // or cities belonging to the currently selected country.
-    // When zoomed in (<= 1.4), render all 120+ cities in full detail!
+    // For Indonesia (ADR 0070): when zoomed out, only show the 3 primary timezone pillars
+    // (Jakarta for WIB, Denpasar for WITA, Jayapura for WIT) to prevent visual clutter.
+    // When zoomed in (<= 1.4), render all 28 Indonesian cities and 120+ global cities in full detail!
+    const INDO_TIMEZONE_PILLARS = new Set(['id-jkt', 'id-dps', 'id-djj']);
+
     const filteredCities = isZoomedOut
-      ? WORLD_CITIES_TIME.filter(
-          (city) => city.isMajorHub || (selectedIso3 && city.countryIso3 === selectedIso3)
-        )
+      ? WORLD_CITIES_TIME.filter((city) => {
+          if (city.countryIso3 === 'IDN') {
+            return INDO_TIMEZONE_PILLARS.has(city.id);
+          }
+          return city.isMajorHub || (selectedIso3 && city.countryIso3 === selectedIso3);
+        })
       : WORLD_CITIES_TIME;
 
     return filteredCities.map((city) => {
@@ -163,10 +169,22 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       const displayText = city.cityName;
       const shortText = city.cityName;
 
+      const pop = city.population ?? (isMajor ? 8000000 : 1500000);
+      const dotRadius = isSelected
+        ? 0.35
+        : Math.max(0.08, Math.min(0.48, Math.sqrt(pop) * 6.5e-5));
       const size = isSelected ? 0.75 : (isMajor ? 0.40 : 0.28);
+
+      // Solar diurnal phase reactive coloring (golden for day, cyan for night)
+      const localTime = calculateLocalTime(now, city.utcOffset);
+      const phase = getDiurnalPhase(localTime.hours, localTime.minutes);
+      const isDaytime = phase.isDaylight;
+
       const color = isSelected
         ? '#ffffff'
-        : (isDark ? 'rgba(241, 245, 249, 0.92)' : 'rgba(15, 23, 42, 0.92)');
+        : isDaytime
+          ? 'rgba(251, 191, 36, 0.92)'   // Solar Golden Amber
+          : (isDark ? 'rgba(56, 189, 248, 0.85)' : 'rgba(14, 116, 144, 0.85)'); // Cyan Night Dot
 
       return {
         id: city.id,
@@ -176,6 +194,7 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
         shortText,
         size,
         color,
+        dotRadius,
         iso3: city.countryIso3,
         cityId: city.id,
         city,

@@ -158,9 +158,8 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
   },
 
   getPinLabel: (country: CountrySpatialMetadata): { text: string; shortText: string } => {
-    const isHub = REMITTANCE_HUBS_SET.has(country.iso3);
     return {
-      text: isHub ? `✈️ ${country.countryName}` : country.countryName,
+      text: country.countryName,
       shortText: country.iso3,
     };
   },

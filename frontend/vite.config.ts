@@ -30,9 +30,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes('plotly.js-dist-min')) {
-            return 'plotly-vendor';
-          }
           if (id.includes('three') || id.includes('globe.gl') || id.includes('three-globe')) {
             return 'three-vendor';
           }

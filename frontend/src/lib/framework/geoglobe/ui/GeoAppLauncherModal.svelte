@@ -8,6 +8,8 @@
     BookOpen,
     Trees,
     Landmark,
+    Users,
+    Activity,
     Sparkles,
     X,
     Check,
@@ -22,6 +24,8 @@
     BookOpen,
     Trees,
     Landmark,
+    Users,
+    Activity,
   };
 
   let searchQuery = $state('');

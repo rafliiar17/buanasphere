@@ -86,12 +86,6 @@
     }
   }
 
-  function handleToggleProjection() {
-    const current = mapState?.projectionMode ?? geoStore.projectionMode;
-    const next = current === 'globe' ? 'flat' : 'globe';
-    mapState?.setProjection?.(next);
-    geoStore.setProjection?.(next);
-  }
 
   function handleToggleLabels() {
     mapState?.toggleLabels?.();
@@ -148,7 +142,6 @@
     return map[key.toLowerCase()] ?? (key.charAt(0).toUpperCase() + key.slice(1));
   }
 
-  const currentProjection = $derived(mapState?.projectionMode ?? geoStore.projectionMode);
   const showLabels = $derived(mapState?.showLabels ?? geoStore.showLabels);
   const activeMetricId = $derived(mapState?.activeMetric ?? geoStore.activeMetricId);
   const activeRegion = $derived(mapState?.activeRegion ?? geoStore.activeRegion);
@@ -179,22 +172,13 @@
         </button>
       </div>
 
-      <!-- 2x2 Grid: Projection, Label, Rotasi, Bendera -->
-      <div class="grid grid-cols-2 gap-2">
-        <!-- 1. Projection Toggle -->
-        <button
-          type="button"
-          onclick={handleToggleProjection}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {currentProjection === 'globe' ? 'bg-sky-500/20 text-sky-300 border-sky-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-        >
-          <span>{currentProjection === 'globe' ? '🌍 Globe' : '🗺️ Datar'}</span>
-        </button>
-
-        <!-- 2. Label Toggle -->
+      <!-- 3-col Grid: Label, Rotasi, Bendera -->
+      <div class="grid grid-cols-3 gap-1.5">
+        <!-- 1. Label Toggle -->
         <button
           type="button"
           onclick={handleToggleLabels}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          class="flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl border text-[11px] font-semibold transition cursor-pointer {showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
         >
           {#if showLabels}
             <Eye class="w-3.5 h-3.5" />
@@ -205,22 +189,22 @@
           {/if}
         </button>
 
-        <!-- 3. Rotasi Toggle -->
+        <!-- 2. Rotasi Toggle -->
         <button
           type="button"
           onclick={handleToggleAutoRotate}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {isRotating ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          class="flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl border text-[11px] font-semibold transition cursor-pointer {isRotating ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
           title="Putar Otomatis Sudut Pandang Globe"
         >
           <RotateCw class="w-3.5 h-3.5 {isRotating ? 'animate-spin' : ''}" />
           <span>Rotasi: {isRotating ? 'ON' : 'OFF'}</span>
         </button>
 
-        <!-- 4. Bendera Toggle -->
+        <!-- 3. Bendera Toggle -->
         <button
           type="button"
           onclick={handleToggleFlags}
-          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {isFlagActive ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          class="flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-xl border text-[11px] font-semibold transition cursor-pointer {isFlagActive ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
           title="Tampilkan Tekstur Bendera Nasional di Setiap Negara"
         >
           <Flag class="w-3.5 h-3.5 text-amber-300" />

@@ -18,6 +18,7 @@ export interface WorldCityTimeInfo {
   isMajorHub: boolean;
   regionGroup?: 'indonesia' | 'asia_pacific' | 'europe_me' | 'americas' | 'africa';
   populationRank?: number;
+  population?: number;
 }
 
 export const WORLD_CITIES_TIME: WorldCityTimeInfo[] = [
