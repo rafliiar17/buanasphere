@@ -14,6 +14,16 @@
  * File ini menggunakan ekstensi .svelte.ts agar Svelte compiler memproses runes di dalamnya.
  */
 
+// Safe polyfill for non-browser runtime (e.g. Bun test) without triggering Svelte 5 browser getter trap
+if (typeof window === 'undefined') {
+  if (!('$state' in globalThis)) {
+    (globalThis as any).$state = (val: any) => val;
+  }
+  if (!('$derived' in globalThis)) {
+    (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+  }
+}
+
 import {
   REGION_FILTERS,
   type RegionFilter,
@@ -57,6 +67,7 @@ export interface MapStateConfig {
   convertDirection?: 'foreign_to_idr' | 'idr_to_foreign';
   isControlsCollapsed?: boolean;
   isRegionDropdownOpen?: boolean;
+  autoRotate?: boolean;
 }
 
 /**
@@ -85,6 +96,7 @@ export class MapState {
   showTimezoneLines: boolean = $state(true);
   selectedMeridian: TimezoneMeridianInfo | null = $state(null);
   cameraTravelSignal: { iso3: string; timestamp: number } | null = $state(null);
+  autoRotate: boolean = $state(false);
 
   constructor(initial?: Partial<MapStateConfig>) {
     if (initial) {
@@ -102,6 +114,7 @@ export class MapState {
       if (initial.convertDirection !== undefined) this.convertDirection = initial.convertDirection;
       if (initial.isControlsCollapsed !== undefined) this.isControlsCollapsed = initial.isControlsCollapsed;
       if (initial.isRegionDropdownOpen !== undefined) this.isRegionDropdownOpen = initial.isRegionDropdownOpen;
+      if (initial.autoRotate !== undefined) this.autoRotate = initial.autoRotate;
     }
   }
 
@@ -189,6 +202,14 @@ export class MapState {
 
   setShowLabels = (show: boolean) => {
     this.showLabels = show;
+  };
+
+  toggleAutoRotate = () => {
+    this.autoRotate = !this.autoRotate;
+  };
+
+  setAutoRotate = (enabled: boolean) => {
+    this.autoRotate = enabled;
   };
 
   toggleSearchDropdown = (open?: boolean) => {

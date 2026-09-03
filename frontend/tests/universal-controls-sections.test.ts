@@ -1,4 +1,11 @@
-import { describe, it, expect } from 'vitest';
+if (!('$state' in globalThis)) {
+  (globalThis as any).$state = (val: any) => val;
+}
+if (!('$derived' in globalThis)) {
+  (globalThis as any).$derived = (fn: any) => (typeof fn === 'function' ? fn() : fn);
+}
+
+import { describe, it, expect } from 'bun:test';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createMapState } from '../src/lib/features/map/mapState.svelte';

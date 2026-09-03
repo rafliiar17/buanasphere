@@ -46,6 +46,7 @@ export interface MapStateConfig {
   convertDirection?: 'foreign_to_idr' | 'idr_to_foreign';
   isControlsCollapsed?: boolean;
   isRegionDropdownOpen?: boolean;
+  autoRotate?: boolean;
 }
 
 /**
@@ -71,6 +72,7 @@ export class MapState {
   showTimezoneLines: boolean = true;
   selectedMeridian: TimezoneMeridianInfo | null = null;
   cameraTravelSignal: { iso3: string; timestamp: number } | null = null;
+  autoRotate: boolean = false;
 
   constructor(initial?: Partial<MapStateConfig & { performanceMode?: 'turbo' | 'quality' }>) {
     if (initial) {
@@ -89,6 +91,7 @@ export class MapState {
       if (initial.convertDirection !== undefined) this.convertDirection = initial.convertDirection;
       if (initial.isControlsCollapsed !== undefined) this.isControlsCollapsed = initial.isControlsCollapsed;
       if (initial.isRegionDropdownOpen !== undefined) this.isRegionDropdownOpen = initial.isRegionDropdownOpen;
+      if (initial.autoRotate !== undefined) this.autoRotate = initial.autoRotate;
     }
   }
 
@@ -176,6 +179,14 @@ export class MapState {
 
   setShowLabels = (show: boolean) => {
     this.showLabels = show;
+  };
+
+  toggleAutoRotate = () => {
+    this.autoRotate = !this.autoRotate;
+  };
+
+  setAutoRotate = (enabled: boolean) => {
+    this.autoRotate = enabled;
   };
 
   toggleSearchDropdown = (open?: boolean) => {

@@ -63,6 +63,7 @@ export function createGeoStore() {
   // Performance Profile (ADR 0035 - Laptop GPU & WebGL Optimization)
   let performanceMode = $state<'turbo' | 'quality'>('quality');
   let showTimezoneLines = $state(true);
+  let autoRotate = $state(false);
 
   let appDataCache = $state<Record<string, Record<string, any>>>({});
   let isLoadingData = $state(false);
@@ -255,6 +256,13 @@ export function createGeoStore() {
     get showTimezoneLines() { return showTimezoneLines; },
     setShowTimezoneLines: (show: boolean) => { showTimezoneLines = show; },
     toggleTimezoneLines: () => { showTimezoneLines = !showTimezoneLines; },
+    get autoRotate() { return autoRotate; },
+    toggleAutoRotate: () => {
+      autoRotate = !autoRotate;
+    },
+    setAutoRotate: (enabled: boolean) => {
+      autoRotate = enabled;
+    },
     setPerformanceMode: (mode: 'turbo' | 'quality') => { performanceMode = mode; },
     togglePerformanceMode: () => { performanceMode = performanceMode === 'turbo' ? 'quality' : 'turbo'; },
     isCountryMatched,

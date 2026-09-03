@@ -828,8 +828,10 @@
     // Google Earth style orbit controls
     const controls = globeInstance.controls();
     if (controls) {
-      controls.autoRotate = false;
-      controls.autoRotateSpeed = 0.5;
+      controls.autoRotate = mapState?.autoRotate || geoStore.autoRotate || false;
+      controls.autoRotateSpeed = 0.6;
+      globeInstance.controls().autoRotate = controls.autoRotate;
+      globeInstance.controls().autoRotateSpeed = controls.autoRotateSpeed;
       controls.enableDamping = true;
       controls.dampingFactor = 0.06;
       controls.minDistance = 105;
@@ -1003,6 +1005,19 @@
     if (latestSignal && latestSignal.timestamp > lastTravelTimestamp) {
       lastTravelTimestamp = latestSignal.timestamp;
       travelToCountry(latestSignal.iso3);
+    }
+  });
+
+  // React to auto-rotate changes (ADR 0051)
+  $effect(() => {
+    if (!isInitialized || !globeInstance) return;
+    const isRotating = mapState?.autoRotate || geoStore.autoRotate || false;
+    const controls = globeInstance.controls();
+    if (controls) {
+      controls.autoRotate = isRotating;
+      controls.autoRotateSpeed = 0.6;
+      globeInstance.controls().autoRotate = isRotating;
+      globeInstance.controls().autoRotateSpeed = 0.6;
     }
   });
 
