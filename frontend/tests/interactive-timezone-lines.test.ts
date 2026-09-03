@@ -6,13 +6,13 @@ import { worldTimeApp } from '../src/lib/framework/geoglobe/plugins/worldTimeApp
 
 describe('Interactive Timezone Meridian Lines Suite (ADR 0042 / TDD)', () => {
   describe('1. MapState Timezone Lines Visibility & Meridian Selection', () => {
-    it('initializes showTimezoneLines to true by default and supports toggleTimezoneLines()', () => {
+    it('initializes showTimezoneLines to false by default and supports toggleTimezoneLines()', () => {
       const state = new MapState();
-      expect(state.showTimezoneLines).toBe(true);
-      state.toggleTimezoneLines();
       expect(state.showTimezoneLines).toBe(false);
       state.toggleTimezoneLines();
       expect(state.showTimezoneLines).toBe(true);
+      state.toggleTimezoneLines();
+      expect(state.showTimezoneLines).toBe(false);
     });
 
     it('manages selectedMeridian state with setSelectedMeridian()', () => {
