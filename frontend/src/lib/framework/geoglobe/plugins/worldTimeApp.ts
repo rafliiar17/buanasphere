@@ -149,8 +149,8 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       const isSelected = selectedIso3 === city.countryIso3;
       const isMajor = city.isMajorHub;
 
-      const displayText = `${city.flagEmoji} ${city.cityName} • ${local.formatted} ${phase.emoji}`;
-      const shortText = `${city.cityName} ${local.formatted}`;
+      const displayText = city.cityName;
+      const shortText = city.cityName;
 
       const size = isSelected ? 0.75 : (isMajor ? 0.40 : 0.28);
       const color = isSelected
