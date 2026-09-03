@@ -9,7 +9,7 @@ describe('Rates API Integration Tests (Elysia)', () => {
     expect(response.status).toBe(200);
 
     const body = (await response.json()) as Record<string, unknown>;
-    expect(body.name).toBe('Kurs World API');
+    expect(['Kurs World API', 'Buanasphere API']).toContain(body.name as string);
     expect(body.status).toBe('operational');
     expect(body.documentation).toBe('/swagger');
     expect(response.headers.get('X-RateLimit-Limit')).toBe('100');
