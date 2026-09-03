@@ -10,14 +10,16 @@ describe('3D Timezone Meridian Lines & Quality Standard Suite (ADR 0041 / TDD)',
       expect(typeof worldTimeApp.getPaths).toBe('function');
     });
 
-    it('generates exactly 24 standard timezone meridian paths covering global longitudes', () => {
+    it('generates rich timezone boundary paths covering global longitudes (ADR 0057)', () => {
       const paths = worldTimeApp.getPaths!({}, 'diurnal', 'dark');
-      expect(paths.length).toBe(24);
+      expect(paths.length).toBeGreaterThanOrEqual(24);
 
-      // Verify longitudes span from -180 to 165 at 15-degree steps
-      const longitudes = paths.map(p => p.coords[0][1]).sort((a, b) => a - b);
-      expect(longitudes[0]).toBe(-180);
-      expect(longitudes[longitudes.length - 1]).toBe(165);
+      // Verify longitudes span globally across hemispheres
+      const allLngs = paths.flatMap(p => p.coords.map(c => c[1]));
+      const minLng = Math.min(...allLngs);
+      const maxLng = Math.max(...allLngs);
+      expect(minLng).toBeLessThanOrEqual(-150);
+      expect(maxLng).toBeGreaterThanOrEqual(150);
     });
 
     it('highlights Indonesia WIB baseline (UTC+7 / +105° longitude) in emerald green', () => {
@@ -35,19 +37,18 @@ describe('3D Timezone Meridian Lines & Quality Standard Suite (ADR 0041 / TDD)',
       expect(gmtPath?.label).toContain('UTC 0');
       expect(gmtPath?.color).toContain('#06b6d4'); // Cyan
 
-      const idlPath = paths.find(p => p.coords[0][1] === -180 || p.coords[0][1] === 180);
+      const idlPath = paths.find(p => p.id === 'meridian-idl' || p.coords[0][1] === -180 || p.coords[0][1] === 180);
       expect(idlPath).toBeDefined();
       expect(idlPath?.dashLength).toBeDefined(); // Dashed line
     });
 
-    it('ensures all meridian paths extend from North Pole (lat +85°) to South Pole (lat -85°)', () => {
+    it('ensures timezone paths cover major global latitudes (ADR 0057)', () => {
       const paths = worldTimeApp.getPaths!({}, 'diurnal', 'dark');
-      for (const p of paths) {
-        const startLat = p.coords[0][0];
-        const endLat = p.coords[p.coords.length - 1][0];
-        expect(Math.abs(startLat)).toBeGreaterThanOrEqual(80);
-        expect(Math.abs(endLat)).toBeGreaterThanOrEqual(80);
-      }
+      const allLats = paths.flatMap(p => p.coords.map(c => c[0]));
+      const maxLat = Math.max(...allLats);
+      const minLat = Math.min(...allLats);
+      expect(maxLat).toBeGreaterThanOrEqual(60);
+      expect(minLat).toBeLessThanOrEqual(-50);
     });
   });
 

@@ -133,7 +133,7 @@ export interface GeoAppPlugin<TData = any> {
   getPolygonColor?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light', state?: { isMatched?: boolean; isSelected?: boolean; isHovered?: boolean }) => string;
   getTooltipHtml?: (country: CountrySpatialMetadata, data: TData, activeMetric: string, theme: 'dark' | 'light') => string;
   getPinLabel?: (country: CountrySpatialMetadata, data: TData, activeMetric: string) => { text: string; shortText?: string; size?: number; color?: string; lat?: number; lng?: number };
-  getCustomLabels?: (data: Record<string, TData>, activeMetric: string, theme: 'dark' | 'light', selectedIso3?: string, simulationDate?: Date) => Array<{
+  getCustomLabels?: (data: Record<string, TData>, activeMetric: string, theme: 'dark' | 'light', selectedIso3?: string, simulationDate?: Date, cameraAltitude?: number) => Array<{
     id: string;
     lat: number;
     lng: number;

@@ -83,7 +83,7 @@ export class MapState {
   isRegionDropdownOpen: boolean = false;
   highlightedIndex: number = 0;
   performanceMode: 'turbo' | 'quality' = 'quality';
-  showTimezoneLines: boolean = true;
+  showTimezoneLines: boolean = false;
   selectedMeridian: TimezoneMeridianInfo | null = null;
   cameraTravelSignal: { iso3: string; timestamp: number } | null = null;
 

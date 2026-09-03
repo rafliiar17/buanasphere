@@ -292,7 +292,7 @@
       <!-- Timezone Lines Toggle (when activeApp.id === 'world-time') -->
       {#if activeApp.id === 'world-time'}
         <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/60 border border-slate-800">
-          <span class="text-xs text-slate-300 font-medium">Garis Bujur Zona Waktu 3D</span>
+          <span class="text-xs text-slate-300 font-medium">Garis Batas Zona Waktu 3D</span>
           <button
             type="button"
             onclick={() => mapState?.toggleTimezoneLines?.()}

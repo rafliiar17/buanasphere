@@ -14,6 +14,7 @@ import {
   type WorldCityTimeInfo, 
   findCitiesByCountry 
 } from '../data/worldCitiesTimeData';
+import { TIMEZONE_BOUNDARIES } from '../data/timezoneBoundariesData';
 
 export interface WorldTimeData {
   hours: number;
@@ -138,14 +139,24 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     _activeMetric: string,
     theme: 'dark' | 'light',
     selectedIso3?: string,
-    simulationDate?: Date
+    simulationDate?: Date,
+    cameraAltitude?: number
   ) => {
     const isDark = theme === 'dark';
     const now = simulationDate ?? new Date();
+    const alt = cameraAltitude ?? 2.2;
+    const isZoomedOut = alt > 1.4;
 
-    return WORLD_CITIES_TIME.map((city) => {
-      const local = calculateLocalTime(now, city.utcOffset);
-      const phase = getDiurnalPhase(local.hours, local.minutes);
+    // Zoom-aware LOD: when zoomed out far (> 1.4), only render major global hubs
+    // or cities belonging to the currently selected country.
+    // When zoomed in (<= 1.4), render all 120+ cities in full detail!
+    const filteredCities = isZoomedOut
+      ? WORLD_CITIES_TIME.filter(
+          (city) => city.isMajorHub || (selectedIso3 && city.countryIso3 === selectedIso3)
+        )
+      : WORLD_CITIES_TIME;
+
+    return filteredCities.map((city) => {
       const isSelected = selectedIso3 === city.countryIso3;
       const isMajor = city.isMajorHub;
 
@@ -176,7 +187,7 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
     const isDark = theme === 'dark';
     const paths: GeoPath[] = [];
 
-    const MERIDIAN_REGIONS: Record<number, string[]> = {
+    const MERIDIAN_REGIONS: Record<string, string[]> = {
       '-12': ['Pulau Baker (AS)', 'Kepulauan Howland (AS)'],
       '-11': ['Samoa Amerika', 'Niue'],
       '-10': ['Hawaii (Honolulu)', 'Tahiti', 'Kepulauan Cook'],
@@ -195,78 +206,88 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       '3': ['Arab Saudi (Riyadh, Makkah)', 'Rusia (Moskow)', 'Turki (Istanbul)', 'Kenya (Nairobi)'],
       '4': ['Uni Emirat Arab (Dubai, Abu Dhabi)', 'Azerbaijan (Baku)', 'Georgia (Tbilisi)'],
       '5': ['Pakistan (Karachi, Islamabad)', 'Uzbekistan (Tashkent)', 'Maladewa'],
+      '5.5': ['India (New Delhi, Mumbai)', 'Sri Lanka (Kolombo)'],
+      '5.75': ['Nepal (Kathmandu)'],
       '6': ['Bangladesh (Dhaka)', 'Kazakhstan (Almaty)', 'Bhutan'],
-      '7': ['Indonesia (WIB: Jakarta, Surabaya, Medan)', 'Thailand (Bangkok)', 'Vietnam (Hanoi)'],
-      '8': ['Indonesia (WITA: Bali, Makassar)', 'Singapura', 'Malaysia (KL)', 'Tiongkok (Beijing)', 'Perth'],
-      '9': ['Indonesia (WIT: Jayapura, Ambon)', 'Jepang (Tokyo)', 'Korea Selatan (Seoul)'],
+      '6.5': ['Myanmar (Yangon)', 'Kepulauan Cocos'],
+      '7': ['Indonesia (WIB: Jakarta, Surabaya, Medan, Pontianak)', 'Thailand (Bangkok)', 'Vietnam (Hanoi)'],
+      '8': ['Indonesia (WITA: Bali, Makassar, Balikpapan)', 'Singapura', 'Malaysia (KL)', 'Tiongkok (Beijing)', 'Perth'],
+      '9': ['Indonesia (WIT: Jayapura, Ambon, Manokwari)', 'Jepang (Tokyo)', 'Korea Selatan (Seoul)'],
+      '9.5': ['Australia Tengah (Adelaide, Darwin)'],
       '10': ['Australia Timur (Sydney, Melbourne, Brisbane)', 'Papua Nugini (Port Moresby)'],
       '11': ['Kaledonia Baru', 'Kepulauan Solomon', 'Vanuatu'],
+      '12': ['Selandia Baru (Auckland, Wellington)', 'Fiji', 'Tuvalu', 'Rusia (Kamchatka)'],
+      '12.75': ['Kepulauan Chatham (Selandia Baru)'],
+      '13': ['Samoa (Apia)', 'Tonga (Nukuʻalofa)', 'Kepulauan Phoenix'],
+      '14': ['Kiribati (Line Islands: Kiritimati / Christmas Island)'],
     };
 
-    // 24 standard timezone meridians (from -180 to +165 in 15-degree steps)
-    for (let lng = -180; lng < 180; lng += 15) {
-      const utcOffset = Math.round(lng / 15);
-      const isWib = lng === 105; // UTC+7 (Jakarta / WIB baseline)
-      const isWita = lng === 120; // UTC+8 (WITA / Bali & Makassar)
-      const isWit = lng === 135; // UTC+9 (WIT / Maluku & Papua)
-      const isGmt = lng === 0;   // UTC 0 (Prime Meridian)
-      const isIdl = lng === -180; // International Date Line (±180)
+    const now = new Date();
 
-      // Live time calculations along this meridian
-      const now = new Date();
+    for (let i = 0; i < TIMEZONE_BOUNDARIES.length; i++) {
+      const seg = TIMEZONE_BOUNDARIES[i];
+      const coords = seg.c || seg.coords;
+      if (!coords || coords.length === 0) continue;
+
+      const utcOffset = seg.o ?? seg.utcOffset ?? 0;
+      const isIdl = Math.abs(utcOffset) === 12 || utcOffset === 14 || utcOffset === 13 || utcOffset === 12.75 || seg.isDateLine === true || coords.some(([, lng]) => Math.abs(lng) >= 168);
+      const isWib = !isIdl && utcOffset === 7;
+      const isWita = !isIdl && utcOffset === 8;
+      const isWit = !isIdl && utcOffset === 9;
+
       const local = calculateLocalTime(now, utcOffset);
       const phase = getDiurnalPhase(local.hours, local.minutes);
       const diffHours = utcOffset - 7;
-      const diffWib = diffHours === 0 
-        ? 'Acuan Waktu Nasional (WIB)' 
+      const diffWib = diffHours === 0
+        ? 'Acuan Waktu Nasional (WIB)'
         : `${diffHours > 0 ? '+' : ''}${diffHours} jam vs WIB Jakarta`;
       const gmtLabel = `GMT${utcOffset >= 0 ? '+' : ''}${utcOffset}:00`;
-      const keyRegions = MERIDIAN_REGIONS[utcOffset] ?? [`Zona Waktu Bujur ${lng}°`];
+      const keyRegions = MERIDIAN_REGIONS[String(utcOffset)] ?? MERIDIAN_REGIONS[String(Math.round(utcOffset))] ?? [`Zona Geopolitik UTC${utcOffset >= 0 ? '+' : ''}${utcOffset}`];
 
-      // Sample latitude coordinates from +85 (North) to -85 (South)
-      const coords: Array<[number, number]> = [];
-      for (let lat = 85; lat >= -85; lat -= 5) {
-        coords.push([lat, lng]);
-      }
-
-      let color = isDark ? 'rgba(56, 189, 248, 0.22)' : 'rgba(14, 116, 144, 0.28)';
+      let color = isDark ? 'rgba(56, 189, 248, 0.3)' : 'rgba(14, 116, 144, 0.35)';
       let stroke = 1.0;
       let altitude = 0.003;
       let dashLength: number | undefined;
       let dashGap: number | undefined;
-      let label = `UTC${utcOffset >= 0 ? '+' : ''}${utcOffset}`;
+      let label = `Batas Geopolitik UTC${utcOffset >= 0 ? '+' : ''}${utcOffset}`;
+      let id = `tz-boundary-utc-${utcOffset}-${i}`;
 
       if (isWib) {
-        color = '#10b981'; // Glowing emerald for WIB baseline
+        color = '#10b981';
         stroke = 2.2;
         altitude = 0.006;
-        label = 'WIB (UTC+7 / Jakarta Baseline)';
+        label = 'Batas Geopolitik WIB (UTC+7 / Jakarta)';
+        id = !paths.some(p => p.id === 'meridian-utc-7') ? 'meridian-utc-7' : `meridian-utc-7-${i}`;
       } else if (isWita) {
-        color = isDark ? '#34d399' : '#059669';
-        stroke = 1.6;
-        altitude = 0.004;
-        label = 'WITA (UTC+8 / Bali & Makassar)';
+        color = '#34d399';
+        stroke = 1.8;
+        altitude = 0.005;
+        label = 'Batas Geopolitik WITA (UTC+8 / Bali & Makassar)';
+        id = !paths.some(p => p.id === 'meridian-utc-8') ? 'meridian-utc-8' : `meridian-utc-8-${i}`;
       } else if (isWit) {
-        color = isDark ? '#38bdf8' : '#0284c7';
-        stroke = 1.6;
-        altitude = 0.004;
-        label = 'WIT (UTC+9 / Maluku & Papua)';
-      } else if (isGmt) {
-        color = '#06b6d4'; // Cyan for Greenwich Prime Meridian
+        color = '#38bdf8';
+        stroke = 1.8;
+        altitude = 0.005;
+        label = 'Batas Geopolitik WIT (UTC+9 / Maluku & Papua)';
+        id = !paths.some(p => p.id === 'meridian-utc-9') ? 'meridian-utc-9' : `meridian-utc-9-${i}`;
+      } else if (isIdl) {
+        color = '#f59e0b';
+        stroke = 2.0;
+        altitude = 0.005;
+        dashLength = 0.15;
+        dashGap = 0.08;
+        label = 'International Date Line (Garis Batas Tanggal Internasional)';
+        id = !paths.some(p => p.id === 'meridian-idl') ? 'meridian-idl' : `meridian-idl-${i}`;
+      } else if (utcOffset === 0) {
+        color = '#06b6d4';
         stroke = 2.0;
         altitude = 0.005;
         label = 'UTC 0 (Prime Meridian / GMT)';
-      } else if (isIdl) {
-        color = '#f59e0b'; // Amber dashed for International Date Line
-        stroke = 1.8;
-        altitude = 0.004;
-        dashLength = 0.15;
-        dashGap = 0.08;
-        label = 'International Date Line (UTC±12)';
+        id = !paths.some(p => p.id === 'meridian-utc-0') ? 'meridian-utc-0' : `meridian-utc-0-${i}`;
       }
 
       const tooltipHtml = `
-        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.98)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 16px 36px rgba(0,0,0,0.4); font-family: Inter, sans-serif; pointer-events: none; min-width: 220px;">
+        <div style="background: ${isDark ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.98)'}; border: 1px solid ${isDark ? '#334155' : '#cbd5e1'}; border-radius: 12px; padding: 10px 14px; box-shadow: 0 16px 36px rgba(0,0,0,0.4); font-family: Inter, sans-serif; pointer-events: none; min-width: 240px;">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
             <div style="display: flex; align-items: center; gap: 6px;">
               <span style="font-size: 14px;">🌐</span>
@@ -274,7 +295,7 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
             </div>
             <span style="font-size: 10px; font-weight: 700; color: #06b6d4; background: ${isDark ? '#1e293b' : '#ecfeff'}; padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(6, 182, 212, 0.3);">${gmtLabel}</span>
           </div>
-          <div style="font-size: 14px; font-weight: 800; color: ${isWib ? '#10b981' : (isDark ? '#38bdf8' : '#0284c7')}; margin-bottom: 4px;">
+          <div style="font-size: 14px; font-weight: 800; color: ${isWib ? '#10b981' : isWita ? '#34d399' : isWit ? '#38bdf8' : isIdl ? '#f59e0b' : (isDark ? '#38bdf8' : '#0284c7')}; margin-bottom: 4px;">
             🕒 Jam: ${local.formatted} ${phase.emoji}
           </div>
           <div style="font-size: 11px; color: ${isDark ? '#94a3b8' : '#64748b'}; margin-bottom: 6px;">
@@ -284,13 +305,13 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
             📍 ${keyRegions.slice(0, 3).join(' • ')}
           </div>
           <div style="font-size: 9px; color: #38bdf8; margin-top: 4px; font-weight: 600;">
-            👉 Klik garis untuk detail lengkap zona
+            👉 Klik garis batas untuk detail lengkap zona
           </div>
         </div>
       `;
 
       paths.push({
-        id: `meridian-utc-${utcOffset}`,
+        id,
         coords,
         color,
         stroke,
