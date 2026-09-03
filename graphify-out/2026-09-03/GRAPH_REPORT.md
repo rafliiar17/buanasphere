@@ -1,16 +1,16 @@
 # Graph Report - kurs-world  (2026-09-03)
 
 ## Corpus Check
-- 284 files · ~206,827 words
+- 278 files · ~201,871 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1844 nodes · 2653 edges · 167 communities (156 shown, 11 thin omitted)
+- 1807 nodes · 2582 edges · 166 communities (155 shown, 11 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `29262fd3`
+- Built from commit: `422d6606`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -165,42 +165,41 @@
 - @types/three
 - typescript
 - webview-bun
-- @types/plotly.js-dist-min
 
 ## God Nodes (most connected - your core abstractions)
-1. `$lib/api/client` - 32 edges
-2. `AggregatorService` - 30 edges
+1. `AggregatorService` - 29 edges
+2. `$lib/api/client` - 29 edges
 3. `$lib/api/types` - 27 edges
 4. `$lib/formatters/currency` - 26 edges
 5. `MapState` - 26 edges
 6. `../../chart/GoogleRateChart.svelte` - 25 edges
 7. `MapState` - 25 edges
-8. `ApiClient` - 21 edges
-9. `$lib/features/map/mapState.svelte` - 21 edges
-10. `Rate` - 17 edges
+8. `$lib/features/map/mapState.svelte` - 21 edges
+9. `Rate` - 17 edges
+10. `OpenERApiProvider` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `AggregatorService` --references--> `Env`  [EXTRACTED]
-  backend/src/service/aggregator.ts → backend/src/db/index.ts
+- `getLocalizedCurrencyName()` --calls--> `getLocalizedRegion()`  [EXTRACTED]
+  frontend/src/lib/features/map/components/CountryInspectorDrawer.svelte → frontend/src/lib/i18n/index.ts
+- `getLocalizedCurrencyName()` --calls--> `getLocalizedRegion()`  [EXTRACTED]
+  frontend/src/lib/features/map/components/MapControlsToolbar.svelte → frontend/src/lib/i18n/index.ts
 - `getCachedCountries()` --calls--> `getDb()`  [EXTRACTED]
   backend/src/service/country.ts → backend/src/db/index.ts
 - `seedCountriesToDb()` --calls--> `getDb()`  [EXTRACTED]
   backend/src/service/country.ts → backend/src/db/index.ts
 - `ratesRoutes()` --calls--> `getAllCountryMappings()`  [EXTRACTED]
   backend/src/routes/rates.ts → backend/src/domain/country-map.ts
-- `ratesRoutes()` --calls--> `parseCurrencyPair()`  [EXTRACTED]
-  backend/src/routes/rates.ts → backend/src/domain/rate.ts
 
 ## Import Cycles
-- 3-file cycle: `frontend/src/lib/apps/flight/FlightBottomDock.svelte -> frontend/src/lib/framework/geoglobe/geoStore.svelte.ts -> frontend/src/lib/framework/geoglobe/plugins/flowCorridorsApp.ts -> frontend/src/lib/apps/flight/FlightBottomDock.svelte`
 - 3-file cycle: `frontend/src/lib/apps/passport/PassportBottomDock.svelte -> frontend/src/lib/framework/geoglobe/geoStore.svelte.ts -> frontend/src/lib/framework/geoglobe/plugins/passportWorldApp.ts -> frontend/src/lib/apps/passport/PassportBottomDock.svelte`
+- 3-file cycle: `frontend/src/lib/apps/flight/FlightBottomDock.svelte -> frontend/src/lib/framework/geoglobe/geoStore.svelte.ts -> frontend/src/lib/framework/geoglobe/plugins/flowCorridorsApp.ts -> frontend/src/lib/apps/flight/FlightBottomDock.svelte`
 - 3-file cycle: `frontend/src/lib/apps/time/TimeBottomDock.svelte -> frontend/src/lib/framework/geoglobe/geoStore.svelte.ts -> frontend/src/lib/framework/geoglobe/plugins/worldTimeApp.ts -> frontend/src/lib/apps/time/TimeBottomDock.svelte`
 
-## Communities (167 total, 11 thin omitted)
+## Communities (166 total, 11 thin omitted)
 
 ### Community 0 - "country.ts"
-Cohesion: 0.09
-Nodes (34): ApiKeyRow, apiKeysTable, countriesTable, CountryRow, InsertApiKeyRow, InsertCountryRow, InsertQuarantineRateRow, InsertRateHistoryRow (+26 more)
+Cohesion: 0.08
+Nodes (37): ApiKeyRow, apiKeysTable, countriesTable, CountryRow, InsertApiKeyRow, InsertCountryRow, InsertQuarantineRateRow, InsertRateHistoryRow (+29 more)
 
 ### Community 1 - "AGENTS.md — Kurs World"
 Cohesion: 0.04
@@ -211,8 +210,8 @@ Cohesion: 0.05
 Nodes (39): dependencies, drizzle-orm, elysia, @elysiajs/cors, @elysiajs/swagger, pino, description, devDependencies (+31 more)
 
 ### Community 3 - "aggregator.ts"
-Cohesion: 0.17
-Nodes (12): CurrencyCode, CurrencyComparisonItem, CurrencyPair, HistoricalPoint, HistoricalRatePoint, HistoricalSeriesResult, parseCurrencyPair(), ProviderConversion (+4 more)
+Cohesion: 0.14
+Nodes (22): Env, CurrencyCode, CurrencyPair, HistoricalPoint, HistoricalRatePoint, HistoricalSeriesResult, parseCurrencyPair(), ProviderComparisonRate (+14 more)
 
 ### Community 4 - "provider/index.ts"
 Cohesion: 0.16
@@ -220,15 +219,15 @@ Nodes (17): IRateProvider, RateProviderInfo, BCA_INFO, BcaProvider, BankIndonesi
 
 ### Community 5 - "map-constants.ts"
 Cohesion: 0.14
-Nodes (19): $lib/apps/kurs/KursControls.svelte, MapCountryData, MetricType, PRESET_AMOUNTS, REGION_FILTERS, RegionFilter, RegionId, createMapState() (+11 more)
+Nodes (19): COUNTRY_CURRENCY_LIST, MapCountryData, MetricType, PRESET_AMOUNTS, REGION_FILTERS, RegionFilter, RegionId, createMapState() (+11 more)
 
 ### Community 6 - "router.ts"
 Cohesion: 0.12
-Nodes (11): GeoAppRegistry, geoRegistry, APP_PATH_MAP, CANONICAL_APP_PATHS, isLandingPath(), resolveAppIdToPath(), ADR-0028, ADR-0034 (+3 more)
+Nodes (12): GeoAppRegistry, geoRegistry, createGeoStore(), APP_PATH_MAP, CANONICAL_APP_PATHS, resolveAppIdToPath(), resolvePathToAppId(), ADR-0028 (+4 more)
 
 ### Community 7 - "$lib/api/client"
-Cohesion: 0.13
-Nodes (15): ADR-0045, $lib/api/client, BASE_RATES_IDR, MOCK_PROVIDERS, SUPPORTED_CURRENCIES, $lib/api/types, ConversionResult, CurrencyInfo (+7 more)
+Cohesion: 0.12
+Nodes (14): $lib/api/client, ApiClient, MOCK_PROVIDERS, SUPPORTED_CURRENCIES, $lib/api/types, ConversionResult, CurrencyInfo, HistoricalPoint (+6 more)
 
 ### Community 8 - "compilerOptions"
 Cohesion: 0.08
@@ -239,16 +238,16 @@ Cohesion: 0.08
 Nodes (24): concurrently, description, devDependencies, concurrently, engines, bun, node, name (+16 more)
 
 ### Community 10 - "i18n/index.ts"
-Cohesion: 0.09
-Nodes (25): getLocalizedCurrencyName(), getLocalizedCurrencyName(), formatCurrencyLocale(), formatDateLocale(), formatDateTimeLocale(), formatTimeLocale(), getLocale(), getLocalizedRegion() (+17 more)
+Cohesion: 0.18
+Nodes (15): formatCurrencyLocale(), formatDateLocale(), formatDateTimeLocale(), formatTimeLocale(), getLocale(), getLocalizedRegion(), listeners, setLocale() (+7 more)
 
 ### Community 11 - "3. Product Features & Functional Requirements (FR)"
 Cohesion: 0.08
 Nodes (23): 1. Executive Summary & Visi Produk, 1. Raka (28 th, Freelancer Digital), 2.1 Problem Statement, 2.2 Target Personas & User Stories, 2. Ibu Sari (42 th, Pemilik Toko Online & Importir), 2. Problem Statement & User Personas, 3.10 FR-10: Informational Disclaimer & Attribution, 3.1 FR-1: Interactive World FX Choropleth Map (Flagship Hero Feature) (+15 more)
 
 ### Community 12 - "geoStore.svelte.ts"
-Cohesion: 0.17
-Nodes (5): CountrySpatialMetadata, FilterOption, GeoMetric, GeoPath, ADR-0035
+Cohesion: 0.15
+Nodes (11): ADR-0031, PASSPORT_ENTRY_STATUS_MAP, PassportVisaFilterType, ADR-0034, ADR-0035, PASSPORT_SCORES, PassportData, CountrySpatialMetadata (+3 more)
 
 ### Community 13 - "B. Frontend & Visualisasi 3D (Svelte 5 + Three.js + Bits UI)"
 Cohesion: 0.09
@@ -259,12 +258,12 @@ Cohesion: 0.09
 Nodes (22): 1. Business Context & Background, 2. Business Objectives (SMART Format), 3. Stakeholder Analysis, 4. Current State vs Future State, 5. Market Analysis & Competitive Differentiation, 6. Product Model: 100% Free & Open Public Utility, 7.1 Kepatuhan Status Non-Fintech (Media Informasi Publik), 7.2 Kepatuhan Privasi Data (UU PDP No. 27/2022) (+14 more)
 
 ### Community 15 - "filterEngine.ts"
-Cohesion: 0.27
-Nodes (15): EXTENDED_COUNTRIES_DATA, FLORA_FAUNA_DATASET, FloraFaunaData, getFloraFaunaDataForCountry(), MEGADIVERSE_ISO3_LIST, ADR-0034, isCountryMatchingAppFilter(), isCountryMatchingFlightFilter() (+7 more)
+Cohesion: 0.22
+Nodes (17): EXTENDED_COUNTRIES_DATA, FLORA_FAUNA_DATASET, FloraFaunaData, getFloraFaunaDataForCountry(), MEGADIVERSE_ISO3_LIST, ADR-0034, isCountryMatchingAppFilter(), isCountryMatchingFlightFilter() (+9 more)
 
 ### Community 17 - "src/index.ts"
-Cohesion: 0.15
-Nodes (16): App, createApp(), fetch(), isAllowedCorsOrigin(), ADR-0028, baseLoggerOptions, createChildLogger(), createLogger() (+8 more)
+Cohesion: 0.17
+Nodes (15): App, createApp(), fetch(), isAllowedCorsOrigin(), ADR-0028, baseLoggerOptions, createChildLogger(), createLogger() (+7 more)
 
 ### Community 18 - "Panduan Deployment Cloudflare — Kurs World"
 Cohesion: 0.09
@@ -279,8 +278,8 @@ Cohesion: 0.09
 Nodes (21): compilerOptions, allowImportingTsExtensions, allowJs, allowSyntheticDefaultImports, composite, downlevelIteration, forceConsistentCasingInFileNames, jsx (+13 more)
 
 ### Community 21 - "worldTimeApp.ts"
-Cohesion: 0.15
-Nodes (16): ADR-0037, TimeFilterType, calculateDistanceKm(), calculateLocalTime(), DiurnalPhaseId, DiurnalPhaseInfo, formatUtcOffset(), generateGreatCircleArc() (+8 more)
+Cohesion: 0.14
+Nodes (14): ADR-0037, TimeFilterType, calculateDistanceKm(), DiurnalPhaseId, DiurnalPhaseInfo, formatUtcOffset(), getDiurnalPhase(), interpolateDiurnalColor() (+6 more)
 
 ### Community 22 - "Project Brief — kurs-world"
 Cohesion: 0.10
@@ -295,8 +294,8 @@ Cohesion: 0.10
 Nodes (20): compilerOptions, allowJs, checkJs, isolatedModules, module, moduleResolution, paths, resolveJsonModule (+12 more)
 
 ### Community 26 - "Rate"
-Cohesion: 0.20
-Nodes (7): Rate, scheduled(), createAllProviders(), AggregatorService, clearMemoryCache(), getLiveRatesWithCache(), MockProvider
+Cohesion: 0.14
+Nodes (9): getDb(), ComparisonResult, CurrencyComparisonItem, QuarantineRateRecord, Rate, scheduled(), ratesRoutes(), recordProviderFetch() (+1 more)
 
 ### Community 27 - "procedural-flags.ts"
 Cohesion: 0.23
@@ -311,28 +310,28 @@ Cohesion: 0.11
 Nodes (16): ADR 0010: Security Remediation & Edge Hardening Architecture, Consequences, Context, Decision, Status, 1. Executive Summary, 2.1. Arsitektur & Prinsip Kerja GLSL Shader, 2.2. Pola Arketipe Bendera (10 Vexillological Archetypes) (+8 more)
 
 ### Community 30 - "flowCorridorsApp.ts"
-Cohesion: 0.15
-Nodes (19): ADR-0031, FLIGHT_CORRIDOR_REGIONS, FlightCorridorFilterType, PASSPORT_ENTRY_STATUS_MAP, PassportVisaFilterType, createGeoStore(), ADR-0034, ADR-0035 (+11 more)
+Cohesion: 0.23
+Nodes (11): FLIGHT_CORRIDOR_REGIONS, FlightCorridorFilterType, generateGreatCircleArc(), flowCorridorsApp, REMITTANCE_HUBS, REMITTANCE_HUBS_SET, RemittanceCorridorData, FxRateData (+3 more)
 
 ### Community 31 - "../../chart/GoogleRateChart.svelte"
 Cohesion: 0.11
 Nodes (15): ../../chart/GoogleRateChart.svelte, activeDisplayChange, activeDisplayRate, activeTimestampLabel, areaD, baselineY, currentHoverCoord, mappedCoords (+7 more)
 
 ### Community 32 - "WorldRateMap.svelte"
-Cohesion: 0.21
-Nodes (9): $lib/components/skeletons/MapSkeleton.svelte, handleCountryClick(), loadBankMatrix(), loadData(), geoStore, ../country-flag-colors, ../map/map-constants, ../mapState (+1 more)
+Cohesion: 0.16
+Nodes (12): $lib/apps/kurs/KursControls.svelte, $lib/components/skeletons/MapSkeleton.svelte, getLocalizedCurrencyName(), getLocalizedCurrencyName(), handleCountryClick(), loadBankMatrix(), loadData(), geoStore (+4 more)
 
 ### Community 33 - "Globe3DView.svelte"
-Cohesion: 0.12
-Nodes (22): applyOptimalDpr(), clearLutHover(), getTooltipHtml(), handleContainerPointerMove(), handleKeydown(), initGlobe(), resetView(), updatePaletteLut() (+14 more)
+Cohesion: 0.20
+Nodes (14): applyOptimalDpr(), clearLutHover(), getTooltipHtml(), handleContainerPointerMove(), handleKeydown(), initGlobe(), resetView(), updatePaletteLut() (+6 more)
 
 ### Community 34 - "devDependencies"
 Cohesion: 0.13
-Nodes (15): devDependencies, svelte, svelte-check, tailwindcss, @tailwindcss/vite, @types/bun, vite, webview-bun (+7 more)
+Nodes (15): devDependencies, svelte, svelte-check, tailwindcss, @tailwindcss/vite, @types/bun, @types/plotly.js-dist-min, vite (+7 more)
 
 ### Community 35 - "iso-countries.ts"
-Cohesion: 0.18
-Nodes (15): Env, getDb(), quarantineRatesTable, rateHistoryTable, ratesTable, ConversionResult, nimdaAuthMiddleware(), validateAdminAuth() (+7 more)
+Cohesion: 0.21
+Nodes (8): currencyDisplayNames, ISO3_TO_ISO2, regionDisplayNames, localeState, ReactiveLocaleState, LocaleDefinition, SupportedLocale, TranslationParams
 
 ### Community 36 - "ADR 0005: Full-Width 100% Immersive World Map Canvas and Global 195+ Country Coverage via OpenERAPI & ISO-3 Mapping"
 Cohesion: 0.14
@@ -351,8 +350,8 @@ Cohesion: 0.14
 Nodes (13): Accent, Components, Design, Grammar, Ground, Ink Hierarchy, Motion, Refused (+5 more)
 
 ### Community 40 - "$lib/formatters/currency"
-Cohesion: 0.35
-Nodes (8): buildChoroplethData(), $lib/formatters/currency, formatCurrency(), formatDateTimeIndo(), formatPercent(), formatRupiah(), formatTimeAgo(), SavedAlert
+Cohesion: 0.31
+Nodes (9): BASE_RATES_IDR, RateItem, $lib/formatters/currency, formatCurrency(), formatDateTimeIndo(), formatPercent(), formatRupiah(), formatTimeAgo() (+1 more)
 
 ### Community 41 - "world-capitals-plugin.test.ts"
 Cohesion: 0.22
@@ -375,16 +374,16 @@ Cohesion: 0.19
 Nodes (9): $lib/components/skeletons/CardSkeleton.svelte, $lib/components/skeletons/TableSkeleton.svelte, $lib/components/ui/Badge.svelte, $lib/components/ui/Button.svelte, $lib/components/ui/Card.svelte, activeCurrencyInfo, filteredRows, handleSelectCurrency() (+1 more)
 
 ### Community 46 - "country-mapping.ts"
-Cohesion: 0.20
-Nodes (12): RateItem, ChoroplethData, COUNTRY_CURRENCY_LIST, CountryCurrencyEntry, CURRENCY_TO_COUNTRIES_MAP, getAllCountryMappings(), getCountriesByCurrency(), getCountryByIso3() (+4 more)
+Cohesion: 0.23
+Nodes (11): buildChoroplethData(), ChoroplethData, CountryCurrencyEntry, CURRENCY_TO_COUNTRIES_MAP, getAllCountryMappings(), getCountriesByCurrency(), getCountryByIso3(), getIso3ByCurrency() (+3 more)
 
 ### Community 47 - "UniversalCountryInspector.svelte"
-Cohesion: 0.12
-Nodes (13): activeApp, appData, areaD, chartPoints, hasCurrencyTrend, isPositiveChange, isTrendLoading, maxRate (+5 more)
+Cohesion: 0.15
+Nodes (11): activeApp, appData, areaD, chartPoints, hasCurrencyTrend, isPositiveChange, isTrendLoading, maxRate (+3 more)
 
 ### Community 48 - "telemetry/index.ts"
-Cohesion: 0.29
-Nodes (7): AnalyticsEngineDataPoint, ApiRequestTelemetry, ConversionTelemetry, ProviderFetchTelemetry, recordProviderFetch(), MockAnalyticsEngineDataset, ADR-0023
+Cohesion: 0.23
+Nodes (8): ConversionResult, AnalyticsEngineDataPoint, ApiRequestTelemetry, ConversionTelemetry, ProviderFetchTelemetry, recordConversion(), MockAnalyticsEngineDataset, ADR-0023
 
 ### Community 49 - "ADR 0004: Map-Centric Product Architecture and Interactive World FX Map as Flagship Core Identity"
 Cohesion: 0.17
@@ -407,8 +406,8 @@ Cohesion: 0.17
 Nodes (11): Accessibility & Inclusion, Brand Commitments, Capabilities and Constraints, Evidence on Hand, Operating Context, Platform, Positioning, Product (+3 more)
 
 ### Community 54 - "App.svelte"
-Cohesion: 0.10
-Nodes (9): activeApp, canonicalUrl, converterFromCurrency, isAlertModalOpen, isAppInitialLoading, pageDescription, pageTitle, viewOptions (+1 more)
+Cohesion: 0.17
+Nodes (3): app, ../geoStore.svelte, ../router
 
 ### Community 55 - "countryLutEngine.ts"
 Cohesion: 0.27
@@ -437,6 +436,10 @@ Nodes (10): 1. Ringkasan Eksekutif, 2. Rincian Implementasi & Arsitektur, 3. Buk
 ### Community 61 - "earthquakeApp.ts"
 Cohesion: 0.25
 Nodes (9): COUNTRY_SEISMIC_DATASET, CountrySeismicProfile, EarthquakeRecord, getEarthquakeDataForCountry(), GLOBAL_EARTHQUAKES, ADR-0044, earthquakeApp, ADR-0044 (+1 more)
+
+### Community 62 - "theme/index.ts"
+Cohesion: 0.29
+Nodes (8): applyThemeToDOM(), currentTheme, getTheme(), listeners, setTheme(), subscribeTheme(), Theme, toggleTheme()
 
 ### Community 63 - "CLAUDE.md"
 Cohesion: 0.20
@@ -698,10 +701,6 @@ Nodes (4): checkBunRuntime(), isVersionAtLeast(), parseSemver(), RuntimeCheckRes
 Cohesion: 0.33
 Nodes (5): 1. Visi & Filosofi Produk, 2. Tech Stack (Wajib & Terstandarisasi), 3. Fitur Utama MVP, 4. Pointer Dokumentasi, PROMPT.md — kurs-world
 
-### Community 129 - "MockKVNamespace"
-Cohesion: 0.33
-Nodes (4): ComparisonResult, ProviderComparisonRate, PROVIDER_REGISTRY, ComparatorService
-
 ### Community 130 - "Cloudflare Auto-Deployment Setup Guide"
 Cohesion: 0.40
 Nodes (4): 1. Automated Workflow Pipeline, 2. GitHub Secrets Configuration, 3. Cara Membuat Cloudflare API Token, Cloudflare Auto-Deployment Setup Guide
@@ -754,28 +753,24 @@ Nodes (3): Key Rules for Antigravity, Primary Source of Truth, Tech Stack
 Cohesion: 0.50
 Nodes (3): 1. Summary of Work Done, 2. Quality Gates & Test Results, SDLC Verification Report: Cloudflare Workers Analytics Engine Telemetry
 
-### Community 150 - "webview-bun"
-Cohesion: 0.33
-Nodes (5): ADR 0045: Lightweight Edge Operator Console (/nimda), Consequences, Context, Decision, Status
-
 ## Knowledge Gaps
-- **898 isolated node(s):** ``api_keys``, ``countries``, ``quarantine_rates``, ``rate_history``, ``rates`` (+893 more)
+- **886 isolated node(s):** ``api_keys``, ``countries``, ``quarantine_rates``, ``rate_history``, ``rates`` (+881 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `$lib/api/client` connect `$lib/api/client` to `WorldRateMap.svelte`, `map-constants.ts`, `router.ts`, `$lib/formatters/currency`, `i18n/index.ts`, `CurrencyComparisonMatrix.svelte`, `country-mapping.ts`, `UniversalCountryInspector.svelte`, `App.svelte`, `flowCorridorsApp.ts`, `theme/index.ts`, `../../chart/GoogleRateChart.svelte`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
-- **Why does `$lib/api/types` connect `$lib/api/client` to `WorldRateMap.svelte`, `map-constants.ts`, `$lib/formatters/currency`, `CurrencyComparisonMatrix.svelte`, `country-mapping.ts`, `UniversalCountryInspector.svelte`, `../../chart/GoogleRateChart.svelte`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Why does `$lib/formatters/currency` connect `$lib/formatters/currency` to `WorldRateMap.svelte`, `Globe3DView.svelte`, `map-constants.ts`, `$lib/api/client`, `CurrencyComparisonMatrix.svelte`, `country-mapping.ts`, `UniversalCountryInspector.svelte`, `App.svelte`, `flowCorridorsApp.ts`, `../../chart/GoogleRateChart.svelte`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+- **Why does `$lib/features/map/mapState.svelte` connect `map-constants.ts` to `WorldRateMap.svelte`, `COUNTRY_CURRENCY_MAP`, `$lib/api/client`, `$lib/formatters/currency`, `geoStore.svelte.ts`, `MapState`, `UniversalAppControls.svelte`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `$lib/api/types` connect `$lib/api/client` to `WorldRateMap.svelte`, `map-constants.ts`, `$lib/formatters/currency`, `CurrencyComparisonMatrix.svelte`, `country-mapping.ts`, `UniversalCountryInspector.svelte`, `App.svelte`, `../../chart/GoogleRateChart.svelte`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects ``api_keys``, ``countries``, ``quarantine_rates`` to the rest of the system?**
-  _898 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _886 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `country.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.08888888888888889 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08067375886524823 - nodes in this community are weakly interconnected._
 - **Should `AGENTS.md — Kurs World` be split into smaller, more focused modules?**
   _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
 - **Should `backend/package.json` be split into smaller, more focused modules?**

@@ -527,8 +527,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_db_index",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "db/index.ts"
     },
     {
@@ -538,8 +538,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_src_db_index_env",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "env"
     },
     {
@@ -549,8 +549,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "backend_src_db_index_getdb",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": "getdb()"
     },
     {
@@ -571,8 +571,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_src_db_schema_ratestable",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 0,
+      "community_name": "country.ts",
       "norm_label": "ratestable"
     },
     {
@@ -582,8 +582,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "backend_src_db_schema_ratehistorytable",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 0,
+      "community_name": "country.ts",
       "norm_label": "ratehistorytable"
     },
     {
@@ -604,8 +604,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "backend_src_db_schema_quarantineratestable",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 0,
+      "community_name": "country.ts",
       "norm_label": "quarantineratestable"
     },
     {
@@ -934,8 +934,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "backend_src_domain_rate_providercomparisonrate",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "providercomparisonrate"
     },
     {
@@ -945,8 +945,8 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "backend_src_domain_rate_comparisonresult",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": "comparisonresult"
     },
     {
@@ -967,8 +967,8 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "backend_src_domain_rate_conversionresult",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 48,
+      "community_name": "telemetry/index.ts",
       "norm_label": "conversionresult"
     },
     {
@@ -989,8 +989,8 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "backend_src_domain_rate_currencycomparisonitem",
-      "community": 3,
-      "community_name": "aggregator.ts",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": "currencycomparisonitem"
     },
     {
@@ -1033,8 +1033,8 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "backend_src_domain_rate_quarantineraterecord",
-      "community": 3,
-      "community_name": "aggregator.ts",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": "quarantineraterecord"
     },
     {
@@ -1085,7 +1085,7 @@
       "label": "isAllowedCorsOrigin()",
       "file_type": "code",
       "source_file": "backend/src/index.ts",
-      "source_location": "L19",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "backend_src_index_isallowedcorsorigin",
       "community": 17,
@@ -1096,7 +1096,7 @@
       "label": "createApp()",
       "file_type": "code",
       "source_file": "backend/src/index.ts",
-      "source_location": "L35",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "backend_src_index_createapp",
       "community": 17,
@@ -1107,7 +1107,7 @@
       "label": "App",
       "file_type": "code",
       "source_file": "backend/src/index.ts",
-      "source_location": "L248",
+      "source_location": "L246",
       "_origin": "ast",
       "id": "backend_src_index_app",
       "community": 17,
@@ -1118,7 +1118,7 @@
       "label": "fetch()",
       "file_type": "code",
       "source_file": "backend/src/index.ts",
-      "source_location": "L251",
+      "source_location": "L249",
       "_origin": "ast",
       "id": "backend_src_index_fetch",
       "community": 17,
@@ -1129,7 +1129,7 @@
       "label": "scheduled()",
       "file_type": "code",
       "source_file": "backend/src/index.ts",
-      "source_location": "L255",
+      "source_location": "L253",
       "_origin": "ast",
       "id": "backend_src_index_scheduled",
       "community": 26,
@@ -1140,7 +1140,7 @@
       "label": "ADR-0028",
       "file_type": "concept",
       "source_file": "backend/src/index.ts",
-      "source_location": "L17",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "backend_src_index_ts_docref_adr_0028",
       "community": 17,
@@ -1234,39 +1234,6 @@
       "community": 17,
       "community_name": "src/index.ts",
       "norm_label": "logevent()"
-    },
-    {
-      "label": "admin-auth.ts",
-      "file_type": "code",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "backend_src_middleware_admin_auth",
-      "community": 35,
-      "community_name": "iso-countries.ts",
-      "norm_label": "admin-auth.ts"
-    },
-    {
-      "label": "validateAdminAuth()",
-      "file_type": "code",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "backend_src_middleware_admin_auth_validateadminauth",
-      "community": 35,
-      "community_name": "iso-countries.ts",
-      "norm_label": "validateadminauth()"
-    },
-    {
-      "label": "nimdaAuthMiddleware()",
-      "file_type": "code",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "backend_src_middleware_admin_auth_nimdaauthmiddleware",
-      "community": 35,
-      "community_name": "iso-countries.ts",
-      "norm_label": "nimdaauthmiddleware()"
     },
     {
       "label": "logger.ts",
@@ -1495,8 +1462,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_provider_index_provider_registry",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "provider_registry"
     },
     {
@@ -1506,8 +1473,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "backend_src_provider_index_createallproviders",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "createallproviders()"
     },
     {
@@ -1720,47 +1687,14 @@
       "norm_label": ".fetchlatestrates()"
     },
     {
-      "label": "admin.ts",
-      "file_type": "code",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "backend_src_routes_admin",
-      "community": 35,
-      "community_name": "iso-countries.ts",
-      "norm_label": "admin.ts"
-    },
-    {
-      "label": "sha256Hex()",
-      "file_type": "code",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "backend_src_routes_admin_sha256hex",
-      "community": 35,
-      "community_name": "iso-countries.ts",
-      "norm_label": "sha256hex()"
-    },
-    {
-      "label": "nimdaRoutes()",
-      "file_type": "code",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "backend_src_routes_admin_nimdaroutes",
-      "community": 35,
-      "community_name": "iso-countries.ts",
-      "norm_label": "nimdaroutes()"
-    },
-    {
       "label": "convert.ts",
       "file_type": "code",
       "source_file": "backend/src/routes/convert.ts",
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_routes_convert",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "convert.ts"
     },
     {
@@ -1825,8 +1759,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_routes_rates",
-      "community": 17,
-      "community_name": "src/index.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "rates.ts"
     },
     {
@@ -1836,8 +1770,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_src_routes_rates_ratesroutes",
-      "community": 17,
-      "community_name": "src/index.ts",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": "ratesroutes()"
     },
     {
@@ -1847,8 +1781,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_service_aggregator",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "aggregator.ts"
     },
     {
@@ -1858,8 +1792,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_aggregatoroptions",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "aggregatoroptions"
     },
     {
@@ -1869,8 +1803,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_ingestionresult",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "ingestionresult"
     },
     {
@@ -1880,8 +1814,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_global_base_rates",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "global_base_rates"
     },
     {
@@ -1891,8 +1825,8 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_aggregatorservice",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "aggregatorservice"
     },
     {
@@ -1902,8 +1836,8 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_aggregatorservice_constructor",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -2001,8 +1935,8 @@
       "source_location": "L790",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_aggregatorservice_getcurrencycomparisonlist",
-      "community": 3,
-      "community_name": "aggregator.ts",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": ".getcurrencycomparisonlist()"
     },
     {
@@ -2023,8 +1957,8 @@
       "source_location": "L902",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_clearmemorycache",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "clearmemorycache()"
     },
     {
@@ -2034,8 +1968,8 @@
       "source_location": "L907",
       "_origin": "ast",
       "id": "backend_src_service_aggregator_getliverateswithcache",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "getliverateswithcache()"
     },
     {
@@ -2045,8 +1979,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_service_comparator",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "comparator.ts"
     },
     {
@@ -2056,8 +1990,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_src_service_comparator_comparatorservice",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "comparatorservice"
     },
     {
@@ -2067,8 +2001,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_src_service_comparator_comparatorservice_constructor",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -2078,8 +2012,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "backend_src_service_comparator_comparatorservice_comparerates",
-      "community": 129,
-      "community_name": "MockKVNamespace",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": ".comparerates()"
     },
     {
@@ -2089,8 +2023,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_service_converter",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "converter.ts"
     },
     {
@@ -2100,8 +2034,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_src_service_converter_converterservice",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "converterservice"
     },
     {
@@ -2111,8 +2045,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_service_converter_converterservice_constructor",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -2122,8 +2056,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "backend_src_service_converter_converterservice_convert",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 48,
+      "community_name": "telemetry/index.ts",
       "norm_label": ".convert()"
     },
     {
@@ -2298,8 +2232,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "backend_src_telemetry_index_recordproviderfetch",
-      "community": 48,
-      "community_name": "telemetry/index.ts",
+      "community": 26,
+      "community_name": "Rate",
       "norm_label": "recordproviderfetch()"
     },
     {
@@ -2320,8 +2254,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "backend_src_telemetry_index_recordconversion",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 48,
+      "community_name": "telemetry/index.ts",
       "norm_label": "recordconversion()"
     },
     {
@@ -2375,8 +2309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_tests_caching_flow_test",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "caching-flow.test.ts"
     },
     {
@@ -2441,8 +2375,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_tests_converter_test",
-      "community": 35,
-      "community_name": "iso-countries.ts",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "converter.test.ts"
     },
     {
@@ -2600,25 +2534,14 @@
       "norm_label": "write()"
     },
     {
-      "label": "nimda-operator-api.test.ts",
-      "file_type": "code",
-      "source_file": "backend/tests/nimda-operator-api.test.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "backend_tests_nimda_operator_api_test",
-      "community": 17,
-      "community_name": "src/index.ts",
-      "norm_label": "nimda-operator-api.test.ts"
-    },
-    {
       "label": "on-demand-ingestion.test.ts",
       "file_type": "code",
       "source_file": "backend/tests/on-demand-ingestion.test.ts",
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_tests_on_demand_ingestion_test",
-      "community": 26,
-      "community_name": "Rate",
+      "community": 3,
+      "community_name": "aggregator.ts",
       "norm_label": "on-demand-ingestion.test.ts"
     },
     {
@@ -2628,7 +2551,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_tests_on_demand_ingestion_test_mockkvnamespace",
-      "community": 128,
+      "community": 129,
       "community_name": "MockKVNamespace",
       "norm_label": "mockkvnamespace"
     },
@@ -2639,7 +2562,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "backend_tests_on_demand_ingestion_test_mockkvnamespace_get",
-      "community": 128,
+      "community": 129,
       "community_name": "MockKVNamespace",
       "norm_label": ".get()"
     },
@@ -2650,7 +2573,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "backend_tests_on_demand_ingestion_test_mockkvnamespace_put",
-      "community": 128,
+      "community": 129,
       "community_name": "MockKVNamespace",
       "norm_label": ".put()"
     },
@@ -2661,7 +2584,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "backend_tests_on_demand_ingestion_test_mockkvnamespace_delete",
-      "community": 128,
+      "community": 129,
       "community_name": "MockKVNamespace",
       "norm_label": ".delete()"
     },
@@ -2672,7 +2595,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "backend_tests_on_demand_ingestion_test_mockkvnamespace_clear",
-      "community": 128,
+      "community": 129,
       "community_name": "MockKVNamespace",
       "norm_label": ".clear()"
     },
@@ -3442,8 +3365,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_types_plotly_js_dist_min",
-      "community": 166,
-      "community_name": "@types/plotly.js-dist-min",
+      "community": 34,
+      "community_name": "devDependencies",
       "norm_label": "@types/plotly.js-dist-min"
     },
     {
@@ -3453,8 +3376,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "types_plotly_js_dist_min",
-      "community": 166,
-      "community_name": "@types/plotly.js-dist-min",
+      "community": 34,
+      "community_name": "devDependencies",
       "norm_label": "@types/plotly.js-dist-min"
     },
     {
@@ -3596,8 +3519,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_package_devdependencies_webview_bun",
-      "community": 34,
-      "community_name": "devDependencies",
+      "community": 150,
+      "community_name": "webview-bun",
       "norm_label": "webview-bun"
     },
     {
@@ -3607,8 +3530,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "webview_bun",
-      "community": 34,
-      "community_name": "devDependencies",
+      "community": 150,
+      "community_name": "webview-bun",
       "norm_label": "webview-bun"
     },
     {
@@ -3621,138 +3544,6 @@
       "community": 54,
       "community_name": "App.svelte",
       "norm_label": "app.svelte"
-    },
-    {
-      "label": "isAppInitialLoading",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "frontend_src_app_isappinitialloading",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "isappinitialloading"
-    },
-    {
-      "label": "activeApp",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L38",
-      "_origin": "ast",
-      "id": "frontend_src_app_activeapp",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "activeapp"
-    },
-    {
-      "label": "pageTitle",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "frontend_src_app_pagetitle",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "pagetitle"
-    },
-    {
-      "label": "pageDescription",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L44",
-      "_origin": "ast",
-      "id": "frontend_src_app_pagedescription",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "pagedescription"
-    },
-    {
-      "label": "canonicalUrl",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L49",
-      "_origin": "ast",
-      "id": "frontend_src_app_canonicalurl",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "canonicalurl"
-    },
-    {
-      "label": "converterFromCurrency",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "frontend_src_app_converterfromcurrency",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "converterfromcurrency"
-    },
-    {
-      "label": "isAlertModalOpen",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L56",
-      "_origin": "ast",
-      "id": "frontend_src_app_isalertmodalopen",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "isalertmodalopen"
-    },
-    {
-      "label": "viewOptions",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L71",
-      "_origin": "ast",
-      "id": "frontend_src_app_viewoptions",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "viewoptions"
-    },
-    {
-      "label": "handleMapCurrencySelect()",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L82",
-      "_origin": "ast",
-      "id": "frontend_src_app_handlemapcurrencyselect",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "handlemapcurrencyselect()"
-    },
-    {
-      "label": "handleMatrixCurrencySelect()",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L86",
-      "_origin": "ast",
-      "id": "frontend_src_app_handlematrixcurrencyselect",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "handlematrixcurrencyselect()"
-    },
-    {
-      "label": "handleMatrixOpenChart()",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L91",
-      "_origin": "ast",
-      "id": "frontend_src_app_handlematrixopenchart",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "handlematrixopenchart()"
-    },
-    {
-      "label": "handleTickerCurrencySelect()",
-      "file_type": "code",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L96",
-      "_origin": "ast",
-      "id": "frontend_src_app_handletickercurrencyselect",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "handletickercurrencyselect()"
     },
     {
       "label": "svelte",
@@ -3820,8 +3611,8 @@
       "_origin": "ast",
       "source_location": "L1",
       "id": "frontend_src_lib_features_converter_currencyconverter",
-      "community": 7,
-      "community_name": "$lib/api/client",
+      "community": 54,
+      "community_name": "App.svelte",
       "norm_label": "currencyconverter.svelte"
     },
     {
@@ -3856,8 +3647,8 @@
       "_origin": "ast",
       "source_location": "L1",
       "id": "frontend_src_lib_features_card_ratecard",
-      "community": 7,
-      "community_name": "$lib/api/client",
+      "community": 54,
+      "community_name": "App.svelte",
       "norm_label": "ratecard.svelte"
     },
     {
@@ -3880,8 +3671,8 @@
       "_origin": "ast",
       "source_location": "L1",
       "id": "frontend_src_lib_framework_geoglobe_ui_geoapplaunchermodal",
-      "community": 47,
-      "community_name": "UniversalCountryInspector.svelte",
+      "community": 54,
+      "community_name": "App.svelte",
       "norm_label": "geoapplaunchermodal.svelte"
     },
     {
@@ -3897,18 +3688,6 @@
       "norm_label": "ratealertmodal.svelte"
     },
     {
-      "label": "AdminConsole.svelte",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/features/admin/AdminConsole.svelte",
-      "confidence": "EXTRACTED",
-      "_origin": "ast",
-      "source_location": "L1",
-      "id": "frontend_src_lib_features_admin_adminconsole",
-      "community": 54,
-      "community_name": "App.svelte",
-      "norm_label": "adminconsole.svelte"
-    },
-    {
       "label": "geoStore.svelte.ts",
       "file_type": "code",
       "source_file": "frontend/src/lib/framework/geoglobe/geoStore.svelte.ts",
@@ -3916,8 +3695,8 @@
       "_origin": "ast",
       "source_location": "L1",
       "id": "frontend_src_lib_framework_geoglobe_geostore_svelte",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "geostore.svelte.ts"
     },
     {
@@ -3985,8 +3764,8 @@
       "source_location": "L158",
       "_origin": "ast",
       "id": "frontend_src_lib_api_client_base_rates_idr",
-      "community": 7,
-      "community_name": "$lib/api/client",
+      "community": 40,
+      "community_name": "$lib/formatters/currency",
       "norm_label": "base_rates_idr"
     },
     {
@@ -3996,8 +3775,8 @@
       "source_location": "L323",
       "_origin": "ast",
       "id": "frontend_src_lib_api_client_apiclient",
-      "community": 62,
-      "community_name": "theme/index.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": "apiclient"
     },
     {
@@ -4007,8 +3786,8 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "frontend_src_lib_api_client_apiclient_constructor",
-      "community": 62,
-      "community_name": "theme/index.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": ".constructor()"
     },
     {
@@ -4018,8 +3797,8 @@
       "source_location": "L338",
       "_origin": "ast",
       "id": "frontend_src_lib_api_client_apiclient_getbaseurl",
-      "community": 62,
-      "community_name": "theme/index.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": ".getbaseurl()"
     },
     {
@@ -4029,8 +3808,8 @@
       "source_location": "L342",
       "_origin": "ast",
       "id": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "community": 62,
-      "community_name": "theme/index.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": ".fetchjson()"
     },
     {
@@ -4051,8 +3830,8 @@
       "source_location": "L368",
       "_origin": "ast",
       "id": "frontend_src_lib_api_client_apiclient_getliverates",
-      "community": 46,
-      "community_name": "country-mapping.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": ".getliverates()"
     },
     {
@@ -4098,116 +3877,6 @@
       "community": 7,
       "community_name": "$lib/api/client",
       "norm_label": ".createratealert()"
-    },
-    {
-      "label": ".nimdaGetHealth()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L757",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdagethealth",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdagethealth()"
-    },
-    {
-      "label": ".nimdaTriggerIngest()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L763",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdatriggeringest",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdatriggeringest()"
-    },
-    {
-      "label": ".nimdaPurgeCache()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L770",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdapurgecache",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdapurgecache()"
-    },
-    {
-      "label": ".nimdaGetQuarantine()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L777",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdagetquarantine",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdagetquarantine()"
-    },
-    {
-      "label": ".nimdaClearQuarantine()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L783",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdaclearquarantine",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdaclearquarantine()"
-    },
-    {
-      "label": ".nimdaGetApiKeys()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L790",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdagetapikeys",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdagetapikeys()"
-    },
-    {
-      "label": ".nimdaCreateApiKey()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L796",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdacreateapikey",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdacreateapikey()"
-    },
-    {
-      "label": ".nimdaToggleApiKey()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L807",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdatoggleapikey",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdatoggleapikey()"
-    },
-    {
-      "label": ".nimdaDeleteApiKey()",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L814",
-      "_origin": "ast",
-      "id": "frontend_src_lib_api_client_apiclient_nimdadeleteapikey",
-      "community": 62,
-      "community_name": "theme/index.ts",
-      "norm_label": ".nimdadeleteapikey()"
-    },
-    {
-      "label": "ADR-0045",
-      "file_type": "concept",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L754",
-      "_origin": "ast",
-      "id": "docref_adr_0045",
-      "community": 7,
-      "community_name": "$lib/api/client",
-      "norm_label": "adr-0045"
     },
     {
       "label": "$lib/api/types",
@@ -4261,8 +3930,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_src_lib_api_types_rateitem",
-      "community": 46,
-      "community_name": "country-mapping.ts",
+      "community": 40,
+      "community_name": "$lib/formatters/currency",
       "norm_label": "rateitem"
     },
     {
@@ -4429,8 +4098,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_apps_flora_floratooltip",
-      "community": 12,
-      "community_name": "geoStore.svelte.ts",
+      "community": 15,
+      "community_name": "filterEngine.ts",
       "norm_label": "floratooltip.svelte"
     },
     {
@@ -4440,8 +4109,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_apps_kurs_kursbottomdock",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": "kursbottomdock.svelte"
     },
     {
@@ -4464,8 +4133,8 @@
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "id": "frontend_src_lib_apps_kurs_kurscontrols",
-      "community": 5,
-      "community_name": "map-constants.ts",
+      "community": 32,
+      "community_name": "WorldRateMap.svelte",
       "norm_label": "$lib/apps/kurs/kurscontrols.svelte"
     },
     {
@@ -4522,8 +4191,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_apps_passport_passportbottomdock",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "passportbottomdock.svelte"
     },
     {
@@ -4600,8 +4269,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_components_footer",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 7,
+      "community_name": "$lib/api/client",
       "norm_label": "footer.svelte"
     },
     {
@@ -4612,8 +4281,8 @@
       "_origin": "ast",
       "source_location": "L1",
       "id": "frontend_src_lib_theme_index",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "theme/index.ts"
     },
     {
@@ -4742,18 +4411,6 @@
       "community": 155,
       "community_name": "Tabs.svelte",
       "norm_label": "tabs.svelte"
-    },
-    {
-      "label": "appRegistry.ts",
-      "file_type": "code",
-      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
-      "confidence": "EXTRACTED",
-      "_origin": "ast",
-      "source_location": "L1",
-      "id": "frontend_src_lib_framework_geoglobe_appregistry",
-      "community": 6,
-      "community_name": "router.ts",
-      "norm_label": "appregistry.ts"
     },
     {
       "label": "if()",
@@ -5098,8 +4755,8 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "frontend_src_lib_features_map_components_countryinspectordrawer_getlocalizedcurrencyname",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 32,
+      "community_name": "WorldRateMap.svelte",
       "norm_label": "getlocalizedcurrencyname()"
     },
     {
@@ -5363,8 +5020,8 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "frontend_src_lib_features_map_components_mapcontrolstoolbar_getlocalizedcurrencyname",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 32,
+      "community_name": "WorldRateMap.svelte",
       "norm_label": "getlocalizedcurrencyname()"
     },
     {
@@ -5451,8 +5108,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "frontend_src_lib_features_map_country_mapping_country_currency_list",
-      "community": 46,
-      "community_name": "country-mapping.ts",
+      "community": 5,
+      "community_name": "map-constants.ts",
       "norm_label": "country_currency_list"
     },
     {
@@ -5539,8 +5196,8 @@
       "source_location": "L313",
       "_origin": "ast",
       "id": "frontend_src_lib_features_map_country_mapping_buildchoroplethdata",
-      "community": 40,
-      "community_name": "$lib/formatters/currency",
+      "community": 46,
+      "community_name": "country-mapping.ts",
       "norm_label": "buildchoroplethdata()"
     },
     {
@@ -6666,6 +6323,17 @@
       "norm_label": "formattimeago()"
     },
     {
+      "label": "appRegistry.ts",
+      "file_type": "code",
+      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "frontend_src_lib_framework_geoglobe_appregistry",
+      "community": 6,
+      "community_name": "router.ts",
+      "norm_label": "appregistry.ts"
+    },
+    {
       "label": "GeoAppRegistry",
       "file_type": "code",
       "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
@@ -7057,8 +6725,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_filterengine_passportvisafiltertype",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "passportvisafiltertype"
     },
     {
@@ -7090,8 +6758,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_filterengine_passport_entry_status_map",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "passport_entry_status_map"
     },
     {
@@ -7211,8 +6879,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_geomath_calculatelocaltime",
-      "community": 21,
-      "community_name": "worldTimeApp.ts",
+      "community": 15,
+      "community_name": "filterEngine.ts",
       "norm_label": "calculatelocaltime()"
     },
     {
@@ -7222,8 +6890,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_geomath_isdaylight",
-      "community": 21,
-      "community_name": "worldTimeApp.ts",
+      "community": 15,
+      "community_name": "filterEngine.ts",
       "norm_label": "isdaylight()"
     },
     {
@@ -7266,8 +6934,8 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_geomath_generategreatcirclearc",
-      "community": 21,
-      "community_name": "worldTimeApp.ts",
+      "community": 30,
+      "community_name": "flowCorridorsApp.ts",
       "norm_label": "generategreatcirclearc()"
     },
     {
@@ -7288,8 +6956,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_geostore_svelte_creategeostore",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 6,
+      "community_name": "router.ts",
       "norm_label": "creategeostore()"
     },
     {
@@ -7310,8 +6978,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "docref_adr_0031",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "adr-0031"
     },
     {
@@ -7321,8 +6989,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_geostore_svelte_ts_docref_adr_0034",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "adr-0034"
     },
     {
@@ -7332,8 +7000,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_geostore_svelte_ts_docref_adr_0035",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "adr-0035"
     },
     {
@@ -7475,8 +7143,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_plugins_passportworldapp",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "passportworldapp.ts"
     },
     {
@@ -7486,8 +7154,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_plugins_passportworldapp_passportdata",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "passportdata"
     },
     {
@@ -7497,8 +7165,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_plugins_passportworldapp_passport_scores",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 12,
+      "community_name": "geoStore.svelte.ts",
       "norm_label": "passport_scores"
     },
     {
@@ -7615,7 +7283,7 @@
       "label": "CANONICAL_APP_PATHS",
       "file_type": "code",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L30",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_router_canonical_app_paths",
       "community": 6,
@@ -7626,18 +7294,18 @@
       "label": "resolvePathToAppId()",
       "file_type": "code",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L45",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_router_resolvepathtoappid",
-      "community": 30,
-      "community_name": "flowCorridorsApp.ts",
+      "community": 6,
+      "community_name": "router.ts",
       "norm_label": "resolvepathtoappid()"
     },
     {
       "label": "resolveAppIdToPath()",
       "file_type": "code",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L68",
+      "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_router_resolveappidtopath",
       "community": 6,
@@ -7648,7 +7316,7 @@
       "label": "isLandingPath()",
       "file_type": "code",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L80",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_router_islandingpath",
       "community": 6,
@@ -7692,7 +7360,7 @@
       "label": "ADR-0040",
       "file_type": "concept",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L55",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_router_ts_docref_adr_0040",
       "community": 6,
@@ -7783,8 +7451,8 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_src_lib_framework_geoglobe_types_geopath",
-      "community": 12,
-      "community_name": "geoStore.svelte.ts",
+      "community": 21,
+      "community_name": "worldTimeApp.ts",
       "norm_label": "geopath"
     },
     {
@@ -7816,8 +7484,8 @@
       "confidence": "EXTRACTED",
       "_origin": "ast",
       "id": "home_archy_projects_kurs_world_frontend_src_lib_framework_geoglobe_geostore_svelte",
-      "community": 47,
-      "community_name": "UniversalCountryInspector.svelte",
+      "community": 54,
+      "community_name": "App.svelte",
       "norm_label": "../geostore.svelte"
     },
     {
@@ -7827,8 +7495,8 @@
       "confidence": "EXTRACTED",
       "_origin": "ast",
       "id": "home_archy_projects_kurs_world_frontend_src_lib_framework_geoglobe_router",
-      "community": 47,
-      "community_name": "UniversalCountryInspector.svelte",
+      "community": 54,
+      "community_name": "App.svelte",
       "norm_label": "../router"
     },
     {
@@ -8322,8 +7990,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_iso_countries",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "iso-countries.ts"
     },
     {
@@ -8333,8 +8001,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_iso_countries_iso3_to_iso2",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "iso3_to_iso2"
     },
     {
@@ -8344,8 +8012,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_iso_countries_regiondisplaynames",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "regiondisplaynames"
     },
     {
@@ -8355,8 +8023,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_iso_countries_currencydisplaynames",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "currencydisplaynames"
     },
     {
@@ -8432,8 +8100,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "state.ts"
     },
     {
@@ -8443,8 +8111,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state_getinitiallocale",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "getinitiallocale()"
     },
     {
@@ -8454,8 +8122,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state_reactivelocalestate",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "reactivelocalestate"
     },
     {
@@ -8465,8 +8133,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state_reactivelocalestate_current",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": ".current()"
     },
     {
@@ -8476,8 +8144,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state_reactivelocalestate_set",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": ".set()"
     },
     {
@@ -8487,8 +8155,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state_reactivelocalestate_subscribe",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": ".subscribe()"
     },
     {
@@ -8498,8 +8166,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_state_localestate",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "localestate"
     },
     {
@@ -8509,8 +8177,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_types",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "i18n/types.ts"
     },
     {
@@ -8520,8 +8188,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_types_supportedlocale",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "supportedlocale"
     },
     {
@@ -8531,8 +8199,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_types_localedefinition",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "localedefinition"
     },
     {
@@ -8553,8 +8221,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_src_lib_i18n_types_translationparams",
-      "community": 10,
-      "community_name": "i18n/index.ts",
+      "community": 35,
+      "community_name": "iso-countries.ts",
       "norm_label": "translationparams"
     },
     {
@@ -8564,8 +8232,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_theme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "theme"
     },
     {
@@ -8575,8 +8243,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_getinitialtheme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "getinitialtheme()"
     },
     {
@@ -8586,8 +8254,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_currenttheme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "currenttheme"
     },
     {
@@ -8597,8 +8265,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_listeners",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "listeners"
     },
     {
@@ -8608,8 +8276,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_gettheme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "gettheme()"
     },
     {
@@ -8619,8 +8287,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_applythemetodom",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "applythemetodom()"
     },
     {
@@ -8630,8 +8298,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_settheme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "settheme()"
     },
     {
@@ -8641,8 +8309,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_toggletheme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "toggletheme()"
     },
     {
@@ -8652,8 +8320,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "frontend_src_lib_theme_index_subscribetheme",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "subscribetheme()"
     },
     {
@@ -8916,8 +8584,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_tests_geoglobe_framework_test",
-      "community": 21,
-      "community_name": "worldTimeApp.ts",
+      "community": 30,
+      "community_name": "flowCorridorsApp.ts",
       "norm_label": "geoglobe-framework.test.ts"
     },
     {
@@ -9328,17 +8996,6 @@
       "norm_label": "nature-flora-fauna-app.test.ts"
     },
     {
-      "label": "nimda-operator-console.test.ts",
-      "file_type": "code",
-      "source_file": "frontend/tests/nimda-operator-console.test.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "frontend_tests_nimda_operator_console_test",
-      "community": 6,
-      "community_name": "router.ts",
-      "norm_label": "nimda-operator-console.test.ts"
-    },
-    {
       "label": "path-routing.test.ts",
       "file_type": "code",
       "source_file": "frontend/tests/path-routing.test.ts",
@@ -9433,8 +9090,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_tests_theme_test",
-      "community": 33,
-      "community_name": "Globe3DView.svelte",
+      "community": 62,
+      "community_name": "theme/index.ts",
       "norm_label": "theme.test.ts"
     },
     {
@@ -9444,8 +9101,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_tests_timezone_meridians_test",
-      "community": 12,
-      "community_name": "geoStore.svelte.ts",
+      "community": 21,
+      "community_name": "worldTimeApp.ts",
       "norm_label": "timezone-meridians.test.ts"
     },
     {
@@ -16027,72 +15684,6 @@
       "norm_label": "consequences"
     },
     {
-      "label": "0045-lightweight-edge-operator-console.md",
-      "file_type": "document",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_adr_0045_lightweight_edge_operator_console",
-      "community": 150,
-      "community_name": "webview-bun",
-      "norm_label": "0045-lightweight-edge-operator-console.md"
-    },
-    {
-      "label": "ADR 0045: Lightweight Edge Operator Console (/nimda)",
-      "file_type": "document",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "docs_adr_0045_lightweight_edge_operator_console_adr_0045_lightweight_edge_operator_console_nimda",
-      "community": 150,
-      "community_name": "webview-bun",
-      "norm_label": "adr 0045: lightweight edge operator console (/nimda)"
-    },
-    {
-      "label": "Status",
-      "file_type": "document",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "docs_adr_0045_lightweight_edge_operator_console_status",
-      "community": 150,
-      "community_name": "webview-bun",
-      "norm_label": "status"
-    },
-    {
-      "label": "Context",
-      "file_type": "document",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "docs_adr_0045_lightweight_edge_operator_console_context",
-      "community": 150,
-      "community_name": "webview-bun",
-      "norm_label": "context"
-    },
-    {
-      "label": "Decision",
-      "file_type": "document",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "docs_adr_0045_lightweight_edge_operator_console_decision",
-      "community": 150,
-      "community_name": "webview-bun",
-      "norm_label": "decision"
-    },
-    {
-      "label": "Consequences",
-      "file_type": "document",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "docs_adr_0045_lightweight_edge_operator_console_consequences",
-      "community": 150,
-      "community_name": "webview-bun",
-      "norm_label": "consequences"
-    },
-    {
       "label": "BRIEF.md",
       "file_type": "document",
       "source_file": "docs/brief/BRIEF.md",
@@ -20863,34 +20454,10 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L14",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
-      "target": "backend_src_db_index",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_middleware_admin_auth",
-      "target": "backend_src_db_index",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
       "target": "backend_src_db_index",
       "confidence_score": 1.0
     },
@@ -20983,34 +20550,10 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L14",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
-      "target": "backend_src_db_index_env",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_middleware_admin_auth",
-      "target": "backend_src_db_index_env",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
       "target": "backend_src_db_index_env",
       "confidence_score": 1.0
     },
@@ -21145,30 +20688,6 @@
       "source": "backend_src_service_country",
       "target": "backend_src_db_index_env",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_db_index_getdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L30",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin_nimdaroutes",
-      "target": "backend_src_db_index_getdb"
     },
     {
       "relation": "imports",
@@ -21435,18 +20954,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_db_schema_ratestable",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "backend/src/service/aggregator.ts",
       "source_location": "L14",
       "weight": 1.0,
@@ -21459,48 +20966,12 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_db_schema_ratehistorytable",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "backend/src/service/aggregator.ts",
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_service_aggregator",
       "target": "backend_src_db_schema_ratehistorytable",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_db_schema_apikeystable",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_db_schema_quarantineratestable",
       "confidence_score": 1.0
     },
     {
@@ -23062,7 +22533,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L248",
+      "source_location": "L246",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23073,7 +22544,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L35",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23084,7 +22555,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L251",
+      "source_location": "L249",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23095,7 +22566,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L19",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23106,7 +22577,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L255",
+      "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23117,7 +22588,7 @@
       "relation": "cites",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L17",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23129,7 +22600,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23141,7 +22612,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23153,7 +22624,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23165,7 +22636,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23177,7 +22648,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L10",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23189,35 +22660,11 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L10",
+      "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
       "target": "backend_src_middleware_rate_limiter_ratelimitermiddleware",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/index.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_index",
-      "target": "backend_src_routes_admin",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/index.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_index",
-      "target": "backend_src_routes_admin_nimdaroutes",
       "confidence_score": 1.0
     },
     {
@@ -23321,7 +22768,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L11",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23333,7 +22780,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L11",
+      "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23345,7 +22792,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L13",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23357,7 +22804,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L13",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index",
@@ -23404,18 +22851,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "backend/tests/nimda-operator-api.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_tests_nimda_operator_api_test",
-      "target": "backend_src_index",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "backend/tests/rates-api.test.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -23441,7 +22876,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L52",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23466,7 +22901,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L37",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23478,7 +22913,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L46",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23490,19 +22925,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L227",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_index_createapp",
-      "target": "backend_src_routes_admin_nimdaroutes"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/src/index.ts",
-      "source_location": "L224",
+      "source_location": "L223",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23514,7 +22937,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L226",
+      "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23526,7 +22949,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L225",
+      "source_location": "L224",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23538,7 +22961,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L223",
+      "source_location": "L222",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23550,7 +22973,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L233",
+      "source_location": "L231",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_createapp",
@@ -23561,7 +22984,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/index.ts",
-      "source_location": "L252",
+      "source_location": "L250",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_fetch",
@@ -23596,18 +23019,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "backend/tests/nimda-operator-api.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_tests_nimda_operator_api_test",
-      "target": "backend_src_index_createapp",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "backend/tests/rates-api.test.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -23634,7 +23045,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/index.ts",
-      "source_location": "L261",
+      "source_location": "L259",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_index_scheduled",
@@ -23992,76 +23403,6 @@
       "source": "backend_tests_logger_test",
       "target": "backend_src_logger_index_logevent",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_middleware_admin_auth",
-      "target": "backend_src_middleware_admin_auth_nimdaauthmiddleware",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_middleware_admin_auth",
-      "target": "backend_src_middleware_admin_auth_validateadminauth",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_middleware_admin_auth",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/middleware/admin-auth.ts",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_middleware_admin_auth_nimdaauthmiddleware",
-      "target": "backend_src_middleware_admin_auth_validateadminauth",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_middleware_admin_auth_nimdaauthmiddleware",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin_nimdaroutes",
-      "target": "backend_src_middleware_admin_auth_nimdaauthmiddleware"
     },
     {
       "relation": "contains",
@@ -25217,76 +24558,6 @@
       "source": "backend_src_provider_synthetic_syntheticbankprovider",
       "target": "backend_src_provider_synthetic_syntheticbankprovider_fetchlatestrates",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_routes_admin_nimdaroutes",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_routes_admin_sha256hex",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_service_aggregator",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin",
-      "target": "backend_src_service_aggregator_aggregatorservice",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L181",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin_nimdaroutes",
-      "target": "backend_src_routes_admin_sha256hex",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/src/routes/admin.ts",
-      "source_location": "L68",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "backend_src_routes_admin_nimdaroutes",
-      "target": "backend_src_service_aggregator_aggregatorservice_ingestall"
     },
     {
       "relation": "contains",
@@ -28014,138 +27285,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L38",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_activeapp",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L49",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_canonicalurl",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L55",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_converterfromcurrency",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L82",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_handlemapcurrencyselect",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L86",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_handlematrixcurrencyselect",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L91",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_handlematrixopenchart",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L96",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_handletickercurrencyselect",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L56",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_isalertmodalopen",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L36",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_isappinitialloading",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L44",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_pagedescription",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_pagetitle",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "source_location": "L71",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_app_viewoptions",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/App.svelte",
@@ -28179,15 +27318,6 @@
       "_origin": "ast",
       "source": "frontend_src_app",
       "target": "frontend_src_lib_components_navbar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.svelte",
-      "_origin": "ast",
-      "source": "frontend_src_app",
-      "target": "frontend_src_lib_features_admin_adminconsole",
       "confidence_score": 1.0
     },
     {
@@ -29014,24 +28144,6 @@
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/features/admin/AdminConsole.svelte",
-      "_origin": "ast",
-      "source": "frontend_src_lib_features_admin_adminconsole",
-      "target": "frontend_src_lib_api_client",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/features/admin/AdminConsole.svelte",
-      "_origin": "ast",
-      "source": "frontend_src_lib_features_admin_adminconsole",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/apps/flight/FlightBottomDock.svelte",
       "_origin": "ast",
       "source": "frontend_src_lib_apps_flight_flightbottomdock",
@@ -29576,7 +28688,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L30",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_lib_framework_geoglobe_router",
@@ -29587,7 +28699,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L80",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_lib_framework_geoglobe_router",
@@ -29598,7 +28710,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L68",
+      "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_lib_framework_geoglobe_router",
@@ -29609,7 +28721,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L45",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_lib_framework_geoglobe_router",
@@ -29653,7 +28765,7 @@
       "relation": "cites",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/framework/geoglobe/router.ts",
-      "source_location": "L55",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_lib_framework_geoglobe_router",
@@ -29700,18 +28812,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/nimda-operator-console.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_nimda_operator_console_test",
-      "target": "frontend_src_lib_framework_geoglobe_router",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "frontend/tests/path-routing.test.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -29745,21 +28845,10 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "cites",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L754",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client",
-      "target": "docref_adr_0045",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L822",
+      "source_location": "L754",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_lib_api_client",
@@ -29997,18 +29086,6 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_tests_map_experience_test",
-      "target": "frontend_src_lib_api_client",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/nimda-operator-console.test.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_nimda_operator_console_test",
       "target": "frontend_src_lib_api_client",
       "confidence_score": 1.0
     },
@@ -30578,105 +29655,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L783",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdaclearquarantine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L796",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdacreateapikey",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L814",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdadeleteapikey",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L790",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdagetapikeys",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L757",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdagethealth",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L777",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdagetquarantine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L770",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdapurgecache",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L807",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdatoggleapikey",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L763",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient",
-      "target": "frontend_src_lib_api_client_apiclient_nimdatriggeringest",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -30686,126 +29664,6 @@
       "_origin": "ast",
       "source": "frontend_tests_api_client_test",
       "target": "frontend_src_lib_api_client_apiclient",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/nimda-operator-console.test.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_nimda_operator_console_test",
-      "target": "frontend_src_lib_api_client_apiclient",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L784",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdaclearquarantine",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L800",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdacreateapikey",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L815",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdadeleteapikey",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L791",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdagetapikeys",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L758",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdagethealth",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L778",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdagetquarantine",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L771",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdapurgecache",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L808",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdatoggleapikey",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/api/client.ts",
-      "source_location": "L764",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_api_client_apiclient_nimdatriggeringest",
-      "target": "frontend_src_lib_api_client_apiclient_fetchjson",
       "confidence_score": 1.0
     },
     {
@@ -32987,124 +31845,6 @@
       "_origin": "ast",
       "source": "frontend_src_lib_features_chart_trendchart",
       "target": "frontend_src_lib_components_ui_card",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_framework_geoglobe_appregistry",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry_geoappregistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
-      "source_location": "L63",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_framework_geoglobe_appregistry",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry_georegistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_framework_geoglobe_appregistry",
-      "target": "frontend_src_lib_framework_geoglobe_plugins_earthquakeapp",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_framework_geoglobe_appregistry",
-      "target": "frontend_src_lib_framework_geoglobe_plugins_earthquakeapp_earthquakeapp",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_framework_geoglobe_appregistry",
-      "target": "frontend_src_lib_framework_geoglobe_types_geoappplugin",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/lib/framework/geoglobe/filterEngine.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_src_lib_framework_geoglobe_filterengine",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/adr0044-bug-fixes-and-expansion.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_adr0044_bug_fixes_and_expansion_test",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/geoglobe-framework.test.ts",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_geoglobe_framework_test",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/plug-and-play-framework.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_plug_and_play_framework_test",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/world-capitals-plugin.test.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_world_capitals_plugin_test",
-      "target": "frontend_src_lib_framework_geoglobe_appregistry",
       "confidence_score": 1.0
     },
     {
@@ -36644,6 +35384,124 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_lib_framework_geoglobe_appregistry",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry_geoappregistry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_lib_framework_geoglobe_appregistry",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry_georegistry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_lib_framework_geoglobe_appregistry",
+      "target": "frontend_src_lib_framework_geoglobe_plugins_earthquakeapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_lib_framework_geoglobe_appregistry",
+      "target": "frontend_src_lib_framework_geoglobe_plugins_earthquakeapp_earthquakeapp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_lib_framework_geoglobe_appregistry",
+      "target": "frontend_src_lib_framework_geoglobe_types_geoappplugin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/lib/framework/geoglobe/filterEngine.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_lib_framework_geoglobe_filterengine",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/tests/adr0044-bug-fixes-and-expansion.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_tests_adr0044_bug_fixes_and_expansion_test",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/tests/geoglobe-framework.test.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_tests_geoglobe_framework_test",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/tests/plug-and-play-framework.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_tests_plug_and_play_framework_test",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/tests/world-capitals-plugin.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_tests_world_capitals_plugin_test",
+      "target": "frontend_src_lib_framework_geoglobe_appregistry",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/lib/framework/geoglobe/appRegistry.ts",
@@ -39178,18 +38036,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/nimda-operator-console.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_nimda_operator_console_test",
-      "target": "frontend_src_lib_framework_geoglobe_router_resolvepathtoappid",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "frontend/tests/path-routing.test.ts",
       "source_location": "L2",
       "weight": 1.0,
@@ -39280,18 +38126,6 @@
       "_origin": "ast",
       "source": "frontend_tests_world_capitals_plugin_test",
       "target": "frontend_src_lib_framework_geoglobe_router_resolveappidtopath",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/tests/nimda-operator-console.test.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "frontend_tests_nimda_operator_console_test",
-      "target": "frontend_src_lib_framework_geoglobe_router_islandingpath",
       "confidence_score": 1.0
     },
     {
@@ -46416,61 +45250,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_adr_0045_lightweight_edge_operator_console",
-      "target": "docs_adr_0045_lightweight_edge_operator_console_adr_0045_lightweight_edge_operator_console_nimda",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L42",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_adr_0045_lightweight_edge_operator_console_adr_0045_lightweight_edge_operator_console_nimda",
-      "target": "docs_adr_0045_lightweight_edge_operator_console_consequences",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_adr_0045_lightweight_edge_operator_console_adr_0045_lightweight_edge_operator_console_nimda",
-      "target": "docs_adr_0045_lightweight_edge_operator_console_context",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_adr_0045_lightweight_edge_operator_console_adr_0045_lightweight_edge_operator_console_nimda",
-      "target": "docs_adr_0045_lightweight_edge_operator_console_decision",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "docs/adr/0045-lightweight-edge-operator-console.md",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "docs_adr_0045_lightweight_edge_operator_console_adr_0045_lightweight_edge_operator_console_nimda",
-      "target": "docs_adr_0045_lightweight_edge_operator_console_status",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "docs/brief/BRIEF.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -50232,5 +49011,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "29262fd3ad412bf86824fc6b0d42ba2c8f6bd494"
+  "built_at_commit": "422d6606bf9fdb120638a8f8139b179bc55f854f"
 }
