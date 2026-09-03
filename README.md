@@ -1,6 +1,6 @@
-# 🌐 Kurs World (`kurs-world`)
+# 🌐 Buanasphere (`buanasphere`)
 
-[![CI](https://github.com/rafliiar17/kurs-world/actions/workflows/ci.yml/badge.svg)](https://github.com/rafliiar17/kurs-world/actions)
+[![CI](https://github.com/rafliiar17/buanasphere/actions/workflows/ci.yml/badge.svg)](https://github.com/rafliiar17/buanasphere/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
 [![Bun](https://img.shields.io/badge/Bun-v1.4+-black.svg)](https://bun.sh)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020.svg)](https://workers.cloudflare.com/)
@@ -8,8 +8,8 @@
 [![Svelte 5](https://img.shields.io/badge/Svelte-5_(Runes)-FF3E00.svg)](https://svelte.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **Platform Agregator Informasi Kurs Mata Uang Real-Time & Public Developer REST API**  
-> *"Informasi Dulu, Transaksi Belakangan"* — Menyediakan data nilai tukar transparan, jujur, multi-bank komparatif, dan bebas hambatan (<50ms Edge Latency).
+> **Platform Geospatial 3D Multi-Aplikasi Planet Bumi & Real-Time Intelligence**  
+> *"Eksplorasi Data Dunia Real-Time Tanpa Hambatan"* — Menyediakan observasi bumi 3D interaktif mencakup nilai tukar valas, waktu diurnal, koridor remitansi diaspora, mobilitas paspor, biodiversitas alam, dan aktivitas seismik global (<50ms Edge Latency di [globe.arafz.id](https://globe.arafz.id)).
 
 ---
 

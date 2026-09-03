@@ -1,8 +1,8 @@
 {
-  "name": "@kurs-world/backend",
+  "name": "@buanasphere/backend",
   "version": "1.0.0",
   "private": true,
-  "description": "Kurs World Edge API and Ingestion Worker on Elysia.js & Cloudflare Workers",
+  "description": "Buanasphere Edge API and Ingestion Worker on Elysia.js & Cloudflare Workers",
   "type": "module",
   "packageManager": "bun@1.4.0",
   "engines": {
