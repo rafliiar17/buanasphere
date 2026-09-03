@@ -21,7 +21,8 @@
   } from '../shader-lut/countryLutEngine';
   import { GLOBE_LUT_VERTEX_SHADER, GLOBE_LUT_FRAGMENT_SHADER } from '../shader-lut/globeShaders';
 
-  // Modular Globe Engine Layers (ADR 0061)
+  // Declarative GlobeScene & Modular Layers (ADR 0061 & ADR 0062)
+  import GlobeScene from '../globe/GlobeScene.svelte';
   import {
     getFeatureIso3,
     getCountryColor,
@@ -61,6 +62,7 @@
     onReady,
   }: Props = $props();
 
+  let globeSceneRef = $state<any>(null);
   let globeContainer = $state<HTMLDivElement | null>(null);
   let globeInstance: any = null;
   let GlobeModule: any = null;
@@ -146,21 +148,15 @@
     });
   }
 
-  /**
-   * Updates the GPU 1D Palette LUT buffer (ADR 0038).
-   * Runs in 0.005 ms, instantly recoloring the entire globe in 1 draw call!
-   */
   function updatePaletteLut() {
     if (!lutPaletteBuffer || !lutPaletteTexture || !countryMapping) return;
     const isDark = currentTheme === 'dark';
 
-    // Ocean color (Slot 0)
     const oceanRgba = hexOrRgbaToRgbaArray(isDark ? '#0B0F19' : '#FAF8F3');
     updatePaletteLutSlot(lutPaletteBuffer, 0, oceanRgba);
 
     const isFilterActive = isFilterCurrentlyActive();
 
-    // Update each country in the LUT buffer
     for (const country of EXTENDED_COUNTRIES_DATA) {
       const countryId = countryMapping.iso3ToId[country.iso3];
       if (!countryId) continue;
@@ -306,7 +302,9 @@
 
   // Exported Camera Navigation Controller Methods (ADR 0043 & ADR 0049)
   export function flyTo(lat: number, lng: number, altitude: number, durationMs: number = 1000) {
-    if (globeInstance) {
+    if (globeSceneRef) {
+      globeSceneRef.flyTo(lat, lng, altitude, durationMs);
+    } else if (globeInstance) {
       globeInstance.pointOfView({ lat, lng, altitude }, durationMs);
     }
   }
@@ -315,7 +313,6 @@
     iso3: string,
     options?: { duration?: number; altitude?: number }
   ) {
-    if (!globeInstance || !iso3) return;
     const targetCoords = getCountryCoordinates(iso3);
     if (!targetCoords) return;
 
@@ -324,7 +321,8 @@
       travelTimeoutId = null;
     }
 
-    const curPov = globeInstance.pointOfView() || { lat: 0, lng: 0, altitude: 2.2 };
+    const currentGlobe = globeSceneRef?.getGlobe() || globeInstance;
+    const curPov = currentGlobe?.pointOfView() || { lat: 0, lng: 0, altitude: 2.2 };
     const targetAltitude = options?.altitude ?? getCountryFocusAltitude(iso3);
 
     const trajectory = getTravelTrajectory(
@@ -334,18 +332,28 @@
     );
 
     if (!trajectory.isTwoStage) {
-      globeInstance.pointOfView(
-        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
-        options?.duration ?? trajectory.stage1.durationMs
-      );
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(trajectory.stage1.lat, trajectory.stage1.lng, trajectory.stage1.altitude, options?.duration ?? trajectory.stage1.durationMs);
+      } else if (globeInstance) {
+        globeInstance.pointOfView(
+          { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+          options?.duration ?? trajectory.stage1.durationMs
+        );
+      }
     } else {
-      globeInstance.pointOfView(
-        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
-        trajectory.stage1.durationMs
-      );
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(trajectory.stage1.lat, trajectory.stage1.lng, trajectory.stage1.altitude, trajectory.stage1.durationMs);
+      } else if (globeInstance) {
+        globeInstance.pointOfView(
+          { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+          trajectory.stage1.durationMs
+        );
+      }
 
       travelTimeoutId = setTimeout(() => {
-        if (globeInstance) {
+        if (globeSceneRef) {
+          globeSceneRef.flyTo(trajectory.stage2.lat, trajectory.stage2.lng, trajectory.stage2.altitude, trajectory.stage2.durationMs);
+        } else if (globeInstance) {
           globeInstance.pointOfView(
             { lat: trajectory.stage2.lat, lng: trajectory.stage2.lng, altitude: trajectory.stage2.altitude },
             trajectory.stage2.durationMs
@@ -357,24 +365,33 @@
   }
 
   export function zoomIn(factor: number = 0.7, durationMs: number = 300) {
-    if (!globeInstance) return;
-    const pov = globeInstance.pointOfView();
-    const currentAlt = pov?.altitude || 2.2;
-    const nextAlt = Math.max(0.15, currentAlt * factor);
-    globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    if (globeSceneRef) {
+      globeSceneRef.handleZoomIn(factor);
+    } else if (globeInstance) {
+      const pov = globeInstance.pointOfView();
+      const currentAlt = pov?.altitude || 2.2;
+      const nextAlt = Math.max(0.15, currentAlt * factor);
+      globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    }
   }
 
   export function zoomOut(factor: number = 1.4, durationMs: number = 300) {
-    if (!globeInstance) return;
-    const pov = globeInstance.pointOfView();
-    const currentAlt = pov?.altitude || 2.2;
-    const nextAlt = Math.min(6.0, currentAlt * factor);
-    globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    if (globeSceneRef) {
+      globeSceneRef.handleZoomOut(factor);
+    } else if (globeInstance) {
+      const pov = globeInstance.pointOfView();
+      const currentAlt = pov?.altitude || 2.2;
+      const nextAlt = Math.min(6.0, currentAlt * factor);
+      globeInstance.pointOfView({ ...pov, altitude: nextAlt }, durationMs);
+    }
   }
 
   export function resetView(durationMs: number = 600) {
-    if (!globeInstance) return;
-    globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, durationMs);
+    if (globeSceneRef) {
+      globeSceneRef.flyTo(10, 110, 2.2, durationMs);
+    } else if (globeInstance) {
+      globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, durationMs);
+    }
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -393,8 +410,9 @@
   }
 
   function applyOptimalDpr() {
-    if (!globeInstance || typeof window === 'undefined') return;
-    const renderer = globeInstance.renderer?.();
+    const currentGlobe = globeSceneRef?.getGlobe() || globeInstance;
+    if (!currentGlobe || typeof window === 'undefined') return;
+    const renderer = currentGlobe.renderer?.();
     if (!renderer) return;
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     const dpr = isTurbo ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.35);
@@ -402,7 +420,8 @@
   }
 
   function updateVisuals() {
-    if (!globeInstance) return;
+    const currentGlobe = globeSceneRef?.getGlobe() || globeInstance;
+    if (!currentGlobe) return;
     const isDark = currentTheme === 'dark';
     const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag' || mapState.showFlags || geoStore.showFlags);
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
@@ -410,24 +429,23 @@
 
     applyOptimalDpr();
 
-    // ⚡ Option C (ADR 0038): Clean Switch between 1-Draw-Call Shader-LUT vs 3D Raised Polygons
     if (isTurbo && lutSphereMesh) {
       lutSphereMesh.visible = true;
       updatePaletteLut();
-      globeInstance
+      currentGlobe
         .showGlobe(false)
         .polygonAltitude(-10.0)
         .polygonLabel(() => '');
     } else {
       if (lutSphereMesh) lutSphereMesh.visible = false;
-      globeInstance
+      currentGlobe
         .showGlobe(true)
         .polygonLabel((d: any) => getTooltipHtmlForFeature(d));
 
       if (!isFlag) {
-        globeInstance.polygonCapMaterial(null);
+        currentGlobe.polygonCapMaterial(null);
       } else {
-        globeInstance.polygonCapMaterial((d: any) => {
+        currentGlobe.polygonCapMaterial((d: any) => {
           const iso3 = getFeatureIso3(d);
           const isFilterActive = isFilterCurrentlyActive();
           if (isFilterActive && !geoStore.isCountryMatched(iso3)) {
@@ -437,7 +455,7 @@
         });
       }
 
-      globeInstance
+      currentGlobe
         .polygonSideColor(() => themeConfig.polygonSideColor)
         .polygonStrokeColor(() => themeConfig.polygonStrokeColor)
         .polygonCapColor((d: any) => getPolygonColorForFeature(d))
@@ -456,7 +474,7 @@
         });
     }
 
-    globeInstance
+    currentGlobe
       .backgroundColor(themeConfig.backgroundColor)
       .atmosphereColor(themeConfig.atmosphereColor)
       .atmosphereAltitude(themeConfig.atmosphereAltitude)
@@ -494,79 +512,6 @@
       .ringMaxRadius((d: any) => d.maxRadius || 5)
       .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
       .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
-  }
-
-  function handleContainerPointerMove(e: MouseEvent) {
-    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
-    if (!isTurbo || !lutSphereMesh || !globeInstance || !idBuffer || !countryMapping || !globeContainer) return;
-
-    const rect = globeContainer.getBoundingClientRect();
-    mouseScreenX = e.clientX - rect.left;
-    mouseScreenY = e.clientY - rect.top;
-
-    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-    if (!lutRaycaster) lutRaycaster = new THREE.Raycaster();
-    if (!lutMouseVec) lutMouseVec = new THREE.Vector2();
-    lutMouseVec.set(x, y);
-
-    const camera = globeInstance.camera?.();
-    if (!camera) return;
-
-    lutRaycaster.setFromCamera(lutMouseVec, camera);
-    const intersects = lutRaycaster.intersectObject(lutSphereMesh);
-
-    if (intersects.length > 0 && intersects[0].uv) {
-      const uv = intersects[0].uv;
-      const { countryId, iso3 } = pickCountryFromUv(
-        uv.x,
-        uv.y,
-        idBuffer,
-        idTextureWidth,
-        idTextureHeight,
-        countryMapping
-      );
-
-      if (iso3) {
-        isHoveringLutGlobe = true;
-        hoveredCountryIso3 = iso3;
-        if (iso3 !== lastHoveredIso3) {
-          lastHoveredIso3 = iso3;
-          mapState.hoveredIso3 = iso3;
-          onCountryHover?.(iso3);
-          if (lutShaderMaterial) {
-            lutShaderMaterial.uniforms.uHoveredId.value = countryId;
-          }
-        }
-      } else {
-        clearLutHover();
-      }
-    } else {
-      clearLutHover();
-    }
-  }
-
-  function clearLutHover() {
-    isHoveringLutGlobe = false;
-    hoveredCountryIso3 = null;
-    if (lastHoveredIso3 !== '') {
-      lastHoveredIso3 = '';
-      mapState.hoveredIso3 = null;
-      onCountryHover?.(null);
-      if (lutShaderMaterial) {
-        lutShaderMaterial.uniforms.uHoveredId.value = 0;
-      }
-    }
-  }
-
-  function handleContainerClick() {
-    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
-    if (!isTurbo || !hoveredCountryIso3) return;
-    const country = mapData.find((d) => d.iso3 === hoveredCountryIso3);
-    if (country) {
-      onCountryClick?.(country);
-    }
   }
 
   async function initGlobe() {
@@ -664,7 +609,6 @@
         }
       });
 
-    // Enforce WebGL Adaptive DPR Clamp (ADR 0035)
     applyOptimalDpr();
 
     if (mapState.showLabels && globeLabels.length > 0) {
@@ -718,7 +662,6 @@
         });
     }
 
-    // 3D Paths for Meridians / Corridors (ADR 0041)
     if (globePaths.length > 0) {
       globeInstance
         .pathsData(globePaths)
@@ -737,7 +680,6 @@
         });
     }
 
-    // 3D Epicenter Pulsing Rings for Earthquake / Disaster Tracker (ADR 0044)
     globeInstance
       .ringsData(globeRings)
       .ringLat((d: any) => d.lat)
@@ -747,7 +689,6 @@
       .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
       .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
 
-    // Orbit controls
     const controls = globeInstance.controls();
     if (controls) {
       controls.autoRotate = false;
@@ -757,7 +698,6 @@
       controls.minDistance = 105;
       controls.maxDistance = 550;
 
-      // Track camera altitude for Zoom-Aware LOD (ADR 0056)
       controls.addEventListener('change', () => {
         const pov = globeInstance.pointOfView();
         if (pov && typeof pov.altitude === 'number') {
@@ -768,10 +708,8 @@
       });
     }
 
-    // Centered initially near Indonesia / Asia-Pacific
     globeInstance.pointOfView({ lat: 10, lng: 110, altitude: 2.2 }, 800);
 
-    // ⚡ Option C (ADR 0038): Initialize Single-Sphere Shader-LUT Engine
     countryMapping = buildCountryIdMapping(EXTENDED_COUNTRIES_DATA);
     const { canvas: idCanvas, buffer: rawIdBuffer } = renderEquirectangularIdTexture(
       geoJsonFeatures,
@@ -834,7 +772,6 @@
     isInitialized = true;
     onReady?.();
 
-    // Auto-Resize Observer
     if (globeContainer && typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
@@ -847,9 +784,123 @@
     }
   }
 
+  function handleContainerPointerMove(e: MouseEvent) {
+    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+    if (!isTurbo || !lutSphereMesh || !globeInstance || !idBuffer || !countryMapping || !globeContainer) return;
+
+    const rect = globeContainer.getBoundingClientRect();
+    mouseScreenX = e.clientX - rect.left;
+    mouseScreenY = e.clientY - rect.top;
+
+    const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    if (!lutRaycaster) lutRaycaster = new THREE.Raycaster();
+    if (!lutMouseVec) lutMouseVec = new THREE.Vector2();
+    lutMouseVec.set(x, y);
+
+    const camera = globeInstance.camera?.();
+    if (!camera) return;
+
+    lutRaycaster.setFromCamera(lutMouseVec, camera);
+    const intersects = lutRaycaster.intersectObject(lutSphereMesh);
+
+    if (intersects.length > 0 && intersects[0].uv) {
+      const uv = intersects[0].uv;
+      const { countryId, iso3 } = pickCountryFromUv(
+        uv.x,
+        uv.y,
+        idBuffer,
+        idTextureWidth,
+        idTextureHeight,
+        countryMapping
+      );
+
+      if (iso3) {
+        isHoveringLutGlobe = true;
+        hoveredCountryIso3 = iso3;
+        if (iso3 !== lastHoveredIso3) {
+          lastHoveredIso3 = iso3;
+          mapState.hoveredIso3 = iso3;
+          onCountryHover?.(iso3);
+          if (lutShaderMaterial) {
+            lutShaderMaterial.uniforms.uHoveredId.value = countryId;
+          }
+        }
+      } else {
+        clearLutHover();
+      }
+    } else {
+      clearLutHover();
+    }
+  }
+
+  function clearLutHover() {
+    isHoveringLutGlobe = false;
+    hoveredCountryIso3 = null;
+    if (lastHoveredIso3 !== '') {
+      lastHoveredIso3 = '';
+      mapState.hoveredIso3 = null;
+      onCountryHover?.(null);
+      if (lutShaderMaterial) {
+        lutShaderMaterial.uniforms.uHoveredId.value = 0;
+      }
+    }
+  }
+
+  function handleContainerClick() {
+    const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
+    if (!isTurbo || !hoveredCountryIso3) return;
+    const country = mapData.find((d) => d.iso3 === hoveredCountryIso3);
+    if (country) {
+      onCountryClick?.(country);
+    }
+  }
+
+  function handleCountryClickFromScene(iso3: string) {
+    if (iso3) {
+      travelToCountry(iso3);
+    }
+    const country = mapData.find((d) => d.iso3 === iso3);
+    if (country) {
+      onCountryClick?.(country);
+    } else if (iso3) {
+      geoStore.selectCountry(iso3);
+      mapState.selectCountry(iso3);
+    }
+  }
+
+  function handleCountryHoverFromScene(iso3: string | null) {
+    mapState.hoveredIso3 = iso3;
+    onCountryHover?.(iso3);
+  }
+
+  function handlePathClickFromScene(path: any) {
+    if (path?.utcOffset !== undefined) {
+      mapState.setSelectedMeridian(path);
+    }
+  }
+
+  function handleGlobeSceneReady(globe: any) {
+    globeInstance = globe;
+    isInitialized = true;
+    const controls = globe?.controls?.();
+    if (controls) {
+      controls.addEventListener('change', () => {
+        const pov = globe?.pointOfView?.();
+        if (pov && typeof pov.altitude === 'number') {
+          if (Math.abs(pov.altitude - cameraAltitude) > 0.12) {
+            cameraAltitude = pov.altitude;
+          }
+        }
+      });
+    }
+    onReady?.();
+  }
+
   // React to reactive state changes with non-blocking lazy-loading transition
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const _app = geoStore.activeAppId;
     const _timeFilter = geoStore.timeFilter;
     const _flightFilter = geoStore.flightCorridorFilter;
@@ -887,12 +938,16 @@
 
   // React to region changes
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const regionId = mapState.activeRegion;
     const regionObj = REGION_FILTERS.find((r) => r.id === regionId);
     if (regionObj) {
       const altitude = regionId === 'all' ? 2.2 : (regionObj.zoom ? Math.max(0.6, 2.5 / regionObj.zoom) : 1.5);
-      globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(regionObj.lat, regionObj.lon, altitude, 1000);
+      } else if (globeInstance) {
+        globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+      }
     }
   });
 
@@ -908,7 +963,7 @@
 
   // React to dynamic camera presets for active app (ADR 0038)
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const presets = (geoStore.activeApp as any)?.cameraPresets;
     if (!presets) return;
 
@@ -923,14 +978,18 @@
 
     const preset = presets[filterKey];
     if (preset) {
-      globeInstance.pointOfView(preset, 1000);
+      if (globeSceneRef) {
+        globeSceneRef.flyTo(preset.lat, preset.lng, preset.altitude, 1000);
+      } else if (globeInstance) {
+        globeInstance.pointOfView(preset, 1000);
+      }
     }
   });
 
   // React to reactive country travel signals from geoStore or mapState (ADR 0049)
   let lastTravelTimestamp = 0;
   $effect(() => {
-    if (!isInitialized || !globeInstance) return;
+    if (!isInitialized) return;
     const storeSignal = geoStore.cameraTravelSignal;
     const mapSignal = mapState.cameraTravelSignal;
     const latestSignal = (storeSignal?.timestamp ?? 0) >= (mapSignal?.timestamp ?? 0)
@@ -944,7 +1003,6 @@
   });
 
   onMount(() => {
-    initGlobe();
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', handleKeydown);
     }
@@ -1002,18 +1060,29 @@
 </script>
 
 <div class="relative w-full h-full min-h-[500px] overflow-hidden select-none">
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    bind:this={globeContainer}
-    class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-    onmousemove={handleContainerPointerMove}
-    onmouseleave={clearLutHover}
-    onclick={handleContainerClick}
-    role="region"
-    aria-label="3D Globe Canvas"
-    style="z-index: 1;"
-  ></div>
+  <!-- Declarative Globe Canvas Scene from fe-2 (ADR 0062) -->
+  <GlobeScene
+    bind:this={globeSceneRef}
+    polygons={geoJsonFeatures}
+    {mapData}
+    selectedIso3={mapState.selectedCountryIso3}
+    hoveredIso3={mapState.hoveredIso3}
+    activeMetric={mapState.activeMetric}
+    arcs={remittanceArcs}
+    paths={globePaths}
+    rings={globeRings}
+    labels={globeLabels}
+    theme={currentTheme}
+    autoRotate={Boolean(mapState.autoRotate || geoStore.autoRotate)}
+    isFilterActive={isFilterCurrentlyActive()}
+    isCountryMatched={(iso3) => geoStore.isCountryMatched(iso3)}
+    activeApp={geoStore.activeApp}
+    currentAppData={geoStore.currentAppData}
+    onCountryClick={handleCountryClickFromScene}
+    onCountryHover={handleCountryHoverFromScene}
+    onPathClick={handlePathClickFromScene}
+    onReady={handleGlobeSceneReady}
+  />
 
   <!-- Interactive Timezone Meridian Inspector Card (ADR 0042) -->
   {#if mapState.selectedMeridian}

@@ -15,3 +15,4 @@ export * from './layers/arcLayer';
 export * from './layers/pathLayer';
 export * from './layers/ringLayer';
 export * from './layers/labelLayer';
+export { default as GlobeScene } from './GlobeScene.svelte';

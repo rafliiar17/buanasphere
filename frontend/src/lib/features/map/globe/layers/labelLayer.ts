@@ -121,3 +121,28 @@ export function getGlobeLabels(options: LabelLayerOptions): LabelItem[] {
     };
   });
 }
+
+export function configureLabelLayer(
+  globe: any,
+  labels: LabelItem[],
+  selectedIso3?: string | null,
+  callbacks?: {
+    onClick?: (label: LabelItem, event?: MouseEvent) => void;
+    onHover?: (label: LabelItem | null) => void;
+  }
+): void {
+  if (!globe || typeof globe.labelsData !== 'function') return;
+
+  globe
+    .labelsData(labels || [])
+    .labelLat((d: any) => d.lat)
+    .labelLng((d: any) => d.lng)
+    .labelText((d: any) => d.text)
+    .labelSize((d: any) => d.size ?? 0.95)
+    .labelDotRadius((d: any) => (d.iso3 === selectedIso3 ? 0.24 : 0.06))
+    .labelColor((d: any) => d.color)
+    .labelAltitude((d: any) => (d.iso3 === selectedIso3 ? 0.035 : 0.018))
+    .labelResolution(3)
+    .onLabelClick((d: any) => callbacks?.onClick?.(d))
+    .onLabelHover((d: any) => callbacks?.onHover?.(d));
+}

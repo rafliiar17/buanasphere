@@ -36,3 +36,21 @@ export function getGlobeArcs(options: ArcFilterOptions): any[] {
     return isCountryMatched(originCountry.iso3);
   });
 }
+
+export function configureArcLayer(
+  globe: any,
+  arcs: any[],
+  onClick?: (arc: any, event: MouseEvent) => void
+): void {
+  if (!globe || typeof globe.arcsData !== 'function') return;
+
+  globe
+    .arcsData(arcs || [])
+    .arcColor((d: any) => d.color || ['#10b981', '#38bdf8'])
+    .arcAltitude((d: any) => d.altitude || 0.35)
+    .arcStroke((d: any) => d.stroke || 1.8)
+    .arcDashLength((d: any) => d.dashLength || 0.4)
+    .arcDashGap((d: any) => d.dashGap || 0.2)
+    .arcDashAnimateTime((d: any) => d.dashAnimateTime || 2000)
+    .onArcClick((arc: any, event: MouseEvent) => onClick?.(arc, event));
+}

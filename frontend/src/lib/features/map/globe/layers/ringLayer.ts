@@ -15,3 +15,16 @@ export function getGlobeRings(options: RingLayerOptions): any[] {
 
   return activeApp.getRingData(selected, (currentAppData ?? {}) as any) || [];
 }
+
+export function configureRingLayer(globe: any, rings: any[]): void {
+  if (!globe || typeof globe.ringsData !== 'function') return;
+
+  globe
+    .ringsData(rings || [])
+    .ringLat((d: any) => d.lat)
+    .ringLng((d: any) => d.lng)
+    .ringColor((d: any) => d.color)
+    .ringMaxRadius((d: any) => d.maxRadius || 5)
+    .ringPropagationSpeed((d: any) => d.propagationSpeed || 2)
+    .ringRepeatPeriod((d: any) => d.repeatPeriod || 1500);
+}

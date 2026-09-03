@@ -226,3 +226,95 @@ export function getDimmedCapMaterial(isDark: boolean): THREE.MeshLambertMaterial
     return dimmedCapMaterialLight;
   }
 }
+
+export interface ConfigurePolygonLayerConfig {
+  features: any[];
+  mapData: any[];
+  selectedIso3?: string | null;
+  hoveredIso3?: string | null;
+  activeMetric: any;
+  currentTheme: any;
+  isDark: boolean;
+  isFlag: boolean;
+  isFilterActive: boolean;
+  isCountryMatched: (iso3: string) => boolean;
+  themeConfig: any;
+  activeApp?: any;
+  currentAppData?: any;
+  onHover?: (feat: any | null) => void;
+  onClick?: (feat: any, event: MouseEvent) => void;
+}
+
+export function configurePolygonLayer(globe: any, config: ConfigurePolygonLayerConfig): void {
+  if (!globe || typeof globe.polygonsData !== 'function') return;
+
+  const {
+    features,
+    mapData,
+    selectedIso3,
+    hoveredIso3,
+    activeMetric,
+    currentTheme,
+    isDark,
+    isFlag,
+    isFilterActive,
+    isCountryMatched,
+    themeConfig,
+    activeApp,
+    currentAppData,
+    onHover,
+    onClick,
+  } = config;
+
+  globe
+    .polygonsData(features || [])
+    .polygonGeoJsonGeometry((d: any) => d.geometry)
+    .polygonSideColor(() => themeConfig.polygonSideColor)
+    .polygonStrokeColor(() => themeConfig.polygonStrokeColor)
+    .polygonCapColor((feat: any) => {
+      const iso3 = getFeatureIso3(feat);
+      const isMatched = isCountryMatched(iso3);
+      return getCountryColor(iso3, {
+        mapData,
+        selectedIso3,
+        hoveredIso3,
+        currentTheme,
+        activeMetric,
+        isMatched,
+        isFilterActive,
+        activeApp,
+        currentAppData,
+      });
+    })
+    .polygonAltitude((feat: any) => {
+      const iso3 = getFeatureIso3(feat);
+      const isMatched = isCountryMatched(iso3);
+      return getPolygonAltitude(iso3, {
+        selectedIso3,
+        hoveredIso3,
+        isMatched,
+        isFilterActive,
+        isFlag,
+      });
+    })
+    .polygonCapMaterial((feat: any) => {
+      if (!isFlag) return null;
+      const iso3 = getFeatureIso3(feat);
+      if (isFilterActive && !isCountryMatched(iso3)) {
+        return getDimmedCapMaterial(isDark);
+      }
+      return createProceduralFlagMaterial(feat, isDark);
+    })
+    .polygonLabel((feat: any) => {
+      const iso3 = getFeatureIso3(feat);
+      return getTooltipHtml(iso3, {
+        mapData,
+        currentTheme,
+        activeMetric,
+        activeApp,
+        currentAppData,
+      });
+    })
+    .onPolygonHover((feat: any) => onHover?.(feat))
+    .onPolygonClick((feat: any, event: MouseEvent) => onClick?.(feat, event));
+}
