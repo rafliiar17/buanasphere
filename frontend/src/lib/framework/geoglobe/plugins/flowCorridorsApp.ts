@@ -46,6 +46,7 @@ export const flowCorridorsApp: GeoAppPlugin<RemittanceCorridorData> = {
     main: 'Flow',
     sub: '.Corridors',
     accentColor: '#06b6d4',
+    disclaimer: 'Visualisasi koridor remitansi & aliran dana internasional · Data publik · Gratis',
   },
   splash: {
     stepText: 'Memuat Rute Koridor Remitansi 3D ke Jakarta...',

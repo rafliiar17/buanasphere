@@ -70,6 +70,7 @@ export class MapState {
   performanceMode: 'turbo' | 'quality' = 'quality';
   showTimezoneLines: boolean = true;
   selectedMeridian: TimezoneMeridianInfo | null = null;
+  cameraTravelSignal: { iso3: string; timestamp: number } | null = null;
 
   constructor(initial?: Partial<MapStateConfig & { performanceMode?: 'turbo' | 'quality' }>) {
     if (initial) {
@@ -113,6 +114,11 @@ export class MapState {
         this.selectedCurrencyCode = match.currencyCode;
       }
     }
+    this.cameraTravelSignal = { iso3: this.selectedCountryIso3, timestamp: Date.now() };
+  };
+
+  travelToCountry = (iso3: string) => {
+    this.selectCountry(iso3);
   };
 
   setSearchQuery = (query: string) => {

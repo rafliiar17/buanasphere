@@ -21,6 +21,12 @@
     type CountryIdMapping
   } from '../shader-lut/countryLutEngine';
   import { GLOBE_LUT_VERTEX_SHADER, GLOBE_LUT_FRAGMENT_SHADER } from '../shader-lut/globeShaders';
+  import {
+    calculateGreatCircleDistanceDeg,
+    getCountryFocusAltitude,
+    getCountryCoordinates,
+    getTravelTrajectory,
+  } from '../cameraTravel';
 
   interface Props {
     geoJsonFeatures: any[];
@@ -47,6 +53,7 @@
   let GlobeModule: any = null;
   let resizeObserver: ResizeObserver | null = null;
   let isInitialized = $state(false);
+  let travelTimeoutId: any = null;
 
   // Option C: Shader-LUT Engine State (ADR 0038)
   let lutSphereMesh: THREE.Mesh | null = null;
@@ -412,6 +419,54 @@
     }
   }
 
+  // Interactive Travel & Auto Zoom-in Camera Animation (ADR 0049)
+  export function travelToCountry(
+    iso3: string,
+    options?: { duration?: number; altitude?: number }
+  ) {
+    if (!globeInstance || !iso3) return;
+    const targetCoords = getCountryCoordinates(iso3);
+    if (!targetCoords) return;
+
+    if (travelTimeoutId) {
+      clearTimeout(travelTimeoutId);
+      travelTimeoutId = null;
+    }
+
+    const curPov = globeInstance.pointOfView() || { lat: 0, lng: 0, altitude: 2.2 };
+    const targetAltitude = options?.altitude ?? getCountryFocusAltitude(iso3);
+
+    const trajectory = getTravelTrajectory(
+      { lat: curPov.lat ?? 0, lng: curPov.lng ?? 0, altitude: curPov.altitude ?? 2.2 },
+      targetCoords,
+      { targetAltitude }
+    );
+
+    if (!trajectory.isTwoStage) {
+      globeInstance.pointOfView(
+        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+        options?.duration ?? trajectory.stage1.durationMs
+      );
+    } else {
+      // Stage 1: Lift-off zoom-out arc & rotation
+      globeInstance.pointOfView(
+        { lat: trajectory.stage1.lat, lng: trajectory.stage1.lng, altitude: trajectory.stage1.altitude },
+        trajectory.stage1.durationMs
+      );
+
+      // Stage 2: Swoop down & zoom-in
+      travelTimeoutId = setTimeout(() => {
+        if (globeInstance) {
+          globeInstance.pointOfView(
+            { lat: trajectory.stage2.lat, lng: trajectory.stage2.lng, altitude: trajectory.stage2.altitude },
+            trajectory.stage2.durationMs
+          );
+        }
+        travelTimeoutId = null;
+      }, trajectory.stage1.durationMs - 20);
+    }
+  }
+
   // Camera Zoom & Navigation Functions (ADR 0043)
   export function zoomIn(factor: number = 0.7, durationMs: number = 300) {
     if (!globeInstance) return;
@@ -680,10 +735,16 @@
         const isTurboNow = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
         if (isTurboNow) return;
         if (!clickD) return;
-        const iso3 = getFeatureIso3(clickD);
-        const country = mapData.find(d => d.iso3 === iso3);
+        const featIso3 = getFeatureIso3(clickD);
+        if (featIso3) {
+          travelToCountry(featIso3);
+        }
+        const country = mapData.find(d => d.iso3 === featIso3);
         if (country) {
           onCountryClick?.(country);
+        } else if (featIso3) {
+          geoStore.selectCountry(featIso3);
+          mapState.selectCountry(featIso3);
         }
       });
 
@@ -702,8 +763,14 @@
         .labelAltitude(0.020)
         .labelResolution(2)
         .onLabelClick((d: any) => {
+          if (d?.iso3) {
+            travelToCountry(d.iso3);
+          }
           if (d.country) {
             onCountryClick?.(d.country);
+          } else if (d?.iso3) {
+            geoStore.selectCountry(d.iso3);
+            mapState.selectCountry(d.iso3);
           }
         })
         .onLabelHover((d: any) => {
@@ -923,6 +990,22 @@
     }
   });
 
+  // React to reactive country travel signals from geoStore or mapState (ADR 0049)
+  let lastTravelTimestamp = 0;
+  $effect(() => {
+    if (!isInitialized || !globeInstance) return;
+    const storeSignal = geoStore.cameraTravelSignal;
+    const mapSignal = mapState.cameraTravelSignal;
+    const latestSignal = (storeSignal?.timestamp ?? 0) >= (mapSignal?.timestamp ?? 0)
+      ? storeSignal
+      : mapSignal;
+
+    if (latestSignal && latestSignal.timestamp > lastTravelTimestamp) {
+      lastTravelTimestamp = latestSignal.timestamp;
+      travelToCountry(latestSignal.iso3);
+    }
+  });
+
   onMount(() => {
     initGlobe();
     if (typeof window !== 'undefined') {
@@ -931,6 +1014,10 @@
   });
 
   onDestroy(() => {
+    if (travelTimeoutId) {
+      clearTimeout(travelTimeoutId);
+      travelTimeoutId = null;
+    }
     if (typeof window !== 'undefined') {
       window.removeEventListener('keydown', handleKeydown);
     }

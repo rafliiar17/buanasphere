@@ -25,6 +25,7 @@ export const fxRatesApp: GeoAppPlugin<FxRateData> = {
     main: 'Kurs',
     sub: '.World',
     accentColor: '#10b981',
+    disclaimer: 'Informasi kurs publik · 100% gratis · Non-fintech · Tanpa registrasi wajib',
   },
   splash: {
     stepText: 'Memuat Nilai Tukar 195+ Valuta Asing Dunia...',

@@ -44,6 +44,7 @@ export function createGeoStore() {
   let activeAppId = $state(initialAppId);
   let activeMetricId = $state('rate');
   let selectedIso3 = $state('IDN');
+  let cameraTravelSignal = $state<{ iso3: string; timestamp: number } | null>(null);
   let hoveredIso3 = $state<string | null>(null);
   let projectionMode = $state<'globe' | 'flat'>('globe');
   let isLauncherOpen = $state(false);
@@ -128,6 +129,12 @@ export function createGeoStore() {
   function selectCountry(iso3: string) {
     selectedIso3 = iso3.toUpperCase();
     isInspectorOpen = true;
+    cameraTravelSignal = { iso3: selectedIso3, timestamp: Date.now() };
+  }
+
+  function travelToCountry(iso3: string) {
+    selectedIso3 = iso3.toUpperCase();
+    cameraTravelSignal = { iso3: selectedIso3, timestamp: Date.now() };
   }
 
   function closeInspector() {
@@ -230,6 +237,8 @@ export function createGeoStore() {
     switchApp,
     setMetric,
     setProjection,
+    get cameraTravelSignal() { return cameraTravelSignal; },
+    travelToCountry,
     selectCountry,
     closeInspector,
     openInspector,

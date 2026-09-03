@@ -36,6 +36,7 @@ export const worldCapitalsApp: GeoAppPlugin<WorldCapitalData> = {
     main: 'Capitals',
     sub: '.World',
     accentColor: '#f59e0b',
+    disclaimer: 'Data ibukota & sejarah kemerdekaan 195+ negara · Gratis · Tanpa registrasi',
   },
   splash: {
     stepText: 'Memuat Peta Ibukota & Sejarah Kemerdekaan Global...',

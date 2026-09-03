@@ -115,6 +115,8 @@ export interface GeoAppPlugin<TData = any> {
     main: string;
     sub: string;
     accentColor?: string;
+    /** Optional disclaimer strip shown in Navbar below the header */
+    disclaimer?: string;
   };
   splash?: {
     stepText: string;
