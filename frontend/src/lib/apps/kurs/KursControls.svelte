@@ -10,6 +10,8 @@
     TrendingUp,
     Coins,
     Flag,
+    Globe,
+    RotateCw,
     Check,
     ChevronDown,
     ExternalLink,
@@ -138,15 +140,16 @@
 
 <!-- Floating Top-Right Controls Card -->
 <div class="absolute top-4 right-4 z-20 w-80 sm:w-88 flex flex-col gap-3 pointer-events-auto select-none">
-  <div class="rounded-3xl border border-slate-700/80 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-xl text-slate-100 transition-all duration-200">
-    <!-- Header -->
-    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-      <div class="flex items-center gap-2">
-        <SlidersHorizontal class="w-4 h-4 text-cyan-400" />
-        <span class="text-xs font-bold tracking-tight text-white uppercase">Pusat Kontrol Kurs Valas</span>
-      </div>
-      <div class="flex items-center gap-1.5">
-
+  <div class="rounded-3xl border border-slate-700/80 bg-slate-900/90 p-4 shadow-2xl backdrop-blur-xl text-slate-100 transition-all duration-200 flex flex-col gap-3.5">
+    
+    <!-- GROUP 1: 🌐 TAMPILAN GLOBE (GLOBAL) -->
+    <div class="space-y-2.5 pb-3 border-b border-slate-800/80">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <Globe class="w-4 h-4 text-sky-400 shrink-0" />
+          <span class="text-xs font-bold tracking-tight text-white uppercase">Tampilan Globe</span>
+          <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 uppercase font-bold">Global</span>
+        </div>
         <button
           type="button"
           onclick={onResetView}
@@ -156,100 +159,125 @@
           <RotateCcw class="w-3.5 h-3.5" />
         </button>
       </div>
+
+      <!-- 2x2 Grid: Projection, Label, Rotasi, Bendera -->
+      <div class="grid grid-cols-2 gap-2">
+        <!-- 1. Projection Toggle -->
+        <button
+          type="button"
+          onclick={() => onToggleProjection(mapState.projectionMode === 'globe' ? 'flat' : 'globe')}
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.projectionMode === 'globe' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        >
+          <span>{mapState.projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'}</span>
+        </button>
+
+        <!-- 2. Label 3D Toggle -->
+        <button
+          type="button"
+          onclick={onToggleLabels}
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+        >
+          {#if mapState.showLabels}
+            <Eye class="w-3.5 h-3.5" />
+            <span>Label 3D: ON</span>
+          {:else}
+            <EyeOff class="w-3.5 h-3.5" />
+            <span>Label 3D: OFF</span>
+          {/if}
+        </button>
+
+        <!-- 3. Rotasi Toggle -->
+        <button
+          type="button"
+          onclick={() => mapState.toggleAutoRotate()}
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.autoRotate ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          title="Putar Otomatis Sudut Pandang Globe"
+        >
+          <RotateCw class="w-3.5 h-3.5 {mapState.autoRotate ? 'animate-spin' : ''}" />
+          <span>Rotasi: {mapState.autoRotate ? 'ON' : 'OFF'}</span>
+        </button>
+
+        <!-- 4. Bendera Toggle -->
+        <button
+          type="button"
+          onclick={() => mapState.toggleFlags()}
+          class="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl border text-xs font-semibold transition cursor-pointer {(mapState.showFlags || mapState.activeMetric === 'flag') ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20 font-bold' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
+          title="Tampilkan Tekstur Bendera Nasional di Setiap Negara"
+        >
+          <Flag class="w-3.5 h-3.5 text-amber-300" />
+          <span>Bendera: {(mapState.showFlags || mapState.activeMetric === 'flag') ? 'ON' : 'OFF'}</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Autocomplete Search Input -->
-    <div class="relative mt-3">
-      <div class="relative flex items-center">
-        <Search class="absolute left-3 w-3.5 h-3.5 text-slate-400" />
-        <input
-          type="text"
-          placeholder="Cari negara, mata uang (USD, JPY)..."
-          bind:value={mapState.searchQuery}
-          onkeydown={handleSearchKeydown}
-          onfocus={() => { mapState.isSearchDropdownOpen = true; }}
-          class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 transition"
-        />
-      </div>
-
-      <!-- Search Dropdown List -->
-      {#if mapState.isSearchDropdownOpen && searchResults.length > 0}
-        <div class="absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
-          {#each searchResults as item}
-            <button
-              type="button"
-              onclick={() => handleSearchSelect(item)}
-              class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs cursor-pointer"
-            >
-              <div class="flex items-center gap-2 truncate">
-                <span>{item.flag}</span>
-                <span class="font-medium text-white truncate">{item.countryName}</span>
-                <span class="text-[10px] text-slate-400 font-mono">{item.currencyCode}</span>
-              </div>
-              <span class="text-[10px] font-mono font-bold text-emerald-400">Rp {item.middleRate.toLocaleString('id-ID')}</span>
-            </button>
-          {/each}
+    <!-- GROUP 2: 🎛️ PUSAT KONTROL KURS VALAS (APP) -->
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <SlidersHorizontal class="w-4 h-4 text-cyan-400 shrink-0" />
+          <span class="text-xs font-bold tracking-tight text-white uppercase">Pusat Kontrol Kurs Valas</span>
         </div>
-      {/if}
-    </div>
-
-    <!-- Projection Toggle & 3D Labels Toggle -->
-    <div class="mt-3 grid grid-cols-2 gap-2">
-      <button
-        type="button"
-        onclick={() => onToggleProjection(mapState.projectionMode === 'globe' ? 'flat' : 'globe')}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.projectionMode === 'globe' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-      >
-        <span>{mapState.projectionMode === 'globe' ? '🌍 Globe 3D' : '🗺️ Peta Datar'}</span>
-      </button>
-
-      <button
-        type="button"
-        onclick={onToggleLabels}
-        class="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer {mapState.showLabels ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-slate-800/80 text-slate-400 border-slate-700'}"
-      >
-        {#if mapState.showLabels}
-          <Eye class="w-3.5 h-3.5" />
-          <span>Label 3D: ON</span>
-        {:else}
-          <EyeOff class="w-3.5 h-3.5" />
-          <span>Label 3D: OFF</span>
-        {/if}
-      </button>
-    </div>
-
-    <!-- Metric Switcher Pills -->
-    <div class="mt-3">
-      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Pewarnaan Metrik</span>
-      <div class="grid grid-cols-3 gap-1 bg-slate-950/60 p-1 rounded-xl border border-slate-800">
-        <button
-          type="button"
-          onclick={() => onToggleMetric('rate')}
-          class="py-1 px-1.5 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer {mapState.activeMetric === 'rate' ? 'bg-cyan-500 text-slate-950 shadow font-extrabold' : 'text-slate-400 hover:text-white'}"
-        >
-          <Coins class="w-3 h-3" />
-          <span>Kurs</span>
-        </button>
-
-        <button
-          type="button"
-          onclick={() => onToggleMetric('change')}
-          class="py-1 px-1.5 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer {mapState.activeMetric === 'change' ? 'bg-cyan-500 text-slate-950 shadow font-extrabold' : 'text-slate-400 hover:text-white'}"
-        >
-          <TrendingUp class="w-3 h-3" />
-          <span>Tren 24h</span>
-        </button>
-
-        <button
-          type="button"
-          onclick={() => onToggleMetric('flag')}
-          class="py-1 px-1.5 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 cursor-pointer {mapState.activeMetric === 'flag' ? 'bg-cyan-500 text-slate-950 shadow font-extrabold' : 'text-slate-400 hover:text-white'}"
-        >
-          <Flag class="w-3 h-3" />
-          <span>Bendera</span>
-        </button>
+        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase font-bold">App</span>
       </div>
-    </div>
+
+      <!-- Autocomplete Search Input -->
+      <div class="relative">
+        <div class="relative flex items-center">
+          <Search class="absolute left-3 w-3.5 h-3.5 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Cari negara, mata uang (USD, JPY)..."
+            bind:value={mapState.searchQuery}
+            onkeydown={handleSearchKeydown}
+            onfocus={() => { mapState.isSearchDropdownOpen = true; }}
+            class="w-full pl-9 pr-8 py-2 bg-slate-950/70 border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 transition"
+          />
+        </div>
+
+        <!-- Search Dropdown List -->
+        {#if mapState.isSearchDropdownOpen && searchResults.length > 0}
+          <div class="absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
+            {#each searchResults as item}
+              <button
+                type="button"
+                onclick={() => handleSearchSelect(item)}
+                class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs cursor-pointer"
+              >
+                <div class="flex items-center gap-2 truncate">
+                  <span>{item.flag}</span>
+                  <span class="font-medium text-white truncate">{item.countryName}</span>
+                  <span class="text-[10px] text-slate-400 font-mono">{item.currencyCode}</span>
+                </div>
+                <span class="text-[10px] font-mono font-bold text-emerald-400">Rp {item.middleRate.toLocaleString('id-ID')}</span>
+              </button>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <!-- Pewarnaan Metrik (Grid 2 Kolom) -->
+      <div>
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Pewarnaan Metrik</span>
+        <div class="grid grid-cols-2 gap-1.5 bg-slate-950/60 p-1 rounded-xl border border-slate-800">
+          <button
+            type="button"
+            onclick={() => onToggleMetric('rate')}
+            class="py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer {mapState.activeMetric === 'rate' ? 'bg-cyan-500 text-slate-950 shadow font-extrabold' : 'text-slate-400 hover:text-white'}"
+          >
+            <Coins class="w-3.5 h-3.5" />
+            <span>Kurs Nominal</span>
+          </button>
+
+          <button
+            type="button"
+            onclick={() => onToggleMetric('change')}
+            class="py-1.5 px-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer {mapState.activeMetric === 'change' ? 'bg-cyan-500 text-slate-950 shadow font-extrabold' : 'text-slate-400 hover:text-white'}"
+          >
+            <TrendingUp class="w-3.5 h-3.5" />
+            <span>Tren 24 Jam</span>
+          </button>
+        </div>
+      </div>
 
     <!-- Quick Mini Converter & Multi-Valas Comparison Box (ADR 0036) -->
     <div class="mt-3 rounded-2xl bg-slate-950/80 border border-slate-800 p-3 space-y-2.5">
@@ -326,6 +354,7 @@
         </div>
       </div>
     </div>
+  </div>
 
     <!-- Country Inspector CTA Button -->
     <button

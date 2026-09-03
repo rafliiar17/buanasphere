@@ -89,7 +89,7 @@ describe('Accurate World Cities & Geographic 3D Points in TimeWorld (ADR 0052 / 
       const labels = worldTimeApp.getCustomLabels!({}, 'diurnal_cycle', 'dark');
 
       expect(labels.length).toBeGreaterThanOrEqual(50);
-      const tokyo = labels.find((l) => l.text.includes('Tokyo'));
+      const tokyo = labels.find((l: any) => l.text.includes('Tokyo'));
       expect(tokyo).toBeDefined();
       expect(tokyo!.lat).toBeCloseTo(35.67, 1);
       expect(tokyo!.lng).toBeCloseTo(139.65, 1);

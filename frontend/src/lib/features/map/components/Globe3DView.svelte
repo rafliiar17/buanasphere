@@ -309,6 +309,17 @@
     if (!geoJsonFeatures || geoJsonFeatures.length === 0 || !mapState.showLabels) return [];
     const isDark = currentTheme === 'dark';
     const selected = mapState.selectedCountryIso3;
+
+    // Check polymorphic custom labels from active app (e.g. World Cities in TimeWorld)
+    if (geoStore.activeApp?.getCustomLabels) {
+      return geoStore.activeApp.getCustomLabels(
+        geoStore.currentAppData,
+        mapState.activeMetric,
+        currentTheme,
+        selected
+      );
+    }
+
     // NOTE: mapState.hoveredIso3 is intentionally NOT read here.
     // Reading it would make globeLabels recompute on every hover event,
     // which causes updateVisuals() → .labelsData() reset → onLabelHover(null) → infinite loop.
@@ -511,10 +522,35 @@
     renderer.setPixelRatio(dpr);
   }
 
+  let dimmedCapMaterialDark: THREE.MeshLambertMaterial | null = null;
+  let dimmedCapMaterialLight: THREE.MeshLambertMaterial | null = null;
+
+  function getDimmedCapMaterial(isDark: boolean) {
+    if (isDark) {
+      if (!dimmedCapMaterialDark) {
+        dimmedCapMaterialDark = new THREE.MeshLambertMaterial({
+          color: 0x1e293b,
+          transparent: true,
+          opacity: 0.25,
+        });
+      }
+      return dimmedCapMaterialDark;
+    } else {
+      if (!dimmedCapMaterialLight) {
+        dimmedCapMaterialLight = new THREE.MeshLambertMaterial({
+          color: 0xe2e8f0,
+          transparent: true,
+          opacity: 0.25,
+        });
+      }
+      return dimmedCapMaterialLight;
+    }
+  }
+
   function updateVisuals() {
     if (!globeInstance) return;
     const isDark = currentTheme === 'dark';
-    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag');
+    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag' || mapState.showFlags || geoStore.showFlags);
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
 
     applyOptimalDpr();
@@ -536,7 +572,14 @@
       if (!isFlag) {
         globeInstance.polygonCapMaterial(null);
       } else {
-        globeInstance.polygonCapMaterial((d: any) => createProceduralFlagMaterial(d, isDark));
+        globeInstance.polygonCapMaterial((d: any) => {
+          const iso3 = getFeatureIso3(d);
+          const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
+          if (isFilterActive && !geoStore.isCountryMatched(iso3)) {
+            return getDimmedCapMaterial(isDark);
+          }
+          return createProceduralFlagMaterial(d, isDark);
+        });
       }
       globeInstance
         .polygonSideColor(() => (isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(2, 132, 199, 0.22)'))
@@ -546,7 +589,11 @@
           const iso3 = getFeatureIso3(d);
           if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
           const isMatched = geoStore.isCountryMatched(iso3);
-          if (!isMatched && (geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all')) {
+          const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
+          if (isFlag && isFilterActive && !isMatched) {
+            return 0.001;
+          }
+          if (!isMatched && isFilterActive) {
             return 0.001;
           }
           return 0.008;
@@ -682,7 +729,7 @@
     const isTurbo = mapState.performanceMode === 'turbo' || geoStore.performanceMode === 'turbo';
     const width = globeContainer.clientWidth || window.innerWidth;
     const height = globeContainer.clientHeight || window.innerHeight;
-    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag');
+    const isFlag = (mapState.activeMetric === 'flag' || geoStore.activeMetricId === 'flag' || mapState.showFlags || geoStore.showFlags);
 
     globeInstance = GlobeModule()(globeContainer)
       .width(width)
@@ -696,6 +743,11 @@
       .polygonGeoJsonGeometry((d: any) => d.geometry)
       .polygonCapMaterial((d: any) => {
         if (!isFlag) return null;
+        const iso3 = getFeatureIso3(d);
+        const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
+        if (isFilterActive && !geoStore.isCountryMatched(iso3)) {
+          return getDimmedCapMaterial(isDark);
+        }
         return createProceduralFlagMaterial(d, isDark);
       })
       .polygonCapColor((d: any) => getPolygonColor(d))
@@ -706,6 +758,10 @@
         if (isTurbo) return -10.0;
         const iso3 = getFeatureIso3(d);
         if (mapState.selectedCountryIso3 === iso3 || mapState.hoveredIso3 === iso3) return 0.018;
+        const isMatched = geoStore.isCountryMatched(iso3);
+        const isFilterActive = geoStore.timeFilter !== 'all' || geoStore.flightCorridorFilter !== 'all' || geoStore.passportVisaFilter !== 'all' || (geoStore.customFilter !== 'all' && geoStore.customFilter !== undefined) || geoStore.activeRegion !== 'all';
+        if (isFlag && isFilterActive && !isMatched) return 0.001;
+        if (!isMatched && isFilterActive) return 0.001;
         return 0.005;
       })
       .polygonLabel((d: any) => (isTurbo ? '' : getTooltipHtml(d)))
@@ -925,6 +981,7 @@
     const _passportFilter = geoStore.passportVisaFilter;
     const _theme = currentTheme;
     const currentMetric = geoStore.activeMetricId ?? mapState.activeMetric;
+    const _flags = mapState.showFlags || geoStore.showFlags;
     const _labels = mapState.showLabels;
     const _geoLabels = geoStore.showLabels;
     const _selected = mapState.selectedCountryIso3;
@@ -966,6 +1023,16 @@
     if (regionObj) {
       const altitude = regionId === 'all' ? 2.2 : (regionObj.zoom ? Math.max(0.6, 2.5 / regionObj.zoom) : 1.5);
       globeInstance.pointOfView({ lat: regionObj.lat, lng: regionObj.lon, altitude }, 1000);
+    }
+  });
+
+  // React to auto-rotate state changes (ADR 0052)
+  $effect(() => {
+    if (!isInitialized || !globeInstance) return;
+    const isRotating = Boolean(mapState.autoRotate || geoStore.autoRotate);
+    const controls = globeInstance.controls?.();
+    if (controls) {
+      controls.autoRotate = isRotating;
     }
   });
 

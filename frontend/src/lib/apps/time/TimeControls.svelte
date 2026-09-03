@@ -18,6 +18,10 @@
   import type { CountrySpatialMetadata } from '$lib/framework/geoglobe/types';
   import { EXTENDED_COUNTRIES_DATA } from '$lib/framework/geoglobe/countrySpatialData';
   import { 
+    WORLD_CITIES_TIME, 
+    type WorldCityTimeInfo 
+  } from '$lib/framework/geoglobe/data/worldCitiesTimeData';
+  import { 
     calculateLocalTime, 
     isDaylight, 
     formatUtcOffset, 
@@ -47,16 +51,59 @@
     return () => clearInterval(timer);
   });
 
-  // Search Results
-  const searchResults = $derived.by(() => {
+  interface SearchItem {
+    type: 'city' | 'country';
+    id: string;
+    name: string;
+    subtitle: string;
+    flagEmoji: string;
+    iso3: string;
+    lat: number;
+    lng: number;
+    utcOffset: number;
+  }
+
+  // Search Results (Cities + Countries)
+  const searchResults = $derived.by<SearchItem[]>(() => {
     if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase();
-    return EXTENDED_COUNTRIES_DATA.filter(
+    const q = searchQuery.toLowerCase().trim();
+
+    // 1. Search World Cities
+    const cityMatches = WORLD_CITIES_TIME.filter(
+      (c) =>
+        c.cityName.toLowerCase().includes(q) ||
+        c.timezoneAbbr.toLowerCase() === q
+    ).slice(0, 5).map((c): SearchItem => ({
+      type: 'city',
+      id: c.id,
+      name: c.cityName,
+      subtitle: `${c.countryName} • ${c.timezoneAbbr}`,
+      flagEmoji: c.flagEmoji,
+      iso3: c.countryIso3,
+      lat: c.lat,
+      lng: c.lng,
+      utcOffset: c.utcOffset,
+    }));
+
+    // 2. Search Countries
+    const countryMatches = EXTENDED_COUNTRIES_DATA.filter(
       (c) =>
         c.countryName.toLowerCase().includes(q) ||
         c.capital.toLowerCase().includes(q) ||
         c.iso3.toLowerCase().includes(q)
-    ).slice(0, 8);
+    ).slice(0, 5).map((c): SearchItem => ({
+      type: 'country',
+      id: c.iso3,
+      name: c.countryName,
+      subtitle: c.capital,
+      flagEmoji: c.flagEmoji,
+      iso3: c.iso3,
+      lat: c.lat,
+      lng: c.lng,
+      utcOffset: c.utcOffset,
+    }));
+
+    return [...cityMatches, ...countryMatches].slice(0, 8);
   });
 
   const selectedCountry = $derived(geoStore.selectedCountry);
@@ -69,8 +116,17 @@
     return `${Math.abs(diffHours)} Jam lebih lambat dari Jakarta`;
   });
 
+  function handleCitySelect(city: { iso3: string; lat: number; lng: number }) {
+    geoStore.selectCountry(city.iso3);
+    geoStore.travelToCountry(city.iso3);
+    searchQuery = '';
+    isSearchDropdownOpen = false;
+    onSelectCountry?.(city.iso3);
+  }
+
   function handleCountrySelect(iso3: string) {
     geoStore.selectCountry(iso3);
+    geoStore.travelToCountry(iso3);
     searchQuery = '';
     isSearchDropdownOpen = false;
     onSelectCountry?.(iso3);
@@ -79,7 +135,12 @@
   function handleSearchKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter' && searchResults.length > 0) {
       e.preventDefault();
-      handleCountrySelect(searchResults[0].iso3);
+      const first = searchResults[0];
+      if (first.type === 'city') {
+        handleCitySelect(first);
+      } else {
+        handleCountrySelect(first.iso3);
+      }
     }
   }
 </script>
@@ -112,7 +173,7 @@
         <Search class="absolute left-3 w-3.5 h-3.5 text-slate-400" />
         <input
           type="text"
-          placeholder="Cari negara atau ibukota (Jakarta, Tokyo)..."
+          placeholder="Cari kota atau negara (Tokyo, Bali, London)..."
           bind:value={searchQuery}
           onkeydown={handleSearchKeydown}
           onfocus={() => { isSearchDropdownOpen = true; }}
@@ -122,21 +183,27 @@
 
       <!-- Search Dropdown List -->
       {#if isSearchDropdownOpen && searchResults.length > 0}
-        <div class="absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
+        <div class="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-30 divide-y divide-slate-800">
           {#each searchResults as item}
             {@const itemTime = calculateLocalTime(now, item.utcOffset)}
             {@const itemPhase = getDiurnalPhase(itemTime.hours, itemTime.minutes)}
             <button
               type="button"
-              onclick={() => handleCountrySelect(item.iso3)}
+              onclick={() => {
+                if (item.type === 'city') handleCitySelect(item);
+                else handleCountrySelect(item.iso3);
+              }}
               class="w-full px-3 py-2 text-left hover:bg-slate-800/80 flex items-center justify-between transition text-xs cursor-pointer"
             >
               <div class="flex items-center gap-2 truncate">
                 <span>{item.flagEmoji}</span>
-                <span class="font-medium text-white truncate">{item.countryName}</span>
-                <span class="text-[10px] text-slate-400">({item.capital})</span>
+                <span class="font-medium text-white truncate">{item.name}</span>
+                <span class="text-[10px] text-slate-400 truncate">({item.subtitle})</span>
+                {#if item.type === 'city'}
+                  <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono shrink-0">Kota</span>
+                {/if}
               </div>
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1.5 shrink-0">
                 <span class="text-[10px]">{itemPhase.emoji}</span>
                 <span class="text-[11px] font-mono font-bold text-amber-400">{itemTime.formatted}</span>
               </div>

@@ -50,6 +50,9 @@ export function createGeoStore() {
   let isLauncherOpen = $state(false);
   let isInspectorOpen = $state(false);
   let showLabels = $state(true);
+  let showFlags = $state(false);
+  let previousMetricBeforeFlag = 'rate';
+  let autoRotate = $state(false);
   let activeRegion = $state('all');
   let searchQuery = $state('');
 
@@ -120,6 +123,42 @@ export function createGeoStore() {
 
   function setMetric(metricId: string) {
     activeMetricId = metricId;
+    if (metricId !== 'flag') {
+      showFlags = false;
+    } else {
+      showFlags = true;
+    }
+  }
+
+  function toggleFlags() {
+    showFlags = !showFlags;
+    if (showFlags) {
+      if (activeMetricId !== 'flag') {
+        previousMetricBeforeFlag = activeMetricId;
+      }
+      activeMetricId = 'flag';
+    } else {
+      activeMetricId = previousMetricBeforeFlag || 'rate';
+    }
+  }
+
+  function setFlags(enabled: boolean) {
+    if (showFlags === enabled) return;
+    showFlags = enabled;
+    if (showFlags) {
+      if (activeMetricId !== 'flag') previousMetricBeforeFlag = activeMetricId;
+      activeMetricId = 'flag';
+    } else {
+      activeMetricId = previousMetricBeforeFlag || 'rate';
+    }
+  }
+
+  function toggleAutoRotate() {
+    autoRotate = !autoRotate;
+  }
+
+  function setAutoRotate(enabled: boolean) {
+    autoRotate = enabled;
   }
 
   function setProjection(mode: 'globe' | 'flat') {
@@ -216,6 +255,14 @@ export function createGeoStore() {
     set isInspectorOpen(val) { isInspectorOpen = val; },
     get showLabels() { return showLabels; },
     set showLabels(val) { showLabels = val; },
+    get showFlags() { return showFlags; },
+    set showFlags(val) { showFlags = val; },
+    toggleFlags,
+    setFlags,
+    get autoRotate() { return autoRotate; },
+    set autoRotate(val) { autoRotate = val; },
+    toggleAutoRotate,
+    setAutoRotate,
     get activeRegion() { return activeRegion; },
     set activeRegion(val) { activeRegion = val; },
     get searchQuery() { return searchQuery; },

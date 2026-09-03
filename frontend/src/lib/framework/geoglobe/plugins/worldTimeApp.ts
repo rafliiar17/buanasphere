@@ -9,6 +9,11 @@ import {
   type DiurnalPhaseInfo 
 } from '../geoMath';
 import { isCountryMatchingTimeFilter, type TimeFilterType } from '../filterEngine';
+import { 
+  WORLD_CITIES_TIME, 
+  type WorldCityTimeInfo, 
+  findCitiesByCountry 
+} from '../data/worldCitiesTimeData';
 
 export interface WorldTimeData {
   hours: number;
@@ -125,6 +130,44 @@ export const worldTimeApp: GeoAppPlugin<WorldTimeData> = {
       text: `${country.countryName} ${local.formatted} ${phase.emoji}`,
       shortText: `${local.formatted} ${phase.emoji}`,
     };
+  },
+
+  getCustomLabels: (
+    _data: Record<string, WorldTimeData>,
+    _activeMetric: string,
+    theme: 'dark' | 'light',
+    selectedIso3?: string
+  ) => {
+    const isDark = theme === 'dark';
+    const now = new Date();
+
+    return WORLD_CITIES_TIME.map((city) => {
+      const local = calculateLocalTime(now, city.utcOffset);
+      const phase = getDiurnalPhase(local.hours, local.minutes);
+      const isSelected = selectedIso3 === city.countryIso3;
+      const isMajor = city.isMajorHub;
+
+      const displayText = `${city.flagEmoji} ${city.cityName} • ${local.formatted} ${phase.emoji}`;
+      const shortText = `${city.cityName} ${local.formatted}`;
+
+      const size = isSelected ? 0.75 : (isMajor ? 0.40 : 0.28);
+      const color = isSelected
+        ? '#ffffff'
+        : (isDark ? 'rgba(241, 245, 249, 0.92)' : 'rgba(15, 23, 42, 0.92)');
+
+      return {
+        id: city.id,
+        lat: city.lat,
+        lng: city.lng,
+        text: displayText,
+        shortText,
+        size,
+        color,
+        iso3: city.countryIso3,
+        cityId: city.id,
+        city,
+      };
+    });
   },
 
   getPaths: (_data: Record<string, WorldTimeData>, _activeMetric: string, theme: 'dark' | 'light'): GeoPath[] => {
