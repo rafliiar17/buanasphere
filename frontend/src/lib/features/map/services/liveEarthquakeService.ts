@@ -8,6 +8,7 @@ import {
   type EarthquakeRecord,
 } from '$lib/framework/geoglobe/data/earthquakeData';
 import type { GeoRing } from '$lib/framework/geoglobe/types';
+import { apiClient } from '$lib/api/client';
 
 export const USGS_4_5_FEED_URL =
   'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson';
@@ -266,6 +267,7 @@ export function buildUsgsFdsnUrl(options: {
 
 /**
  * Fetches custom USGS FDSN events with query parameters and offline fallback.
+ * Uses unified backend gateway (/api/v1/gateway/quake) with fallback to bundled dataset.
  */
 export async function fetchUsgsCustomEvents(options?: {
   minMagnitude?: number;
@@ -276,32 +278,35 @@ export async function fetchUsgsCustomEvents(options?: {
   customFetch?: typeof fetch;
   timeoutMs?: number;
 }): Promise<EnrichedEarthquakeRecord[]> {
-  const fetchClient = options?.customFetch || (typeof fetch !== 'undefined' ? fetch : null);
   const timeoutMs = options?.timeoutMs || 5000;
 
-  if (!fetchClient) {
-    return GLOBAL_EARTHQUAKES;
-  }
-
-  const url = buildUsgsFdsnUrl({
-    minMagnitude: options?.minMagnitude ?? 4.5,
-    limit: options?.limit ?? 50,
-    orderBy: options?.orderBy ?? 'time',
-    startTime: options?.startTime,
-    endTime: options?.endTime,
-  });
-
   try {
-    const res = await fetchClient(url, {
-      signal: AbortSignal.timeout ? AbortSignal.timeout(timeoutMs) : undefined,
-    });
-    if (!res.ok) return GLOBAL_EARTHQUAKES;
-    const json = await res.json();
-    const records = parseUsgsGeoJson(json);
-    return records.length > 0 ? records : GLOBAL_EARTHQUAKES;
+    const res = await apiClient.gateway<any>(
+      'quake',
+      {
+        minmagnitude: options?.minMagnitude ?? 4.5,
+        limit: options?.limit ?? 50,
+        orderby: options?.orderBy ?? 'time',
+        starttime: options?.startTime,
+        endtime: options?.endTime,
+      },
+      {
+        customFetch: options?.customFetch,
+        timeoutMs,
+      }
+    );
+
+    if (res?.data) {
+      const events = Array.isArray(res.data) ? res.data : res.data.events;
+      if (Array.isArray(events) && events.length > 0) {
+        return events;
+      }
+    }
   } catch (_err) {
-    return GLOBAL_EARTHQUAKES;
+    // Gateway not available or customFetch threw
   }
+
+  return GLOBAL_EARTHQUAKES;
 }
 
 /**
@@ -358,7 +363,7 @@ export function clearLiveEarthquakeCache(): void {
 }
 
 /**
- * Fetches hybrid real-time earthquake feeds with strict timeout and fallback.
+ * Fetches hybrid real-time earthquake feeds via backend gateway with strict timeout and fallback.
  */
 export async function fetchLiveEarthquakes(options?: {
   customFetch?: typeof fetch;
@@ -375,55 +380,51 @@ export async function fetchLiveEarthquakes(options?: {
     return cachedResult;
   }
 
-  const fetchClient = options?.customFetch || (typeof fetch !== 'undefined' ? fetch : null);
   const timeoutMs = options?.timeoutMs || 5000;
 
-  if (!fetchClient) {
-    return getFallbackResult();
-  }
-
   try {
-    const [usgsRes, bmkgAutoRes] = await Promise.allSettled([
-      fetchClient(USGS_4_5_FEED_URL, {
-        signal: AbortSignal.timeout ? AbortSignal.timeout(timeoutMs) : undefined,
-      }).then(async (res) => (res.ok ? res.json() : null)),
-      fetchLatestBmkgAutoGempa({ customFetch: fetchClient, timeoutMs }),
-    ]);
+    const gatewayRes = await apiClient.gateway<any>('quake', undefined, {
+      forceRefresh: options?.forceRefresh,
+      timeoutMs,
+      customFetch: options?.customFetch,
+    });
 
-    const usgsData = usgsRes.status === 'fulfilled' ? usgsRes.value : null;
-    const latestAuto = bmkgAutoRes.status === 'fulfilled' ? bmkgAutoRes.value : null;
+    if (gatewayRes && gatewayRes.data) {
+      const data = gatewayRes.data;
+      const rawEvents = Array.isArray(data)
+        ? data
+        : Array.isArray(data.events)
+        ? data.events
+        : [];
 
-    const usgsEvents = parseUsgsGeoJson(usgsData);
+      if (rawEvents.length > 0) {
+        const events: EnrichedEarthquakeRecord[] = rawEvents;
+        const latestAuto =
+          data.latestAutoGempa !== undefined
+            ? data.latestAutoGempa
+            : events.find(
+                (e: EnrichedEarthquakeRecord) =>
+                  e.source?.includes('BMKG') || e.countryIso3 === 'IDN'
+              ) ?? null;
 
-    // Combine events, ensuring latest auto gempa is prepended if available
-    let combinedEvents: EnrichedEarthquakeRecord[] = [...usgsEvents];
-    if (latestAuto) {
-      const alreadyHasIt = combinedEvents.some(
-        (e) => Math.abs(e.lat - latestAuto.lat) < 0.2 && Math.abs(e.lng - latestAuto.lng) < 0.2
-      );
-      if (!alreadyHasIt) {
-        combinedEvents = [latestAuto, ...combinedEvents];
+        const result: LiveEarthquakeResult = {
+          events,
+          isLive: data.isLive ?? true,
+          source: data.source ?? (gatewayRes.source as any) ?? 'hybrid_live',
+          lastUpdated: data.lastUpdated || gatewayRes.timestamp || new Date().toISOString(),
+          totalCount: data.totalCount ?? events.length,
+          latestAutoGempa: latestAuto,
+        };
+        cachedResult = result;
+        lastCacheTime = now;
+        return result;
       }
     }
-
-    if (combinedEvents.length > 0) {
-      const result: LiveEarthquakeResult = {
-        events: combinedEvents,
-        isLive: true,
-        source: latestAuto ? 'hybrid_live' : 'usgs_live',
-        lastUpdated: new Date().toISOString(),
-        totalCount: combinedEvents.length,
-        latestAutoGempa: latestAuto,
-      };
-      cachedResult = result;
-      lastCacheTime = now;
-      return result;
-    }
-
-    return getFallbackResult(latestAuto);
   } catch (_err) {
-    return getFallbackResult();
+    // Backend gateway unreachable or network error
   }
+
+  return getFallbackResult();
 }
 
 function getFallbackResult(latestAuto?: EnrichedEarthquakeRecord | null): LiveEarthquakeResult {
@@ -432,7 +433,7 @@ function getFallbackResult(latestAuto?: EnrichedEarthquakeRecord | null): LiveEa
     isLive: false,
     source: 'fallback_bundled',
     lastUpdated: new Date().toISOString(),
-    totalCount: GLOBAL_EARTHQUAKES.length,
+    totalCount: GLOBAL_EARTHQUAKES.length + (latestAuto ? 1 : 0),
     latestAutoGempa: latestAuto ?? null,
   };
 }

@@ -1,0 +1,3853 @@
+{
+  "IDN": {
+    "iso3": "IDN",
+    "countryName": "Indonesia",
+    "capital": "Jakarta",
+    "capitalType": "Administrative",
+    "foundationDate": "17 Agustus 1945",
+    "independenceDay": "17 Agustus",
+    "independenceYear": 1945,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Proklamasi Kemerdekaan (Belanda & Jepang)",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Jakarta berdiri sejak 22 Juni 1527 (Fatahillah merebut Sunda Kelapa) dan diproklamasikan sebagai ibukota kemerdekaan RI pada 1945.",
+    "capitalCoordinates": {
+      "lat": -6.2088,
+      "lng": 106.8456
+    },
+    "nationalAnthem": {
+      "title": "Indonesia Raya",
+      "composer": "Wage Rudolf Supratman",
+      "adoptedYear": 1945,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/Indonesia_Raya_%28instrumental%29.ogg"
+    }
+  },
+  "SGP": {
+    "iso3": "SGP",
+    "countryName": "Singapura",
+    "capital": "Singapura",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "9 Agustus 1965",
+    "independenceDay": "9 Agustus",
+    "independenceYear": 1965,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Pemisahan Kedaulatan dari Federasi Malaysia",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Singapura adalah negara-kota (city-state) modern yang seluruh wilayahnya berstatus ibukota dan pusat keuangan global terkemuka.",
+    "capitalCoordinates": {
+      "lat": 1.3521,
+      "lng": 103.8198
+    },
+    "nationalAnthem": {
+      "title": "Majulah Singapura",
+      "composer": "Zubir Said",
+      "adoptedYear": 1965,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/Majulah_Singapura_instrumental.ogg"
+    }
+  },
+  "MYS": {
+    "iso3": "MYS",
+    "countryName": "Malaysia",
+    "capital": "Kuala Lumpur",
+    "capitalType": "Dual/Triple Capital",
+    "foundationDate": "31 Agustus 1957",
+    "independenceDay": "31 Agustus",
+    "independenceYear": 1957,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Kuala Lumpur adalah ibukota kerajaan/legislatif, sedangkan Putrajaya berfungsi sebagai pusat administrasi pemerintahan federal.",
+    "capitalCoordinates": {
+      "lat": 3.139,
+      "lng": 101.6869
+    },
+    "nationalAnthem": {
+      "title": "Negaraku",
+      "nativeTitle": "نݢاراکو",
+      "composer": "Pierre-Jean de Béranger",
+      "adoptedYear": 1957,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Negaraku_instrumental.ogg"
+    }
+  },
+  "THA": {
+    "iso3": "THA",
+    "countryName": "Thailand",
+    "capital": "Bangkok",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "6 April 1782 (Dinasti Chakri) / 1238 M (Sukhothai)",
+    "independenceDay": "5 Desember (Hari Nasional)",
+    "independenceYear": 1238,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Negara Berdaulat Kuno / Tanpa Penjajahan Kolonial",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Satu-satunya negara di Asia Tenggara yang tidak pernah dijajah oleh kekuatan Eropa, dengan nama lokal Krung Thep Maha Nakhon.",
+    "capitalCoordinates": {
+      "lat": 13.7563,
+      "lng": 100.5018
+    },
+    "nationalAnthem": {
+      "title": "Phleng Chat Thai",
+      "nativeTitle": "เพลงชาติไทย",
+      "composer": "Phra Chenduriyang",
+      "adoptedYear": 1939
+    }
+  },
+  "PHL": {
+    "iso3": "PHL",
+    "countryName": "Filipina",
+    "capital": "Manila",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "12 Juni 1898 (Deklarasi) / 4 Juli 1946 (Kedaulatan)",
+    "independenceDay": "12 Juni",
+    "independenceYear": 1898,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Spanyol (1898) & Amerika Serikat (1946)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Manila didirikan di tepi Teluk Manila pada 1571 oleh Miguel López de Legazpi dan menjadi pusat perdagangan Galleon perak-sutra global.",
+    "capitalCoordinates": {
+      "lat": 14.5995,
+      "lng": 120.9842
+    },
+    "nationalAnthem": {
+      "title": "Lupang Hinirang",
+      "nativeTitle": "Chosen Land",
+      "composer": "Julián Felipe",
+      "adoptedYear": 1898
+    }
+  },
+  "VNM": {
+    "iso3": "VNM",
+    "countryName": "Vietnam",
+    "capital": "Hanoi",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "2 September 1945 (Deklarasi) / 2879 SM (Asal-usul)",
+    "independenceDay": "2 September",
+    "independenceYear": 1945,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Prancis & Jepang",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Hanoi (Thăng Long) merayakan milenium ke-1000 pendiriannya pada tahun 2010 dan terletak di delta Sungai Merah.",
+    "capitalCoordinates": {
+      "lat": 21.0285,
+      "lng": 105.8542
+    },
+    "nationalAnthem": {
+      "title": "Tiến Quân Ca",
+      "nativeTitle": "Bài ca tiến quân",
+      "composer": "Văn Cao",
+      "adoptedYear": 1945
+    }
+  },
+  "JPN": {
+    "iso3": "JPN",
+    "countryName": "Jepang",
+    "capital": "Tokyo",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "11 Februari 660 SM (Penobatan Kaisar Jimmu)",
+    "independenceDay": "11 Februari (Hari Pendirian Nasional)",
+    "independenceYear": -660,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Monarki Kuno Berdaulat Tanpa Penjajahan Luar",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Tokyo sebelumnya bernama Edo dan menjadi pusat pemerintahan sejak era Shogun Tokugawa Ieyasu pada 1603.",
+    "capitalCoordinates": {
+      "lat": 35.6762,
+      "lng": 139.6503
+    },
+    "nationalAnthem": {
+      "title": "Kimigayo",
+      "nativeTitle": "君が代",
+      "composer": "Hiromori Hayashi",
+      "adoptedYear": 1880,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Kimi_ga_Yo_instrumental.ogg"
+    }
+  },
+  "CHN": {
+    "iso3": "CHN",
+    "countryName": "Tiongkok",
+    "capital": "Beijing",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "1 Oktober 1949 (Republik) / 221 SM (Dinasti Qin)",
+    "independenceDay": "1 Oktober (Hari Nasional)",
+    "independenceYear": 1949,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Proklamasi Republik Rakyat Tiongkok / Peradaban Kuno",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Beijing telah menjadi ibukota Tiongkok selama lebih dari 800 tahun sejak Dinasti Yuan, Ming, dan Qing.",
+    "capitalCoordinates": {
+      "lat": 39.9042,
+      "lng": 116.4074
+    },
+    "nationalAnthem": {
+      "title": "Yìyǒngjūn Jìnxíngqǔ (Barisan Para Relawan)",
+      "nativeTitle": "义勇军进行曲",
+      "composer": "Nie Er",
+      "adoptedYear": 1949,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fc/March_of_the_Volunteers_instrumental.ogg"
+    }
+  },
+  "HKG": {
+    "iso3": "HKG",
+    "countryName": "Hong Kong",
+    "capital": "Hong Kong",
+    "capitalType": "Administrative",
+    "foundationDate": "1 Juli 1997 (Penyerahan Kedaulatan)",
+    "independenceDay": "1 Juli (Hari Pembentukan SAR)",
+    "independenceYear": 1997,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Britania Raya ke Tiongkok (Satu Negara Dua Sistem)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Pelabuhan Victoria Hong Kong merupakan salah satu pelabuhan air dalam tersibuk dan tercantik di dunia.",
+    "capitalCoordinates": {
+      "lat": 22.3193,
+      "lng": 114.1694
+    }
+  },
+  "TWN": {
+    "iso3": "TWN",
+    "countryName": "Taiwan",
+    "capital": "Taipei",
+    "capitalType": "Administrative",
+    "foundationDate": "1 Januari 1912 (Revolusi Xinhai)",
+    "independenceDay": "10 Oktober (Double Tenth Day)",
+    "independenceYear": 1912,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Kekaisaran Qing (1912) / Pasca-Perang Saudara",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Taipei adalah pusat ekonomi teknologi dan semikonduktor canggih global berlatar gedung pencakar langit Taipei 101.",
+    "capitalCoordinates": {
+      "lat": 25.033,
+      "lng": 121.5654
+    },
+    "nationalAnthem": {
+      "title": "Lagu Kebangsaan Republik Tiongkok",
+      "nativeTitle": "中華民國國歌",
+      "composer": "Cheng Maoyun",
+      "adoptedYear": 1930
+    }
+  },
+  "KOR": {
+    "iso3": "KOR",
+    "countryName": "Korea Selatan",
+    "capital": "Seoul",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "15 Agustus 1948 / 2333 SM (Gojoseon Dangun)",
+    "independenceDay": "15 Agustus (Gwangbokjeol)",
+    "independenceYear": 1948,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Pembebasan dari Pendudukan Kekaisaran Jepang",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Seoul (Hanyang) didirikan sebagai ibukota Dinasti Joseon pada 1394 diapit Sungai Han dan empat benteng gunung.",
+    "capitalCoordinates": {
+      "lat": 37.5665,
+      "lng": 126.978
+    },
+    "nationalAnthem": {
+      "title": "Aegukga",
+      "nativeTitle": "애국가",
+      "composer": "Ahn Eak-tai",
+      "adoptedYear": 1948
+    }
+  },
+  "IND": {
+    "iso3": "IND",
+    "countryName": "India",
+    "capital": "New Delhi",
+    "capitalType": "Planned Capital",
+    "foundationDate": "15 Agustus 1947",
+    "independenceDay": "15 Agustus / 26 Januari (Hari Republik)",
+    "independenceYear": 1947,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kemaharajaan Britania Raya (British Raj)",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "New Delhi dirancang oleh arsitek Inggris Edwin Lutyens dan diresmikan sebagai ibukota pada 1931 menggantikan Kolkata.",
+    "capitalCoordinates": {
+      "lat": 28.6139,
+      "lng": 77.209
+    },
+    "nationalAnthem": {
+      "title": "Jana Gana Mana",
+      "nativeTitle": "जन गण मन",
+      "composer": "Rabindranath Tagore",
+      "adoptedYear": 1950
+    }
+  },
+  "PAK": {
+    "iso3": "PAK",
+    "countryName": "Pakistan",
+    "capital": "Islamabad",
+    "capitalType": "Planned Capital",
+    "foundationDate": "14 Agustus 1947",
+    "independenceDay": "14 Agustus",
+    "independenceYear": 1947,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Pemisahan Kemaharajaan Britania (Partisi India)",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Islamabad dibangun dari nol pada dekade 1960-an untuk menggantikan Karachi sebagai ibukota terencana modern.",
+    "capitalCoordinates": {
+      "lat": 33.6844,
+      "lng": 73.0479
+    },
+    "nationalAnthem": {
+      "title": "Qaumī Tarāna",
+      "nativeTitle": "قومی ترانہ",
+      "composer": "Ghulam Ahmad Chagla",
+      "adoptedYear": 1954
+    }
+  },
+  "BGD": {
+    "iso3": "BGD",
+    "countryName": "Bangladesh",
+    "capital": "Dhaka",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "26 Maret 1971 (Deklarasi) / 16 Desember 1971",
+    "independenceDay": "26 Maret",
+    "independenceYear": 1971,
+    "nationalDayMonth": 3,
+    "sovereigntyFrom": "Pakistan (Perang Pembebasan Bangladesh)",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Dhaka dikenal sebagai Kota Masjid dan pusat produksi kain muslin legendaris di delta Sungai Gangga-Brahmaputra.",
+    "capitalCoordinates": {
+      "lat": 23.8103,
+      "lng": 90.4125
+    },
+    "nationalAnthem": {
+      "title": "Amar Shonar Bangla",
+      "nativeTitle": "আমার সোনার বাংলা",
+      "composer": "Rabindranath Tagore",
+      "adoptedYear": 1971
+    }
+  },
+  "LKA": {
+    "iso3": "LKA",
+    "countryName": "Sri Lanka",
+    "capital": "Sri Jayawardenepura Kotte",
+    "capitalType": "Dual/Triple Capital",
+    "foundationDate": "4 Februari 1948",
+    "independenceDay": "4 Februari",
+    "independenceYear": 1948,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Sri Jayawardenepura Kotte adalah ibukota administratif/legislatif, sedangkan Kolombo tetap menjadi pusat komersial dan diplomatik.",
+    "capitalCoordinates": {
+      "lat": 6.9271,
+      "lng": 79.8612
+    },
+    "nationalAnthem": {
+      "title": "Sri Lanka Matha",
+      "nativeTitle": "ශ්‍රී ලංකා මාතා",
+      "composer": "Ananda Samarakoon",
+      "adoptedYear": 1951
+    }
+  },
+  "NPL": {
+    "iso3": "NPL",
+    "countryName": "Nepal",
+    "capital": "Kathmandu",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "25 September 1768 (Penyatuan Prithvi Narayan Shah)",
+    "independenceDay": "20 September (Hari Konstitusi Nasional)",
+    "independenceYear": 1768,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Negara Berdaulat Pegunungan Tanpa Penjajahan",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Kathmandu berada di lembah pegunungan Himalaya yang kaya akan warisan kuil kayu Newari dan stupa Buddha kuno.",
+    "capitalCoordinates": {
+      "lat": 27.7172,
+      "lng": 85.324
+    },
+    "nationalAnthem": {
+      "title": "Sayaun Thunga Phulka",
+      "nativeTitle": "सयौं थुँगा फूलका",
+      "composer": "Amber Gurung",
+      "adoptedYear": 2007
+    }
+  },
+  "MMR": {
+    "iso3": "MMR",
+    "countryName": "Myanmar",
+    "capital": "Naypyidaw",
+    "capitalType": "Planned Capital",
+    "foundationDate": "4 Januari 1948",
+    "independenceDay": "4 Januari",
+    "independenceYear": 1948,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Ibukota dipindahkan secara rahasia dari Yangon ke Naypyidaw yang terencana pada November 2005.",
+    "capitalCoordinates": {
+      "lat": 19.7633,
+      "lng": 96.0785
+    },
+    "nationalAnthem": {
+      "title": "Kaba Ma Kyei",
+      "nativeTitle": "ကမ္ဘာမကျေ",
+      "composer": "YMB Saya Tin",
+      "adoptedYear": 1948
+    }
+  },
+  "KHM": {
+    "iso3": "KHM",
+    "countryName": "Kamboja",
+    "capital": "Phnom Penh",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "9 November 1953",
+    "independenceDay": "9 November",
+    "independenceYear": 1953,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Uni Prancis",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Phnom Penh terletak di pertemuan Sungai Mekong dan Tonle Sap, dinamai dari bukit candi Wat Phnom Daun Penh.",
+    "capitalCoordinates": {
+      "lat": 11.5564,
+      "lng": 104.9282
+    },
+    "nationalAnthem": {
+      "title": "Nokor Reach",
+      "nativeTitle": "នគររាជ",
+      "composer": "F. Perruchot & J. Schmitt",
+      "adoptedYear": 1941
+    }
+  },
+  "LAO": {
+    "iso3": "LAO",
+    "countryName": "Laos",
+    "capital": "Vientiane",
+    "capitalType": "Administrative",
+    "foundationDate": "19 Juli 1949 / 22 Oktober 1953",
+    "independenceDay": "2 Desember (Hari Nasional)",
+    "independenceYear": 1953,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Prancis",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Vientiane terletak tepat di tepi Sungai Mekong yang menjadi batas internasional alami dengan Thailand.",
+    "capitalCoordinates": {
+      "lat": 17.9757,
+      "lng": 102.6331
+    },
+    "nationalAnthem": {
+      "title": "Pheng Xat Lao",
+      "nativeTitle": "ເພງຊາດລາວ",
+      "composer": "Thongdy Sounthonevichit",
+      "adoptedYear": 1947
+    }
+  },
+  "BRN": {
+    "iso3": "BRN",
+    "countryName": "Brunei",
+    "capital": "Bandar Seri Begawan",
+    "capitalType": "Administrative",
+    "foundationDate": "1 Januari 1984",
+    "independenceDay": "23 Februari (Hari Nasional)",
+    "independenceYear": 1984,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Protektorat Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Bandar Seri Begawan dinamai untuk menghormati Sultan Omar Ali Saifuddien III dan memiliki permukiman air tertua Kampong Ayer.",
+    "capitalCoordinates": {
+      "lat": 4.9031,
+      "lng": 114.9398
+    },
+    "nationalAnthem": {
+      "title": "Allah Peliharakan Sultan",
+      "composer": "Awang Haji Besar bin Sagap",
+      "adoptedYear": 1951
+    }
+  },
+  "TLS": {
+    "iso3": "TLS",
+    "countryName": "Timor Leste",
+    "capital": "Dili",
+    "capitalType": "Administrative",
+    "foundationDate": "20 Mei 2002 (Pemulihan Kedaulatan)",
+    "independenceDay": "28 November (1975) / 20 Mei",
+    "independenceYear": 2002,
+    "nationalDayMonth": 5,
+    "sovereigntyFrom": "Portugal (1975) & Administrasi PBB (2002)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Negara termuda di Asia Tenggara yang memperoleh pengakuan kedaulatan internasional penuh pada 20 Mei 2002.",
+    "capitalCoordinates": {
+      "lat": -8.5569,
+      "lng": 125.5789
+    },
+    "nationalAnthem": {
+      "title": "Pátria",
+      "composer": "Afonso de Araujo",
+      "adoptedYear": 2002
+    }
+  },
+  "MNG": {
+    "iso3": "MNG",
+    "countryName": "Mongolia",
+    "capital": "Ulaanbaatar",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "29 Desember 1911 / 1206 (Kekaisaran Genghis Khan)",
+    "independenceDay": "11 Juli (Naadam) / 26 November",
+    "independenceYear": 1911,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Dinasti Qing (Tiongkok)",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Ulaanbaatar adalah ibukota negara paling dingin di dunia dengan suhu musim dingin rata-rata minus 25°C.",
+    "capitalCoordinates": {
+      "lat": 47.9188,
+      "lng": 106.9176
+    }
+  },
+  "KAZ": {
+    "iso3": "KAZ",
+    "countryName": "Kazakhstan",
+    "capital": "Astana",
+    "capitalType": "Planned Capital",
+    "foundationDate": "16 Desember 1991",
+    "independenceDay": "16 Desember",
+    "independenceYear": 1991,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Pembubaran Uni Soviet (USSR)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Astana dipindahkan menjadi ibukota pada 1997 dan dirancang dengan arsitektur futuristik kelas dunia oleh Kisho Kurokawa.",
+    "capitalCoordinates": {
+      "lat": 51.1694,
+      "lng": 71.4491
+    },
+    "nationalAnthem": {
+      "title": "Meniñ Qazaqstanym",
+      "nativeTitle": "Менің Қазақстаным",
+      "composer": "Shamshi Kaldayakov",
+      "adoptedYear": 2006
+    }
+  },
+  "UZB": {
+    "iso3": "UZB",
+    "countryName": "Uzbekistan",
+    "capital": "Tashkent",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "1 September 1991",
+    "independenceDay": "1 September",
+    "independenceYear": 1991,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Pembubaran Uni Soviet (USSR)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Tashkent adalah kota terbesar di Asia Tengah dan memiliki stasiun kereta bawah tanah metro tercantik di dunia.",
+    "capitalCoordinates": {
+      "lat": 41.2995,
+      "lng": 69.2401
+    },
+    "nationalAnthem": {
+      "title": "Oʻzbekiston Respublikasining Davlat Madhiyasi",
+      "composer": "Mutal Burhonov",
+      "adoptedYear": 1992
+    }
+  },
+  "USA": {
+    "iso3": "USA",
+    "countryName": "Amerika Serikat",
+    "capital": "Washington, D.C.",
+    "capitalType": "Planned Capital",
+    "foundationDate": "4 Juli 1776",
+    "independenceDay": "4 Juli (Independence Day)",
+    "independenceYear": 1776,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Washington D.C. adalah distrik federal khusus yang dinamai untuk menghormati presiden pertama George Washington.",
+    "capitalCoordinates": {
+      "lat": 38.9072,
+      "lng": -77.0369
+    },
+    "nationalAnthem": {
+      "title": "The Star-Spangled Banner",
+      "composer": "John Stafford Smith",
+      "adoptedYear": 1931,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/6/65/Star_Spangled_Banner_instrumental.ogg"
+    }
+  },
+  "CAN": {
+    "iso3": "CAN",
+    "countryName": "Kanada",
+    "capital": "Ottawa",
+    "capitalType": "Planned Capital",
+    "foundationDate": "1 Juli 1867 (Konfederasi Kanada)",
+    "independenceDay": "1 Juli (Canada Day)",
+    "independenceYear": 1867,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Undang-Undang Amerika Utara Britania (UK)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Ratu Victoria memilih Ottawa sebagai ibukota pada 1857 sebagai kompromi antara kota berbahasa Inggris dan Prancis.",
+    "capitalCoordinates": {
+      "lat": 45.4215,
+      "lng": -75.6972
+    },
+    "nationalAnthem": {
+      "title": "O Canada",
+      "composer": "Calixa Lavallée",
+      "adoptedYear": 1980
+    }
+  },
+  "MEX": {
+    "iso3": "MEX",
+    "countryName": "Meksiko",
+    "capital": "Mexico City",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "16 September 1810 (Grito de Dolores) / 1821",
+    "independenceDay": "16 September (Día de la Independencia)",
+    "independenceYear": 1810,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol (Spanyol Baru)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Mexico City dibangun di atas reruntuhan Tenochtitlan, ibukota kuno Kekaisaran Aztec yang didirikan pada 1325.",
+    "capitalCoordinates": {
+      "lat": 19.4326,
+      "lng": -99.1332
+    },
+    "nationalAnthem": {
+      "title": "Himno Nacional Mexicano",
+      "composer": "Jaime Nunó",
+      "adoptedYear": 1943
+    }
+  },
+  "BRA": {
+    "iso3": "BRA",
+    "countryName": "Brasil",
+    "capital": "Brasília",
+    "capitalType": "Planned Capital",
+    "foundationDate": "7 September 1822 (Grito do Ipiranga)",
+    "independenceDay": "7 September (Dia da Independência)",
+    "independenceYear": 1822,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kerajaan Bersatu Portugal, Brasil, dan Algarve",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Brasília dibangun dalam 41 bulan dan diresmikan pada 1960 dengan tata kota unik menyerupai bentuk pesawat terbang karya Oscar Niemeyer.",
+    "capitalCoordinates": {
+      "lat": -15.7975,
+      "lng": -47.8919
+    },
+    "nationalAnthem": {
+      "title": "Hino Nacional Brasileiro",
+      "composer": "Francisco Manuel da Silva",
+      "adoptedYear": 1831
+    }
+  },
+  "ARG": {
+    "iso3": "ARG",
+    "countryName": "Argentina",
+    "capital": "Buenos Aires",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "9 Juli 1816 (Deklarasi Tucumán) / 25 Mei 1810",
+    "independenceDay": "9 Juli (Día de la Independencia)",
+    "independenceYear": 1816,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kekaisaran Spanyol (Virreinato del Río de la Plata)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Buenos Aires dijuluki \"Paris dari Amerika Selatan\" karena arsitektur bergaya Eropa megah dan budaya tari tango.",
+    "capitalCoordinates": {
+      "lat": -34.6037,
+      "lng": -58.3816
+    },
+    "nationalAnthem": {
+      "title": "Himno Nacional Argentino",
+      "composer": "Blas Parera",
+      "adoptedYear": 1813
+    }
+  },
+  "CHL": {
+    "iso3": "CHL",
+    "countryName": "Chili",
+    "capital": "Santiago",
+    "capitalType": "Administrative",
+    "foundationDate": "12 Februari 1818 / 18 September 1810",
+    "independenceDay": "18 September (Fiestas Patrias)",
+    "independenceYear": 1818,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Santiago terletak di lembah tengah dengan panorama barisan pegunungan Andes bersalju yang dramatis.",
+    "capitalCoordinates": {
+      "lat": -33.4489,
+      "lng": -70.6693
+    },
+    "nationalAnthem": {
+      "title": "Himno Nacional de Chile",
+      "composer": "Ramón Carnicer",
+      "adoptedYear": 1847
+    }
+  },
+  "COL": {
+    "iso3": "COL",
+    "countryName": "Kolombia",
+    "capital": "Bogotá",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "20 Juli 1810 / 7 Agustus 1819 (Boyacá)",
+    "independenceDay": "20 Juli",
+    "independenceYear": 1810,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kekaisaran Spanyol (Granada Baru)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Bogotá terletak di ketinggian 2.640 meter di atas permukaan laut di pegunungan Andes, ibukota tertinggi ketiga di dunia.",
+    "capitalCoordinates": {
+      "lat": 4.711,
+      "lng": -74.0721
+    },
+    "nationalAnthem": {
+      "title": "Himno Nacional de la República de Colombia",
+      "composer": "Oreste Sindici",
+      "adoptedYear": 1920
+    }
+  },
+  "PER": {
+    "iso3": "PER",
+    "countryName": "Peru",
+    "capital": "Lima",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "28 Juli 1821 (José de San Martín)",
+    "independenceDay": "28 Juli (Fiestas Patrias)",
+    "independenceYear": 1821,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kekaisaran Spanyol (Virreinato del Perú)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Lima dikenal sebagai \"Kota Para Raja\" (Ciudad de los Reyes), didirikan oleh Francisco Pizarro pada tahun 1535 di tepi Samudra Pasifik.",
+    "capitalCoordinates": {
+      "lat": -12.0464,
+      "lng": -77.0428
+    },
+    "nationalAnthem": {
+      "title": "Himno Nacional del Perú",
+      "composer": "José Bernardo Alcedo",
+      "adoptedYear": 1821
+    }
+  },
+  "DEU": {
+    "iso3": "DEU",
+    "countryName": "Jerman",
+    "capital": "Berlin",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "18 Januari 1871 (Kekaisaran) / 3 Oktober 1990 (Reunifikasi)",
+    "independenceDay": "3 Oktober (Tag der Deutschen Einheit)",
+    "independenceYear": 1871,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Penyatuan Jerman / Runtuhnya Tembok Berlin",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Berlin bersatu kembali pada 1990 setelah pemisahan Perang Dingin dan menjadi episentrum seni serta teknologi rintisan Eropa.",
+    "capitalCoordinates": {
+      "lat": 52.52,
+      "lng": 13.405
+    },
+    "nationalAnthem": {
+      "title": "Das Lied der Deutschen",
+      "composer": "Joseph Haydn",
+      "adoptedYear": 1922,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e6/German_national_anthem_performed_by_the_US_Navy_Band.ogg"
+    }
+  },
+  "GBR": {
+    "iso3": "GBR",
+    "countryName": "Inggris Raya",
+    "capital": "London",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "1 Mei 1707 (Act of Union) / 1066 (Penaklukan Norman)",
+    "independenceDay": "Bulan Juni (Trooping the Colour / Hari Raja)",
+    "independenceYear": 1707,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Monarki Kuno Berdaulat Berkelanjutan",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "London didirikan oleh Kekaisaran Romawi dengan nama Londinium pada tahun 47 M di tepi Sungai Thames.",
+    "capitalCoordinates": {
+      "lat": 51.5074,
+      "lng": -0.1278
+    },
+    "nationalAnthem": {
+      "title": "God Save the King",
+      "composer": "Tradisional Anonim",
+      "adoptedYear": 1745,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/d/df/United_States_Navy_Band_-_God_Save_the_King.ogg"
+    }
+  },
+  "FRA": {
+    "iso3": "FRA",
+    "countryName": "Prancis",
+    "capital": "Paris",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "843 M (Perjanjian Verdun) / 486 M (Kekaisaran Franka)",
+    "independenceDay": "14 Juli (Bastille Day / Fête Nationale)",
+    "independenceYear": 843,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Monarki Kuno & Revolusi Prancis 1789",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Paris dikenal sebagai \"Kota Cahaya\" (La Ville Lumière) karena peran perintisnya pada Zaman Pencerahan dan lampu gas jalanan.",
+    "capitalCoordinates": {
+      "lat": 48.8566,
+      "lng": 2.3522
+    },
+    "nationalAnthem": {
+      "title": "La Marseillaise",
+      "composer": "Claude Joseph Rouget de Lisle",
+      "adoptedYear": 1795,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/La_Marseillaise.ogg"
+    }
+  },
+  "ITA": {
+    "iso3": "ITA",
+    "countryName": "Italia",
+    "capital": "Roma",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "17 Maret 1861 (Risorgimento) / 753 SM (Pendirian Roma)",
+    "independenceDay": "2 Juni (Festa della Repubblica)",
+    "independenceYear": 1861,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Penyatuan Kerajaan-Kerajaan Italia (Risorgimento)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Roma dijuluki \"Kota Abadi\" (Caput Mundi) dan di dalamnya terdapat negara berdaulat merdeka terkecil di dunia: Vatikan.",
+    "capitalCoordinates": {
+      "lat": 41.9028,
+      "lng": 12.4964
+    },
+    "nationalAnthem": {
+      "title": "Il Canto degli Italiani (Fratelli d'Italia)",
+      "composer": "Michele Novaro",
+      "adoptedYear": 1946
+    }
+  },
+  "ESP": {
+    "iso3": "ESP",
+    "countryName": "Spanyol",
+    "capital": "Madrid",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "1469 (Pernikahan Monarki Katolik) / 1492",
+    "independenceDay": "12 Oktober (Fiesta Nacional de España)",
+    "independenceYear": 1492,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Penyatuan Kastilia & Aragon (Reconquista)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Madrid ditetapkan sebagai ibukota oleh Raja Felipe II pada 1561 karena posisinya yang berada persis di titik tengah Semenanjung Iberia.",
+    "capitalCoordinates": {
+      "lat": 40.4168,
+      "lng": -3.7038
+    },
+    "nationalAnthem": {
+      "title": "Marcha Real",
+      "composer": "Manuel de Espinosa de los Monteros",
+      "adoptedYear": 1770
+    }
+  },
+  "NLD": {
+    "iso3": "NLD",
+    "countryName": "Belanda",
+    "capital": "Amsterdam & Den Haag",
+    "capitalType": "Dual/Triple Capital",
+    "foundationDate": "26 Juli 1581 (Plakkaat van Verlatinghe) / 1648",
+    "independenceDay": "27 April (Koningsdag / Hari Raja)",
+    "independenceYear": 1581,
+    "nationalDayMonth": 4,
+    "sovereigntyFrom": "Kekaisaran Spanyol Habsburg (Perang Delapan Puluh Tahun)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Amsterdam adalah ibukota konstitusional, sedangkan Den Haag adalah pusat parlemen, kementerian, monarki, dan Mahkamah Internasional.",
+    "capitalCoordinates": {
+      "lat": 52.3676,
+      "lng": 4.9041
+    },
+    "nationalAnthem": {
+      "title": "Wilhelmus van Nassouwe",
+      "composer": "Adrianus Valerius",
+      "adoptedYear": 1932
+    }
+  },
+  "CHE": {
+    "iso3": "CHE",
+    "countryName": "Swiss",
+    "capital": "Bern",
+    "capitalType": "Administrative",
+    "foundationDate": "1 Agustus 1291 (Piagam Konfederasi Kuno)",
+    "independenceDay": "1 Agustus (Bundesfeiertag)",
+    "independenceYear": 1291,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kekaisaran Romawi Suci (Perjanjian Westphalia 1648)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Swiss secara resmi tidak memiliki \"ibukota\" dalam konstitusinya, melainkan Bern berstatus sebagai \"Kota Federal\" (Bundesstadt).",
+    "capitalCoordinates": {
+      "lat": 46.948,
+      "lng": 7.4474
+    },
+    "nationalAnthem": {
+      "title": "Schweizerpsalm",
+      "composer": "Alberik Zwyssig",
+      "adoptedYear": 1981
+    }
+  },
+  "SWE": {
+    "iso3": "SWE",
+    "countryName": "Swedia",
+    "capital": "Stockholm",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "6 Juni 1523 (Gustav Vasa membubarkan Uni Kalmar)",
+    "independenceDay": "6 Juni (Sveriges nationaldag)",
+    "independenceYear": 1523,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Pembubaran Uni Kalmar (Denmark)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Stockholm tersebar di 14 pulau di Danau Mälaren dan Laut Baltik, dijuluki \"Venesia dari Utara\".",
+    "capitalCoordinates": {
+      "lat": 59.3293,
+      "lng": 18.0686
+    },
+    "nationalAnthem": {
+      "title": "Du gamla, du fria",
+      "composer": "Tradisional Rakyat Swedia",
+      "adoptedYear": 1844
+    }
+  },
+  "NOR": {
+    "iso3": "NOR",
+    "countryName": "Norwegia",
+    "capital": "Oslo",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "17 Mei 1814 (Konstitusi Eidsvoll) / 1905 (Uni)",
+    "independenceDay": "17 Mei (Grunnlovsdag)",
+    "independenceYear": 1814,
+    "nationalDayMonth": 5,
+    "sovereigntyFrom": "Pemisahan dari Denmark (1814) & Swedia (1905)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Oslo terletak di ujung fjord Oslo yang spektakuler dan merupakan kota penyelenggara penyerahan Hadiah Nobel Perdamaian.",
+    "capitalCoordinates": {
+      "lat": 59.9139,
+      "lng": 10.7522
+    },
+    "nationalAnthem": {
+      "title": "Ja, vi elsker dette landet",
+      "composer": "Rikard Nordraak",
+      "adoptedYear": 1864
+    }
+  },
+  "DNK": {
+    "iso3": "DNK",
+    "countryName": "Denmark",
+    "capital": "Kopenhagen",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "Abad ke-10 M (Raja Harald Bluetooth / Gorm Kuno)",
+    "independenceDay": "5 Juni (Hari Konstitusi)",
+    "independenceYear": 965,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Monarki Viking Kuno Berdaulat Berkelanjutan",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Salah satu monarki tertua di dunia, dengan pelabuhan warna-warni ikonik Nyhavn dan taman hiburan tertua Tivoli.",
+    "capitalCoordinates": {
+      "lat": 55.6761,
+      "lng": 12.5683
+    },
+    "nationalAnthem": {
+      "title": "Der er et yndigt land",
+      "composer": "Hans Ernst Krøyer",
+      "adoptedYear": 1835
+    }
+  },
+  "POL": {
+    "iso3": "POL",
+    "countryName": "Polandia",
+    "capital": "Warsawa",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "11 November 1918 / 966 M (Baptisan Mieszko I)",
+    "independenceDay": "11 November (Narodowe Święto Niepodległości)",
+    "independenceYear": 1918,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Pemulihan Kedaulatan Pasca-Partisi (Rusia, Prusia, Austria)",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Warsawa dijuluki \"Kota Phoenix\" karena bangkit dan dibangun kembali secara teliti setelah hancur 85% pada Perang Dunia II.",
+    "capitalCoordinates": {
+      "lat": 52.2297,
+      "lng": 21.0122
+    },
+    "nationalAnthem": {
+      "title": "Mazurek Dąbrowskiego",
+      "composer": "Tradisional Polandia",
+      "adoptedYear": 1927
+    }
+  },
+  "TUR": {
+    "iso3": "TUR",
+    "countryName": "Turki",
+    "capital": "Ankara",
+    "capitalType": "Planned Capital",
+    "foundationDate": "29 Oktober 1923 (Deklarasi Republik)",
+    "independenceDay": "29 Oktober (Cumhuriyet Bayramı)",
+    "independenceYear": 1923,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Runtuhnya Kekaisaran Utsmaniyah & Perang Kemerdekaan Turki",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Mustafa Kemal Atatürk memindahkan ibukota dari Istanbul ke Ankara pada 1923 sebagai simbol modernitas republik baru.",
+    "capitalCoordinates": {
+      "lat": 39.9334,
+      "lng": 32.8597
+    },
+    "nationalAnthem": {
+      "title": "İstiklal Marşı",
+      "composer": "Osman Zeki Üngör",
+      "adoptedYear": 1921
+    }
+  },
+  "RUS": {
+    "iso3": "RUS",
+    "countryName": "Rusia",
+    "capital": "Moskow",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "12 Juni 1990 (Federasi) / 862 M (Rurikovich)",
+    "independenceDay": "12 Juni (Hari Rusia)",
+    "independenceYear": 1990,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Deklarasi Kedaulatan Negara dari Uni Soviet",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Moskow berpusat pada Lapangan Merah dan benteng Kremlin, kubah katedral Santo Basil yang legendaris.",
+    "capitalCoordinates": {
+      "lat": 55.7558,
+      "lng": 37.6173
+    },
+    "nationalAnthem": {
+      "title": "Gimn Rossiyskoy Federatsii",
+      "nativeTitle": "Государственный гимн РФ",
+      "composer": "Alexander Alexandrov",
+      "adoptedYear": 2000,
+      "audioUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/National_Anthem_of_Russia_%282000%29%2C_instrumental%2C_one_verse.ogg"
+    }
+  },
+  "SAU": {
+    "iso3": "SAU",
+    "countryName": "Arab Saudi",
+    "capital": "Riyadh",
+    "capitalType": "Administrative",
+    "foundationDate": "23 September 1932 (Penyatuan Nejd & Hejaz)",
+    "independenceDay": "23 September (Hari Nasional)",
+    "independenceYear": 1932,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Penyatuan Kerajaan oleh Raja Abdulaziz Al Saud",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Riyadh bertransformasi dari kota oasis padang pasir bertembok lumpur menjadi megalopolis modern bergedung pencakar langit megah.",
+    "capitalCoordinates": {
+      "lat": 24.7136,
+      "lng": 46.6753
+    },
+    "nationalAnthem": {
+      "title": "Aash Al Maleek (Hiduplah Sang Raja)",
+      "nativeTitle": "عاش الملك",
+      "composer": "Abdul Rahman Al-Khateeb",
+      "adoptedYear": 1950
+    }
+  },
+  "ARE": {
+    "iso3": "ARE",
+    "countryName": "Uni Emirat Arab",
+    "capital": "Abu Dhabi",
+    "capitalType": "Planned Capital",
+    "foundationDate": "2 Desember 1971",
+    "independenceDay": "2 Desember (Hari Nasional)",
+    "independenceYear": 1971,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Perjanjian Protektorat Britania Raya (Trucial States)",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Abu Dhabi adalah emirat terbesar yang menampung pusat pemerintahan federal UEA dan Masjid Agung Sheikh Zayed berlapis marmer.",
+    "capitalCoordinates": {
+      "lat": 24.4539,
+      "lng": 54.3773
+    },
+    "nationalAnthem": {
+      "title": "Ishy Bilady",
+      "nativeTitle": "عيشي بلادي",
+      "composer": "Saad Abdel Wahab",
+      "adoptedYear": 1971
+    }
+  },
+  "QAT": {
+    "iso3": "QAT",
+    "countryName": "Qatar",
+    "capital": "Doha",
+    "capitalType": "Administrative",
+    "foundationDate": "3 September 1971 / 18 Desember 1878",
+    "independenceDay": "18 Desember (Hari Nasional)",
+    "independenceYear": 1971,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Protektorat Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Doha terkenal dengan Museum Seni Islam karya arsitek I.M. Pei dan pasar tradisional bersejarah Souq Waqif.",
+    "capitalCoordinates": {
+      "lat": 25.2854,
+      "lng": 51.531
+    }
+  },
+  "KWT": {
+    "iso3": "KWT",
+    "countryName": "Kuwait",
+    "capital": "Kuwait City",
+    "capitalType": "Administrative",
+    "foundationDate": "19 Juni 1961",
+    "independenceDay": "25 Februari (Hari Nasional)",
+    "independenceYear": 1961,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Protektorat Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Menara Kuwait (Kuwait Towers) dengan bola berglasir pirus adalah landmark kemerdekaan dan kebangkitan Teluk Persia.",
+    "capitalCoordinates": {
+      "lat": 29.3759,
+      "lng": 47.9774
+    }
+  },
+  "AUS": {
+    "iso3": "AUS",
+    "countryName": "Australia",
+    "capital": "Canberra",
+    "capitalType": "Planned Capital",
+    "foundationDate": "1 Januari 1901 (Federasi Persemakmuran)",
+    "independenceDay": "26 Januari (Australia Day)",
+    "independenceYear": 1901,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Penyatuan Federasi Koloni Britania Raya",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Canberra dirancang oleh arsitek Walter Burley Griffin sebagai kompromi persaingan ketat antara Sydney dan Melbourne.",
+    "capitalCoordinates": {
+      "lat": -35.2809,
+      "lng": 149.13
+    },
+    "nationalAnthem": {
+      "title": "Advance Australia Fair",
+      "composer": "Peter Dodds McCormick",
+      "adoptedYear": 1984
+    }
+  },
+  "NZL": {
+    "iso3": "NZL",
+    "countryName": "Selandia Baru",
+    "capital": "Wellington",
+    "capitalType": "Administrative",
+    "foundationDate": "26 September 1907 (Dominion) / 6 Feb 1840 (Waitangi)",
+    "independenceDay": "6 Februari (Waitangi Day)",
+    "independenceYear": 1907,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Dominion Britania Raya / Traktat Waitangi",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Wellington adalah ibukota negara berdaulat paling berangin dan paling selatan di muka bumi (41° Lintang Selatan).",
+    "capitalCoordinates": {
+      "lat": -41.2865,
+      "lng": 174.7762
+    },
+    "nationalAnthem": {
+      "title": "God Defend New Zealand",
+      "nativeTitle": "Aotearoa",
+      "composer": "John Joseph Woods",
+      "adoptedYear": 1977
+    }
+  },
+  "FJI": {
+    "iso3": "FJI",
+    "countryName": "Fiji",
+    "capital": "Suva",
+    "capitalType": "Administrative",
+    "foundationDate": "10 Oktober 1970",
+    "independenceDay": "10 Oktober (Fiji Day)",
+    "independenceYear": 1970,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Suva terletak di pesisir tenggara Pulau Viti Levu, menjadi pusat pendidikan dan diplomasi Pasifik Selatan.",
+    "capitalCoordinates": {
+      "lat": -18.1416,
+      "lng": 178.4419
+    }
+  },
+  "ZAF": {
+    "iso3": "ZAF",
+    "countryName": "Afrika Selatan",
+    "capital": "Pretoria, Cape Town & Bloemfontein",
+    "capitalType": "Dual/Triple Capital",
+    "foundationDate": "31 Mei 1910 (Uni) / 27 April 1994 (Demokrasi Bebas)",
+    "independenceDay": "27 April (Freedom Day)",
+    "independenceYear": 1910,
+    "nationalDayMonth": 4,
+    "sovereigntyFrom": "Britania Raya & Runtuhnya Rezim Apartheid",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Satu-satunya negara di dunia dengan 3 ibukota resmi: Pretoria (Eksekutif), Cape Town (Legislatif), dan Bloemfontein (Yudisial).",
+    "capitalCoordinates": {
+      "lat": -25.7479,
+      "lng": 28.2293
+    },
+    "nationalAnthem": {
+      "title": "National Anthem of South Africa",
+      "composer": "Enoch Sontonga & C.J. Langenhoven",
+      "adoptedYear": 1997
+    }
+  },
+  "EGY": {
+    "iso3": "EGY",
+    "countryName": "Mesir",
+    "capital": "Kairo",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "28 Februari 1922 / 3100 SM (Penyatuan Narmer)",
+    "independenceDay": "23 Juli (Hari Revolusi 1952)",
+    "independenceYear": 1922,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Deklarasi Unilateral Kemerdekaan dari Britania Raya",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Kairo didirikan pada 969 M oleh Dinasti Fatimiyah dan bertetangga langsung dengan Kompleks Piramida Giza yang legendaris.",
+    "capitalCoordinates": {
+      "lat": 30.0444,
+      "lng": 31.2357
+    },
+    "nationalAnthem": {
+      "title": "Bilady, Bilady, Bilady",
+      "nativeTitle": "بلادي بلادي بلادي",
+      "composer": "Sayed Darwish",
+      "adoptedYear": 1979
+    }
+  },
+  "NGA": {
+    "iso3": "NGA",
+    "countryName": "Nigeria",
+    "capital": "Abuja",
+    "capitalType": "Planned Capital",
+    "foundationDate": "1 Oktober 1960",
+    "independenceDay": "1 Oktober",
+    "independenceYear": 1960,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Abuja dibangun pada 1980-an di tengah wilayah Nigeria sebagai kota netral etnis menggantikan Lagos pada 1991.",
+    "capitalCoordinates": {
+      "lat": 9.0765,
+      "lng": 7.3986
+    },
+    "nationalAnthem": {
+      "title": "Nigeria, We Hail Thee",
+      "composer": "Frances Berda",
+      "adoptedYear": 2024
+    }
+  },
+  "KEN": {
+    "iso3": "KEN",
+    "countryName": "Kenya",
+    "capital": "Nairobi",
+    "capitalType": "Administrative",
+    "foundationDate": "12 Desember 1963",
+    "independenceDay": "12 Desember (Jamhuri Day)",
+    "independenceYear": 1963,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Nairobi adalah satu-satunya ibukota global yang memiliki taman nasional satwa liar liar (singa, jerapah) di dalam batas kotanya.",
+    "capitalCoordinates": {
+      "lat": -1.2921,
+      "lng": 36.8219
+    },
+    "nationalAnthem": {
+      "title": "Ee Mungu Nguvu Yetu",
+      "composer": "Tradisional Kenya",
+      "adoptedYear": 1963
+    }
+  },
+  "MAR": {
+    "iso3": "MAR",
+    "countryName": "Maroko",
+    "capital": "Rabat",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "789 M (Dinasti Idrisiyah) / 2 Maret 1956",
+    "independenceDay": "18 November (Hari Kemerdekaan)",
+    "independenceYear": 1956,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Prancis & Spanyol",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Rabat memiliki Menara Hassan abad ke-12 dan Kasbah des Oudaias di tepi Samudra Atlantik.",
+    "capitalCoordinates": {
+      "lat": 34.0209,
+      "lng": -6.8416
+    },
+    "nationalAnthem": {
+      "title": "Cherifian Anthem",
+      "nativeTitle": "النشيد الشريف",
+      "composer": "Léo Morgan",
+      "adoptedYear": 1956
+    }
+  },
+  "GHA": {
+    "iso3": "GHA",
+    "countryName": "Ghana",
+    "capital": "Accra",
+    "capitalType": "Administrative",
+    "foundationDate": "6 Maret 1957",
+    "independenceDay": "6 Maret",
+    "independenceYear": 1957,
+    "nationalDayMonth": 3,
+    "sovereigntyFrom": "Kerajaan Britania Raya (Gold Coast)",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Negara pertama di Afrika Sub-Sahara yang meraih kemerdekaan dari penjajahan kolonial Eropa modern.",
+    "capitalCoordinates": {
+      "lat": 5.6037,
+      "lng": -0.187
+    }
+  },
+  "ETH": {
+    "iso3": "ETH",
+    "countryName": "Etiopia",
+    "capital": "Addis Ababa",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "980 SM (Kerajaan D'mt) / Dinasti Salomo",
+    "independenceDay": "5 Mei (Hari Patriot Pembebasan)",
+    "independenceYear": -980,
+    "nationalDayMonth": 5,
+    "sovereigntyFrom": "Negara Kuno Berdaulat Tanpa Pernah Dijajah Kolonial",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Addis Ababa adalah markas besar Uni Afrika (African Union) dan pusat diplomatik utama benua Afrika.",
+    "capitalCoordinates": {
+      "lat": 9.032,
+      "lng": 38.7482
+    }
+  },
+  "TZA": {
+    "iso3": "TZA",
+    "countryName": "Tanzania",
+    "capital": "Dodoma",
+    "capitalType": "Planned Capital",
+    "foundationDate": "9 Desember 1961 (Tanganyika) / 26 April 1964",
+    "independenceDay": "9 Desember / 26 April (Union Day)",
+    "independenceYear": 1961,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Dodoma ditetapkan sebagai ibukota resmi pada 1974 untuk mendesentralisasi kekuasaan dari kota pesisir Dar es Salaam.",
+    "capitalCoordinates": {
+      "lat": -6.163,
+      "lng": 35.7516
+    }
+  },
+  "UGA": {
+    "iso3": "UGA",
+    "countryName": "Uganda",
+    "capital": "Kampala",
+    "capitalType": "Administrative",
+    "foundationDate": "9 Oktober 1962",
+    "independenceDay": "9 Oktober",
+    "independenceYear": 1962,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Kampala dibangun di atas bukit-bukit yang dulunya merupakan habitat antelop impala milik Raja Buganda.",
+    "capitalCoordinates": {
+      "lat": 0.3476,
+      "lng": 32.5825
+    }
+  },
+  "DZA": {
+    "iso3": "DZA",
+    "countryName": "Aljazair",
+    "capital": "Algiers",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "5 Juli 1962",
+    "independenceDay": "5 Juli",
+    "independenceYear": 1962,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Prancis (Perang Kemerdekaan Aljazair)",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Algiers dijuluki \"Al-Jaza'ir al-Baidha\" (Algiers si Putih) karena deretan gedung putih berkilauan menghadap Mediterania.",
+    "capitalCoordinates": {
+      "lat": 36.7538,
+      "lng": 3.0588
+    }
+  },
+  "TUN": {
+    "iso3": "TUN",
+    "countryName": "Tunisia",
+    "capital": "Tunis",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "20 Maret 1956",
+    "independenceDay": "20 Maret",
+    "independenceYear": 1956,
+    "nationalDayMonth": 3,
+    "sovereigntyFrom": "Prancis",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Tunis bertetangga langsung dengan reruntuhan kota kuno Kartago yang dipimpin jenderal perang legendaris Hannibal.",
+    "capitalCoordinates": {
+      "lat": 36.8065,
+      "lng": 10.1815
+    }
+  },
+  "AGO": {
+    "iso3": "AGO",
+    "countryName": "Angola",
+    "capital": "Luanda",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Luanda adalah pusat pemerintahan dan ibukota resmi dari negara Angola di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -8.839,
+      "lng": 13.2894
+    }
+  },
+  "MOZ": {
+    "iso3": "MOZ",
+    "countryName": "Mozambik",
+    "capital": "Maputo",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Maputo adalah pusat pemerintahan dan ibukota resmi dari negara Mozambik di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -25.9692,
+      "lng": 32.5732
+    }
+  },
+  "ZWE": {
+    "iso3": "ZWE",
+    "countryName": "Zimbabwe",
+    "capital": "Harare",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Harare adalah pusat pemerintahan dan ibukota resmi dari negara Zimbabwe di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -17.8216,
+      "lng": 31.0492
+    }
+  },
+  "SEN": {
+    "iso3": "SEN",
+    "countryName": "Senegal",
+    "capital": "Dakar",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Dakar adalah pusat pemerintahan dan ibukota resmi dari negara Senegal di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 14.7167,
+      "lng": -17.4677
+    }
+  },
+  "CIV": {
+    "iso3": "CIV",
+    "countryName": "Pantai Gading",
+    "capital": "Yamoussoukro",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Yamoussoukro adalah pusat pemerintahan dan ibukota resmi dari negara Pantai Gading di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 6.8276,
+      "lng": -5.2893
+    }
+  },
+  "CMR": {
+    "iso3": "CMR",
+    "countryName": "Kamerun",
+    "capital": "Yaoundé",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Yaoundé adalah pusat pemerintahan dan ibukota resmi dari negara Kamerun di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 3.848,
+      "lng": 11.5021
+    }
+  },
+  "MDG": {
+    "iso3": "MDG",
+    "countryName": "Madagaskar",
+    "capital": "Antananarivo",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Antananarivo adalah pusat pemerintahan dan ibukota resmi dari negara Madagaskar di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -18.8792,
+      "lng": 47.5079
+    }
+  },
+  "MUS": {
+    "iso3": "MUS",
+    "countryName": "Mauritius",
+    "capital": "Port Louis",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Port Louis adalah pusat pemerintahan dan ibukota resmi dari negara Mauritius di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -20.1609,
+      "lng": 57.5012
+    }
+  },
+  "SYC": {
+    "iso3": "SYC",
+    "countryName": "Seychelles",
+    "capital": "Victoria",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Victoria adalah pusat pemerintahan dan ibukota resmi dari negara Seychelles di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -4.6796,
+      "lng": 55.492
+    }
+  },
+  "BWA": {
+    "iso3": "BWA",
+    "countryName": "Botswana",
+    "capital": "Gaborone",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Gaborone adalah pusat pemerintahan dan ibukota resmi dari negara Botswana di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -24.6282,
+      "lng": 25.9231
+    }
+  },
+  "NAM": {
+    "iso3": "NAM",
+    "countryName": "Namibia",
+    "capital": "Windhoek",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Windhoek adalah pusat pemerintahan dan ibukota resmi dari negara Namibia di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -22.5609,
+      "lng": 17.0658
+    }
+  },
+  "RWA": {
+    "iso3": "RWA",
+    "countryName": "Rwanda",
+    "capital": "Kigali",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Kigali adalah pusat pemerintahan dan ibukota resmi dari negara Rwanda di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -1.9706,
+      "lng": 30.1044
+    }
+  },
+  "SDN": {
+    "iso3": "SDN",
+    "countryName": "Sudan",
+    "capital": "Khartoum",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Khartoum adalah pusat pemerintahan dan ibukota resmi dari negara Sudan di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 15.5007,
+      "lng": 32.5599
+    }
+  },
+  "LBY": {
+    "iso3": "LBY",
+    "countryName": "Libya",
+    "capital": "Tripoli",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Tripoli adalah pusat pemerintahan dan ibukota resmi dari negara Libya di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 32.8872,
+      "lng": 13.1913
+    }
+  },
+  "ZMB": {
+    "iso3": "ZMB",
+    "countryName": "Zambia",
+    "capital": "Lusaka",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Lusaka adalah pusat pemerintahan dan ibukota resmi dari negara Zambia di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -15.3875,
+      "lng": 28.3228
+    }
+  },
+  "MLI": {
+    "iso3": "MLI",
+    "countryName": "Mali",
+    "capital": "Bamako",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Bamako adalah pusat pemerintahan dan ibukota resmi dari negara Mali di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 17.5707,
+      "lng": -3.9962
+    }
+  },
+  "BFA": {
+    "iso3": "BFA",
+    "countryName": "Burkina Faso",
+    "capital": "Ouagadougou",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Ouagadougou adalah pusat pemerintahan dan ibukota resmi dari negara Burkina Faso di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 12.2383,
+      "lng": -1.5616
+    }
+  },
+  "NER": {
+    "iso3": "NER",
+    "countryName": "Niger",
+    "capital": "Niamey",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Niamey adalah pusat pemerintahan dan ibukota resmi dari negara Niger di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 17.6078,
+      "lng": 8.0817
+    }
+  },
+  "TCD": {
+    "iso3": "TCD",
+    "countryName": "Chad",
+    "capital": "N'Djamena",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "N'Djamena adalah pusat pemerintahan dan ibukota resmi dari negara Chad di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 15.4542,
+      "lng": 18.7322
+    }
+  },
+  "SOM": {
+    "iso3": "SOM",
+    "countryName": "Somalia",
+    "capital": "Mogadishu",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Mogadishu adalah pusat pemerintahan dan ibukota resmi dari negara Somalia di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 5.1521,
+      "lng": 46.1996
+    }
+  },
+  "MRT": {
+    "iso3": "MRT",
+    "countryName": "Mauritania",
+    "capital": "Nouakchott",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Nouakchott adalah pusat pemerintahan dan ibukota resmi dari negara Mauritania di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 21.0079,
+      "lng": -10.9408
+    }
+  },
+  "BEN": {
+    "iso3": "BEN",
+    "countryName": "Benin",
+    "capital": "Porto-Novo",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Porto-Novo adalah pusat pemerintahan dan ibukota resmi dari negara Benin di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 9.3077,
+      "lng": 2.3158
+    }
+  },
+  "TGO": {
+    "iso3": "TGO",
+    "countryName": "Togo",
+    "capital": "Lomé",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Lomé adalah pusat pemerintahan dan ibukota resmi dari negara Togo di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 8.6195,
+      "lng": 0.8248
+    }
+  },
+  "SLE": {
+    "iso3": "SLE",
+    "countryName": "Sierra Leone",
+    "capital": "Freetown",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Freetown adalah pusat pemerintahan dan ibukota resmi dari negara Sierra Leone di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 8.4606,
+      "lng": -11.7799
+    }
+  },
+  "LBR": {
+    "iso3": "LBR",
+    "countryName": "Liberia",
+    "capital": "Monrovia",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Monrovia adalah pusat pemerintahan dan ibukota resmi dari negara Liberia di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 6.4281,
+      "lng": -9.4295
+    }
+  },
+  "GIN": {
+    "iso3": "GIN",
+    "countryName": "Guinea",
+    "capital": "Conakry",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Conakry adalah pusat pemerintahan dan ibukota resmi dari negara Guinea di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 9.9456,
+      "lng": -9.6966
+    }
+  },
+  "GMB": {
+    "iso3": "GMB",
+    "countryName": "Gambia",
+    "capital": "Banjul",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Banjul adalah pusat pemerintahan dan ibukota resmi dari negara Gambia di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 13.4432,
+      "lng": -15.3101
+    }
+  },
+  "GNB": {
+    "iso3": "GNB",
+    "countryName": "Guinea-Bissau",
+    "capital": "Bissau",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Bissau adalah pusat pemerintahan dan ibukota resmi dari negara Guinea-Bissau di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 11.8037,
+      "lng": -15.1804
+    }
+  },
+  "GNQ": {
+    "iso3": "GNQ",
+    "countryName": "Guinea Khatulistiwa",
+    "capital": "Malabo",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Malabo adalah pusat pemerintahan dan ibukota resmi dari negara Guinea Khatulistiwa di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 1.6508,
+      "lng": 10.2679
+    }
+  },
+  "GAB": {
+    "iso3": "GAB",
+    "countryName": "Gabon",
+    "capital": "Libreville",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Libreville adalah pusat pemerintahan dan ibukota resmi dari negara Gabon di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -0.8037,
+      "lng": 11.6094
+    }
+  },
+  "COG": {
+    "iso3": "COG",
+    "countryName": "Kongo",
+    "capital": "Brazzaville",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Brazzaville adalah pusat pemerintahan dan ibukota resmi dari negara Kongo di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -4.2634,
+      "lng": 15.2429
+    }
+  },
+  "COD": {
+    "iso3": "COD",
+    "countryName": "RD Kongo",
+    "capital": "Kinshasa",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Kinshasa adalah pusat pemerintahan dan ibukota resmi dari negara RD Kongo di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -4.4419,
+      "lng": 15.2663
+    }
+  },
+  "CAF": {
+    "iso3": "CAF",
+    "countryName": "Republik Afrika Tengah",
+    "capital": "Bangui",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Bangui adalah pusat pemerintahan dan ibukota resmi dari negara Republik Afrika Tengah di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 6.6111,
+      "lng": 20.9394
+    }
+  },
+  "SSD": {
+    "iso3": "SSD",
+    "countryName": "Sudan Selatan",
+    "capital": "Juba",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Juba adalah pusat pemerintahan dan ibukota resmi dari negara Sudan Selatan di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 4.8594,
+      "lng": 31.5713
+    }
+  },
+  "BDI": {
+    "iso3": "BDI",
+    "countryName": "Burundi",
+    "capital": "Gitega",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Gitega adalah pusat pemerintahan dan ibukota resmi dari negara Burundi di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -3.3731,
+      "lng": 29.9189
+    }
+  },
+  "DJI": {
+    "iso3": "DJI",
+    "countryName": "Djibouti",
+    "capital": "Djibouti",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Djibouti adalah pusat pemerintahan dan ibukota resmi dari negara Djibouti di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 11.8251,
+      "lng": 42.5903
+    }
+  },
+  "ERI": {
+    "iso3": "ERI",
+    "countryName": "Eritrea",
+    "capital": "Asmara",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Asmara adalah pusat pemerintahan dan ibukota resmi dari negara Eritrea di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 15.1794,
+      "lng": 39.7823
+    }
+  },
+  "SWZ": {
+    "iso3": "SWZ",
+    "countryName": "Eswatini",
+    "capital": "Mbabane",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Mbabane adalah pusat pemerintahan dan ibukota resmi dari negara Eswatini di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -26.5225,
+      "lng": 31.4659
+    }
+  },
+  "LSO": {
+    "iso3": "LSO",
+    "countryName": "Lesotho",
+    "capital": "Maseru",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Maseru adalah pusat pemerintahan dan ibukota resmi dari negara Lesotho di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -29.6099,
+      "lng": 28.2336
+    }
+  },
+  "MWI": {
+    "iso3": "MWI",
+    "countryName": "Malawi",
+    "capital": "Lilongwe",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Lilongwe adalah pusat pemerintahan dan ibukota resmi dari negara Malawi di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -13.2543,
+      "lng": 34.3015
+    }
+  },
+  "CPV": {
+    "iso3": "CPV",
+    "countryName": "Tanjung Verde",
+    "capital": "Praia",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Praia adalah pusat pemerintahan dan ibukota resmi dari negara Tanjung Verde di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 16.5388,
+      "lng": -23.0418
+    }
+  },
+  "STP": {
+    "iso3": "STP",
+    "countryName": "Sao Tome dan Principe",
+    "capital": "São Tomé",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "São Tomé adalah pusat pemerintahan dan ibukota resmi dari negara Sao Tome dan Principe di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": 0.1864,
+      "lng": 6.6131
+    }
+  },
+  "COM": {
+    "iso3": "COM",
+    "countryName": "Komoro",
+    "capital": "Moroni",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Moroni adalah pusat pemerintahan dan ibukota resmi dari negara Komoro di kawasan Africa.",
+    "capitalCoordinates": {
+      "lat": -11.8753,
+      "lng": 43.8722
+    }
+  },
+  "URY": {
+    "iso3": "URY",
+    "countryName": "Uruguay",
+    "capital": "Montevideo",
+    "capitalType": "Administrative",
+    "foundationDate": "25 Agustus 1825",
+    "independenceDay": "25 Agustus",
+    "independenceYear": 1825,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kekaisaran Brasil & Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Montevideo adalah ibukota paling selatan di Benua Amerika, memiliki jalur pedestrian tepi pantai Rambla sepanjang 22 kilometer.",
+    "capitalCoordinates": {
+      "lat": -34.9011,
+      "lng": -56.1645
+    }
+  },
+  "PRY": {
+    "iso3": "PRY",
+    "countryName": "Paraguay",
+    "capital": "Asunción",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "14–15 Mei 1811",
+    "independenceDay": "15 Mei",
+    "independenceYear": 1811,
+    "nationalDayMonth": 5,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Asunción adalah salah satu kota tertua di Amerika Selatan, dijuluki \"Ibu dari Kota-Kota\" karena menjadi basis ekspedisi Spanyol.",
+    "capitalCoordinates": {
+      "lat": -25.2637,
+      "lng": -57.5759
+    }
+  },
+  "BOL": {
+    "iso3": "BOL",
+    "countryName": "Bolivia",
+    "capital": "Sucre & La Paz",
+    "capitalType": "Dual/Triple Capital",
+    "foundationDate": "6 Agustus 1825",
+    "independenceDay": "6 Agustus",
+    "independenceYear": 1825,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Sucre adalah ibukota konstitusional & yudisial, sedangkan La Paz adalah pusat pemerintahan eksekutif & legislatif tertinggi di dunia (3.640 mdpl).",
+    "capitalCoordinates": {
+      "lat": -16.5,
+      "lng": -68.15
+    }
+  },
+  "ECU": {
+    "iso3": "ECU",
+    "countryName": "Ekuador",
+    "capital": "Quito",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "10 Agustus 1809 / 24 Mei 1822 (Pichincha)",
+    "independenceDay": "10 Agustus (Primer Grito de Independencia)",
+    "independenceYear": 1809,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Quito adalah ibukota resmi tertinggi kedua di dunia (2.850 mdpl) dan kota pertama yang dinobatkan sebagai Situs Warisan Dunia UNESCO (1978).",
+    "capitalCoordinates": {
+      "lat": -0.1807,
+      "lng": -78.4678
+    }
+  },
+  "VEN": {
+    "iso3": "VEN",
+    "countryName": "Venezuela",
+    "capital": "Caracas",
+    "capitalType": "Administrative",
+    "foundationDate": "5 Juli 1811",
+    "independenceDay": "5 Juli",
+    "independenceYear": 1811,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Caracas adalah kota kelahiran sang pembebas Amerika Latin Simón Bolívar, dinaungi oleh gunung megah El Ávila.",
+    "capitalCoordinates": {
+      "lat": 10.4806,
+      "lng": -66.9036
+    }
+  },
+  "GUY": {
+    "iso3": "GUY",
+    "countryName": "Guyana",
+    "capital": "Georgetown",
+    "capitalType": "Administrative",
+    "foundationDate": "26 Mei 1966",
+    "independenceDay": "26 Mei",
+    "independenceYear": 1966,
+    "nationalDayMonth": 5,
+    "sovereigntyFrom": "Kerajaan Britania Raya (British Guiana)",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Georgetown terkenal dengan arsitektur kayu kolonial Inggris dan Katedral St. George, salah satu katedral kayu tertinggi di dunia.",
+    "capitalCoordinates": {
+      "lat": 6.8013,
+      "lng": -58.1551
+    }
+  },
+  "SUR": {
+    "iso3": "SUR",
+    "countryName": "Suriname",
+    "capital": "Paramaribo",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "25 November 1975",
+    "independenceDay": "25 November",
+    "independenceYear": 1975,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Kerajaan Belanda",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Paramaribo memiliki komunitas keturunan Jawa yang besar dan arsitektur perpaduan Belanda-kreol yang diakui UNESCO.",
+    "capitalCoordinates": {
+      "lat": 5.852,
+      "lng": -55.2038
+    }
+  },
+  "PAN": {
+    "iso3": "PAN",
+    "countryName": "Panama",
+    "capital": "Panama City",
+    "capitalType": "Administrative",
+    "foundationDate": "3 November 1903 (dari Kolombia) / 28 Nov 1821",
+    "independenceDay": "3 November (Hari Pemisahan)",
+    "independenceYear": 1903,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Kolombia (1903) & Spanyol (1821)",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Panama City adalah pintu gerbang Terusan Panama yang menghubungkan pelayaran Samudra Atlantik dan Pasifik.",
+    "capitalCoordinates": {
+      "lat": 8.9824,
+      "lng": -79.5199
+    }
+  },
+  "CRI": {
+    "iso3": "CRI",
+    "countryName": "Kosta Rika",
+    "capital": "San José",
+    "capitalType": "Administrative",
+    "foundationDate": "15 September 1821",
+    "independenceDay": "15 September",
+    "independenceYear": 1821,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "San José terletak di dataran tinggi Lembah Tengah dan merupakan negara pertama di dunia yang membubarkan militer secara konstitusional.",
+    "capitalCoordinates": {
+      "lat": 9.9281,
+      "lng": -84.0907
+    }
+  },
+  "NIC": {
+    "iso3": "NIC",
+    "countryName": "Nikaragua",
+    "capital": "Managua",
+    "capitalType": "Administrative",
+    "foundationDate": "15 September 1821",
+    "independenceDay": "15 September",
+    "independenceYear": 1821,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Managua dipilih sebagai ibukota pada 1852 sebagai titik kompromi persaingan antara kota León dan Granada.",
+    "capitalCoordinates": {
+      "lat": 12.1149,
+      "lng": -86.2362
+    }
+  },
+  "HND": {
+    "iso3": "HND",
+    "countryName": "Honduras",
+    "capital": "Tegucigalpa",
+    "capitalType": "Administrative",
+    "foundationDate": "15 September 1821",
+    "independenceDay": "15 September",
+    "independenceYear": 1821,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Tegucigalpa didirikan sebagai pemukiman tambang perak dan emas pada tahun 1578 di perbukitan berhawa sejuk.",
+    "capitalCoordinates": {
+      "lat": 14.0723,
+      "lng": -87.1921
+    }
+  },
+  "SLV": {
+    "iso3": "SLV",
+    "countryName": "El Salvador",
+    "capital": "San Salvador",
+    "capitalType": "Administrative",
+    "foundationDate": "15 September 1821",
+    "independenceDay": "15 September",
+    "independenceYear": 1821,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "San Salvador didirikan pada 1525 oleh penakluk Spanyol Pedro de Alvarado di lembah gunung berapi.",
+    "capitalCoordinates": {
+      "lat": 13.6929,
+      "lng": -89.2182
+    }
+  },
+  "GTM": {
+    "iso3": "GTM",
+    "countryName": "Guatemala",
+    "capital": "Guatemala City",
+    "capitalType": "Administrative",
+    "foundationDate": "15 September 1821",
+    "independenceDay": "15 September",
+    "independenceYear": 1821,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Guatemala City menjadi ibukota setelah gempa bumi dahsyat menghancurkan ibukota kolonial Antigua Guatemala pada 1773.",
+    "capitalCoordinates": {
+      "lat": 14.6349,
+      "lng": -90.5069
+    }
+  },
+  "BLZ": {
+    "iso3": "BLZ",
+    "countryName": "Belize",
+    "capital": "Belmopan",
+    "capitalType": "Planned Capital",
+    "foundationDate": "21 September 1981",
+    "independenceDay": "21 September",
+    "independenceYear": 1981,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kerajaan Britania Raya (British Honduras)",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Belmopan dibangun sebagai ibukota terencana baru setelah Badai Hattie menghancurkan Belize City pada 1961.",
+    "capitalCoordinates": {
+      "lat": 17.251,
+      "lng": -88.759
+    }
+  },
+  "CUB": {
+    "iso3": "CUB",
+    "countryName": "Kuba",
+    "capital": "Havana",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "20 Mei 1902 / 10 Oktober 1868",
+    "independenceDay": "10 Oktober / 1 Januari (Hari Revolusi)",
+    "independenceYear": 1902,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Spanyol & Pasca-Administrasi AS",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Havana didirikan pada 1519 oleh Spanyol dan terkenal dengan arsitektur kolonial Spanyol serta mobil klasik antik.",
+    "capitalCoordinates": {
+      "lat": 23.1136,
+      "lng": -82.3666
+    }
+  },
+  "DOM": {
+    "iso3": "DOM",
+    "countryName": "Republik Dominika",
+    "capital": "Santo Domingo",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "27 Februari 1844",
+    "independenceDay": "27 Februari",
+    "independenceYear": 1844,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Haiti (1844) & Spanyol",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Santo Domingo adalah pemukiman Eropa tertua yang dihuni terus-menerus di Benua Amerika, didirikan tahun 1496.",
+    "capitalCoordinates": {
+      "lat": 18.4861,
+      "lng": -69.9312
+    }
+  },
+  "HTI": {
+    "iso3": "HTI",
+    "countryName": "Haiti",
+    "capital": "Port-au-Prince",
+    "capitalType": "Administrative",
+    "foundationDate": "1 Januari 1804",
+    "independenceDay": "1 Januari",
+    "independenceYear": 1804,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kekaisaran Prancis (Revolusi Haiti)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Republik pertama di dunia yang dipimpin oleh mantan budak kulit hitam setelah memenangkan revolusi melawan tentara Napoleon.",
+    "capitalCoordinates": {
+      "lat": 18.5944,
+      "lng": -72.3074
+    }
+  },
+  "JAM": {
+    "iso3": "JAM",
+    "countryName": "Jamaika",
+    "capital": "Kingston",
+    "capitalType": "Administrative",
+    "foundationDate": "6 Agustus 1962",
+    "independenceDay": "6 Agustus",
+    "independenceYear": 1962,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Kingston didirikan pada 1692 setelah gempa bumi menenggelamkan kota bajak laut Port Royal ke dasar laut.",
+    "capitalCoordinates": {
+      "lat": 17.9714,
+      "lng": -76.7936
+    }
+  },
+  "BHS": {
+    "iso3": "BHS",
+    "countryName": "Bahama",
+    "capital": "Nassau",
+    "capitalType": "Administrative",
+    "foundationDate": "10 Juli 1973",
+    "independenceDay": "10 Juli",
+    "independenceYear": 1973,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Nassau di Pulau New Providence dulunya adalah sarang bajak laut Karibia legendaris termasuk Blackbeard.",
+    "capitalCoordinates": {
+      "lat": 25.0343,
+      "lng": -77.3963
+    }
+  },
+  "BRB": {
+    "iso3": "BRB",
+    "countryName": "Barbados",
+    "capital": "Bridgetown",
+    "capitalType": "Administrative",
+    "foundationDate": "30 November 1966 (Kemerdekaan) / 2021 (Republik)",
+    "independenceDay": "30 November",
+    "independenceYear": 1966,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Bridgetown adalah situs bersejarah UNESCO yang memiliki jembatan asli Indian Bridge dari peradaban adat Arawak.",
+    "capitalCoordinates": {
+      "lat": 13.1939,
+      "lng": -59.5432
+    }
+  },
+  "TTO": {
+    "iso3": "TTO",
+    "countryName": "Trinidad dan Tobago",
+    "capital": "Port of Spain",
+    "capitalType": "Administrative",
+    "foundationDate": "31 Agustus 1962",
+    "independenceDay": "31 Agustus",
+    "independenceYear": 1962,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kerajaan Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Port of Spain adalah tempat kelahiran alat musik drum baja (steelpan) dan festival karnaval Karibia tersohor.",
+    "capitalCoordinates": {
+      "lat": 10.6549,
+      "lng": -61.5019
+    }
+  },
+  "PRT": {
+    "iso3": "PRT",
+    "countryName": "Portugal",
+    "capital": "Lisbon",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "24 Juni 1128 (São Mamede) / 5 Oktober 1143 (Zamora)",
+    "independenceDay": "10 Juni (Dia de Portugal)",
+    "independenceYear": 1143,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Perjanjian Zamora (Kekaisaran León)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Lisbon adalah salah satu ibukota tertua di Eropa Barat, mendahului Roma sekitar empat abad sejak didirikan oleh bangsa Fenisia.",
+    "capitalCoordinates": {
+      "lat": 38.7223,
+      "lng": -9.1393
+    },
+    "nationalAnthem": {
+      "title": "A Portuguesa",
+      "composer": "Alfredo Keil",
+      "adoptedYear": 1911
+    }
+  },
+  "BEL": {
+    "iso3": "BEL",
+    "countryName": "Belgia",
+    "capital": "Brusel",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "4 Oktober 1830 (Revolusi Belgia)",
+    "independenceDay": "21 Juli (Hari Nasional)",
+    "independenceYear": 1830,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Kerajaan Bersatu Belanda",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Brusel berfungsi sebagai ibukota de facto Uni Eropa (European Union) dan markas pusat aliansi militer NATO.",
+    "capitalCoordinates": {
+      "lat": 50.8503,
+      "lng": 4.3517
+    },
+    "nationalAnthem": {
+      "title": "La Brabançonne",
+      "composer": "François van Campenhout",
+      "adoptedYear": 1830
+    }
+  },
+  "AUT": {
+    "iso3": "AUT",
+    "countryName": "Austria",
+    "capital": "Wina",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "17 September 1156 (Privilegium Maius) / 1955",
+    "independenceDay": "26 Oktober (Hari Nasional)",
+    "independenceYear": 1156,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Traktat Negara Austria (Pasca-Pendudukan Sekutu)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Wina adalah ibukota musik klasik dunia yang pernah menjadi kediaman Mozart, Beethoven, dan pusat Kekaisaran Habsburg.",
+    "capitalCoordinates": {
+      "lat": 48.2082,
+      "lng": 16.3738
+    },
+    "nationalAnthem": {
+      "title": "Bundeshymne der Republik Österreich",
+      "composer": "Wolfgang Amadeus Mozart",
+      "adoptedYear": 1946
+    }
+  },
+  "GRC": {
+    "iso3": "GRC",
+    "countryName": "Yunani",
+    "capital": "Athena",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "25 Maret 1821 (Revolusi Yunani) / 1830",
+    "independenceDay": "25 Maret",
+    "independenceYear": 1821,
+    "nationalDayMonth": 3,
+    "sovereigntyFrom": "Kekaisaran Utsmaniyah (Ottoman)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Athena adalah tempat lahir demokrasi, filsafat Barat, dan Olimpiade kuno, dinaungi oleh kuil Parthenon di Acropolis.",
+    "capitalCoordinates": {
+      "lat": 37.9838,
+      "lng": 23.7275
+    },
+    "nationalAnthem": {
+      "title": "Ýmnos eis tin Eleftherían",
+      "nativeTitle": "Ύμνος εις την Ελευθερίαν",
+      "composer": "Nikolaos Mantzaros",
+      "adoptedYear": 1865
+    }
+  },
+  "FIN": {
+    "iso3": "FIN",
+    "countryName": "Finlandia",
+    "capital": "Helsinki",
+    "capitalType": "Administrative",
+    "foundationDate": "6 Desember 1917",
+    "independenceDay": "6 Desember (Itsenäisyyspäivä)",
+    "independenceYear": 1917,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Kekaisaran Rusia (Pasca-Revolusi Bolshevik)",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Helsinki dibangun dengan gaya arsitektur neoklasik menyerupai Saint Petersburg di tepi Teluk Finlandia.",
+    "capitalCoordinates": {
+      "lat": 60.1699,
+      "lng": 24.9384
+    },
+    "nationalAnthem": {
+      "title": "Maamme",
+      "composer": "Fredrik Pacius",
+      "adoptedYear": 1848
+    }
+  },
+  "IRL": {
+    "iso3": "IRL",
+    "countryName": "Irlandia",
+    "capital": "Dublin",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "6 Desember 1922 (Negara Bebas) / 1916 (Paskah)",
+    "independenceDay": "17 Maret (St. Patrick's Day)",
+    "independenceYear": 1922,
+    "nationalDayMonth": 3,
+    "sovereigntyFrom": "Kerajaan Britania Raya (Traktat Anglo-Irlandia)",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Dublin didirikan oleh bangsa Viking pada abad ke-9 dan menjadi rumah bagi perpustakaan Trinity College yang bersejarah.",
+    "capitalCoordinates": {
+      "lat": 53.3498,
+      "lng": -6.2603
+    },
+    "nationalAnthem": {
+      "title": "Amhrán na bhFiann",
+      "composer": "Peadar Kearney",
+      "adoptedYear": 1926
+    }
+  },
+  "CZE": {
+    "iso3": "CZE",
+    "countryName": "Ceko",
+    "capital": "Praha",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "1 Januari 1993 (Pemisahan Beludru) / 1918",
+    "independenceDay": "28 Oktober (Kemerdekaan Cekoslowakia 1918)",
+    "independenceYear": 1993,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Pembubaran Damai Cekoslowakia (Velvet Divorce)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Praha dikenal sebagai \"Kota Seratus Menara\" dengan Kastil Praha, kompleks kastil kuno terbesar di dunia.",
+    "capitalCoordinates": {
+      "lat": 50.0755,
+      "lng": 14.4378
+    }
+  },
+  "HUN": {
+    "iso3": "HUN",
+    "countryName": "Hungaria",
+    "capital": "Budapest",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "895 M (Penaklukan Carpathia) / 1000 M (St. Stefanus)",
+    "independenceDay": "20 Agustus (Hari Santo Stefanus) / 15 Maret",
+    "independenceYear": 1000,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Monarki Kuno Magyar & Pembubaran Austria-Hungaria",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Budapest terbentuk dari penggabungan dua kota bersejarah Buda dan Pest yang dibelah oleh keindahan Sungai Donau.",
+    "capitalCoordinates": {
+      "lat": 47.4979,
+      "lng": 19.0402
+    }
+  },
+  "ROU": {
+    "iso3": "ROU",
+    "countryName": "Rumania",
+    "capital": "Bukares",
+    "capitalType": "Administrative",
+    "foundationDate": "9 Mei 1877 (Kemerdekaan) / 1 Desember 1918 (Penyatuan)",
+    "independenceDay": "1 Desember (Ziua Marii Uniri)",
+    "independenceYear": 1877,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Kekaisaran Utsmaniyah (Ottoman)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Bukares memiliki Istana Parlemen (Palatul Parlamentului), gedung administratif terberat dan terbesar kedua di dunia setelah Pentagon.",
+    "capitalCoordinates": {
+      "lat": 44.4268,
+      "lng": 26.1025
+    }
+  },
+  "BGR": {
+    "iso3": "BGR",
+    "countryName": "Bulgaria",
+    "capital": "Sofia",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "3 Maret 1878 (San Stefano) / 681 M",
+    "independenceDay": "3 Maret",
+    "independenceYear": 1878,
+    "nationalDayMonth": 3,
+    "sovereigntyFrom": "Kekaisaran Utsmaniyah (Ottoman)",
+    "historicalEra": "19th_century",
+    "eraLabel": "Abad ke-19 (1800–1899)",
+    "trivia": "Sofia terletak di kaki Gunung Vitosha dan memiliki jejak reruntuhan kota Romawi kuno Serdica di stasiun metro bawah tanahnya.",
+    "capitalCoordinates": {
+      "lat": 42.6977,
+      "lng": 23.3219
+    }
+  },
+  "SRB": {
+    "iso3": "SRB",
+    "countryName": "Serbia",
+    "capital": "Belgrade",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Belgrade adalah pusat pemerintahan dan ibukota resmi dari negara Serbia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 44.7866,
+      "lng": 20.4489
+    }
+  },
+  "HRV": {
+    "iso3": "HRV",
+    "countryName": "Kroasia",
+    "capital": "Zagreb",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Zagreb adalah pusat pemerintahan dan ibukota resmi dari negara Kroasia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 45.815,
+      "lng": 15.9819
+    }
+  },
+  "SVK": {
+    "iso3": "SVK",
+    "countryName": "Slowakia",
+    "capital": "Bratislava",
+    "capitalType": "Administrative",
+    "foundationDate": "1 Januari 1993",
+    "independenceDay": "1 Januari",
+    "independenceYear": 1993,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Pembubaran Damai Cekoslowakia",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Satu-satunya ibukota negara di dunia yang berbatasan langsung dengan dua negara berdaulat lainnya: Austria dan Hungaria.",
+    "capitalCoordinates": {
+      "lat": 48.1486,
+      "lng": 17.1077
+    }
+  },
+  "SVN": {
+    "iso3": "SVN",
+    "countryName": "Slovenia",
+    "capital": "Ljubljana",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Ljubljana adalah pusat pemerintahan dan ibukota resmi dari negara Slovenia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 46.0569,
+      "lng": 14.5058
+    }
+  },
+  "EST": {
+    "iso3": "EST",
+    "countryName": "Estonia",
+    "capital": "Tallinn",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Tallinn adalah pusat pemerintahan dan ibukota resmi dari negara Estonia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 59.437,
+      "lng": 24.7535
+    }
+  },
+  "LVA": {
+    "iso3": "LVA",
+    "countryName": "Latvia",
+    "capital": "Riga",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Riga adalah pusat pemerintahan dan ibukota resmi dari negara Latvia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 56.9496,
+      "lng": 24.1052
+    }
+  },
+  "LTU": {
+    "iso3": "LTU",
+    "countryName": "Lithuania",
+    "capital": "Vilnius",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Vilnius adalah pusat pemerintahan dan ibukota resmi dari negara Lithuania di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 54.6872,
+      "lng": 25.2797
+    }
+  },
+  "CYP": {
+    "iso3": "CYP",
+    "countryName": "Siprus",
+    "capital": "Nicosia",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Nicosia adalah pusat pemerintahan dan ibukota resmi dari negara Siprus di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 35.1856,
+      "lng": 33.3823
+    }
+  },
+  "ISL": {
+    "iso3": "ISL",
+    "countryName": "Islandia",
+    "capital": "Reykjavik",
+    "capitalType": "Administrative",
+    "foundationDate": "17 Juni 1944 / 930 M (Althing)",
+    "independenceDay": "17 Juni",
+    "independenceYear": 1944,
+    "nationalDayMonth": 6,
+    "sovereigntyFrom": "Kerajaan Denmark",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Reykjavik adalah ibukota negara paling utara di dunia, sepenuhnya ditenagai oleh energi panas bumi (geotermal).",
+    "capitalCoordinates": {
+      "lat": 64.1466,
+      "lng": -21.9426
+    },
+    "nationalAnthem": {
+      "title": "Lofsöngur",
+      "composer": "Sveinbjörn Sveinbjörnsson",
+      "adoptedYear": 1944
+    }
+  },
+  "LUX": {
+    "iso3": "LUX",
+    "countryName": "Luksemburg",
+    "capital": "Luxembourg City",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Luxembourg City adalah pusat pemerintahan dan ibukota resmi dari negara Luksemburg di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 49.6116,
+      "lng": 6.1319
+    }
+  },
+  "MLT": {
+    "iso3": "MLT",
+    "countryName": "Malta",
+    "capital": "Valletta",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Valletta adalah pusat pemerintahan dan ibukota resmi dari negara Malta di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 35.9375,
+      "lng": 14.3754
+    }
+  },
+  "UKR": {
+    "iso3": "UKR",
+    "countryName": "Ukraina",
+    "capital": "Kyiv",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "24 Agustus 1991 / 482 M (Kievan Rus)",
+    "independenceDay": "24 Agustus",
+    "independenceYear": 1991,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Pembubaran Uni Soviet (USSR)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Kyiv adalah kota kuno berusia lebih dari 1.500 tahun di tepi Sungai Dnipro, tempat lahirnya kebudayaan Slavia Timur.",
+    "capitalCoordinates": {
+      "lat": 50.4501,
+      "lng": 30.5234
+    },
+    "nationalAnthem": {
+      "title": "Shche ne vmerla Ukrainy",
+      "nativeTitle": "Ще не вмерла України",
+      "composer": "Mykhailo Verbytsky",
+      "adoptedYear": 1992
+    }
+  },
+  "BLR": {
+    "iso3": "BLR",
+    "countryName": "Belarus",
+    "capital": "Minsk",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Minsk adalah pusat pemerintahan dan ibukota resmi dari negara Belarus di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 53.9006,
+      "lng": 27.559
+    }
+  },
+  "BIH": {
+    "iso3": "BIH",
+    "countryName": "Bosnia dan Herzegovina",
+    "capital": "Sarajevo",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Sarajevo adalah pusat pemerintahan dan ibukota resmi dari negara Bosnia dan Herzegovina di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 43.8563,
+      "lng": 18.4131
+    }
+  },
+  "ALB": {
+    "iso3": "ALB",
+    "countryName": "Albania",
+    "capital": "Tirana",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Tirana adalah pusat pemerintahan dan ibukota resmi dari negara Albania di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 41.3275,
+      "lng": 19.8187
+    }
+  },
+  "MKD": {
+    "iso3": "MKD",
+    "countryName": "Makedonia Utara",
+    "capital": "Skopje",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Skopje adalah pusat pemerintahan dan ibukota resmi dari negara Makedonia Utara di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 41.9981,
+      "lng": 21.4254
+    }
+  },
+  "MNE": {
+    "iso3": "MNE",
+    "countryName": "Montenegro",
+    "capital": "Podgorica",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Podgorica adalah pusat pemerintahan dan ibukota resmi dari negara Montenegro di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 42.4304,
+      "lng": 19.2594
+    }
+  },
+  "MDA": {
+    "iso3": "MDA",
+    "countryName": "Moldova",
+    "capital": "Chisinau",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Chisinau adalah pusat pemerintahan dan ibukota resmi dari negara Moldova di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 47.0105,
+      "lng": 28.8638
+    }
+  },
+  "GEO": {
+    "iso3": "GEO",
+    "countryName": "Georgia",
+    "capital": "Tbilisi",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Tbilisi adalah pusat pemerintahan dan ibukota resmi dari negara Georgia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 41.7151,
+      "lng": 44.8271
+    }
+  },
+  "ARM": {
+    "iso3": "ARM",
+    "countryName": "Armenia",
+    "capital": "Yerevan",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Yerevan adalah pusat pemerintahan dan ibukota resmi dari negara Armenia di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 40.1792,
+      "lng": 44.4991
+    }
+  },
+  "AZE": {
+    "iso3": "AZE",
+    "countryName": "Azerbaijan",
+    "capital": "Baku",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Baku adalah pusat pemerintahan dan ibukota resmi dari negara Azerbaijan di kawasan Europe.",
+    "capitalCoordinates": {
+      "lat": 40.4093,
+      "lng": 49.8671
+    }
+  },
+  "BHR": {
+    "iso3": "BHR",
+    "countryName": "Bahrain",
+    "capital": "Manama",
+    "capitalType": "Administrative",
+    "foundationDate": "15 Agustus 1971",
+    "independenceDay": "16 Desember (Hari Nasional)",
+    "independenceYear": 1971,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Protektorat Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Manama adalah pusat keuangan perbankan syariah dan perdagangan mutiara alam tertua di kawasan Teluk.",
+    "capitalCoordinates": {
+      "lat": 26.2285,
+      "lng": 50.586
+    }
+  },
+  "OMN": {
+    "iso3": "OMN",
+    "countryName": "Oman",
+    "capital": "Muscat",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "1650 (Pengusiran Portugis oleh Imam Sultan bin Saif)",
+    "independenceDay": "18 November (Hari Nasional)",
+    "independenceYear": 1650,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Negara Maritim Kuno / Pengusiran Portugis",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Muscat adalah salah satu kota pelabuhan tertua di Timur Tengah, terkenal dengan arsitektur putih serasi tanpa gedung tinggi pencakar langit.",
+    "capitalCoordinates": {
+      "lat": 23.588,
+      "lng": 58.3829
+    }
+  },
+  "JOR": {
+    "iso3": "JOR",
+    "countryName": "Yordania",
+    "capital": "Amman",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "25 Mei 1946",
+    "independenceDay": "25 Mei",
+    "independenceYear": 1946,
+    "nationalDayMonth": 5,
+    "sovereigntyFrom": "Mandat Britania Raya atas Transyordania",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Amman dibangun di atas perbukitan (Jabal) dan memiliki reruntuhan Kuil Herkules Romawi di Benteng Amman kuno.",
+    "capitalCoordinates": {
+      "lat": 31.9454,
+      "lng": 35.9284
+    }
+  },
+  "LBN": {
+    "iso3": "LBN",
+    "countryName": "Lebanon",
+    "capital": "Beirut",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "22 November 1943",
+    "independenceDay": "22 November",
+    "independenceYear": 1943,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Mandat Prancis atas Suriah dan Lebanon",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Beirut dijuluki \"Paris dari Timur Tengah\" yang telah dihuni manusia selama lebih dari 5.000 tahun di Laut Mediterania.",
+    "capitalCoordinates": {
+      "lat": 33.8938,
+      "lng": 35.5018
+    }
+  },
+  "IRQ": {
+    "iso3": "IRQ",
+    "countryName": "Irak",
+    "capital": "Baghdad",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "3 Oktober 1932",
+    "independenceDay": "3 Oktober",
+    "independenceYear": 1932,
+    "nationalDayMonth": 10,
+    "sovereigntyFrom": "Mandat Britania Raya atas Mesopotamia",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Baghdad didirikan pada tahun 762 M oleh Khalifah Al-Mansur sebagai ibukota Kekhalifahan Abbasiyah dan pusat Zaman Keemasan Islam.",
+    "capitalCoordinates": {
+      "lat": 33.3152,
+      "lng": 44.3661
+    }
+  },
+  "ISR": {
+    "iso3": "ISR",
+    "countryName": "Israel",
+    "capital": "Jerusalem",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Jerusalem adalah pusat pemerintahan dan ibukota resmi dari negara Israel di kawasan Asia.",
+    "capitalCoordinates": {
+      "lat": 31.7683,
+      "lng": 35.2137
+    }
+  },
+  "IRN": {
+    "iso3": "IRN",
+    "countryName": "Iran",
+    "capital": "Teheran",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "550 SM (Kekaisaran Akhemeniyah Koresh Agung)",
+    "independenceDay": "11 Februari (Kemenangan Revolusi Islam 1979)",
+    "independenceYear": -550,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Peradaban Kekaisaran Persia Kuno Tanpa Penjajahan",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Teheran terletak di lereng Pegunungan Alborz di bawah naungan megah Gunung Damavand, puncak tertinggi di Timur Tengah.",
+    "capitalCoordinates": {
+      "lat": 35.6892,
+      "lng": 51.389
+    }
+  },
+  "YEM": {
+    "iso3": "YEM",
+    "countryName": "Yaman",
+    "capital": "Sana'a",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Sana'a adalah pusat pemerintahan dan ibukota resmi dari negara Yaman di kawasan Asia.",
+    "capitalCoordinates": {
+      "lat": 15.3694,
+      "lng": 44.191
+    }
+  },
+  "KGZ": {
+    "iso3": "KGZ",
+    "countryName": "Kirgizstan",
+    "capital": "Bishkek",
+    "capitalType": "Administrative",
+    "foundationDate": "31 Agustus 1991",
+    "independenceDay": "31 Agustus",
+    "independenceYear": 1991,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Pembubaran Uni Soviet (USSR)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Bishkek dikelilingi pemandangan spektakuler pegunungan bersalju Tian Shan yang membentang luas.",
+    "capitalCoordinates": {
+      "lat": 42.8746,
+      "lng": 74.5698
+    }
+  },
+  "TJK": {
+    "iso3": "TJK",
+    "countryName": "Tajikistan",
+    "capital": "Dushanbe",
+    "capitalType": "Administrative",
+    "foundationDate": "9 September 1991",
+    "independenceDay": "9 September",
+    "independenceYear": 1991,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Pembubaran Uni Soviet (USSR)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Nama Dushanbe berarti \"Hari Senin\" dalam bahasa Tajik, berawal dari desa pasar mingguan di hari Senin.",
+    "capitalCoordinates": {
+      "lat": 38.5598,
+      "lng": 68.787
+    }
+  },
+  "TKM": {
+    "iso3": "TKM",
+    "countryName": "Turkmenistan",
+    "capital": "Ashgabat",
+    "capitalType": "Planned Capital",
+    "foundationDate": "27 Oktober 1991",
+    "independenceDay": "27 September (sebelumnya 27 Okt)",
+    "independenceYear": 1991,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Pembubaran Uni Soviet (USSR)",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Ashgabat memegang rekor Guinness untuk konsentrasi gedung berbalut marmer putih tertinggi di dunia.",
+    "capitalCoordinates": {
+      "lat": 37.9601,
+      "lng": 58.3261
+    }
+  },
+  "AFG": {
+    "iso3": "AFG",
+    "countryName": "Afghanistan",
+    "capital": "Kabul",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "19 Agustus 1919 (Perjanjian Rawalpindi) / 1747 (Durrani)",
+    "independenceDay": "19 Agustus",
+    "independenceYear": 1919,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Pengaruh Imperium Britania",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Kabul adalah oasis bersejarah di jalur sutra kuno, diapit pegunungan Hindu Kush yang menjulang tinggi.",
+    "capitalCoordinates": {
+      "lat": 34.5553,
+      "lng": 69.2075
+    }
+  },
+  "MVR": {
+    "iso3": "MVR",
+    "countryName": "Maladewa",
+    "capital": "Malé",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "26 Juli 1965",
+    "independenceDay": "26 Juli",
+    "independenceYear": 1965,
+    "nationalDayMonth": 7,
+    "sovereigntyFrom": "Protektorat Britania Raya",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Malé adalah salah satu pulau ibukota paling padat di bumi, dikelilingi perairan biru atol Samudra Hindia.",
+    "capitalCoordinates": {
+      "lat": 4.1755,
+      "lng": 73.5093
+    }
+  },
+  "BTN": {
+    "iso3": "BTN",
+    "countryName": "Bhutan",
+    "capital": "Thimphu",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "17 Desember 1907 (Pendirian Monarki Wangchuck)",
+    "independenceDay": "17 Desember (Hari Nasional)",
+    "independenceYear": 1907,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Negara Berdaulat Kerajaan Himalaya",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Satu-satunya ibukota negara di dunia tanpa lampu lalu lintas (traffic light), diatur oleh polisi lalu lintas bersarung tangan putih.",
+    "capitalCoordinates": {
+      "lat": 27.4728,
+      "lng": 89.6393
+    }
+  },
+  "MAC": {
+    "iso3": "MAC",
+    "countryName": "Makau",
+    "capital": "Makau",
+    "capitalType": "Administrative",
+    "foundationDate": "20 Desember 1999 (Penyerahan Kedaulatan)",
+    "independenceDay": "20 Desember",
+    "independenceYear": 1999,
+    "nationalDayMonth": 12,
+    "sovereigntyFrom": "Portugal ke Tiongkok",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Koloni Eropa tertua dan terakhir di Asia, disewa oleh pedagang Portugis sejak tahun 1557.",
+    "capitalCoordinates": {
+      "lat": 22.1987,
+      "lng": 113.5439
+    }
+  },
+  "PRK": {
+    "iso3": "PRK",
+    "countryName": "Korea Utara",
+    "capital": "Pyongyang",
+    "capitalType": "Administrative",
+    "foundationDate": "9 September 1948",
+    "independenceDay": "9 September (Hari Republik)",
+    "independenceYear": 1948,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Pembebasan dari Jepang / Pembagian Semenanjung",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Pyongyang adalah salah satu kota tertua di Semenanjung Korea dengan legenda pendirian oleh Dangun.",
+    "capitalCoordinates": {
+      "lat": 39.0392,
+      "lng": 125.7625
+    },
+    "nationalAnthem": {
+      "title": "Aegukka",
+      "nativeTitle": "애국가",
+      "composer": "Kim Won-gyun",
+      "adoptedYear": 1947
+    }
+  },
+  "PNG": {
+    "iso3": "PNG",
+    "countryName": "Papua Nugini",
+    "capital": "Port Moresby",
+    "capitalType": "Administrative",
+    "foundationDate": "16 September 1975",
+    "independenceDay": "16 September",
+    "independenceYear": 1975,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Administrasi Persemakmuran Australia",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Port Moresby dinamai oleh Kapten John Moresby pada tahun 1873 untuk menghormati ayahnya Laksamana Sir Fairfax Moresby.",
+    "capitalCoordinates": {
+      "lat": -9.4438,
+      "lng": 147.1803
+    }
+  },
+  "SLB": {
+    "iso3": "SLB",
+    "countryName": "Kepulauan Solomon",
+    "capital": "Honiara",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Honiara adalah pusat pemerintahan dan ibukota resmi dari negara Kepulauan Solomon di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -9.4456,
+      "lng": 159.9729
+    }
+  },
+  "VUT": {
+    "iso3": "VUT",
+    "countryName": "Vanuatu",
+    "capital": "Port Vila",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Port Vila adalah pusat pemerintahan dan ibukota resmi dari negara Vanuatu di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -17.7333,
+      "lng": 168.3273
+    }
+  },
+  "WSM": {
+    "iso3": "WSM",
+    "countryName": "Samoa",
+    "capital": "Apia",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Apia adalah pusat pemerintahan dan ibukota resmi dari negara Samoa di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -13.8333,
+      "lng": -171.7667
+    }
+  },
+  "TON": {
+    "iso3": "TON",
+    "countryName": "Tonga",
+    "capital": "Nukuʻalofa",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Nukuʻalofa adalah pusat pemerintahan dan ibukota resmi dari negara Tonga di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -21.1393,
+      "lng": -175.2049
+    }
+  },
+  "PYF": {
+    "iso3": "PYF",
+    "countryName": "Polinesia Prancis",
+    "capital": "Papeete",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Papeete adalah pusat pemerintahan dan ibukota resmi dari negara Polinesia Prancis di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -17.6797,
+      "lng": -149.4068
+    }
+  },
+  "NCL": {
+    "iso3": "NCL",
+    "countryName": "Kaledonia Baru",
+    "capital": "Nouméa",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Nouméa adalah pusat pemerintahan dan ibukota resmi dari negara Kaledonia Baru di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -20.9043,
+      "lng": 165.618
+    }
+  },
+  "KIR": {
+    "iso3": "KIR",
+    "countryName": "Kiribati",
+    "capital": "Tarawa",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Tarawa adalah pusat pemerintahan dan ibukota resmi dari negara Kiribati di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -3.3704,
+      "lng": -168.734
+    }
+  },
+  "PLW": {
+    "iso3": "PLW",
+    "countryName": "Palau",
+    "capital": "Ngerulmud",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Ngerulmud adalah pusat pemerintahan dan ibukota resmi dari negara Palau di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": 7.515,
+      "lng": 134.5825
+    }
+  },
+  "FSM": {
+    "iso3": "FSM",
+    "countryName": "Mikronesia",
+    "capital": "Palikir",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Palikir adalah pusat pemerintahan dan ibukota resmi dari negara Mikronesia di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": 6.9172,
+      "lng": 158.1589
+    }
+  },
+  "MHL": {
+    "iso3": "MHL",
+    "countryName": "Kepulauan Marshall",
+    "capital": "Majuro",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Majuro adalah pusat pemerintahan dan ibukota resmi dari negara Kepulauan Marshall di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": 7.1315,
+      "lng": 171.1845
+    }
+  },
+  "NRU": {
+    "iso3": "NRU",
+    "countryName": "Nauru",
+    "capital": "Yaren",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Yaren adalah pusat pemerintahan dan ibukota resmi dari negara Nauru di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -0.5228,
+      "lng": 166.9315
+    }
+  },
+  "TUV": {
+    "iso3": "TUV",
+    "countryName": "Tuvalu",
+    "capital": "Funafuti",
+    "capitalType": "Administrative",
+    "foundationDate": "Abad ke-20 Masehi",
+    "independenceDay": "Hari Nasional Resmi",
+    "independenceYear": 1960,
+    "nationalDayMonth": 1,
+    "sovereigntyFrom": "Kedaulatan Nasional Yang Diakui PBB",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi & Kedaulatan Modern",
+    "trivia": "Funafuti adalah pusat pemerintahan dan ibukota resmi dari negara Tuvalu di kawasan Oceania.",
+    "capitalCoordinates": {
+      "lat": -7.1095,
+      "lng": 177.6493
+    }
+  },
+  "VAT": {
+    "iso3": "VAT",
+    "countryName": "Vatikan",
+    "capital": "Vatican City",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "11 Februari 1929 (Pakta Lateran)",
+    "independenceDay": "11 Februari (Hari Pakta Lateran)",
+    "independenceYear": 1929,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Kerajaan Italia (Pakta Lateran)",
+    "historicalEra": "post_ww1",
+    "eraLabel": "Awal Abad 20 (1900–1944)",
+    "trivia": "Negara berdaulat independen terkecil di dunia, dipimpin oleh Paus dan dikelilingi oleh kota Roma.",
+    "capitalCoordinates": {
+      "lat": 41.9029,
+      "lng": 12.4534
+    }
+  },
+  "MCO": {
+    "iso3": "MCO",
+    "countryName": "Monako",
+    "capital": "Monaco",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "8 Januari 1297 (Keluarga Grimaldi)",
+    "independenceDay": "19 November (Hari Pangeran)",
+    "independenceYear": 1297,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Republik Genova / Monarki Kuno",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Kepangeranan Monako dipimpin oleh Wangsa Grimaldi selama lebih dari 700 tahun di Riviera Prancis.",
+    "capitalCoordinates": {
+      "lat": 43.7384,
+      "lng": 7.4246
+    }
+  },
+  "SMR": {
+    "iso3": "SMR",
+    "countryName": "San Marino",
+    "capital": "San Marino",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "3 September 301 M (Santo Marinus)",
+    "independenceDay": "3 September (Festa di San Marino)",
+    "independenceYear": 301,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Republik Tertua di Dunia yang Masih Eksis",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "San Marino adalah negara republik konstitusional berdaulat tertua di dunia yang didirikan pada tahun 301 M.",
+    "capitalCoordinates": {
+      "lat": 43.9424,
+      "lng": 12.4578
+    }
+  },
+  "LIE": {
+    "iso3": "LIE",
+    "countryName": "Liechtenstein",
+    "capital": "Vaduz",
+    "capitalType": "Administrative",
+    "foundationDate": "23 Januari 1719",
+    "independenceDay": "15 Agustus (Staatsfeiertag)",
+    "independenceYear": 1719,
+    "nationalDayMonth": 8,
+    "sovereigntyFrom": "Kekaisaran Romawi Suci (1719) / Konfederasi Jerman (1866)",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Terletak di lembah Alpen di antara Swiss dan Austria, dipimpin oleh Pangeran Hans-Adam II dari Puri Vaduz.",
+    "capitalCoordinates": {
+      "lat": 47.141,
+      "lng": 9.5209
+    }
+  },
+  "AND": {
+    "iso3": "AND",
+    "countryName": "Andorra",
+    "capital": "Andorra la Vella",
+    "capitalType": "Administrative",
+    "foundationDate": "8 September 1278 (Paréage)",
+    "independenceDay": "8 September (Hari Bunda Meritxell)",
+    "independenceYear": 1278,
+    "nationalDayMonth": 9,
+    "sovereigntyFrom": "Kekaisaran Charlemagne / Traktat Paréage",
+    "historicalEra": "ancient",
+    "eraLabel": "Negara Kuno Bersejarah",
+    "trivia": "Andorra la Vella adalah ibukota tertinggi di Eropa (1.023 mdpl), memiliki kepemimpinan bersama unik.",
+    "capitalCoordinates": {
+      "lat": 42.5063,
+      "lng": 1.5218
+    }
+  },
+  "SYR": {
+    "iso3": "SYR",
+    "countryName": "Suriah",
+    "capital": "Damaskus",
+    "capitalType": "Historic & Cultural",
+    "foundationDate": "17 April 1946 / Ribuan tahun SM",
+    "independenceDay": "17 April (Hari Evakuasi)",
+    "independenceYear": 1946,
+    "nationalDayMonth": 4,
+    "sovereigntyFrom": "Mandat Prancis atas Suriah",
+    "historicalEra": "post_ww2",
+    "eraLabel": "Pasca-PD II (1945–1959)",
+    "trivia": "Damaskus adalah salah satu ibukota tertua di dunia yang dihuni manusia terus-menerus sejak milenium ke-3 SM.",
+    "capitalCoordinates": {
+      "lat": 33.5138,
+      "lng": 36.2765
+    }
+  },
+  "PSE": {
+    "iso3": "PSE",
+    "countryName": "Palestina",
+    "capital": "Ramallah",
+    "capitalType": "Administrative",
+    "foundationDate": "15 November 1988 (Deklarasi Kemerdekaan)",
+    "independenceDay": "15 November",
+    "independenceYear": 1988,
+    "nationalDayMonth": 11,
+    "sovereigntyFrom": "Deklarasi Aljazair / Mandat Britania",
+    "historicalEra": "decolonization",
+    "eraLabel": "Dekolonisasi (1960–1989)",
+    "trivia": "Ramallah berfungsi sebagai pusat administrasi Otoritas Nasional Palestina dan kementerian de facto.",
+    "capitalCoordinates": {
+      "lat": 31.9038,
+      "lng": 35.2034
+    }
+  },
+  "XKX": {
+    "iso3": "XKX",
+    "countryName": "Kosovo",
+    "capital": "Pristina",
+    "capitalType": "Administrative",
+    "foundationDate": "17 Februari 2008",
+    "independenceDay": "17 Februari",
+    "independenceYear": 2008,
+    "nationalDayMonth": 2,
+    "sovereigntyFrom": "Pemisahan Kedaulatan dari Serbia",
+    "historicalEra": "modern_post_soviet",
+    "eraLabel": "Pasca-1990 (Modern)",
+    "trivia": "Pristina memiliki monumen kemerdekaan Newborn yang diresmikan pada hari deklarasi kemerdekaan tahun 2008.",
+    "capitalCoordinates": {
+      "lat": 42.6629,
+      "lng": 21.1655
+    }
+  }
+}

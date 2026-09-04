@@ -339,14 +339,24 @@ export class ApiClient {
     return this.baseUrl;
   }
 
-  private async fetchJson<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const res = await fetch(`${this.baseUrl}${endpoint}`, {
+  private async fetchJson<T>(
+    endpoint: string,
+    options?: RequestInit & { customFetch?: typeof fetch }
+  ): Promise<T> {
+    const fetchClient = options?.customFetch || (typeof fetch !== 'undefined' ? fetch : null);
+    if (!fetchClient) {
+      throw new Error('Fetch client is not available');
+    }
+
+    const { customFetch, ...fetchOptions } = options || {};
+
+    const res = await fetchClient(`${this.baseUrl}${endpoint}`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        ...options?.headers,
+        ...fetchOptions?.headers,
       },
-      ...options,
+      ...fetchOptions,
     });
 
     if (!res.ok) {
@@ -354,6 +364,104 @@ export class ApiClient {
     }
 
     return res.json();
+  }
+
+  /**
+   * Universal Edge Gateway Client Method (ADR 0074)
+   * Dispatches microapp requests to /api/v1/gateway/:app (GET) or /api/v1/gateway (POST)
+   */
+  async gateway<T = any>(
+    app: string,
+    params?: Record<string, any>,
+    options?: {
+      method?: 'GET' | 'POST';
+      forceRefresh?: boolean;
+      timeoutMs?: number;
+      customFetch?: typeof fetch;
+    }
+  ): Promise<{
+    success: boolean;
+    app: string;
+    source: string;
+    cached: boolean;
+    timestamp: string;
+    data: T;
+  }> {
+    const method = options?.method || 'GET';
+    const signal =
+      options?.timeoutMs && AbortSignal.timeout
+        ? AbortSignal.timeout(options.timeoutMs)
+        : undefined;
+
+    if (method === 'POST') {
+      const body: Record<string, any> = { app, params };
+      if (options?.forceRefresh) {
+        body.forceRefresh = true;
+      }
+      return await this.fetchJson<{
+        success: boolean;
+        app: string;
+        source: string;
+        cached: boolean;
+        timestamp: string;
+        data: T;
+      }>('/gateway', {
+        method: 'POST',
+        body: JSON.stringify(body),
+        signal,
+        customFetch: options?.customFetch,
+      });
+    }
+
+    // Default GET: serialize params into query string
+    const queryParams = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null) {
+          queryParams.set(key, String(value));
+        }
+      }
+    }
+    if (options?.forceRefresh) {
+      queryParams.set('refresh', 'true');
+    }
+
+    const qs = queryParams.toString();
+    const endpoint = `/gateway/${app}${qs ? `?${qs}` : ''}`;
+
+    return await this.fetchJson<{
+      success: boolean;
+      app: string;
+      source: string;
+      cached: boolean;
+      timestamp: string;
+      data: T;
+    }>(endpoint, {
+      method: 'GET',
+      signal,
+      customFetch: options?.customFetch,
+    });
+  }
+
+  /**
+   * Batch Microapp Gateway Dispatcher (ADR 0074)
+   * Dispatches multiple microapp queries in a single network round-trip.
+   */
+  async gatewayBatch(
+    requests: Array<{ app: string; params?: Record<string, any> }>,
+    options?: { timeoutMs?: number; customFetch?: typeof fetch }
+  ): Promise<Record<string, any>> {
+    const signal =
+      options?.timeoutMs && AbortSignal.timeout
+        ? AbortSignal.timeout(options.timeoutMs)
+        : undefined;
+
+    return await this.fetchJson<Record<string, any>>('/gateway', {
+      method: 'POST',
+      body: JSON.stringify({ batch: requests }),
+      signal,
+      customFetch: options?.customFetch,
+    });
   }
 
   async getProviders(): Promise<ProviderInfo[]> {
