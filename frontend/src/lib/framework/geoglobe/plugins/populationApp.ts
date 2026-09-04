@@ -9,6 +9,7 @@ import {
   type CountryPopulationData,
   getPopulationDataForCountry,
 } from '../data/populationData';
+import { getPopulatedPlacesByLOD } from '../data/populatedPlacesData';
 import { fetchWorldBankPopulation } from '$lib/features/map/services/livePopulationService';
 import { formatCompactNumber } from '$lib/formatters/currency';
 
@@ -251,4 +252,38 @@ export const populationApp: GeoAppPlugin<CountryPopulationData> = {
       ],
     };
   },
+
+  getCustomLabels: (
+    _data: Record<string, CountryPopulationData>,
+    _activeMetric: string,
+    _theme: 'dark' | 'light',
+    _selectedIso3?: string,
+    _simulationDate?: Date,
+    cameraAltitude?: number
+  ) => {
+    const alt = cameraAltitude ?? 2.0;
+    const places = getPopulatedPlacesByLOD(alt);
+    return places.map((p) => {
+      const popMillions = p.popMax / 1_000_000;
+      let dotRadius = 0.25;
+      if (popMillions >= 20) dotRadius = 0.70;
+      else if (popMillions >= 10) dotRadius = 0.55;
+      else if (popMillions >= 5) dotRadius = 0.40;
+      else if (popMillions >= 2) dotRadius = 0.30;
+
+      return {
+        id: `pop-city-${p.nameascii.toLowerCase().replace(/\s+/g, '-')}`,
+        lat: p.lat,
+        lng: p.lng,
+        text: `${p.name} (${formatCompactNumber(p.popMax)})`,
+        shortText: formatCompactNumber(p.popMax),
+        dotRadius,
+        color: p.isMegacity ? '#38bdf8' : '#60a5fa',
+        size: 0.6,
+        iso3: p.countryIso3,
+        city: p,
+      };
+    });
+  },
 };
+
