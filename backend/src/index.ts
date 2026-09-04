@@ -6,6 +6,7 @@ import { convertRoutes } from './routes/convert.ts';
 import { historyRoutes } from './routes/history.ts';
 import { countriesRoutes } from './routes/countries.ts';
 import { nimdaRoutes } from './routes/admin.ts';
+import { gatewayRoutes } from './routes/gateway.ts';
 import { loggerMiddleware } from './middleware/logger.ts';
 import { rateLimiterMiddleware } from './middleware/rate-limiter.ts';
 import { AggregatorService } from './service/aggregator.ts';
@@ -72,6 +73,7 @@ export function createApp(env?: Env) {
             { name: 'Countries', description: 'Global country metadata and currency mappings' },
             { name: 'Converter', description: 'Multi-source currency conversion calculations' },
             { name: 'History', description: 'Historical time-series trend queries' },
+            { name: 'Gateway', description: 'Unified Edge API Gateway and Microapp Ingestion BFF' },
           ],
         },
       })
@@ -226,6 +228,7 @@ export function createApp(env?: Env) {
     .use(historyRoutes(env))
     .use(countriesRoutes(env))
     .use(nimdaRoutes(env))
+    .use(gatewayRoutes(env))
     .onAfterResponse(({ request, set }) => {
       try {
         const url = new URL(request.url);

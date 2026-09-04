@@ -7,6 +7,7 @@ import {
   POPULATION_DATASET,
   type CountryPopulationData,
 } from '$lib/framework/geoglobe/data/populationData';
+import { apiClient } from '$lib/api/client';
 
 export const WORLDBANK_POPULATION_URL =
   'https://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?format=json&mrv=1&per_page=300&date=2023:2025';
@@ -60,7 +61,7 @@ export function parseWorldBankIndicator(payload: any): Record<string, number> {
 }
 
 /**
- * Fetches real-time World Bank population with strict 5s timeout and offline fallback
+ * Fetches real-time World Bank population via backend gateway with offline fallback
  */
 export async function fetchWorldBankPopulation(options?: {
   customFetch?: typeof fetch;
@@ -77,57 +78,76 @@ export async function fetchWorldBankPopulation(options?: {
     return cachedResult;
   }
 
-  const fetchClient = options?.customFetch || (typeof fetch !== 'undefined' ? fetch : null);
   const timeoutMs = options?.timeoutMs || 5000;
 
-  if (!fetchClient) {
-    return getFallbackResult();
-  }
-
   try {
-    const res = await fetchClient(WORLDBANK_POPULATION_URL, {
-      signal: AbortSignal.timeout ? AbortSignal.timeout(timeoutMs) : undefined,
+    const res = await apiClient.gateway<any>('population', undefined, {
+      forceRefresh: options?.forceRefresh,
+      timeoutMs,
+      customFetch: options?.customFetch,
     });
 
-    if (!res.ok) {
-      return getFallbackResult();
-    }
+    const payload = res?.data !== undefined ? res.data : res;
 
-    const payload = await res.json();
-    const livePopMap = parseWorldBankIndicator(payload);
-
-    if (Object.keys(livePopMap).length === 0) {
-      return getFallbackResult();
-    }
-
-    // Merge live population data with base dataset
-    const mergedData: Record<string, CountryPopulationData> = {};
-    for (const [iso3, base] of Object.entries(POPULATION_DATASET)) {
-      if (livePopMap[iso3]) {
-        mergedData[iso3] = {
-          ...base,
-          totalPopulation: livePopMap[iso3],
-          source: 'World Bank Live',
-        };
+    let livePopMap: Record<string, number> = {};
+    if (Array.isArray(payload)) {
+      livePopMap = parseWorldBankIndicator(payload);
+    } else if (payload && typeof payload === 'object') {
+      if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+        for (const [k, v] of Object.entries(payload.data)) {
+          const num =
+            typeof v === 'object' && v !== null && 'totalPopulation' in v
+              ? Number((v as any).totalPopulation)
+              : Number(v);
+          if (!isNaN(num) && num > 0) {
+            livePopMap[k.toUpperCase()] = num;
+          }
+        }
       } else {
-        mergedData[iso3] = base;
+        for (const [k, v] of Object.entries(payload)) {
+          const num =
+            typeof v === 'object' && v !== null && 'totalPopulation' in v
+              ? Number((v as any).totalPopulation)
+              : Number(v);
+          if (!isNaN(num) && num > 0) {
+            livePopMap[k.toUpperCase()] = num;
+          }
+        }
       }
     }
 
-    const result: LivePopulationResult = {
-      data: mergedData,
-      isLive: true,
-      source: 'worldbank_live',
-      lastUpdated: new Date().toISOString(),
-      totalCountries: Object.keys(mergedData).length,
-    };
+    if (Object.keys(livePopMap).length > 0) {
+      // Merge live population data with base dataset
+      const mergedData: Record<string, CountryPopulationData> = {};
+      for (const [iso3, base] of Object.entries(POPULATION_DATASET)) {
+        if (livePopMap[iso3]) {
+          mergedData[iso3] = {
+            ...base,
+            totalPopulation: livePopMap[iso3],
+            source: 'World Bank Live',
+          };
+        } else {
+          mergedData[iso3] = base;
+        }
+      }
 
-    cachedResult = result;
-    lastCacheTime = now;
-    return result;
+      const result: LivePopulationResult = {
+        data: mergedData,
+        isLive: true,
+        source: 'worldbank_live',
+        lastUpdated: res?.timestamp || new Date().toISOString(),
+        totalCountries: Object.keys(mergedData).length,
+      };
+
+      cachedResult = result;
+      lastCacheTime = now;
+      return result;
+    }
   } catch (_err) {
-    return getFallbackResult();
+    // Gateway call failed or offline -> fall back to bundled dataset
   }
+
+  return getFallbackResult();
 }
 
 function getFallbackResult(): LivePopulationResult {
