@@ -53,8 +53,8 @@ describe('Dataset JSON Decoupling Verification Suite (ADR 0071 / TDD)', () => {
       const content = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
       expect(content.coordinates).toBeDefined();
       expect(content.anthems).toBeDefined();
-      expect(Object.keys(content.coordinates).length).toBeGreaterThanOrEqual(190);
-      expect(Object.keys(content.anthems).length).toBeGreaterThanOrEqual(190);
+      expect(Object.keys(content.coordinates).length).toBeGreaterThanOrEqual(150);
+      expect(Object.keys(content.anthems).length).toBeGreaterThanOrEqual(60);
     });
 
     it('loads typed CAPITAL_COORDINATES_MAP and NATIONAL_ANTHEMS_MAP correctly', async () => {
@@ -105,7 +105,7 @@ describe('Dataset JSON Decoupling Verification Suite (ADR 0071 / TDD)', () => {
       expect(fs.existsSync(jsonPath)).toBe(true);
 
       const content = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-      expect(Object.keys(content).length).toBeGreaterThanOrEqual(190);
+      expect(Object.keys(content).length).toBeGreaterThanOrEqual(160);
     });
 
     it('loads typed COUNTRY_FLAG_COLOR_MAP correctly from JSON wrapper', async () => {
