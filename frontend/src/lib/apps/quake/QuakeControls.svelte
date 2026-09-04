@@ -179,6 +179,19 @@
         <Waves class="w-3.5 h-3.5 text-cyan-400" />
         <span class="text-[11px]">Siaga Tsunami</span>
       </button>
+
+      <button
+        type="button"
+        onclick={() => handleFilterSelect('bmkg_dirasakan')}
+        class={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition cursor-pointer col-span-2 ${
+          activeFilter === 'bmkg_dirasakan'
+            ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 font-bold'
+            : 'bg-slate-950/50 border-slate-800/80 text-slate-400 hover:text-slate-200'
+        }`}
+      >
+        <Activity class="w-3.5 h-3.5 text-emerald-400" />
+        <span class="text-[11px]">Gempa Dirasakan BMKG Indonesia 🇮🇩</span>
+      </button>
     </div>
   </div>
 
